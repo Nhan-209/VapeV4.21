@@ -6,52 +6,52 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nullable;
 
 public class ProfileRemoteMetadata {
-    private final long K;
-    private final long Y;
-    private final long c;
+    private final long version;
+    private final long publishedVersion;
+    private final long publicProfileId;
 
-    public JsonObject i() {
-        JsonObject jsonObject = new JsonObject();
-        jsonObject.addProperty("publicProfileId", (Number)this.c);
-        jsonObject.addProperty("version", (Number)this.K);
-        jsonObject.addProperty("publishedVersion", (Number)this.Y);
-        return jsonObject;
+    public JsonObject toJson() {
+        JsonObject object = new JsonObject();
+        object.addProperty("publicProfileId", (Number)this.publicProfileId);
+        object.addProperty("version", (Number)this.version);
+        object.addProperty("publishedVersion", (Number)this.publishedVersion);
+        return object;
     }
 
     @Nullable
     @Contract(value="!null -> !null; null -> null")
-    public static ProfileRemoteMetadata s(@Nullable JsonElement jsonElement) {
-        if (jsonElement == null || jsonElement.isJsonNull()) {
+    public static ProfileRemoteMetadata fromJson(@Nullable JsonElement element) {
+        if (element == null || element.isJsonNull()) {
             return null;
         }
-        JsonObject jsonObject = jsonElement.getAsJsonObject();
-        return new ProfileRemoteMetadata(jsonObject.get("publicProfileId").getAsLong(), jsonObject.get("version").getAsLong(), jsonObject.get("publishedVersion").getAsLong());
+        JsonObject object = element.getAsJsonObject();
+        return new ProfileRemoteMetadata(object.get("publicProfileId").getAsLong(), object.get("version").getAsLong(), object.get("publishedVersion").getAsLong());
     }
 
-    public long u() {
-        return this.c;
+    public long getPublicProfileId() {
+        return this.publicProfileId;
     }
 
-    public long w() {
-        return this.Y;
+    public long getPublishedVersion() {
+        return this.publishedVersion;
     }
 
     public String toString() {
-        return "PrivateProfileMetadata{publicProfileId=" + this.c + ", version=" + this.K + ", publishedVersion=" + this.Y + '}';
+        return "PrivateProfileMetadata{publicProfileId=" + this.publicProfileId + ", version=" + this.version + ", publishedVersion=" + this.publishedVersion + '}';
     }
 
-    public long V() {
-        return this.K;
+    public long getVersion() {
+        return this.version;
     }
 
-    ProfileRemoteMetadata(long l, long l2, long l3) {
-        this.c = l;
-        this.K = l2;
-        this.Y = l3;
+    ProfileRemoteMetadata(long publicProfileId, long version, long publishedVersion) {
+        this.publicProfileId = publicProfileId;
+        this.version = version;
+        this.publishedVersion = publishedVersion;
     }
 
-    public boolean O() {
-        return this.K < this.Y;
+    public boolean hasNewerPublishedVersion() {
+        return this.version < this.publishedVersion;
     }
 
 }

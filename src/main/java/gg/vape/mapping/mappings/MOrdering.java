@@ -20,7 +20,7 @@ extends Mapping {
     }
 
     public List n(Object object, Iterable iterable) {
-        return (List)this.C.L(object, iterable);
+        return (List)this.C.invokeObject(object, iterable);
     }
 
     public MOrdering() {

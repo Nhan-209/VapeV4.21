@@ -218,7 +218,7 @@ extends ClickGuiPageBase {
         if (bl2) {
             ArrayList<Mod> arrayList = new ArrayList<>();
             if (bl) {
-                ArrayList<Mod> arrayList2 = Vape.INSTANCE.getModManager().l();
+                ArrayList<Mod> arrayList2 = Vape.INSTANCE.getModManager().getActiveModuleList();
                 for (Mod object4 : arrayList2) {
                     HudModule hudModule;
                     if (!(object4 instanceof HudModule) || !StringUtils.y((hudModule = (HudModule)object4).getName()).contains(string2)) continue;
@@ -295,14 +295,14 @@ extends ClickGuiPageBase {
         }
         ArrayList<Mod> arrayList = new ArrayList<>();
         if (bl) {
-            ArrayList<Mod> arrayList3 = Vape.INSTANCE.getModManager().l();
+            ArrayList<Mod> arrayList3 = Vape.INSTANCE.getModManager().getActiveModuleList();
             for (Mod mod : arrayList3) {
                 if (!(mod instanceof HudModule)) continue;
                 HudModule hudModule = (HudModule)mod;
                 arrayList.add(hudModule);
             }
         } else if (this.selectedCategory == Category.L) {
-            arrayList = new ArrayList<Mod>(Vape.INSTANCE.getModuleProfileMetadataCodec().k());
+            arrayList = new ArrayList<Mod>(Vape.INSTANCE.getModuleProfileMetadataCodec().getSelectedModules());
         } else {
             arrayList = new ArrayList<Mod>(Vape.INSTANCE.getModManager().collectMods());
             arrayList.removeIf(ClickGuiModulesPage::lambda$filterModuleButtons$11);
@@ -404,7 +404,7 @@ extends ClickGuiPageBase {
     }
 
     private static Integer lambda$renderCategoryButtons$3(Category category) {
-        return Vape.INSTANCE.getModManager().x(category);
+        return Vape.INSTANCE.getModManager().countEnabledModules(category);
     }
 
     private void lambda$filterModuleButtons$17() {
@@ -523,7 +523,7 @@ extends ClickGuiPageBase {
     }
 
     private static Integer lambda$renderCategoryButtons$2() {
-        return Vape.INSTANCE.getModuleProfileMetadataCodec().S();
+        return Vape.INSTANCE.getModuleProfileMetadataCodec().getVisibleModuleCount();
     }
 
     private void renderNavigation() {

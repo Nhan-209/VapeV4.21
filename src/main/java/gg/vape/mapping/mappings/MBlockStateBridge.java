@@ -16,17 +16,17 @@ extends Mapping {
     private MappingMethod J;
 
     public int H(Object object, int n) {
-        if (this.J == null || this.J.h()) {
+        if (this.J == null || this.J.hasResolutionFailed()) {
             return 0;
         }
-        return this.J.Z(object, n);
+        return this.J.invokeInt(object, n);
     }
 
     public boolean Z(Object object) {
-        if (this.y == null || this.y.h()) {
+        if (this.y == null || this.y.hasResolutionFailed()) {
             return false;
         }
-        return this.y.e(object, new Object[0]);
+        return this.y.invokeBoolean(object, new Object[0]);
     }
 
     public static String[] Q() {
@@ -106,10 +106,10 @@ extends Mapping {
     }
 
     public int v(Object object, int n) {
-        if (this.G == null || this.G.h()) {
+        if (this.G == null || this.G.hasResolutionFailed()) {
             return 0;
         }
-        return this.G.Z(object, n);
+        return this.G.invokeInt(object, n);
     }
 }
 

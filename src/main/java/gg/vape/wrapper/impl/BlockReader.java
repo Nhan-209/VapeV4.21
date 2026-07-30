@@ -1,8 +1,6 @@
 package gg.vape.wrapper.impl;
 
 import gg.vape.wrapper.Wrapper;
-import gg.vape.wrapper.impl.BlockPos;
-import gg.vape.wrapper.impl.BlockStatePredicate;
 
 public class BlockReader
 extends Wrapper {
@@ -11,7 +9,7 @@ extends Wrapper {
     }
 
     public BlockStatePredicate f(BlockPos blockPos) {
-        return new BlockStatePredicate(BlockReader.c.getMappingsMapperCompat().y.n(this.I, blockPos.getObject()));
+        return new BlockStatePredicate(BlockReader.vapeInstance.getMappingsMapperCompat().y.n(this.I, blockPos.getObject()));
     }
 }
 

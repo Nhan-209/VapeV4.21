@@ -1,8 +1,7 @@
 package gg.vape.account;
 
 public interface AccountCredentials {
-    public String y();
+    String getUsername();
 
-    public String U();
+    String getPassword();
 }
-

@@ -12,15 +12,14 @@ extends JavassistMappingTask {
     private static final String c = "($r) 1";
 
     @Override
-    public void c() {
+    public void transform() {
         MappingMethod mappingMethod = Vape.INSTANCE.getMappings().qg.w;
         EventInjectionSpec eventInjectionSpec = new EventInjectionSpec(mappingMethod, EventChunkRenderRebuild.class);
-        eventInjectionSpec.H(c);
-        this.O(eventInjectionSpec);
+        eventInjectionSpec.setReturnExpression(c);
+        this.registerEventInjection(eventInjectionSpec);
     }
 
     public ChunkRenderRebuildEventMappingTask() {
         super(MappedClasses.Zk);
     }
 }
-

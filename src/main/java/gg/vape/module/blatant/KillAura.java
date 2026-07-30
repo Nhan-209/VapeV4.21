@@ -93,7 +93,7 @@ extends Mod {
         return this.targetFilter.isValidTarget(entityLivingBase);
     }
 
-    @EventHandler(A=EventPriority.LOW)
+    @EventHandler(priority=EventPriority.LOW)
     public void onAttackTick(EventPrePlayerTick event) {
         if ((Double)this.swingRange.getValue() < (Double)this.attackRange.getValue()) {
             this.swingRange.setValue((Double)this.attackRange.getValue() + 0.1);
@@ -110,7 +110,7 @@ extends Mod {
         if (this.disableOnDeath.getEffectiveValue() && this.handleDeathScreen(player)) {
             return;
         }
-        if (this.requireMouseDown.getEffectiveValue() && !ClientSettings.M()) {
+        if (this.requireMouseDown.getEffectiveValue() && !ClientSettings.isAttackButtonDown()) {
             this.targets.clear();
             return;
         }
@@ -119,7 +119,7 @@ extends Mod {
             return;
         }
 
-        boolean blockWhileAttacking = ClientSettings.V();
+        boolean blockWhileAttacking = ClientSettings.isUseItemButtonDown();
         KeyBinding useItemKey = Minecraft.gameSettings().b$src$Lgg_vape_wrapper_impl_KeyBinding_$1yi3362();
         if (blockWhileAttacking && useItemKey.isKeyDown()) {
             useItemKey.setPressed(false);
@@ -217,7 +217,7 @@ extends Mod {
         for (Object underlyingEntity : loadedEntities) {
             Entity entity = new Entity(underlyingEntity);
             EntityLivingBase candidate = new EntityLivingBase(underlyingEntity);
-            if (ClientSettings.H && entity.isInstance(MappedClasses.FT)
+            if (ClientSettings.IS_LEGACY_1_7 && entity.isInstance(MappedClasses.FT)
                     || !entity.isInstance(MappedClasses.zm)
                     || !this.canAttackTarget(player, candidate)) {
                 continue;
@@ -243,7 +243,7 @@ extends Mod {
         }
     }
 
-    @EventHandler(A=EventPriority.HIGH)
+    @EventHandler(priority=EventPriority.HIGH)
     public void onDeathCheck(EventPrePlayerTick event) {
         if (this.disableOnDeath.getEffectiveValue()
                 && (event.getPlayer().M$src$Z$ff28xj() || event.getPlayer().w$src$F$15l9epb() <= 0.0f)
@@ -259,7 +259,7 @@ extends Mod {
         this.targets.clear();
     }
 
-    @EventHandler(A=EventPriority.LOW)
+    @EventHandler(priority=EventPriority.LOW)
     public void onRender3D(EventRender3D eventRender3D) {
         RenderUtils.g();
         if (this.showTarget.getEffectiveValue() && !this.targets.isEmpty()) {

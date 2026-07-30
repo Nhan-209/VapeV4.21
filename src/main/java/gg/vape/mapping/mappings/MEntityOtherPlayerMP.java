@@ -13,7 +13,7 @@ extends Mapping {
 
 
     public Object T(Object object, Object object2) {
-        return this.n.O(object, object2);
+        return this.n.newInstance(object, object2);
     }
 
     public MEntityOtherPlayerMP() {

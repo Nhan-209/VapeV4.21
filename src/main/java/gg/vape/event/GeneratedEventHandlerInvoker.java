@@ -9,28 +9,27 @@ import java.lang.reflect.Method;
 
 public class GeneratedEventHandlerInvoker
 implements EventHandlerInvoker {
-    private final Class<? extends IEvent> N;
-    private final GeneratedEventHandlerInvokerMarker e;
-    private final EventListener j;
-    static final boolean A = !GeneratedEventHandlerInvoker.class.desiredAssertionStatus();
+    private final Class<? extends IEvent> eventType;
+    private final GeneratedEventHandlerInvokerMarker generatedInvoker;
+    private final EventListener listener;
+    static final boolean ASSERTIONS_DISABLED = !GeneratedEventHandlerInvoker.class.desiredAssertionStatus();
 
-    public GeneratedEventHandlerInvoker(EventListener eventListener, Class<? extends IEvent> clazz, Method method) throws InstantiationException, IllegalAccessException {
-        this.j = eventListener;
-        this.N = clazz;
-        Class<? extends GeneratedEventHandlerInvokerMarker> clazz2 = GeneratedAccessorFactory.N(method.getDeclaringClass(), method);
-        if (!A && clazz2 == null) {
+    public GeneratedEventHandlerInvoker(EventListener listener, Class<? extends IEvent> eventType, Method method) throws InstantiationException, IllegalAccessException {
+        this.listener = listener;
+        this.eventType = eventType;
+        Class<? extends GeneratedEventHandlerInvokerMarker> generatedInvokerClass = GeneratedAccessorFactory.N(method.getDeclaringClass(), method);
+        if (!ASSERTIONS_DISABLED && generatedInvokerClass == null) {
             throw new AssertionError();
         }
-        this.e = clazz2.newInstance();
+        this.generatedInvoker = generatedInvokerClass.newInstance();
     }
 
-    private static Exception a(Exception exception) {
+    private static Exception identityException(Exception exception) {
         return exception;
     }
 
     @Override
-    public <T extends IEvent> void B(T t) {
-        this.e.C(this.j, t);
+    public <T extends IEvent> void invoke(T event) {
+        this.generatedInvoker.invoke(this.listener, event);
     }
 }
-

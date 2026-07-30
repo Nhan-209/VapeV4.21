@@ -5,14 +5,13 @@ import gg.vape.wrapper.impl.DeltaTracker;
 
 public class EventEntityRendererMouseUpdate
 extends EventEntityRendererMouseUpdateBase {
-    private final float q;
+    private final float partialTicks;
 
-    public EventEntityRendererMouseUpdate(Object object) {
-        this.q = new DeltaTracker(object).b(true);
+    public EventEntityRendererMouseUpdate(Object deltaTrackerHandle) {
+        this.partialTicks = new DeltaTracker(deltaTrackerHandle).b(true);
     }
 
     public float getPartialTicks() {
-        return this.q;
+        return this.partialTicks;
     }
 }
-

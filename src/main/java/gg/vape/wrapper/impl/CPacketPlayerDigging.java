@@ -1,21 +1,16 @@
 package gg.vape.wrapper.impl;
 
 import gg.vape.mapping.mappings.MCPacketPlayerDigging;
-import gg.vape.wrapper.impl.BlockPos;
-import gg.vape.wrapper.impl.EnumFacing;
-import gg.vape.wrapper.impl.ForgeVersion;
-import gg.vape.wrapper.impl.Packet;
-import gg.vape.wrapper.impl.PlayerDiggingAction;
 
 public class CPacketPlayerDigging
 extends Packet {
     public PlayerDiggingAction Z() {
-        return new PlayerDiggingAction(MCPacketPlayerDigging.K(CPacketPlayerDigging.c.getMappingsMapperCompat().qA, this.I));
+        return new PlayerDiggingAction(MCPacketPlayerDigging.K(CPacketPlayerDigging.vapeInstance.getMappingsMapperCompat().qA, this.I));
     }
 
 
     public int I() {
-        return MCPacketPlayerDigging.a(CPacketPlayerDigging.c.getMappingsMapperCompat().qA, this.I);
+        return MCPacketPlayerDigging.a(CPacketPlayerDigging.vapeInstance.getMappingsMapperCompat().qA, this.I);
     }
 
     public boolean f() {
@@ -25,11 +20,11 @@ extends Packet {
     }
 
     public BlockPos K() {
-        return new BlockPos(MCPacketPlayerDigging.o(CPacketPlayerDigging.c.getMappingsMapperCompat().qA, this.I));
+        return new BlockPos(MCPacketPlayerDigging.o(CPacketPlayerDigging.vapeInstance.getMappingsMapperCompat().qA, this.I));
     }
 
     public EnumFacing z() {
-        return new EnumFacing(MCPacketPlayerDigging.B(CPacketPlayerDigging.c.getMappingsMapperCompat().qA, this.I));
+        return new EnumFacing(MCPacketPlayerDigging.B(CPacketPlayerDigging.vapeInstance.getMappingsMapperCompat().qA, this.I));
     }
 
     public CPacketPlayerDigging(Object object) {

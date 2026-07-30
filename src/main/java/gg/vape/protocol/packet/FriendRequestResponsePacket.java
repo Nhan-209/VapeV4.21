@@ -11,46 +11,45 @@ import org.jetbrains.annotations.Nullable;
 public class FriendRequestResponsePacket
 extends ZeusTrackedPacket<FriendRequestPacket> {
     @Nullable
-    private FriendRequestModel Y;
-    private FriendRequestResponseStatus J;
+    private FriendRequestModel request;
+    private FriendRequestResponseStatus status;
 
     @Override
     public void T(ZeusPacketBuffer gx_12) {
-        gx_12.U(this.J);
-        if (this.Y != null) {
-            this.Y.l(gx_12);
+        gx_12.writeEnum(this.status);
+        if (this.request != null) {
+            this.request.writeTo(gx_12);
         }
     }
 
     @Nullable
-    public FriendRequestModel c() {
-        return this.Y;
+    public FriendRequestModel getRequest() {
+        return this.request;
     }
 
 
     public FriendRequestResponsePacket() {
     }
 
-    public FriendRequestResponsePacket(@Nullable FriendRequestPacket friendRequestPacket, FriendRequestResponseStatus hi_12) {
+    public FriendRequestResponsePacket(@Nullable FriendRequestPacket friendRequestPacket, FriendRequestResponseStatus status) {
         super(friendRequestPacket);
-        this.J = hi_12;
+        this.status = status;
     }
 
     @Override
     public void x(ZeusPacketBuffer gx_12) {
-        this.J = gx_12.Y(FriendRequestResponseStatus.class);
-        if (this.J == FriendRequestResponseStatus.SENT) {
-            this.Y = new FriendRequestModel(gx_12);
+        this.status = gx_12.readEnum(FriendRequestResponseStatus.class);
+        if (this.status == FriendRequestResponseStatus.SENT) {
+            this.request = new FriendRequestModel(gx_12);
         }
     }
 
-    public FriendRequestResponseStatus n() {
-        return this.J;
+    public FriendRequestResponseStatus getStatus() {
+        return this.status;
     }
 
-    public FriendRequestResponsePacket(@Nullable FriendRequestPacket friendRequestPacket, @NotNull FriendRequestModel friendRequestModel) {
+    public FriendRequestResponsePacket(@Nullable FriendRequestPacket friendRequestPacket, @NotNull FriendRequestModel request) {
         this(friendRequestPacket, FriendRequestResponseStatus.SENT);
-        this.Y = friendRequestModel;
+        this.request = request;
     }
 }
-

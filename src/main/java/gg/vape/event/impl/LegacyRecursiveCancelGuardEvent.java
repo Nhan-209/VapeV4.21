@@ -5,43 +5,43 @@ import gg.vape.event.EventListeners;
 
 public class LegacyRecursiveCancelGuardEvent
 extends Event {
-    private static int[] K;
-    static int v;
-    private static final EventListeners L;
+    private static int[] obfuscationState;
+    static int invocationCounter;
+    private static final EventListeners EVENT_LISTENERS;
 
     @Override
     public EventListeners getListeners() {
-        return L;
+        return EVENT_LISTENERS;
     }
 
 
-    public static int[] q() {
-        return K;
+    public static int[] getGuardObfuscationState() {
+        return obfuscationState;
     }
 
     @Override
     public boolean fire() {
-        if (v > 0) {
+        if (invocationCounter > 0) {
             this.setCancelled(true);
         }
-        if (++v > 100) {
-            v = 0;
+        if (++invocationCounter > 100) {
+            invocationCounter = 0;
         }
         return super.fire();
     }
 
-    public static void q(int[] nArray) {
-        K = nArray;
+    public static void setGuardObfuscationState(int[] state) {
+        obfuscationState = state;
     }
 
     public static EventListeners getEventListeners() {
-        return L;
+        return EVENT_LISTENERS;
     }
 
     static {
-        v = 0;
-        L = new EventListeners();
-        LegacyRecursiveCancelGuardEvent.q(new int[5]);
+        invocationCounter = 0;
+        EVENT_LISTENERS = new EventListeners();
+        LegacyRecursiveCancelGuardEvent.setGuardObfuscationState(new int[5]);
     }
 }
 

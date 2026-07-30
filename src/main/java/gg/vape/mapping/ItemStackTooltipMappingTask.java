@@ -16,13 +16,13 @@ extends JavassistMappingTask {
     }
 
     @Override
-    public void c() {
+    public void transform() {
         MappingMethod mappingMethod = Vape.INSTANCE.getMappings().q8.J;
         EventInjectionSpec eventInjectionSpec = new EventInjectionSpec(mappingMethod, ItemStackTooltipCallback.class);
-        eventInjectionSpec.d("$0, $1, $2");
-        eventInjectionSpec.H("($r) $event.getTooltip()");
+        eventInjectionSpec.setConstructorArguments("$0, $1, $2");
+        eventInjectionSpec.setReturnExpression("($r) $event.getTooltip()");
         if (ForgeVersion.MC_1_17.v()) {
-            this.O(eventInjectionSpec);
+            this.registerEventInjection(eventInjectionSpec);
         }
     }
 }

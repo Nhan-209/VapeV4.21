@@ -8,37 +8,37 @@ import org.jetbrains.annotations.Nullable;
 
 public class FriendModel {
     @Nullable
-    private final String d;
-    private final UserModel D;
-    private final PresenceState s;
-    private final String E;
-    private final UUID X;
-    private final boolean P;
+    private final String minecraftServer;
+    private final UserModel user;
+    private final PresenceState presenceState;
+    private final String minecraftUsername;
+    private final UUID minecraftUuid;
+    private final boolean visible;
 
-    public String N() {
-        return this.D.T();
+    public String getDisplayName() {
+        return this.user.getDisplayName();
     }
 
-    public UserModel L() {
-        return this.D;
+    public UserModel getUser() {
+        return this.user;
     }
 
 
-    public FriendModel(ZeusPacketBuffer zeusPacketBuffer) {
-        this.D = new UserModel(zeusPacketBuffer);
-        this.X = zeusPacketBuffer.N();
-        this.E = zeusPacketBuffer.v(16);
-        this.P = zeusPacketBuffer.a$src$Z$1c50x8d();
-        this.s = zeusPacketBuffer.Y(PresenceState.class);
-        this.d = zeusPacketBuffer.a$src$Z$1c50x8d() ? zeusPacketBuffer.v(128) : null;
+    public FriendModel(ZeusPacketBuffer buffer) {
+        this.user = new UserModel(buffer);
+        this.minecraftUuid = buffer.readUuid();
+        this.minecraftUsername = buffer.readString(16);
+        this.visible = buffer.readBoolean();
+        this.presenceState = buffer.readEnum(PresenceState.class);
+        this.minecraftServer = buffer.readBoolean() ? buffer.readString(128) : null;
     }
 
-    public boolean B() {
-        return this.P;
+    public boolean isVisible() {
+        return this.visible;
     }
 
-    public UUID R() {
-        return this.X;
+    public UUID getMinecraftUuid() {
+        return this.minecraftUuid;
     }
 
     public FriendModel(UserModel userModel) {
@@ -46,45 +46,45 @@ public class FriendModel {
     }
 
     @Nullable
-    public String u() {
-        return this.d;
+    public String getMinecraftServer() {
+        return this.minecraftServer;
     }
 
-    public long M() {
-        return this.D.g();
+    public long getUserId() {
+        return this.user.getId();
     }
 
-    public PresenceState L$src$Lgg_vape_protocol_PresenceState_$o2vkpe() {
-        return this.s;
+    public PresenceState getPresenceState() {
+        return this.presenceState;
     }
 
     public String toString() {
-        return "FriendModel{userModel=" + this.D + ", minecraftUuid=" + this.X + ", minecraftUsername='" + this.E + '\'' + ", state=" + (Object)((Object)this.s) + ", minecraftServer='" + this.d + '\'' + '}';
+        return "FriendModel{userModel=" + this.user + ", minecraftUuid=" + this.minecraftUuid + ", minecraftUsername='" + this.minecraftUsername + '\'' + ", state=" + (Object)((Object)this.presenceState) + ", minecraftServer='" + this.minecraftServer + '\'' + '}';
     }
 
-    public void h(ZeusPacketBuffer zeusPacketBuffer) {
-        this.D.a(zeusPacketBuffer);
-        zeusPacketBuffer.r(this.X);
-        zeusPacketBuffer.y(this.E);
-        zeusPacketBuffer.Y(this.P);
-        zeusPacketBuffer.U(this.s);
-        zeusPacketBuffer.Y(this.d != null);
-        if (this.d != null) {
-            zeusPacketBuffer.y(this.d);
+    public void writeTo(ZeusPacketBuffer buffer) {
+        this.user.writeTo(buffer);
+        buffer.writeUuid(this.minecraftUuid);
+        buffer.writeString(this.minecraftUsername);
+        buffer.writeBoolean(this.visible);
+        buffer.writeEnum(this.presenceState);
+        buffer.writeBoolean(this.minecraftServer != null);
+        if (this.minecraftServer != null) {
+            buffer.writeString(this.minecraftServer);
         }
     }
 
-    public String k() {
-        return this.E;
+    public String getMinecraftUsername() {
+        return this.minecraftUsername;
     }
 
-    public FriendModel(UserModel userModel, PresenceState presenceState, UUID uUID, String string, boolean bl, @Nullable String string2) {
-        this.D = userModel;
-        this.X = uUID;
-        this.E = string;
-        this.P = bl;
-        this.s = presenceState;
-        this.d = string2;
+    public FriendModel(UserModel user, PresenceState presenceState, UUID minecraftUuid, String minecraftUsername, boolean visible, @Nullable String minecraftServer) {
+        this.user = user;
+        this.minecraftUuid = minecraftUuid;
+        this.minecraftUsername = minecraftUsername;
+        this.visible = visible;
+        this.presenceState = presenceState;
+        this.minecraftServer = minecraftServer;
     }
 }
 

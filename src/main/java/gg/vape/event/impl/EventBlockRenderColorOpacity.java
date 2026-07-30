@@ -9,69 +9,69 @@ import java.nio.ByteOrder;
 
 public class EventBlockRenderColorOpacity
 extends Event {
-    private int F;
-    private static final long b;
-    private final WorldRenderer K;
-    private final int G;
-    private static final EventListeners W;
-    private final float i;
-    private final float Z;
-    private final float T;
+    private int opacity;
+    private static final long DEFAULT_OPACITY_BITS;
+    private final WorldRenderer worldRenderer;
+    private final int vertexIndex;
+    private static final EventListeners EVENT_LISTENERS;
+    private final float redMultiplier;
+    private final float greenMultiplier;
+    private final float blueMultiplier;
 
     static {
-        b = 22123904822673663L;
-        W = new EventListeners();
+        DEFAULT_OPACITY_BITS = 22123904822673663L;
+        EVENT_LISTENERS = new EventListeners();
     }
 
 
     public static EventListeners getEventListeners() {
-        return W;
+        return EVENT_LISTENERS;
     }
 
-    public void setOpacity(int n) {
-        this.F = n;
+    public void setOpacity(int opacity) {
+        this.opacity = opacity;
     }
 
     @Override
     public EventListeners getListeners() {
-        return W;
+        return EVENT_LISTENERS;
     }
 
     @Override
     public boolean fire() {
-        XRay xRay = Vape.INSTANCE.getModManager().G();
+        XRay xRay = Vape.INSTANCE.getModManager().getXRayModule();
         if (xRay != null && xRay.r$src$Z$14eylz9()) {
-            int n;
-            int n2;
-            int n3;
+            int blue;
+            int green;
+            int red;
             xRay.onBlockRenderColorOpacity(this);
-            int n4 = this.K.o(this.G);
-            int n5 = this.K.O().get(n4);
+            int bufferIndex = this.worldRenderer.o(this.vertexIndex);
+            int packedColor = this.worldRenderer.O().get(bufferIndex);
             if (ByteOrder.nativeOrder() == ByteOrder.LITTLE_ENDIAN) {
-                n3 = (int)((float)(n5 & 0xFF) * this.i);
-                n2 = (int)((float)(n5 >> 8 & 0xFF) * this.Z);
-                n = (int)((float)(n5 >> 16 & 0xFF) * this.T);
+                red = (int)((float)(packedColor & 0xFF) * this.redMultiplier);
+                green = (int)((float)(packedColor >> 8 & 0xFF) * this.greenMultiplier);
+                blue = (int)((float)(packedColor >> 16 & 0xFF) * this.blueMultiplier);
             } else {
-                n3 = (int)((float)(n4 >> 24 & 0xFF) * this.i);
-                n2 = (int)((float)(n4 >> 16 & 0xFF) * this.Z);
-                n = (int)((float)(n4 >> 8 & 0xFF) * this.T);
+                red = (int)((float)(bufferIndex >> 24 & 0xFF) * this.redMultiplier);
+                green = (int)((float)(bufferIndex >> 16 & 0xFF) * this.greenMultiplier);
+                blue = (int)((float)(bufferIndex >> 8 & 0xFF) * this.blueMultiplier);
             }
-            int n6 = 0;
-            n6 |= this.F << 24;
-            n6 |= n3 << 16;
-            n6 |= n2 << 8;
-            this.K.O().put(n4, n6 |= n);
+            int outputColor = 0;
+            outputColor |= this.opacity << 24;
+            outputColor |= red << 16;
+            outputColor |= green << 8;
+            this.worldRenderer.O().put(bufferIndex, outputColor |= blue);
         }
         return this.isCanceled();
     }
 
-    public EventBlockRenderColorOpacity(Object object, float f, float f2, float f3, int n) {
-        this.K = new WorldRenderer(object);
-        this.i = f;
-        this.Z = f2;
-        this.T = f3;
-        this.G = n;
-        this.F = (int)b;
+    public EventBlockRenderColorOpacity(Object worldRendererHandle, float redMultiplier, float greenMultiplier, float blueMultiplier, int vertexIndex) {
+        this.worldRenderer = new WorldRenderer(worldRendererHandle);
+        this.redMultiplier = redMultiplier;
+        this.greenMultiplier = greenMultiplier;
+        this.blueMultiplier = blueMultiplier;
+        this.vertexIndex = vertexIndex;
+        this.opacity = (int)DEFAULT_OPACITY_BITS;
     }
 }
 

@@ -76,7 +76,7 @@ extends Mod {
         for (Object entityObject : loadedEntities) {
             Entity entity = new Entity(entityObject);
             EntityLivingBase livingEntity;
-            if (ClientSettings.H && entity.isInstance(MappedClasses.FT)
+            if (ClientSettings.IS_LEGACY_1_7 && entity.isInstance(MappedClasses.FT)
                     || !entity.isInstance(MappedClasses.zm)
                     || !this.isValidTarget(livingEntity = new EntityLivingBase(entityObject))) {
                 continue;
@@ -164,7 +164,7 @@ extends Mod {
     public AimAssist() {
         super("AimAssist", -327674, Category.g, "Smoothly aims to closest valid target");
         this.adaptiveTargeting = new AimAssistTargetingSubModule(this, "Adaptive");
-        this.mode = ModeValue.create((Object)this, "Mode", "Simple - Lightweight smooth aiming\nAdaptive - Advanced tracking with adaptive behavior", (ModeSelection)this.simpleRotation.r$src$Lgg_vape_value_SubModuleValue_$1rfa4wx(), this.simpleRotation.r$src$Lgg_vape_value_SubModuleValue_$1rfa4wx(), this.adaptiveTargeting.r$src$Lgg_vape_value_SubModuleValue_$1rfa4wx());
+        this.mode = ModeValue.create((Object)this, "Mode", "Simple - Lightweight smooth aiming\nAdaptive - Advanced tracking with adaptive behavior", (ModeSelection)this.simpleRotation.getSelectionValue(), this.simpleRotation.getSelectionValue(), this.adaptiveTargeting.getSelectionValue());
         this.targetFilter = EntityTargetFilterValue.createForModule(this);
         this.requireMouseDown = BooleanValue.create(this, "Require mouse down", true, "Only aim while mouse is down");
         this.aimVertically = BooleanValue.create(this, "Aim vertically", false, "Aims up and down as well");
@@ -208,10 +208,10 @@ extends Mod {
 
     @Nullable
     public EntityLivingBase getCurrentTarget() {
-        if (this.simpleRotation.J$src$Z$gcqtyf()) {
+        if (this.simpleRotation.isSelectedSubModule()) {
             return this.simpleRotation.getTarget();
         }
-        if (this.adaptiveTargeting.J$src$Z$gcqtyf()) {
+        if (this.adaptiveTargeting.isSelectedSubModule()) {
             return this.adaptiveTargeting.getTarget();
         }
         return null;

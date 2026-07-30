@@ -60,7 +60,7 @@ extends UtilityMod {
             return;
         }
         ItemStackData nextItem = this.itemsToThrow.peek();
-        if (this.delayTimer.hasTimeElapsed((long)this.delay.getRandomValue()) && this.selectHotbarSlotIncrementally(nextItem.Y())) {
+        if (this.delayTimer.hasTimeElapsed((long)this.delay.getRandomValue()) && this.selectHotbarSlotIncrementally(nextItem.getSlot())) {
             KeyBindingHelper.updateKeyBinding(useKey, true, true);
             this.throwing = true;
             this.delayTimer.reset();

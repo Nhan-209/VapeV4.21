@@ -6,20 +6,20 @@ import gg.vape.ui.click.frame.ModuleCategoryNavigationButtonComponent;
 
 public class ModulesTutorialCategoryButtonSelector
 extends TutorialTargetSelector<ModuleCategoryNavigationButtonComponent> {
-    private static final String b = "Combat";
-    final ModulesTutorialPage d;
+    private static final String targetCategoryName = "Combat";
+    private final ModulesTutorialPage tutorialPage;
 
-    public boolean W(ModuleCategoryNavigationButtonComponent moduleCategoryNavigationButtonComponent) {
-        return moduleCategoryNavigationButtonComponent.N$src$Ljava_lang_String_$wy122q().equals(b);
+    private boolean matchesCategory(ModuleCategoryNavigationButtonComponent moduleCategoryNavigationButtonComponent) {
+        return moduleCategoryNavigationButtonComponent.N$src$Ljava_lang_String_$wy122q().equals(targetCategoryName);
     }
 
     @Override
-    public boolean X(ModuleCategoryNavigationButtonComponent moduleCategoryNavigationButtonComponent) {
-        return this.W(moduleCategoryNavigationButtonComponent);
+    public boolean matches(ModuleCategoryNavigationButtonComponent moduleCategoryNavigationButtonComponent) {
+        return this.matchesCategory(moduleCategoryNavigationButtonComponent);
     }
 
     public ModulesTutorialCategoryButtonSelector(ModulesTutorialPage modulesTutorialPage, Class clazz) {
         super(clazz);
-        this.d = modulesTutorialPage;
+        this.tutorialPage = modulesTutorialPage;
     }
 }

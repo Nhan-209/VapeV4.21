@@ -41,14 +41,14 @@ extends OnlineConnectionSettingsPageComponent {
     }
 
     private static void lambda$new$0() {
-        OnlineConnectionManager.T.I();
+        OnlineConnectionManager.INSTANCE.connect();
     }
 
     @Override
     public void s() {
-        if (OnlineConnectionManager.T.j().equals((Object)OnlineAccountState.BANNED)) {
+        if (OnlineConnectionManager.INSTANCE.getAccountState().equals((Object)OnlineAccountState.BANNED)) {
             this.DX.setText("You have been banned from Vape Online");
-        } else if (OnlineConnectionManager.T.j().equals((Object)OnlineAccountState.REGISTRATION_OFFLINE)) {
+        } else if (OnlineConnectionManager.INSTANCE.getAccountState().equals((Object)OnlineAccountState.REGISTRATION_OFFLINE)) {
             this.DX.setText("Registration is currently offline");
         } else {
             this.DX.setText("Unknown error");

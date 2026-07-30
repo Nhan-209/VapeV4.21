@@ -30,7 +30,7 @@ extends Mapping {
     }
 
     private float U(Object object, boolean bl) {
-        return this.Q.s(object, bl);
+        return this.Q.invokeFloat(object, bl);
     }
 
     public static float d(MDeltaTracker mDeltaTracker, Object object, boolean bl) {
@@ -38,7 +38,7 @@ extends Mapping {
     }
 
     private float p(Object object) {
-        return this.e.s(object, new Object[0]);
+        return this.e.invokeFloat(object, new Object[0]);
     }
 }
 

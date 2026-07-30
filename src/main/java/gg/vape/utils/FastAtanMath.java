@@ -46,7 +46,7 @@ public class FastAtanMath {
     }
 
 
-    public static float r(float f, float f2) {
+    public static float atan2Approximation(float f, float f2) {
         if (f < 0.0f) {
             if (f2 < 0.0f) {
                 if (f < f2) {
@@ -71,7 +71,7 @@ public class FastAtanMath {
         return w[(int)(f / f2 * 100000.0f)];
     }
 
-    public static float l(float f) {
+    public static float atanApproximation(float f) {
         float f2;
         float f3 = Math.abs(f);
         if (f3 < 1.0f) {

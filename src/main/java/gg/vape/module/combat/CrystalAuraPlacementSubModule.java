@@ -416,7 +416,7 @@ extends SubModule<CrystalAura> {
         for (Object underlyingEntity : loadedEntities) {
             Entity entity = new Entity(underlyingEntity);
             EntityLivingBase candidate;
-            if (ClientSettings.H && entity.isInstance(MappedClasses.FT)
+            if (ClientSettings.IS_LEGACY_1_7 && entity.isInstance(MappedClasses.FT)
                     || !entity.isInstance(MappedClasses.zm)
                     || !this.isValidTarget(candidate = new EntityLivingBase(underlyingEntity), player)) {
                 continue;
@@ -582,8 +582,8 @@ extends SubModule<CrystalAura> {
         if (RotationUtil.a(player, target) > ((Double)this.maxAngle.getValue()).intValue() / 2) {
             return false;
         }
-        FriendEntry friendEntry = this.friendManager.O(target.getName());
-        if (friendEntry != null && !friendEntry.c()) {
+        FriendEntry friendEntry = this.friendManager.findTargetedFriend(target.getName());
+        if (friendEntry != null && !friendEntry.isTargeted()) {
             return false;
         }
         if (target.equals(player.S$src$Lgg_vape_wrapper_impl_Entity_$dgzs12())) {
@@ -826,7 +826,7 @@ extends SubModule<CrystalAura> {
             BlockData baseBlock = new BlockData(actionPosition.B(), actionPosition.E(), actionPosition.A());
             boolean hasPlacementPath = ClutchPlacementPathUtils.isBlockFaceVisible(eyePosition, player.getWorld(), baseBlock, facing);
             targetPoint = !crystals.isEmpty() && !hasPlacementPath
-                    ? RotationUtil.M(eyePosition, crystals.get(0).R$src$Lgg_vape_wrapper_impl_AxisAlignedBB_$r19dfl(), 0.0, 0.0, 0.0).n()
+                    ? RotationUtil.M(eyePosition, crystals.get(0).R$src$Lgg_vape_wrapper_impl_AxisAlignedBB_$r19dfl(), 0.0, 0.0, 0.0).toVec3()
                     : this.crystalAura.getInteractionPoint(actionPosition);
         } else {
             PlacementTarget placementTarget = new PlacementTarget(new BlockData(actionPosition.B(), actionPosition.E(), actionPosition.A()), facing);
@@ -923,7 +923,7 @@ extends SubModule<CrystalAura> {
                                 this.target, ExplosionType.CRYSTAL, crystalPosition, player, world);
                         Vec3 nearestCrystalPoint = RotationUtil.M(eyePosition,
                                 crystal.R$src$Lgg_vape_wrapper_impl_AxisAlignedBB_$r19dfl().contract(0.01, 0.0, 0.01),
-                                0.0, 0.0, 0.0).n();
+                                0.0, 0.0, 0.0).toVec3();
                         if (eyePosition.distanceTo(nearestCrystalPoint) > 3.5) {
                             Vec3 currentPlayerPosition = Vec3.create(player.z(), nearestCrystalPoint.getY(), player.h());
                             Vec3 previousPlayerPosition = Vec3.create(
@@ -1365,7 +1365,7 @@ extends SubModule<CrystalAura> {
                     }
                 }
                 Vec3 nearestCrystalPoint = RotationUtil.M(eyePosition,
-                        crystal.R$src$Lgg_vape_wrapper_impl_AxisAlignedBB_$r19dfl(), 0.0, 0.0, 0.0).n();
+                        crystal.R$src$Lgg_vape_wrapper_impl_AxisAlignedBB_$r19dfl(), 0.0, 0.0, 0.0).toVec3();
                 if (eyePosition.distanceTo(nearestCrystalPoint) > 3.0) {
                     this.statusLabel = "out range";
                     this.invalidateAction();

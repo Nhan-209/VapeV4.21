@@ -18,42 +18,42 @@ import java.util.Comparator;
 import java.util.List;
 
 public class HiddenInventoryItemMatchers {
-    public static final InventoryItemMatcher d;
-    public static final InventoryItemMatcher J;
-    public static final InventoryItemMatcher R;
+    public static final InventoryItemMatcher ANY_POTION;
+    public static final InventoryItemMatcher ANY_BOW;
+    public static final InventoryItemMatcher ANY_ITEM;
 
-    private static double lambda$static$0(InventoryItemMatchContext inventoryItemMatchContext) {
-        return ClientSettings.c(inventoryItemMatchContext.getItemStack());
+    private static double getHiddenItemSortScore(InventoryItemMatchContext context) {
+        return ClientSettings.getHiddenItemScore(context.getItemStack());
     }
 
     public static void initialize() {
-        InventoryItemMatcherRegistry.register(EmptySlotInventoryItemMatcher.a);
-        InventoryItemMatcherRegistry.register(R);
-        InventoryItemMatcherRegistry.register(J);
-        InventoryItemMatcherRegistry.register(d);
+        InventoryItemMatcherRegistry.register(EmptySlotInventoryItemMatcher.EMPTY_SLOT);
+        InventoryItemMatcherRegistry.register(ANY_ITEM);
+        InventoryItemMatcherRegistry.register(ANY_BOW);
+        InventoryItemMatcherRegistry.register(ANY_POTION);
     }
 
     static {
-        String[] stringArray = new String[]{"Any bow", "Any type of potion", "any-bow", "other@2x", "any-potion", "Any Item", "Any type of bow", "any-item", "Any type of item", "Any potion"};
-        R = ((StringInventoryItemMatcherBuilder)((StringInventoryItemMatcherBuilder)((StringInventoryItemMatcherBuilder)((StringInventoryItemMatcherBuilder)((StringInventoryItemMatcherBuilder)InventoryItemMatcher.builder().stringMatcher().withId(stringArray[7])).withName(stringArray[5])).withDescription(stringArray[8])).withIconName(stringArray[3])).withGroup(InventoryItemMatcherGroup.HIDDEN)).addPattern("", StringMatchOperator.ANY).build();
-        J = ((ClassInventoryItemMatcherBuilder)((ClassInventoryItemMatcherBuilder)((ClassInventoryItemMatcherBuilder)((ClassInventoryItemMatcherBuilder)((ClassInventoryItemMatcherBuilder)InventoryItemMatcher.builder().classMatcher().withId(stringArray[2])).withName(stringArray[0])).withDescription(stringArray[6])).withGroup(InventoryItemMatcherGroup.HIDDEN)).addClass(MappedClasses.Vl).withListMode(InventoryMatcherListMode.WHITELIST).withComparator(Comparator.comparingDouble(HiddenInventoryItemMatchers::lambda$static$0))).build();
-        d = ((ClassInventoryItemMatcherBuilder)((ClassInventoryItemMatcherBuilder)((ClassInventoryItemMatcherBuilder)((ClassInventoryItemMatcherBuilder)((ClassInventoryItemMatcherBuilder)InventoryItemMatcher.builder().classMatcher().withId(stringArray[4])).withName(stringArray[9])).withDescription(stringArray[1])).withGroup(InventoryItemMatcherGroup.HIDDEN)).addClass(MappedClasses.Di).withListMode(InventoryMatcherListMode.WHITELIST).withComparator(HiddenInventoryItemMatchers::lambda$static$1)).build();
+        String[] labels = new String[]{"Any bow", "Any type of potion", "any-bow", "other@2x", "any-potion", "Any Item", "Any type of bow", "any-item", "Any type of item", "Any potion"};
+        ANY_ITEM = ((StringInventoryItemMatcherBuilder)((StringInventoryItemMatcherBuilder)((StringInventoryItemMatcherBuilder)((StringInventoryItemMatcherBuilder)((StringInventoryItemMatcherBuilder)InventoryItemMatcher.builder().stringMatcher().withId(labels[7])).withName(labels[5])).withDescription(labels[8])).withIconName(labels[3])).withGroup(InventoryItemMatcherGroup.HIDDEN)).addPattern("", StringMatchOperator.ANY).build();
+        ANY_BOW = ((ClassInventoryItemMatcherBuilder)((ClassInventoryItemMatcherBuilder)((ClassInventoryItemMatcherBuilder)((ClassInventoryItemMatcherBuilder)((ClassInventoryItemMatcherBuilder)InventoryItemMatcher.builder().classMatcher().withId(labels[2])).withName(labels[0])).withDescription(labels[6])).withGroup(InventoryItemMatcherGroup.HIDDEN)).addClass(MappedClasses.Vl).withListMode(InventoryMatcherListMode.WHITELIST).withComparator(Comparator.comparingDouble(HiddenInventoryItemMatchers::getHiddenItemSortScore))).build();
+        ANY_POTION = ((ClassInventoryItemMatcherBuilder)((ClassInventoryItemMatcherBuilder)((ClassInventoryItemMatcherBuilder)((ClassInventoryItemMatcherBuilder)((ClassInventoryItemMatcherBuilder)InventoryItemMatcher.builder().classMatcher().withId(labels[4])).withName(labels[9])).withDescription(labels[1])).withGroup(InventoryItemMatcherGroup.HIDDEN)).addClass(MappedClasses.Di).withListMode(InventoryMatcherListMode.WHITELIST).withComparator(HiddenInventoryItemMatchers::comparePotionAmplifiers)).build();
     }
 
-    private static int lambda$static$1(InventoryItemMatchContext inventoryItemMatchContext, InventoryItemMatchContext inventoryItemMatchContext2) {
-        ItemStack itemStack = inventoryItemMatchContext.getItemStack();
-        ItemStack itemStack2 = inventoryItemMatchContext2.getItemStack();
-        List<PotionEffect> list = new ItemSplashPotion(itemStack.getItem()).getPotionEffects(itemStack);
-        List<PotionEffect> list2 = new ItemSplashPotion(itemStack2.getItem()).getPotionEffects(itemStack2);
-        int n = 0;
-        for (PotionEffect potionEffect : list) {
-            int n2 = potionEffect.C();
-            for (PotionEffect potionEffect2 : list2) {
-                int n3 = potionEffect2.C();
-                if (n2 != n3) continue;
-                n += Integer.compare(potionEffect.L(), potionEffect2.L());
+    private static int comparePotionAmplifiers(InventoryItemMatchContext firstContext, InventoryItemMatchContext secondContext) {
+        ItemStack firstStack = firstContext.getItemStack();
+        ItemStack secondStack = secondContext.getItemStack();
+        List<PotionEffect> firstEffects = new ItemSplashPotion(firstStack.getItem()).getPotionEffects(firstStack);
+        List<PotionEffect> secondEffects = new ItemSplashPotion(secondStack.getItem()).getPotionEffects(secondStack);
+        int comparison = 0;
+        for (PotionEffect firstEffect : firstEffects) {
+            int firstEffectId = firstEffect.C();
+            for (PotionEffect secondEffect : secondEffects) {
+                int secondEffectId = secondEffect.C();
+                if (firstEffectId != secondEffectId) continue;
+                comparison += Integer.compare(firstEffect.L(), secondEffect.L());
             }
         }
-        return n;
+        return comparison;
     }
 }

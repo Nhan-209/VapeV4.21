@@ -5,51 +5,51 @@ import gg.vape.event.EventListeners;
 
 public class EventMove
 extends Event {
-    private double q;
-    private static final EventListeners f = new EventListeners();
-    private double T;
-    private double j;
+    private double z;
+    private static final EventListeners EVENT_LISTENERS = new EventListeners();
+    private double y;
+    private double x;
 
-    public EventMove setY(double d) {
-        this.T = d;
+    public EventMove setY(double y) {
+        this.y = y;
         return this;
     }
 
     public double getZ() {
-        return this.q;
+        return this.z;
     }
 
-    public EventMove setZ(double d) {
-        this.q = d;
+    public EventMove setZ(double z) {
+        this.z = z;
         return this;
     }
 
     public static EventListeners getEventListeners() {
-        return f;
+        return EVENT_LISTENERS;
     }
 
     @Override
     public EventListeners getListeners() {
-        return f;
+        return EVENT_LISTENERS;
     }
 
     public double getX() {
-        return this.j;
+        return this.x;
     }
 
-    public EventMove(double d, double d2, double d3) {
-        this.j = d;
-        this.T = d2;
-        this.q = d3;
+    public EventMove(double x, double y, double z) {
+        this.x = x;
+        this.y = y;
+        this.z = z;
     }
 
-    public EventMove setX(double d) {
-        this.j = d;
+    public EventMove setX(double x) {
+        this.x = x;
         return this;
     }
 
     public double getY() {
-        return this.T;
+        return this.y;
     }
 
     @Override
@@ -57,4 +57,3 @@ extends Event {
         return super.fire();
     }
 }
-

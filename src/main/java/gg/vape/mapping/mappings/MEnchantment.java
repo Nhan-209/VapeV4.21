@@ -39,7 +39,7 @@ extends Mapping {
     }
 
     private Object x(int n) {
-        return this.e.L(null, n);
+        return this.e.invokeObject(null, n);
     }
 
     private int i(Object object) {
@@ -67,7 +67,7 @@ extends Mapping {
                         String string3 = "ENCHANTMENT";
                         Class clazz2 = MappedClasses.R;
                         MEnchantment mEnchantment = this;
-                        this.A = mEnchantment.s(clazz2, string3, bl, clazz);
+                        this.A = mEnchantment.registerStaticFieldForOwner(clazz2, string3, bl, clazz);
                     }
                 } else {
                     Class clazz = MappedClasses.Fk;
@@ -75,7 +75,7 @@ extends Mapping {
                     String string4 = "ENCHANTMENT";
                     Class clazz3 = MappedClasses.Fk;
                     MEnchantment mEnchantment = this;
-                    this.A = mEnchantment.s(clazz3, string4, bl, clazz);
+                    this.A = mEnchantment.registerStaticFieldForOwner(clazz3, string4, bl, clazz);
                 }
             } else {
                 Class[] classArray = new Class[]{Integer.TYPE};
@@ -83,18 +83,18 @@ extends Mapping {
                 boolean bl = true;
                 String string5 = "getEnchantmentByID";
                 MEnchantment mEnchantment = this;
-                this.e = mEnchantment.x(string5, bl, clazz, classArray);
+                this.e = mEnchantment.registerStaticMethod(string5, bl, clazz, classArray);
                 Class[] classArray2 = new Class[]{MappedClasses.lR};
                 Class<Integer> clazz4 = Integer.TYPE;
                 boolean bl2 = true;
                 String string6 = "getEnchantmentID";
                 MEnchantment mEnchantment2 = this;
-                this.l = this.x(string6, bl2, clazz4, classArray2);
+                this.l = this.registerStaticMethod(string6, bl2, clazz4, classArray2);
                 Class clazz5 = MappedClasses.zz;
                 boolean bl3 = true;
                 String string7 = "REGISTRY";
                 MEnchantment mEnchantment3 = this;
-                this.A = this.u(string7, bl3, clazz5);
+                this.A = this.registerStaticField(string7, bl3, clazz5);
             }
         } else {
             Class<Integer> clazz = Integer.TYPE;
@@ -105,7 +105,7 @@ extends Mapping {
             Class clazz6 = MappedClasses.lR;
             String string9 = "enchantmentsList";
             MEnchantment mEnchantment4 = this;
-            this.C = ((MappingFieldBuilder)this.T(string9, clazz6).H(true)).J(1).z();
+            this.C = ((MappingFieldBuilder)this.fieldBuilder(string9, clazz6).setStaticMember(true)).setArrayDimensions(1).buildField();
         }
         if (ForgeVersion.MC_1_21_0.d()) {
             Class[] classArray = new Class[]{MappedClasses.Vo, Integer.TYPE};
@@ -113,7 +113,7 @@ extends Mapping {
             boolean bl = true;
             String string10 = "getFullname";
             MEnchantment mEnchantment = this;
-            this.M = mEnchantment.x(string10, bl, clazz, classArray);
+            this.M = mEnchantment.registerStaticMethod(string10, bl, clazz, classArray);
         } else if (ForgeVersion.MC_1_16_5.d()) {
             Class[] classArray = new Class[]{Integer.TYPE};
             Class clazz = MappedClasses.Yr;
@@ -136,7 +136,7 @@ extends Mapping {
     }
 
     private int G(Object object) {
-        return this.l.Z(null, object);
+        return this.l.invokeInt(null, object);
     }
 
     public static Object O(MEnchantment mEnchantment, Object object, int n) {
@@ -144,7 +144,7 @@ extends Mapping {
     }
 
     private Object B(Object object, int n) {
-        return this.M.L(object, n);
+        return this.M.invokeObject(object, n);
     }
 
     public static int m(MEnchantment mEnchantment, Object object) {
@@ -156,7 +156,7 @@ extends Mapping {
     }
 
     private String g(Object object, int n) {
-        return (String)this.M.L(object, n);
+        return (String)this.M.invokeObject(object, n);
     }
 
     public static int o(MEnchantment mEnchantment, Object object) {
@@ -168,7 +168,7 @@ extends Mapping {
     }
 
     private Object w(Object object, int n) {
-        return this.M.L(null, object, n);
+        return this.M.invokeObject(null, object, n);
     }
 
     public static Object J(MEnchantment mEnchantment, Object object, int n) {

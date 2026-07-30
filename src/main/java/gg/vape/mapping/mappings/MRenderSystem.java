@@ -48,12 +48,12 @@ extends Mapping {
                 boolean bl = true;
                 String string = "applyModelViewMatrix";
                 MRenderSystem mRenderSystem = this;
-                this.N = mRenderSystem.x(string, bl, clazz, classArray);
+                this.N = mRenderSystem.registerStaticMethod(string, bl, clazz, classArray);
                 Class<int[]> clazz2 = int[].class;
                 boolean bl2 = false;
                 String string2 = "f_157152_";
                 MRenderSystem mRenderSystem2 = this;
-                this.U = this.u(string2, bl2, clazz2);
+                this.U = this.registerStaticField(string2, bl2, clazz2);
             }
             if (ForgeVersion.MC_1_21_6.v()) {
                 Class[] classArray = new Class[]{};
@@ -61,74 +61,74 @@ extends Mapping {
                 boolean bl = false;
                 String string = "m_69478_";
                 MRenderSystem mRenderSystem = this;
-                this.V = mRenderSystem.x(string, bl, clazz, classArray);
+                this.V = mRenderSystem.registerStaticMethod(string, bl, clazz, classArray);
                 Class[] classArray2 = new Class[]{Integer.TYPE, MappedClasses.zC};
                 Class<Void> clazz3 = Void.TYPE;
                 boolean bl3 = false;
                 String string3 = "m_157179_";
                 MRenderSystem mRenderSystem3 = this;
-                this.X = this.x(string3, bl3, clazz3, classArray2);
+                this.X = this.registerStaticMethod(string3, bl3, clazz3, classArray2);
                 Class[] classArray3 = new Class[]{Integer.TYPE, Integer.TYPE};
                 Class<Void> clazz4 = Void.TYPE;
                 boolean bl4 = false;
                 String string4 = "m_69405_";
                 MRenderSystem mRenderSystem4 = this;
-                this.Q = this.x(string4, bl4, clazz4, classArray3);
+                this.Q = this.registerStaticMethod(string4, bl4, clazz4, classArray3);
                 Class[] classArray4 = new Class[]{Float.TYPE, Float.TYPE, Float.TYPE, Float.TYPE};
                 Class<Void> clazz5 = Void.TYPE;
                 boolean bl5 = false;
                 String string5 = "m_157429_";
                 MRenderSystem mRenderSystem5 = this;
-                this.B = this.x(string5, bl5, clazz5, classArray4);
+                this.B = this.registerStaticMethod(string5, bl5, clazz5, classArray4);
                 Class[] classArray5 = new Class[]{};
                 Class<Void> clazz6 = Void.TYPE;
                 boolean bl6 = false;
                 String string6 = "m_69482_";
                 MRenderSystem mRenderSystem6 = this;
-                this.C = this.x(string6, bl6, clazz6, classArray5);
+                this.C = this.registerStaticMethod(string6, bl6, clazz6, classArray5);
                 Class[] classArray6 = new Class[]{};
                 Class clazz7 = MappedClasses.qr;
                 boolean bl7 = false;
                 String string7 = "getProjectionMatrix";
                 MRenderSystem mRenderSystem7 = this;
-                this.M = this.x(string7, bl7, clazz7, classArray6);
+                this.M = this.registerStaticMethod(string7, bl7, clazz7, classArray6);
                 Class[] classArray7 = new Class[]{MappedClasses.qr, MappedClasses.VT};
                 Class<Void> clazz8 = Void.TYPE;
                 boolean bl8 = false;
                 String string8 = "setProjectionMatrix";
                 MRenderSystem mRenderSystem8 = this;
-                this.S = this.x(string8, bl8, clazz8, classArray7);
+                this.S = this.registerStaticMethod(string8, bl8, clazz8, classArray7);
                 Class[] classArray8 = new Class[]{};
                 Class<Void> clazz9 = Void.TYPE;
                 boolean bl9 = false;
                 String string9 = "disableBlend";
                 MRenderSystem mRenderSystem9 = this;
-                this.Y = this.x(string9, bl9, clazz9, classArray8);
+                this.Y = this.registerStaticMethod(string9, bl9, clazz9, classArray8);
                 Class[] classArray9 = new Class[]{};
                 Class<Void> clazz10 = Void.TYPE;
                 boolean bl10 = false;
                 String string10 = "disableDepthTest";
                 MRenderSystem mRenderSystem10 = this;
-                this.h = this.x(string10, bl10, clazz10, classArray9);
+                this.h = this.registerStaticMethod(string10, bl10, clazz10, classArray9);
                 Class[] classArray10 = new Class[]{};
                 Class<Void> clazz11 = Void.TYPE;
                 boolean bl11 = false;
                 String string11 = "defaultBlendFunc";
                 MRenderSystem mRenderSystem11 = this;
-                this.f = this.x(string11, bl11, clazz11, classArray10);
+                this.f = this.registerStaticMethod(string11, bl11, clazz11, classArray10);
             }
             Class clazz = MappedClasses.DQ;
             boolean bl = true;
             String string = "f_157141_";
             MRenderSystem mRenderSystem = this;
-            this.p = mRenderSystem.u(string, bl, clazz);
+            this.p = mRenderSystem.registerStaticField(string, bl, clazz);
             if (ForgeVersion.MC_1_21_11.v()) {
                 Class[] classArray = new Class[]{Float.TYPE};
                 Class<Void> clazz12 = Void.TYPE;
                 boolean bl12 = false;
                 String string12 = "lineWidth";
                 MRenderSystem mRenderSystem12 = this;
-                this.P = this.x(string12, bl12, clazz12, classArray);
+                this.P = this.registerStaticMethod(string12, bl12, clazz12, classArray);
             }
         } else {
             Class[] classArray = new Class[]{};
@@ -136,7 +136,7 @@ extends Mapping {
             boolean bl = false;
             String string = "defaultAlphaFunc";
             MRenderSystem mRenderSystem = this;
-            this.v = mRenderSystem.x(string, bl, clazz, classArray);
+            this.v = mRenderSystem.registerStaticMethod(string, bl, clazz, classArray);
         }
         if (ForgeVersion.MC_1_21_6.v()) {
             Class[] classArray = new Class[]{Float.TYPE};
@@ -144,7 +144,7 @@ extends Mapping {
             boolean bl = false;
             String string = "fogDensity";
             MRenderSystem mRenderSystem = this;
-            this.a = mRenderSystem.x(string, bl, clazz, classArray);
+            this.a = mRenderSystem.registerStaticMethod(string, bl, clazz, classArray);
         }
     }
 
@@ -153,11 +153,11 @@ extends Mapping {
     }
 
     private void H(float f) {
-        this.a.c(null, Float.valueOf(f));
+        this.a.invokeVoid(null, Float.valueOf(f));
     }
 
     private void y() {
-        this.Y.F(null);
+        this.Y.invokeVoidNoArgs(null);
     }
 
     public static void o(MRenderSystem mRenderSystem, int n, int n2) {
@@ -185,7 +185,7 @@ extends Mapping {
     }
 
     private void F(float f) {
-        this.P.c(null, Float.valueOf(f));
+        this.P.invokeVoid(null, Float.valueOf(f));
     }
 
     public static void f(MRenderSystem mRenderSystem) {
@@ -199,7 +199,7 @@ extends Mapping {
     }
 
     private void I() {
-        this.f.F(null);
+        this.f.invokeVoidNoArgs(null);
     }
 
     public static int[] x(MRenderSystem mRenderSystem) {
@@ -207,7 +207,7 @@ extends Mapping {
     }
 
     private void j() {
-        this.C.F(null);
+        this.C.invokeVoidNoArgs(null);
     }
 
     public static void F(MRenderSystem mRenderSystem, float f) {
@@ -215,7 +215,7 @@ extends Mapping {
     }
 
     private void G(int n, Object object) {
-        this.X.c(n, object);
+        this.X.invokeVoid(n, object);
     }
 
     public static void U(MRenderSystem mRenderSystem) {
@@ -223,19 +223,19 @@ extends Mapping {
     }
 
     private void D(int n, int n2) {
-        this.Q.c(null, n, n2);
+        this.Q.invokeVoid(null, n, n2);
     }
 
     private void K$src$V$1mimvos() {
-        this.N.F(null);
+        this.N.invokeVoidNoArgs(null);
     }
 
     private void D(float f, float f2, float f3, float f4) {
-        this.B.c(null, Float.valueOf(f), Float.valueOf(f2), Float.valueOf(f3), Float.valueOf(f4));
+        this.B.invokeVoid(null, Float.valueOf(f), Float.valueOf(f2), Float.valueOf(f3), Float.valueOf(f4));
     }
 
     private Object F() {
-        return this.M.L(null, new Object[0]);
+        return this.M.invokeObject(null, new Object[0]);
     }
 
     public static void c(MRenderSystem mRenderSystem) {
@@ -243,7 +243,7 @@ extends Mapping {
     }
 
     private void x() {
-        this.h.F(null);
+        this.h.invokeVoidNoArgs(null);
     }
 
 
@@ -260,7 +260,7 @@ extends Mapping {
     }
 
     private void S() {
-        this.V.F(null);
+        this.V.invokeVoidNoArgs(null);
     }
 
     public static void Z(MRenderSystem mRenderSystem, float f) {
@@ -268,7 +268,7 @@ extends Mapping {
     }
 
     private void i(Object object, Object object2) {
-        this.S.c(null, object, object2);
+        this.S.invokeVoid(null, object, object2);
     }
 }
 

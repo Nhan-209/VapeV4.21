@@ -7,24 +7,23 @@ import org.jetbrains.annotations.UnmodifiableView;
 
 public class PublicProfileTagsUpdatedEvent
 implements IEvent {
-    private final Collection<String> s;
-    private static final EventListeners B = new EventListeners();
+    private final Collection<String> tags;
+    private static final EventListeners EVENT_LISTENERS = new EventListeners();
 
     @Override
     public EventListeners getListeners() {
-        return B;
+        return EVENT_LISTENERS;
     }
 
     public static EventListeners getEventListeners() {
-        return B;
+        return EVENT_LISTENERS;
     }
 
-    public PublicProfileTagsUpdatedEvent(Collection<String> collection) {
-        this.s = collection;
+    public PublicProfileTagsUpdatedEvent(Collection<String> tags) {
+        this.tags = tags;
     }
 
     public @UnmodifiableView Collection<String> getTags() {
-        return this.s;
+        return this.tags;
     }
 }
-

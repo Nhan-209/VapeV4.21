@@ -67,7 +67,7 @@ implements EventListener {
         }
     }
 
-    @EventHandler(A=EventPriority.HIGHEST)
+    @EventHandler(priority=EventPriority.HIGHEST)
     public void onPacketReceive(EventPacketReceive eventPacketReceive) {
         this.J(eventPacketReceive.getPacket());
     }
@@ -76,7 +76,7 @@ implements EventListener {
         this.s.remove(packet.getObject());
     }
 
-    @EventHandler(A=EventPriority.HIGHEST)
+    @EventHandler(priority=EventPriority.HIGHEST)
     public void onPacketSend(EventPacketSend eventPacketSend) {
         this.J(eventPacketSend.getPacket());
     }
@@ -130,4 +130,3 @@ implements EventListener {
         }
     }
 }
-

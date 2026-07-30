@@ -9,11 +9,11 @@ extends Wrapper {
     }
 
     public int P() {
-        return GlStateManager$TextureState.c.getMappingsMapperCompat().hH.R(this.I);
+        return GlStateManager$TextureState.vapeInstance.getMappingsMapperCompat().hH.R(this.I);
     }
 
     public void H(int n) {
-        GlStateManager$TextureState.c.getMappingsMapperCompat().hH.g(this.I, n);
+        GlStateManager$TextureState.vapeInstance.getMappingsMapperCompat().hH.g(this.I, n);
     }
 }
 

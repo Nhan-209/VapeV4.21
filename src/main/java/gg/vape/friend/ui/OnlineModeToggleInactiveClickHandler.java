@@ -5,18 +5,18 @@ import gg.vape.ui.click.component.GuiClickListener;
 
 public class OnlineModeToggleInactiveClickHandler
 implements GuiClickListener {
-    final OnlineModeToggleComponent B;
+    private final OnlineModeToggleComponent toggle;
 
 
     @Override
     public void onPrimaryClick() {
-        if (!this.B.r$src$Ljava_lang_Boolean_$180i77a().booleanValue()) {
-            OnlineModeToggleComponent.w(this.B);
+        if (!this.toggle.isLeftSelected().booleanValue()) {
+            OnlineModeToggleComponent.toggleSelection(this.toggle);
         }
     }
 
     public OnlineModeToggleInactiveClickHandler(OnlineModeToggleComponent onlineModeToggleComponent) {
-        this.B = onlineModeToggleComponent;
+        this.toggle = onlineModeToggleComponent;
     }
 }
 

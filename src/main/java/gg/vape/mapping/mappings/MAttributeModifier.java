@@ -25,11 +25,11 @@ extends Mapping {
     }
 
     private UUID getID(Object object) {
-        return (UUID)this.M.L(object, new Object[0]);
+        return (UUID)this.M.invokeObject(object, new Object[0]);
     }
 
     public double getAmount(Object object) {
-        return this.Q.F(object, new Object[0]);
+        return this.Q.invokeDouble(object, new Object[0]);
     }
 
     public static Object T(MAttributeModifier mAttributeModifier, Object object) {

@@ -54,7 +54,7 @@ extends GuiComponent {
     }
 
     private void deleteReview(PublicProfileReview publicProfileReview) {
-        publicProfileReview.B(this.publicProfile, this.deleteCallback);
+        publicProfileReview.delete(this.publicProfile, this.deleteCallback);
     }
 
     public PublicProfileReviewComponent setLayoutChangedCallback(@Nullable Runnable runnable) {
@@ -77,7 +77,7 @@ extends GuiComponent {
         if (this.review == null) {
             return 30.0;
         }
-        if (this.review.I().isEmpty()) {
+        if (this.review.getMessage().isEmpty()) {
             return 15.0;
         }
         return this.contentPanel.L() + (this.replyComposer != null ? this.replyComposer.L() : 0.0) + 2.0;
@@ -145,10 +145,10 @@ extends GuiComponent {
         PanelComponent panelComponent2 = new PanelComponent(panelComponent.A() / 2.0, panelComponent.L());
         panelComponent2.setShowDisabledOverlay(false);
         panelComponent.h(panelComponent2, new Object[0]);
-        PublicProfileUserAvatarComponent publicProfileUserAvatarComponent = new PublicProfileUserAvatarComponent(this.review.F(), 8.0, 8.0);
+        PublicProfileUserAvatarComponent publicProfileUserAvatarComponent = new PublicProfileUserAvatarComponent(this.review.getCommenter(), 8.0, 8.0);
         PaddedComponent paddedComponent = new PaddedComponent(0.5, 0.0, 0.0, 0.0, publicProfileUserAvatarComponent);
         panelComponent2.h(paddedComponent, new Object[0]);
-        SimpleTextLabelComponent simpleTextLabelComponent = new SimpleTextLabelComponent(this.review.F().o(), 0.7);
+        SimpleTextLabelComponent simpleTextLabelComponent = new SimpleTextLabelComponent(this.review.getCommenter().getUsername(), 0.7);
         double d2 = simpleTextLabelComponent.getTextWidth();
         this.getClass();
         simpleTextLabelComponent.o(d2 + 5.0);
@@ -161,7 +161,7 @@ extends GuiComponent {
         this.metadataSeparator.Y(10.0);
         this.metadataSeparator.setTextColor(PublicProfileReviewComponent.J.Z);
         panelComponent2.h(this.metadataSeparator, new Object[0]);
-        Date date = this.review.a() != null ? this.review.a() : this.review.P();
+        Date date = this.review.getUpdatedDate() != null ? this.review.getUpdatedDate() : this.review.getCreatedDate();
         SimpleTextLabelComponent simpleTextLabelComponent2 = new SimpleTextLabelComponent(PublicProfileDateFormatUtil.i(date), 0.7);
         simpleTextLabelComponent2.w(PublicProfileDateFormatUtil.T(date));
         double d3 = simpleTextLabelComponent2.getTextWidth();
@@ -171,9 +171,9 @@ extends GuiComponent {
         simpleTextLabelComponent2.Y(10.0);
         simpleTextLabelComponent2.setTextColor(PublicProfileReviewComponent.J.h);
         panelComponent2.h(simpleTextLabelComponent2, new Object[0]);
-        MutableColor mutableColor = this.review.X() ? new MutableColor(PublicProfileReviewComponent.J.B).F(0.8f).withAlpha(120) : new MutableColor(PublicProfileReviewComponent.J.d).withAlpha(150);
-        GlyphIconComponent glyphIconComponent = new GlyphIconComponent(this.review.X() ? "like active@2x" : "dislike active@2x", 6.0, 5.0, 20.0, 20.0, mutableColor, mutableColor, null);
-        glyphIconComponent.setOffsetY(this.review.X() ? 2.0 : 3.0);
+        MutableColor mutableColor = this.review.isLiked() ? new MutableColor(PublicProfileReviewComponent.J.B).F(0.8f).withAlpha(120) : new MutableColor(PublicProfileReviewComponent.J.d).withAlpha(150);
+        GlyphIconComponent glyphIconComponent = new GlyphIconComponent(this.review.isLiked() ? "like active@2x" : "dislike active@2x", 6.0, 5.0, 20.0, 20.0, mutableColor, mutableColor, null);
+        glyphIconComponent.setOffsetY(this.review.isLiked() ? 2.0 : 3.0);
         panelComponent2.h(glyphIconComponent, new Object[0]);
         PanelComponent panelComponent3 = new PanelComponent(this.displayType == PublicProfileReviewDisplayType.SELF ? 20.0 : (this.displayType == PublicProfileReviewDisplayType.REPLY ? 20.0 : 5.0), panelComponent.L());
         panelComponent3.setShowDisabledOverlay(false);
@@ -210,18 +210,18 @@ extends GuiComponent {
         panelComponent4.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M("wrap");
         panelComponent4.setShowDisabledOverlay(false);
         ((FrameComponent)guiComponent).h(panelComponent4, new Object[0]);
-        WrappedTextComponent wrappedTextComponent = new WrappedTextComponent(this.review.I(), 0.8, PublicProfileReviewComponent.J.h, true);
+        WrappedTextComponent wrappedTextComponent = new WrappedTextComponent(this.review.getMessage(), 0.8, PublicProfileReviewComponent.J.h, true);
         wrappedTextComponent.o(panelComponent4.A());
         wrappedTextComponent.setWrapWidth(panelComponent4.A());
         wrappedTextComponent.Y(7 * wrappedTextComponent.getWrappedLines().size());
-        if (publicProfileReviewDisplayType == PublicProfileReviewDisplayType.REPLY && publicProfileReview.I$src$Z$148jdrc()) {
+        if (publicProfileReviewDisplayType == PublicProfileReviewDisplayType.REPLY && publicProfileReview.isUnread()) {
             wrappedTextComponent.setBold(true);
             wrappedTextComponent.setTextColor(PublicProfileReviewComponent.J.A);
         }
         panelComponent4.h(new SpacerComponent(5.0, 1.0), new Object[0]);
         panelComponent4.h(wrappedTextComponent, new Object[0]);
         panelComponent4.h(new SpacerComponent(5.0, 2.0), new Object[0]);
-        if (this.review.H() != null) {
+        if (this.review.getResponse() != null) {
             PanelComponent panelComponent5 = new PanelComponent(this.contentPanel.A() - 15.0, 15.0);
             panelComponent5.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M("widthwrap");
             panelComponent5.setShowDisabledOverlay(false);
@@ -240,7 +240,7 @@ extends GuiComponent {
             simpleTextLabelComponent3.Y(8.0);
             panelComponent7.h(simpleTextLabelComponent3, new Object[0]);
             panelComponent7.h(new SpacerComponent(4.0, 0.0), new Object[0]);
-            Date date2 = this.review.H().j() != null ? this.review.H().j() : this.review.H().Y();
+            Date date2 = this.review.getResponse().getUpdatedDate() != null ? this.review.getResponse().getUpdatedDate() : this.review.getResponse().getCreatedDate();
             SimpleTextLabelComponent simpleTextLabelComponent4 = new SimpleTextLabelComponent(PublicProfileDateFormatUtil.i(date2), 0.8, PublicProfileReviewComponent.J.h, true);
             simpleTextLabelComponent4.w(PublicProfileDateFormatUtil.T(date2));
             simpleTextLabelComponent4.o(simpleTextLabelComponent4.getTextWidth());
@@ -252,7 +252,7 @@ extends GuiComponent {
             panelComponent8.setShowDisabledOverlay(false);
             panelComponent6.h(panelComponent8, new Object[0]);
             panelComponent8.h(new SpacerComponent(5.0, 0.0), new Object[0]);
-            WrappedTextComponent wrappedTextComponent2 = new WrappedTextComponent(this.review.H().m(), 0.8);
+            WrappedTextComponent wrappedTextComponent2 = new WrappedTextComponent(this.review.getResponse().getResponse(), 0.8);
             wrappedTextComponent2.o(panelComponent6.A() - 8.0);
             wrappedTextComponent2.setWrapWidth(panelComponent6.A() - 8.0);
             wrappedTextComponent2.Y(7 * wrappedTextComponent2.getWrappedLines().size());

@@ -5,27 +5,26 @@ import gg.vape.protocol.packet.ZeusSerializablePacket;
 
 public class ClientProfileIdPacket
 implements ZeusSerializablePacket {
-    private long f;
+    private long profileId;
 
     @Override
     public void S(ZeusPacketBuffer zeusPacketBuffer) {
-        this.f = zeusPacketBuffer.long_a();
+        this.profileId = zeusPacketBuffer.readLong();
     }
 
-    public long i() {
-        return this.f;
+    public long getProfileId() {
+        return this.profileId;
     }
 
     @Override
     public void o(ZeusPacketBuffer zeusPacketBuffer) {
-        zeusPacketBuffer.v(this.f);
+        zeusPacketBuffer.writeLong(this.profileId);
     }
 
-    public ClientProfileIdPacket(long l) {
-        this.f = l;
+    public ClientProfileIdPacket(long profileId) {
+        this.profileId = profileId;
     }
 
     public ClientProfileIdPacket() {
     }
 }
-

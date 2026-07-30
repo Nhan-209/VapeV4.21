@@ -15,7 +15,7 @@ extends Mapping {
     private MappingMethod h;
 
     private void I(int n, int n2, IntBuffer intBuffer) {
-        this.v.c(null, n, n2, intBuffer);
+        this.v.invokeVoid(null, n, n2, intBuffer);
     }
 
     public MGL20() {
@@ -31,26 +31,26 @@ extends Mapping {
                 boolean bl2 = false;
                 String string = "glGetProgram";
                 MGL20 mGL20 = this;
-                this.v = mGL20.x(string, bl2, clazz, classArray);
+                this.v = mGL20.registerStaticMethod(string, bl2, clazz, classArray);
                 Class[] classArray2 = new Class[]{Integer.TYPE, Boolean.TYPE, FloatBuffer.class};
                 Class<Void> clazz2 = Void.TYPE;
                 boolean bl3 = false;
                 String string2 = "glUniformMatrix4";
                 MGL20 mGL202 = this;
-                this.h = this.x(string2, bl3, clazz2, classArray2);
+                this.h = this.registerStaticMethod(string2, bl3, clazz2, classArray2);
             } else {
                 Class[] classArray = new Class[]{Integer.TYPE, Integer.TYPE, IntBuffer.class};
                 Class<Void> clazz = Void.TYPE;
                 boolean bl4 = false;
                 String string = "glGetProgramiv";
                 MGL20 mGL20 = this;
-                this.v = mGL20.x(string, bl4, clazz, classArray);
+                this.v = mGL20.registerStaticMethod(string, bl4, clazz, classArray);
                 Class[] classArray3 = new Class[]{Integer.TYPE, Boolean.TYPE, FloatBuffer.class};
                 Class<Void> clazz3 = Void.TYPE;
                 boolean bl5 = false;
                 String string3 = "glUniformMatrix4fv";
                 MGL20 mGL203 = this;
-                this.h = this.x(string3, bl5, clazz3, classArray3);
+                this.h = this.registerStaticMethod(string3, bl5, clazz3, classArray3);
             }
             if (GuiComponent.getLegacyComponentState() == null) {
                 MGlStateManagerTexGenState.d(false);
@@ -62,7 +62,7 @@ extends Mapping {
         boolean bl6 = false;
         String string = "glUniformMatrix4fv";
         MGL20 mGL20 = this;
-        this.h = mGL20.x(string, bl6, clazz, classArray); 
+        this.h = mGL20.registerStaticMethod(string, bl6, clazz, classArray);
         if (GuiComponent.getLegacyComponentState() == null) {
             MGlStateManagerTexGenState.d(true);
         }
@@ -74,7 +74,7 @@ extends Mapping {
     }
 
     private void i(int n, boolean bl, FloatBuffer floatBuffer) {
-        this.h.c(null, n, bl, floatBuffer);
+        this.h.invokeVoid(null, n, bl, floatBuffer);
     }
 
     public static void P(MGL20 mGL20, int n, int n2, IntBuffer intBuffer) {

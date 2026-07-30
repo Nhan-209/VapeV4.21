@@ -34,13 +34,13 @@ import java.util.UUID;
 import org.jetbrains.annotations.Nullable;
 
 public class ProfilesManager {
-    private final List<Profile> V = new ArrayList<Profile>();
-    static final boolean f = !ProfilesManager.class.desiredAssertionStatus();
-    private Profile W;
-    private final Set<UUID> C = new LinkedHashSet<UUID>();
+    private final List<Profile> profiles = new ArrayList<Profile>();
+    static final boolean assertionsDisabled = !ProfilesManager.class.desiredAssertionStatus();
+    private Profile activeProfile;
+    private final Set<UUID> deletedRemoteProfileIds = new LinkedHashSet<UUID>();
 
-    public void v() {
-        for (Mod object : Vape.INSTANCE.getModManager().s()) {
+    public void resetAllSettings() {
+        for (Mod object : Vape.INSTANCE.getModManager().getAllModules()) {
             if (object.getCategory() == Category.b && !(object instanceof Search) || object.r$src$Z$14eylz9()) {
                 // empty if block
             }
@@ -70,36 +70,36 @@ public class ProfilesManager {
         }
     }
 
-    public List<Profile> b() {
-        return this.V;
+    public List<Profile> getProfiles() {
+        return this.profiles;
     }
 
-    public Profile H(UUID uUID) {
-        for (Profile profile : this.V) {
-            if (profile.P$src$Ljava_util_UUID_$kdhg08() == null || !profile.P$src$Ljava_util_UUID_$kdhg08().toString().equalsIgnoreCase(uUID.toString())) continue;
+    public Profile getProfileByOnlineId(UUID onlineId) {
+        for (Profile profile : this.profiles) {
+            if (profile.getOnlineId() == null || !profile.getOnlineId().toString().equalsIgnoreCase(onlineId.toString())) continue;
             return profile;
         }
         return null;
     }
 
-    public void S(Profile profile) {
-        this.V.remove(profile);
+    public void removeProfile(Profile profile) {
+        this.profiles.remove(profile);
         ClientSettings.getFrame(ProfilesSettingsFrame.class).removeProfile(profile);
         Vape.INSTANCE.saveAndStop();
         new ProfileListMutationEvent(profile, ProfileListMutationAction.REMOVE).fire();
-        if (profile.P$src$Ljava_util_UUID_$kdhg08() != null) {
-            this.C.add(profile.P$src$Ljava_util_UUID_$kdhg08());
+        if (profile.getOnlineId() != null) {
+            this.deletedRemoteProfileIds.add(profile.getOnlineId());
         }
     }
 
-    public void m(Profile profile, boolean bl) {
-        if (bl) {
-            this.V.add(0, profile);
-            for (Profile profile2 : this.V) {
-                profile2.U(profile2.L$src$I$1g3udot());
+    public void addProfile(Profile profile, boolean prepend) {
+        if (prepend) {
+            this.profiles.add(0, profile);
+            for (Profile profile2 : this.profiles) {
+                profile2.setSortOrder(profile2.getCurrentSortIndex());
             }
         } else {
-            this.V.add(profile);
+            this.profiles.add(profile);
         }
         ClientSettings.getFrame(ProfilesSettingsFrame.class).addProfile(profile);
         ProfilesSettingsFrame.refreshProfileList();
@@ -107,33 +107,33 @@ public class ProfilesManager {
         new ProfileListMutationEvent(profile, ProfileListMutationAction.ADD).fire();
     }
 
-    public JsonObject s(Profile profile) {
+    public JsonObject buildSingleProfileSyncPayload(Profile profile) {
         JsonObject jsonObject = new JsonObject();
         JsonArray jsonArray = new JsonArray();
-        jsonArray.add((JsonElement)profile.C(true));
+        jsonArray.add((JsonElement)profile.toJson(true));
         jsonObject.add("updatedProfiles", (JsonElement)jsonArray);
         jsonObject.add("deletedProfiles", (JsonElement)new JsonArray());
         return jsonObject;
     }
 
-    public void C(JsonObject jsonObject) {
+    public void loadJson(JsonObject jsonObject) {
         if (jsonObject == null) {
             return;
         }
         if (jsonObject.entrySet().isEmpty()) {
-            Profile profile = this.L();
+            Profile profile = this.initializeBuiltinProfiles();
             if (profile != null) {
-                this.L(profile);
+                this.setActiveProfile(profile);
             }
             return;
         }
         for (Map.Entry entry : jsonObject.entrySet()) {
             JsonObject jsonObject2 = ((JsonElement)entry.getValue()).getAsJsonObject();
-            Profile profile = new Profile("", "", true).e(jsonObject2);
-            this.T(profile);
+            Profile profile = new Profile("", "", true).loadJson(jsonObject2);
+            this.addProfile(profile);
         }
         try {
-            this.V.sort(ProfilesManager::lambda$fromJson$0);
+            this.profiles.sort(ProfilesManager::compareProfileSortOrder);
         }
         catch (Throwable throwable) {
             // empty catch block
@@ -141,160 +141,159 @@ public class ProfilesManager {
         ProfilesSettingsFrame.refreshProfileList();
     }
 
-    private static Throwable a(Throwable throwable) {
+    private static Throwable propagateThrowable(Throwable throwable) {
         return throwable;
     }
 
-    private Profile L() {
-        ArrayList<BuiltinProfile> arrayList = new ArrayList<BuiltinProfile>();
-        arrayList.add(new Minecraft121BuiltinProfile());
-        arrayList.add(new BuiltinProfileState());
-        Profile profile = null;
-        for (BuiltinProfile builtinProfile : arrayList) {
-            builtinProfile.J();
-            this.T(builtinProfile);
-            if (profile != null || !builtinProfile.E()) continue;
-            profile = builtinProfile;
+    private Profile initializeBuiltinProfiles() {
+        ArrayList<BuiltinProfile> builtinProfiles = new ArrayList<BuiltinProfile>();
+        builtinProfiles.add(new Minecraft121BuiltinProfile());
+        builtinProfiles.add(new BuiltinProfileState());
+        Profile selectedProfile = null;
+        for (BuiltinProfile builtinProfile : builtinProfiles) {
+            builtinProfile.applyPreset();
+            this.addProfile(builtinProfile);
+            if (selectedProfile != null || !builtinProfile.isApplicable()) continue;
+            selectedProfile = builtinProfile;
         }
-        if (profile == null && !this.V.isEmpty()) {
-            profile = this.V.get(0);
+        if (selectedProfile == null && !this.profiles.isEmpty()) {
+            selectedProfile = this.profiles.get(0);
         }
-        return profile;
+        return selectedProfile;
     }
 
-    private static int lambda$fromJson$0(Profile profile, Profile profile2) {
-        if (profile.J$src$Ljava_lang_Integer_$vutkyf() != null && profile2.J$src$Ljava_lang_Integer_$vutkyf() != null) {
-            return profile.J$src$Ljava_lang_Integer_$vutkyf().compareTo(profile2.J$src$Ljava_lang_Integer_$vutkyf());
+    private static int compareProfileSortOrder(Profile first, Profile second) {
+        if (first.getSortOrder() != null && second.getSortOrder() != null) {
+            return first.getSortOrder().compareTo(second.getSortOrder());
         }
-        if (profile.J$src$Ljava_lang_Integer_$vutkyf() != null) {
+        if (first.getSortOrder() != null) {
             return 1;
         }
         return -1;
     }
 
-    public Profile G(String string) {
-        for (Profile profile : this.V) {
-            if (!profile.n$src$Ljava_lang_String_$xqhelw().equalsIgnoreCase(string)) continue;
+    public Profile getProfileByName(String name) {
+        for (Profile profile : this.profiles) {
+            if (!profile.getName().equalsIgnoreCase(name)) continue;
             return profile;
         }
         return null;
     }
 
-    public JsonObject q(boolean bl) {
-        if (bl) {
-            ArrayList<Profile> arrayList = new ArrayList<Profile>();
-            for (Profile profile : this.b()) {
-                if (!profile.W()) continue;
-                arrayList.add(profile);
+    public JsonObject toJson(boolean dirtyOnly) {
+        if (dirtyOnly) {
+            ArrayList<Profile> dirtyProfiles = new ArrayList<Profile>();
+            for (Profile profile : this.getProfiles()) {
+                if (!profile.isDirty()) continue;
+                dirtyProfiles.add(profile);
             }
-            ArrayList<UUID> arrayList2 = new ArrayList<UUID>(this.C);
-            this.C.clear();
-            return ProfilesSyncPayloadBuilder.T(arrayList, (List<UUID>)arrayList2);
+            ArrayList<UUID> deletedIds = new ArrayList<UUID>(this.deletedRemoteProfileIds);
+            this.deletedRemoteProfileIds.clear();
+            return ProfilesSyncPayloadBuilder.build(dirtyProfiles, (List<UUID>)deletedIds);
         }
-        JsonObject jsonObject = new JsonObject();
-        for (Profile profile : this.b()) {
-            jsonObject.add(profile.u().toString(), (JsonElement)profile.C(bl));
+        JsonObject result = new JsonObject();
+        for (Profile profile : this.getProfiles()) {
+            result.add(profile.getLocalId().toString(), (JsonElement)profile.toJson(dirtyOnly));
         }
-        return jsonObject;
+        return result;
     }
 
-    public void X() {
-        this.V.clear();
+    public void clearProfiles() {
+        this.profiles.clear();
     }
 
-    public void T(Profile profile) {
-        this.m(profile, false);
+    public void addProfile(Profile profile) {
+        this.addProfile(profile, false);
     }
 
-    public void T() {
-        Collection<PublicProfile> collection = Vape.INSTANCE.getPublicProfileManager().A().values();
-        for (Profile profile : this.V) {
-            profile.f(null);
+    public void updatePublicProfileLinks() {
+        Collection<PublicProfile> collection = Vape.INSTANCE.getPublicProfileManager().getProfilesById().values();
+        for (Profile profile : this.profiles) {
+            profile.setPublicProfile(null);
             for (PublicProfile publicProfile : collection) {
                 UUID uUID;
-                if (publicProfile.c() == null || (uUID = publicProfile.c().v()) == null || profile.P$src$Ljava_util_UUID_$kdhg08() == null || !profile.P$src$Ljava_util_UUID_$kdhg08().toString().equalsIgnoreCase(uUID.toString())) continue;
-                profile.f(publicProfile);
+                if (publicProfile.getShareInfo() == null || (uUID = publicProfile.getShareInfo().getDerivedFrom()) == null || profile.getOnlineId() == null || !profile.getOnlineId().toString().equalsIgnoreCase(uUID.toString())) continue;
+                profile.setPublicProfile(publicProfile);
             }
         }
     }
 
-    public void L(Profile profile) {
-        if (this.W != null && this.W.equals(profile)) {
+    public void setActiveProfile(Profile profile) {
+        if (this.activeProfile != null && this.activeProfile.equals(profile)) {
             return;
         }
-        Profile profile2 = this.W;
-        this.v();
-        this.W = profile;
-        this.W.e();
+        Profile previousProfile = this.activeProfile;
+        this.resetAllSettings();
+        this.activeProfile = profile;
+        this.activeProfile.apply();
         Vape.INSTANCE.saveAndStop();
-        EventBus.getInstance().post(new ProfileChangeEvent(profile2, profile));
+        EventBus.getInstance().post(new ProfileChangeEvent(previousProfile, profile));
     }
 
-    public void U(Profile profile) {
-        if (this.M() != null) {
-            this.M().a();
+    public void switchProfile(Profile profile) {
+        if (this.getActiveProfile() != null) {
+            this.getActiveProfile().captureCurrentState();
         }
-        this.L(profile);
+        this.setActiveProfile(profile);
     }
 
-    public void M(Profile profile) {
-        Profile profile2 = this.M();
-        if (profile.equals(profile2)) {
-            profile.a();
+    public void captureProfileState(Profile profile) {
+        Profile currentProfile = this.getActiveProfile();
+        if (profile.equals(currentProfile)) {
+            profile.captureCurrentState();
         } else {
-            this.L(profile);
-            profile.a();
-            this.L(profile2);
+            this.setActiveProfile(profile);
+            profile.captureCurrentState();
+            this.setActiveProfile(currentProfile);
         }
     }
 
-    public List<Profile> s() {
-        ArrayList<Profile> arrayList = new ArrayList<Profile>();
-        for (Profile profile : this.V) {
-            if (profile.j$src$Lgg_vape_config_ProfileRemoteMetadata_$1dp9fd0() == null) continue;
-            arrayList.add(profile);
+    public List<Profile> getRemoteProfiles() {
+        ArrayList<Profile> remoteProfiles = new ArrayList<Profile>();
+        for (Profile profile : this.profiles) {
+            if (profile.getRemoteMetadata() == null) continue;
+            remoteProfiles.add(profile);
         }
-        return arrayList;
+        return remoteProfiles;
     }
 
-    public Profile M() {
-        boolean bl;
-        boolean bl2 = bl = this.W == null || !this.b().contains(this.W) && !this.W.Z();
-        if (bl) {
-            if (!this.b().isEmpty()) {
-                this.L(this.b().get(0));
+    public Profile getActiveProfile() {
+        boolean activeProfileInvalid = this.activeProfile == null || !this.getProfiles().contains(this.activeProfile) && !this.activeProfile.isDraft();
+        if (activeProfileInvalid) {
+            if (!this.getProfiles().isEmpty()) {
+                this.setActiveProfile(this.getProfiles().get(0));
             } else {
-                Profile profile = this.L();
-                this.L(profile);
+                Profile profile = this.initializeBuiltinProfiles();
+                this.setActiveProfile(profile);
             }
         }
-        return this.W;
+        return this.activeProfile;
     }
 
     @Nullable
-    public Profile X(long l) {
-        for (Profile profile : this.V) {
-            if (profile.j$src$Lgg_vape_config_ProfileRemoteMetadata_$1dp9fd0() == null) continue;
-            if (!f && profile.j$src$Lgg_vape_config_ProfileRemoteMetadata_$1dp9fd0() == null) {
+    public Profile getProfileByPublicProfileId(long publicProfileId) {
+        for (Profile profile : this.profiles) {
+            if (profile.getRemoteMetadata() == null) continue;
+            if (!assertionsDisabled && profile.getRemoteMetadata() == null) {
                 throw new AssertionError();
             }
-            if (profile.j$src$Lgg_vape_config_ProfileRemoteMetadata_$1dp9fd0().u() != l) continue;
+            if (profile.getRemoteMetadata().getPublicProfileId() != publicProfileId) continue;
             return profile;
         }
         return null;
     }
 
-    public void H() {
-        this.V.sort(Profile::z);
+    public void sortProfiles() {
+        this.profiles.sort(Profile::compareSortOrder);
     }
 
-    public Profile o() {
-        return this.W;
+    public Profile getActiveProfileOrNull() {
+        return this.activeProfile;
     }
 
-    public Profile X(UUID uUID) {
-        for (Profile profile : this.V) {
-            if (!profile.u().toString().equalsIgnoreCase(uUID.toString())) continue;
+    public Profile getProfileByLocalId(UUID localId) {
+        for (Profile profile : this.profiles) {
+            if (!profile.getLocalId().toString().equalsIgnoreCase(localId.toString())) continue;
             return profile;
         }
         return null;

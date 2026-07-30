@@ -22,15 +22,15 @@ public class ItemStackSemanticResolver {
         byte[] resourceBytes = Vape.readResource(resourceName);
         for (String line : new String(resourceBytes).split("\n")) {
             String mappingLine = line.trim();
-            ItemMappingEntry itemMappingEntry = ItemMappingEntry.w(mappingLine);
-            if (itemMappingEntry.j() != null && ItemStackScoreUtil.R(itemMappingEntry.j())) {
+            ItemMappingEntry itemMappingEntry = ItemMappingEntry.parse(mappingLine);
+            if (itemMappingEntry.resolveItem() != null && ItemStackScoreUtil.R(itemMappingEntry.resolveItem())) {
                 for (ArmorMaterialType armorMaterialType : ArmorMaterialType.values()) {
-                    if (!armorMaterialType.G(itemMappingEntry.M())) continue;
+                    if (!armorMaterialType.G(itemMappingEntry.getResourceKey())) continue;
                     itemMappingEntry = new ArmorItemMappingEntry(itemMappingEntry, armorMaterialType);
                 }
             }
             this.mappings.add(itemMappingEntry);
-            if (itemMappingEntry.A() == null) continue;
+            if (itemMappingEntry.getLegacyIdString() == null) continue;
             this.legacyMappings.add(itemMappingEntry);
         }
     }
@@ -38,7 +38,7 @@ public class ItemStackSemanticResolver {
     @Nullable
     public ItemMappingEntry findByName(String name) {
         for (ItemMappingEntry itemMappingEntry : this.mappings) {
-            if (!itemMappingEntry.M().equals(name)) continue;
+            if (!itemMappingEntry.getResourceKey().equals(name)) continue;
             return itemMappingEntry;
         }
         return null;
@@ -64,8 +64,8 @@ public class ItemStackSemanticResolver {
     @Nullable
     public ItemMappingEntry findLegacyMapping(int itemId, int metadata) {
         for (ItemMappingEntry itemMappingEntry : this.legacyMappings) {
-            assert (itemMappingEntry.s() != null);
-            if (itemMappingEntry.s() != itemId || itemMappingEntry.f() == null || itemMappingEntry.f() != metadata) continue;
+        assert (itemMappingEntry.getLegacyId() != null);
+        if (itemMappingEntry.getLegacyId() != itemId || itemMappingEntry.getMetadata() == null || itemMappingEntry.getMetadata() != metadata) continue;
             return itemMappingEntry;
         }
         return null;
@@ -74,8 +74,8 @@ public class ItemStackSemanticResolver {
     @Nullable
     public ItemMappingEntry findLegacyMapping(int itemId) {
         for (ItemMappingEntry itemMappingEntry : this.legacyMappings) {
-            assert (itemMappingEntry.s() != null);
-            if (itemMappingEntry.s() != itemId || itemMappingEntry.f() != null && itemMappingEntry.f() != 0) continue;
+        assert (itemMappingEntry.getLegacyId() != null);
+        if (itemMappingEntry.getLegacyId() != itemId || itemMappingEntry.getMetadata() != null && itemMappingEntry.getMetadata() != 0) continue;
             return itemMappingEntry;
         }
         return null;

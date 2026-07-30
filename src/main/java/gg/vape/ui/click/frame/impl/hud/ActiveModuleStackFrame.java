@@ -99,12 +99,12 @@ extends Frame {
         if (ForgeVersion.MC_26_1.d() || ForgeVersion.MC_1_21_4.v()) {
             centerX = (float)Minecraft.J() / 4.0f;
             centerY = Minecraft.h() / 4;
-            centerX /= Vape.INSTANCE.getClientSettings().s();
-            centerY /= Vape.INSTANCE.getClientSettings().s();
+            centerX /= Vape.INSTANCE.getClientSettings().getGuiScaleFactor();
+            centerY /= Vape.INSTANCE.getClientSettings().getGuiScaleFactor();
             centerY += 10.0;
         } else {
-            centerX = (float)scaledResolution.T() / 2.0f;
-            centerY = (double)(scaledResolution.G() / 2) + 10.0;
+            centerX = (float)scaledResolution.getScaledWidth() / 2.0f;
+            centerY = (double)(scaledResolution.getScaledHeight() / 2) + 10.0;
         }
         ArrayList<ActiveModuleStackEntry> entries = new ArrayList<ActiveModuleStackEntry>();
         for (Mod module : this.activeModules) {

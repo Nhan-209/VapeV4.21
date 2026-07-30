@@ -34,8 +34,8 @@ extends TextInputComponentBase {
         if (profileName.isEmpty()) {
             return;
         }
-        this.entry.getProfile().h(profileName);
-        this.nameDisplay.setText(this.entry.getProfile().n$src$Ljava_lang_String_$xqhelw());
+        this.entry.getProfile().setName(profileName);
+        this.nameDisplay.setText(this.entry.getProfile().getName());
         ProfilesSettingsFrame.refreshProfileList();
     }
 }

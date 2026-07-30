@@ -2,8 +2,6 @@ package gg.vape.wrapper.impl;
 
 import gg.vape.mapping.mappings.MRenderTypeBuffer;
 import gg.vape.wrapper.Wrapper;
-import gg.vape.wrapper.impl.ForgeVersion;
-import gg.vape.wrapper.impl.WorldRenderer;
 
 public class RenderItemFontBridge
 extends Wrapper {
@@ -12,11 +10,11 @@ extends Wrapper {
         if (ForgeVersion.MC_1_21_0.d()) {
             return null;
         }
-        return new RenderItemFontBridge(MRenderTypeBuffer.t(RenderItemFontBridge.c.getMappingsMapperCompat().c, wg_12.getObject()));
+        return new RenderItemFontBridge(MRenderTypeBuffer.t(RenderItemFontBridge.vapeInstance.getMappingsMapperCompat().c, wg_12.getObject()));
     }
 
     public void X() {
-        MRenderTypeBuffer.Q(RenderItemFontBridge.c.getMappingsMapperCompat().c, this.I);
+        MRenderTypeBuffer.Q(RenderItemFontBridge.vapeInstance.getMappingsMapperCompat().c, this.I);
     }
 
     public RenderItemFontBridge(Object object) {
@@ -24,7 +22,7 @@ extends Wrapper {
     }
 
     public void q() {
-        MRenderTypeBuffer.n(RenderItemFontBridge.c.getMappingsMapperCompat().c, this.I);
+        MRenderTypeBuffer.n(RenderItemFontBridge.vapeInstance.getMappingsMapperCompat().c, this.I);
     }
 }
 

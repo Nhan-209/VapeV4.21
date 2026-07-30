@@ -6,15 +6,15 @@ import org.objectweb.asm.tree.FieldInsnNode;
 
 public class FieldInsnPattern
 extends InstructionPattern {
-    public FieldInsnPattern(int n, String string, String string2, String string3) {
-        super(n, string, string2, string3);
+    public FieldInsnPattern(int opcode, String owner, String name, String descriptor) {
+        super(opcode, owner, name, descriptor);
     }
 
-    public static FieldInsnPattern o(FieldInsnNode fieldInsnNode) {
-        return new FieldInsnPattern(fieldInsnNode.getOpcode(), fieldInsnNode.owner, fieldInsnNode.name, fieldInsnNode.desc);
+    public static FieldInsnPattern fromNode(FieldInsnNode fieldInstruction) {
+        return new FieldInsnPattern(fieldInstruction.getOpcode(), fieldInstruction.owner, fieldInstruction.name, fieldInstruction.desc);
     }
 
-    public static FieldInsnPattern l(int n, MappingField mappingField) {
-        return new FieldInsnPattern(n, mappingField.L().getName(), mappingField.J(), mappingField.w());
+    public static FieldInsnPattern fromMapping(int opcode, MappingField mappingField) {
+        return new FieldInsnPattern(opcode, mappingField.getOwnerClass().getName(), mappingField.getResolvedName(), mappingField.getDescriptor());
     }
 }

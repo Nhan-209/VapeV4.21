@@ -10,19 +10,19 @@ extends SelectableTextRowComponent {
 
     @Override
     public boolean isSelected() {
-        return this.friendEntry.c();
+        return this.friendEntry.isTargeted();
     }
 
     @Override
     public void g(GuiMouseEvent guiMouseEvent) {
-        this.friendEntry.k(!this.friendEntry.c());
+        this.friendEntry.setTargeted(!this.friendEntry.isTargeted());
     }
 
     @Override
     public void H() {
-        String text = this.friendEntry.s();
-        if (!this.friendEntry.o().equals(this.friendEntry.s()) && !this.isHovered()) {
-            text = "*" + this.friendEntry.E();
+        String text = this.friendEntry.getName();
+        if (!this.friendEntry.getDisplayName().equals(this.friendEntry.getName()) && !this.isHovered()) {
+            text = "*" + this.friendEntry.getAlias();
         }
         this.setText(text);
         super.H();
@@ -30,7 +30,7 @@ extends SelectableTextRowComponent {
 
 
     public FriendSettingsEntryRowComponent(FriendEntry friendEntry) {
-        super(FriendSettingsEntryRowComponent.J.B, friendEntry.s());
+        super(FriendSettingsEntryRowComponent.J.B, friendEntry.getName());
         this.friendEntry = friendEntry;
     }
 

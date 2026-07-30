@@ -27,7 +27,7 @@ extends Mod {
 
     @Override
     public void onEnable() {
-        Vape.INSTANCE.getClientSettings().k(this);
+        Vape.INSTANCE.getClientSettings().onModuleChanged(this);
     }
 
     private void applyHorizontalMove(EventMove eventMove, double speed) {

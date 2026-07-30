@@ -16,7 +16,7 @@ extends Mapping {
         if (object == null) {
             return null;
         }
-        return (Integer)this.P.L(object, new Object[0]);
+        return (Integer)this.P.invokeObject(object, new Object[0]);
     }
 
     public MTextFormatting() {
@@ -44,7 +44,7 @@ extends Mapping {
                 boolean bl3 = true;
                 String string3 = "getByName";
                 MTextFormatting mTextFormatting3 = this;
-                this.j = this.x(string3, bl3, clazz3, classArray3);
+                this.j = this.registerStaticMethod(string3, bl3, clazz3, classArray3);
             }
             return;
         }
@@ -53,7 +53,7 @@ extends Mapping {
         boolean bl = true;
         String string = "getByName";
         MTextFormatting mTextFormatting = this;
-        this.j = mTextFormatting.x(string, bl, clazz, classArray);
+        this.j = mTextFormatting.registerStaticMethod(string, bl, clazz, classArray);
     }
 
 
@@ -61,14 +61,14 @@ extends Mapping {
         if (string == null) {
             return null;
         }
-        return this.j.L(null, string);
+        return this.j.invokeObject(null, string);
     }
 
     public String m(Object object) {
         if (object == null) {
             return null;
         }
-        return (String)this.O.L(object, new Object[0]);
+        return (String)this.O.invokeObject(object, new Object[0]);
     }
 }
 

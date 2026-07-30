@@ -7,35 +7,34 @@ import gg.vape.protocol.packet.ZeusTrackedPacket;
 
 public class GroupInviteStatePacket
 extends ZeusTrackedPacket<GroupInviteStateResponsePacket> {
-    private boolean c;
-    private long H;
+    private boolean acceptInvite;
+    private long userId;
 
     public GroupInviteStatePacket() {
     }
 
-    public long Y() {
-        return this.H;
+    public long getUserId() {
+        return this.userId;
     }
 
-    public boolean v() {
-        return this.c;
+    public boolean isAcceptInvite() {
+        return this.acceptInvite;
     }
 
     @Override
     public void T(ZeusPacketBuffer zeusPacketBuffer) {
-        zeusPacketBuffer.v(this.H);
-        zeusPacketBuffer.Y(this.c);
+        zeusPacketBuffer.writeLong(this.userId);
+        zeusPacketBuffer.writeBoolean(this.acceptInvite);
     }
 
     @Override
     public void x(ZeusPacketBuffer zeusPacketBuffer) {
-        this.H = zeusPacketBuffer.long_a();
-        this.c = zeusPacketBuffer.boolean_a();
+        this.userId = zeusPacketBuffer.readLong();
+        this.acceptInvite = zeusPacketBuffer.readBoolean();
     }
 
-    public GroupInviteStatePacket(UserModel userModel, boolean bl) {
-        this.H = userModel.g();
-        this.c = bl;
+    public GroupInviteStatePacket(UserModel userModel, boolean acceptInvite) {
+        this.userId = userModel.getId();
+        this.acceptInvite = acceptInvite;
     }
 }
-

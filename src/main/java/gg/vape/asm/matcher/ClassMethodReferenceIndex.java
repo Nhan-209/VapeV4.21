@@ -8,26 +8,25 @@ import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.MethodNode;
 
 public class ClassMethodReferenceIndex {
-    private Map<MethodNode, MethodInstructionIndex> V = new HashMap<MethodNode, MethodInstructionIndex>();
-    private ClassNode q;
+    private Map<MethodNode, MethodInstructionIndex> methodIndexes = new HashMap<MethodNode, MethodInstructionIndex>();
+    private ClassNode classNode;
 
-    public void I() {
-        Iterator<MethodNode> iterator = this.q.methods.iterator();
+    public void buildIndex() {
+        Iterator<MethodNode> iterator = this.classNode.methods.iterator();
         while (iterator.hasNext()) {
-            MethodNode methodNode;
-            MethodNode methodNode2 = methodNode = iterator.next();
-            MethodInstructionIndex methodInstructionIndex = new MethodInstructionIndex(methodNode2);
-            methodInstructionIndex.s$src$V$s4j71d();
-            this.V.put(methodNode2, methodInstructionIndex);
+            MethodNode method = iterator.next();
+            MethodInstructionIndex methodIndex = new MethodInstructionIndex(method);
+            methodIndex.buildIndex();
+            this.methodIndexes.put(method, methodIndex);
         }
     }
 
-    public Map<MethodNode, MethodInstructionIndex> H() {
-        return this.V;
+    public Map<MethodNode, MethodInstructionIndex> getMethodIndexes() {
+        return this.methodIndexes;
     }
 
     public ClassMethodReferenceIndex(ClassNode classNode) {
-        this.q = classNode;
-        this.I();
+        this.classNode = classNode;
+        this.buildIndex();
     }
 }

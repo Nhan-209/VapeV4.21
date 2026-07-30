@@ -5,16 +5,16 @@ import gg.vape.ui.click.component.input.CompactTextInputComponent;
 
 class AddFriendInputComponent
 extends CompactTextInputComponent {
-    final AddFriendInputPanel to;
+    private final AddFriendInputPanel panel;
 
     @Override
     public void submit() {
         super.submit();
-        AddFriendInputPanel.h(this.to);
+        AddFriendInputPanel.submitInput(this.panel);
     }
 
-    AddFriendInputComponent(AddFriendInputPanel addFriendInputPanel, String string) {
-        super(string);
-        this.to = addFriendInputPanel;
+    AddFriendInputComponent(AddFriendInputPanel panel, String placeholder) {
+        super(placeholder);
+        this.panel = panel;
     }
 }

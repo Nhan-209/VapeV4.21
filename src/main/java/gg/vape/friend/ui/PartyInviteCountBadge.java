@@ -12,13 +12,13 @@ import gg.vape.utils.render.GuiRenderPrimitives;
 
 public class PartyInviteCountBadge
 extends PanelComponent {
-    int _n;
-    PanelComponent _X;
-    double _h;
-    private TextLabel _e = new TextLabel("view all", 0.8, false, 20.0, 12.0);
-    private TextButton _j;
-    String _l = "Party Invites";
-    PanelComponent _C;
+    private int inviteCount;
+    private final PanelComponent titlePanel;
+    private double contentHeight;
+    private final TextLabel viewAllLabel = new TextLabel("view all", 0.8, false, 20.0, 12.0);
+    private final TextButton countButton;
+    private final String title = "Party Invites";
+    private final PanelComponent actionPanel;
 
     @Override
     public void c() {
@@ -27,18 +27,18 @@ extends PanelComponent {
 
     public PartyInviteCountBadge() {
         super(100.0, 12.0);
-        this._j = new TextButton("", 0.8, PartyInviteCountBadge.J.d, PartyInviteCountBadge.J.c, 8.5, 8.5);
-        this._h = 0.0;
-        this._X = new PanelComponent(80.0, 12.0);
-        this._C = new PanelComponent(26.0, 12.0);
-        this._n = 0;
+        this.countButton = new TextButton("", 0.8, PartyInviteCountBadge.J.d, PartyInviteCountBadge.J.c, 8.5, 8.5);
+        this.contentHeight = 0.0;
+        this.titlePanel = new PanelComponent(80.0, 12.0);
+        this.actionPanel = new PanelComponent(26.0, 12.0);
+        this.inviteCount = 0;
         this.setShowDisabledOverlay(false);
-        this._X.setShowDisabledOverlay(false);
-        this._C.setShowDisabledOverlay(false);
-        this._C.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().Q(true);
-        this._e.addClickListener(new PartyInviteCountBadgeToggleInvitesClickHandler(this));
-        this._C.addChildren(this._e);
-        this.addChildren(this._X, this._C);
+        this.titlePanel.setShowDisabledOverlay(false);
+        this.actionPanel.setShowDisabledOverlay(false);
+        this.actionPanel.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().Q(true);
+        this.viewAllLabel.addClickListener(new PartyInviteCountBadgeToggleInvitesClickHandler(this));
+        this.actionPanel.addChildren(this.viewAllLabel);
+        this.addChildren(this.titlePanel, this.actionPanel);
     }
 
     @Override
@@ -47,8 +47,8 @@ extends PanelComponent {
 
     @Override
     public void u() {
-        this._n = Vape.INSTANCE.getOnlineManager().y().n().size();
-        this.setVisible(this._n > 1);
+        this.inviteCount = Vape.INSTANCE.getOnlineManager().getPartyManager().getInvites().size();
+        this.setVisible(this.inviteCount > 1);
     }
 
     @Override
@@ -56,23 +56,23 @@ extends PanelComponent {
         return 100.0;
     }
 
-    public TextLabel t$src$Lgg_vape_ui_click_component_gui_TextLabel_$31po4r() {
-        return this._e;
+    public TextLabel getViewAllLabel() {
+        return this.viewAllLabel;
     }
 
 
     @Override
     public void H() {
-        this._j.setVisible(false);
+        this.countButton.setVisible(false);
         SmoothFontRenderer smoothFontRenderer = this.getFontRenderer(0.7);
-        smoothFontRenderer.d(this._l, this.G$src$D$1b2f02a(), this.n() + (this.L() - smoothFontRenderer.d(this._l)) / 2.0, PartyInviteCountBadge.J.Z);
-        int n = 7;
-        if (this._n > 99) {
-            n = 10;
+        smoothFontRenderer.d(this.title, this.G$src$D$1b2f02a(), this.n() + (this.L() - smoothFontRenderer.d(this.title)) / 2.0, PartyInviteCountBadge.J.Z);
+        int badgeWidth = 7;
+        if (this.inviteCount > 99) {
+            badgeWidth = 10;
         }
-        RectData rectData = new RectData(this.G$src$D$1b2f02a() + smoothFontRenderer.N(this._l) + 3.0, this.n() + 2.0, n, 7.0);
+        RectData rectData = new RectData(this.G$src$D$1b2f02a() + smoothFontRenderer.N(this.title) + 3.0, this.n() + 2.0, badgeWidth, 7.0);
         GuiRenderPrimitives.e(rectData.o(), rectData.W(), rectData.e(), rectData.R(), PartyInviteCountBadge.J.d, false, 1.0f, 1.0f);
-        String string = String.valueOf(this._n);
+        String string = String.valueOf(this.inviteCount);
         smoothFontRenderer.d(string, rectData.o() + rectData.e() / 2.0 - smoothFontRenderer.N(string) / 2.0, this.n() + 2.5, PartyInviteCountBadge.J.A);
     }
 
@@ -86,7 +86,7 @@ extends PanelComponent {
 
     @Override
     public double C() {
-        return this._h;
+        return this.contentHeight;
     }
 }
 

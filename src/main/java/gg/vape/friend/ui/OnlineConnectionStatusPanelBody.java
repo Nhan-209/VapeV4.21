@@ -11,28 +11,28 @@ import java.awt.Color;
 
 public class OnlineConnectionStatusPanelBody
 extends PanelComponent {
-    private static boolean dw;
+    private static boolean reservedState;
 
 
-    private static void lambda$new$0() {
+    private static void openConnectionSettings() {
         OnlineConnectionSettingsFrame.getInstance().e(true);
     }
 
-    public static void v(boolean bl) {
-        dw = bl;
+    public static void setReservedState(boolean state) {
+        reservedState = state;
     }
 
-    public static boolean N$src$Z$hco3ln() {
-        return dw;
+    public static boolean getReservedState() {
+        return reservedState;
     }
 
-    public static boolean l$src$Z$ht5xeh() {
-        boolean bl = OnlineConnectionStatusPanelBody.N$src$Z$hco3ln();
+    public static boolean isAlwaysEnabled() {
+        boolean reserved = OnlineConnectionStatusPanelBody.getReservedState();
         return true;
     }
 
     static {
-        OnlineConnectionStatusPanelBody.v(false);
+        OnlineConnectionStatusPanelBody.setReservedState(false);
     }
 
     @Override
@@ -46,12 +46,12 @@ extends PanelComponent {
     public OnlineConnectionStatusPanelBody() {
         super(64.0, 60.0);
         this.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M("wrap");
-        TextButton textButton = new TextButton("SIGN IN", 0.7, OnlineConnectionStatusPanelBody.J.B, OnlineConnectionStatusPanelBody.J.O, null, 2.0f, 0.0f, 50.0, 14.0);
-        textButton.setDeriveTextColorFromBackground(false);
-        textButton.setNormalTextColor(Color.WHITE);
-        textButton.setUseAlternateFont(true);
-        this.addChildren(new SpacerComponent(this.A(), this.L() - textButton.L()), new PaddedComponent(7.0, 0.0, textButton));
-        textButton.addClickListener(OnlineConnectionStatusPanelBody::lambda$new$0);
+        TextButton signInButton = new TextButton("SIGN IN", 0.7, OnlineConnectionStatusPanelBody.J.B, OnlineConnectionStatusPanelBody.J.O, null, 2.0f, 0.0f, 50.0, 14.0);
+        signInButton.setDeriveTextColorFromBackground(false);
+        signInButton.setNormalTextColor(Color.WHITE);
+        signInButton.setUseAlternateFont(true);
+        this.addChildren(new SpacerComponent(this.A(), this.L() - signInButton.L()), new PaddedComponent(7.0, 0.0, signInButton));
+        signInButton.addClickListener(OnlineConnectionStatusPanelBody::openConnectionSettings);
     }
 }
 

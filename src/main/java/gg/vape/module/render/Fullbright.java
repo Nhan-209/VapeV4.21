@@ -68,7 +68,7 @@ extends Mod {
     @EventHandler
     public void onTick(EventPrePlayerTick event) {
         if (((ModeSelection)this.mode.getValue()).equals(this.nightVisionMode)) {
-            Minecraft.thePlayer().s(PotionEffect.o(PotionRegistry.T.D(), 5220, 0));
+            Minecraft.thePlayer().s(PotionEffect.o(PotionRegistry.T.getResolvedId(), 5220, 0));
             this.fadingIn = false;
         }
     }
@@ -105,13 +105,13 @@ extends Mod {
     public void onDisable() {
         if (((ModeSelection)this.mode.getValue()).equals(this.nightVisionMode)) {
             if (Minecraft.thePlayer().isNotNull()) {
-                Minecraft.thePlayer().q(PotionRegistry.T.D());
+                Minecraft.thePlayer().q(PotionRegistry.T.getResolvedId());
                 this.fadingOut = false;
                 Minecraft.gameSettings().y(this.originalGamma);
             }
         } else {
             if (Minecraft.thePlayer().isNotNull()) {
-                Minecraft.thePlayer().q(PotionRegistry.T.D());
+            Minecraft.thePlayer().q(PotionRegistry.T.getResolvedId());
             }
             if (!this.fade.getEffectiveValue().booleanValue()) {
                 Minecraft.gameSettings().y(this.originalGamma);

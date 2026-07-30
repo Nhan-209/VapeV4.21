@@ -8,30 +8,30 @@ import gg.vape.wrapper.impl.Entity;
 @Deprecated
 public class DeprecatedEntityPlayerUpdateEventBase
 extends Event {
-    private static final EventListeners A = new EventListeners();
-    private final Entity N;
+    private static final EventListeners EVENT_LISTENERS = new EventListeners();
+    private final Entity entity;
 
-    public DeprecatedEntityPlayerUpdateEventBase(Object object) {
-        this.N = new Entity(object);
+    public DeprecatedEntityPlayerUpdateEventBase(Object entityHandle) {
+        this.entity = new Entity(entityHandle);
     }
 
     @Override
     public EventListeners getListeners() {
-        return A;
+        return EVENT_LISTENERS;
     }
 
     public Entity getEntity() {
-        return this.N;
+        return this.entity;
     }
 
     public static EventListeners getEventListeners() {
-        return A;
+        return EVENT_LISTENERS;
     }
 
 
     @Override
     public boolean fire() {
-        if (!this.N.isInstance(MappedClasses.z5)) {
+        if (!this.entity.isInstance(MappedClasses.z5)) {
             return false;
         }
         return super.fire();

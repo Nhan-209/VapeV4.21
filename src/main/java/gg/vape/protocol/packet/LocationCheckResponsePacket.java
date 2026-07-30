@@ -5,14 +5,14 @@ import gg.vape.protocol.packet.ZeusSerializablePacket;
 
 public class LocationCheckResponsePacket
 implements ZeusSerializablePacket {
-    private boolean d;
+    private boolean locationValid;
 
-    public boolean N() {
-        return this.d;
+    public boolean isLocationValid() {
+        return this.locationValid;
     }
 
-    public LocationCheckResponsePacket(boolean bl) {
-        this.d = bl;
+    public LocationCheckResponsePacket(boolean locationValid) {
+        this.locationValid = locationValid;
     }
 
     public LocationCheckResponsePacket() {
@@ -20,12 +20,11 @@ implements ZeusSerializablePacket {
 
     @Override
     public void S(ZeusPacketBuffer zeusPacketBuffer) {
-        this.d = zeusPacketBuffer.boolean_a();
+        this.locationValid = zeusPacketBuffer.readBoolean();
     }
 
     @Override
     public void o(ZeusPacketBuffer zeusPacketBuffer) {
-        zeusPacketBuffer.Y(this.d);
+        zeusPacketBuffer.writeBoolean(this.locationValid);
     }
 }
-

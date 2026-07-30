@@ -21,15 +21,15 @@ import java.util.List;
 
 public class PartyActivityListPanel
 extends PanelComponent {
-    private int wn;
-    private static final String[] wy;
-    private final List<GuiComponent> wu;
-    private boolean wC;
-    private boolean wj = false;
-    private static final int wo;
-    final List<OnlineFriendActivityPanel> w9 = new ArrayList<OnlineFriendActivityPanel>();
-    private final OnlineActivityPanelOptions wq;
-    private int wb;
+    private int activityHash;
+    private static final String[] PREVIEW_NAMES;
+    private final List<GuiComponent> previewComponents;
+    private boolean inventoryVisible;
+    private boolean previewVisible;
+    private static final int OBFUSCATION_SEED;
+    private final List<OnlineFriendActivityPanel> activityPanels = new ArrayList<OnlineFriendActivityPanel>();
+    private final OnlineActivityPanelOptions options;
+    private int refreshTick;
 
     @Override
     public void I() {
@@ -43,56 +43,55 @@ extends PanelComponent {
 
     public PartyActivityListPanel() {
         super(114.0, 0.0);
-        this.wu = new ArrayList<GuiComponent>();
+        this.previewComponents = new ArrayList<GuiComponent>();
         this.setShowDisabledOverlay(false);
         this.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M("wrap");
-        this.wq = OnlineActivityPanelOptions.p;
+        this.options = OnlineActivityPanelOptions.INSTANCE;
     }
 
     @Override
     public double C() {
-        if (this.S$src$Z$1pghvaa()) {
+        if (this.shouldShowEditorPreview()) {
             return 108.0;
         }
-        return this.w9.size() * 62;
+        return this.activityPanels.size() * 62;
     }
 
     @Override
     public void H() {
-        boolean bl;
-        boolean bl2 = bl = ClientSettings.INSTANCE != null && ClientSettings.INSTANCE.getActiveStack() instanceof ClickGuiFrameManager;
-        double d = ClientSettings.INSTANCE.isInputEnabled() ? this.getParentFrameComponent().n() : (bl ? this.getParentFrameComponent().n() : (((HudSettingsFrameBase)this.getParentFrameComponent()).q() ? this.getParentFrameComponent().n() + 20.0 : this.getParentFrameComponent().n() + 107.0));
-        this.S(d);
-        boolean bl3 = this.S$src$Z$1pghvaa();
-        if (bl3) {
-            if (!this.wj) {
-                this.a$src$V$1po6zhw();
+        boolean clickGuiActive = ClientSettings.INSTANCE != null && ClientSettings.INSTANCE.getActiveStack() instanceof ClickGuiFrameManager;
+        double panelY = ClientSettings.INSTANCE.isInputEnabled() ? this.getParentFrameComponent().n() : (clickGuiActive ? this.getParentFrameComponent().n() : (((HudSettingsFrameBase)this.getParentFrameComponent()).q() ? this.getParentFrameComponent().n() + 20.0 : this.getParentFrameComponent().n() + 107.0));
+        this.S(panelY);
+        boolean showPreview = this.shouldShowEditorPreview();
+        if (showPreview) {
+            if (!this.previewVisible) {
+                this.addEditorPreview();
             }
             this.l$src$V$1mibm4x();
             return;
         }
-        if (this.wj) {
-            this.N$src$V$1pdqw81();
+        if (this.previewVisible) {
+            this.removeEditorPreview();
         }
         this.l$src$V$1mibm4x();
     }
 
-    private boolean S$src$Z$1pghvaa() {
-        return this.w9.isEmpty() && !ClientSettings.INSTANCE.inputEnabled && HudModuleConfigFrameBase.isHudEditorContext();
+    private boolean shouldShowEditorPreview() {
+        return this.activityPanels.isEmpty() && !ClientSettings.INSTANCE.inputEnabled && HudModuleConfigFrameBase.isHudEditorContext();
     }
 
-    private void e(List<OnlineFriendActivityState> list) {
-        this.b$src$V$1poqs39();
-        if (OnlineConnectionManager.T.S().j$src$Lgg_vape_value_BooleanValue_$1co7xi6().getEffectiveValue().booleanValue()) {
-            this.w9.add(Vape.INSTANCE.getOnlineManager().r().X());
+    private void rebuildActivityPanels(List<OnlineFriendActivityState> activities) {
+        this.clearActivityPanels();
+        if (OnlineConnectionManager.INSTANCE.getSettings().getShowSelf().getEffectiveValue().booleanValue()) {
+            this.activityPanels.add(Vape.INSTANCE.getOnlineManager().getLocalFriend().getActivityPanel());
         }
-        for (OnlineFriendActivityState object : list) {
-            this.w9.add(new OnlineFriendActivityPanel(object));
+        for (OnlineFriendActivityState activity : activities) {
+            this.activityPanels.add(new OnlineFriendActivityPanel(activity));
         }
-        for (OnlineFriendActivityPanel onlineFriendActivityPanel : this.w9) {
+        for (OnlineFriendActivityPanel activityPanel : this.activityPanels) {
             this.h(new SpacerComponent(0.0, 2.0), new Object[0]);
-            onlineFriendActivityPanel.U(this.wC);
-            this.h(onlineFriendActivityPanel, new Object[0]);
+            activityPanel.setInventoryVisible(this.inventoryVisible);
+            this.h(activityPanel, new Object[0]);
         }
         this.L$src$Lgg_vape_ui_click_frame_Frame_$1djx6sa().l$src$V$1mibm4x();
     }
@@ -103,58 +102,58 @@ extends PanelComponent {
     }
 
 
-    public void L(boolean bl) {
-        this.wC = bl;
-        for (GuiComponent guiComponent : this.f()) {
-            if (!(guiComponent instanceof OnlineFriendActivityPanel)) continue;
-            ((OnlineFriendActivityPanel)guiComponent).U(bl);
+    public void setInventoryVisible(boolean visible) {
+        this.inventoryVisible = visible;
+        for (GuiComponent child : this.f()) {
+            if (!(child instanceof OnlineFriendActivityPanel)) continue;
+            ((OnlineFriendActivityPanel)child).setInventoryVisible(visible);
         }
     }
 
-    private void a$src$V$1po6zhw() {
+    private void addEditorPreview() {
         for (int i = 0; i < 2; ++i) {
-            OnlineFriend onlineFriend = new OnlineFriend(wy[i]);
-            onlineFriend.W("Steve");
-            OnlineFriendActivityState onlineFriendActivityState = new OnlineFriendActivityState(onlineFriend);
-            OnlineFriendActivityPanel onlineFriendActivityPanel = new OnlineFriendActivityPanel(onlineFriendActivityState);
-            SpacerComponent spacerComponent = new SpacerComponent(0.0, 2.0);
-            this.wu.add(spacerComponent);
-            this.wu.add(onlineFriendActivityPanel);
-            this.h(spacerComponent, new Object[0]);
-            this.h(onlineFriendActivityPanel, new Object[0]);
+            OnlineFriend previewFriend = new OnlineFriend(PREVIEW_NAMES[i]);
+            previewFriend.setMinecraftUsername("Steve");
+            OnlineFriendActivityState previewState = new OnlineFriendActivityState(previewFriend);
+            OnlineFriendActivityPanel previewPanel = new OnlineFriendActivityPanel(previewState);
+            SpacerComponent spacer = new SpacerComponent(0.0, 2.0);
+            this.previewComponents.add(spacer);
+            this.previewComponents.add(previewPanel);
+            this.h(spacer, new Object[0]);
+            this.h(previewPanel, new Object[0]);
         }
-        this.wj = true;
+        this.previewVisible = true;
         this.L$src$Lgg_vape_ui_click_frame_Frame_$1djx6sa().l$src$V$1mibm4x();
     }
 
-    public void Z$src$V$1pkcfcd() {
-        this.wn = 0;
+    public void requestRefresh() {
+        this.activityHash = 0;
     }
 
-    private void N$src$V$1pdqw81() {
-        for (GuiComponent guiComponent : this.wu) {
-            this.removeChild(guiComponent);
+    private void removeEditorPreview() {
+        for (GuiComponent previewComponent : this.previewComponents) {
+            this.removeChild(previewComponent);
         }
-        this.wu.clear();
-        this.wj = false;
+        this.previewComponents.clear();
+        this.previewVisible = false;
         this.L$src$Lgg_vape_ui_click_frame_Frame_$1djx6sa().l$src$V$1mibm4x();
     }
 
     static {
-        long l = -8029747256032755710L;
-        wo = (int)l;
-        wy = new String[]{"Player1", "Player2"};
+        long obfuscationSeed = -8029747256032755710L;
+        OBFUSCATION_SEED = (int)obfuscationSeed;
+        PREVIEW_NAMES = new String[]{"Player1", "Player2"};
     }
 
-    private void b$src$V$1poqs39() {
-        this.wn = 0;
-        for (GuiComponent guiComponent : this.f()) {
-            if (guiComponent instanceof SettingsFrameHeaderComponent) continue;
-            this.removeChild(guiComponent);
+    private void clearActivityPanels() {
+        this.activityHash = 0;
+        for (GuiComponent child : this.f()) {
+            if (child instanceof SettingsFrameHeaderComponent) continue;
+            this.removeChild(child);
         }
-        this.w9.clear();
-        this.wu.clear();
-        this.wj = false;
+        this.activityPanels.clear();
+        this.previewComponents.clear();
+        this.previewVisible = false;
     }
 
     @Override
@@ -163,27 +162,27 @@ extends PanelComponent {
         if (Minecraft.thePlayer().isNull()) {
             return;
         }
-        PartyState partyState = Vape.INSTANCE.getOnlineManager().y().j();
+        PartyState partyState = Vape.INSTANCE.getOnlineManager().getPartyManager().getCurrentParty();
         if (partyState == null) {
-            if (!this.S$src$Z$1pghvaa()) {
-                this.b$src$V$1poqs39();
+            if (!this.shouldShowEditorPreview()) {
+                this.clearActivityPanels();
             }
             return;
         }
-        List<OnlineFriendActivityState> list = this.wq.D();
-        int n = list.hashCode();
-        if (this.wn != n) {
-            this.e(list);
-            this.wn = n;
+        List<OnlineFriendActivityState> activities = this.options.getPartyActivities();
+        int currentHash = activities.hashCode();
+        if (this.activityHash != currentHash) {
+            this.rebuildActivityPanels(activities);
+            this.activityHash = currentHash;
         }
-        for (OnlineFriendActivityPanel onlineFriendActivityPanel : this.w9) {
-            onlineFriendActivityPanel.y$src$Lgg_vape_friend_OnlineFriendActivityState_$6vxj8m().D();
-            if (this.wb % 20 != 19) continue;
-            onlineFriendActivityPanel.s$src$V$ndfx0l();
+        for (OnlineFriendActivityPanel activityPanel : this.activityPanels) {
+            activityPanel.getActivityState().updateLocalActivity();
+            if (this.refreshTick % 20 != 19) continue;
+            activityPanel.resolveTrackedPlayer();
         }
-        ++this.wb;
-        if (this.wb >= 20) {
-            this.wb = 0;
+        ++this.refreshTick;
+        if (this.refreshTick >= 20) {
+            this.refreshTick = 0;
         }
     }
 }

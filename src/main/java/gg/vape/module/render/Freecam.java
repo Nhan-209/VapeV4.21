@@ -80,7 +80,7 @@ extends Mod {
         this.lastReportedYaw = Minecraft.thePlayer().g();
         this.lastReportedPitch = Minecraft.thePlayer().a$src$F$1txy325();
         if (this.spawnFakePlayer.getEffectiveValue().booleanValue()) {
-            this.fakeEntityId = ClientSettings.f();
+            this.fakeEntityId = ClientSettings.reserveEntityId();
             this.fakePlayer.Q(this.fakeEntityId);
             Minecraft.theWorld().D(this.fakeEntityId, this.fakePlayer);
         }
@@ -89,7 +89,7 @@ extends Mod {
     public void removeFakePlayer() {
         if (this.fakeEntityId != 0 && this.fakePlayer != null && Minecraft.theWorld().isNotNull()) {
             Minecraft.theWorld().M(this.fakePlayer);
-            ClientSettings.I(this.fakeEntityId);
+            ClientSettings.releaseReservedEntityId(this.fakeEntityId);
             this.fakeEntityId = 0;
         }
         this.fakePlayer = null;
@@ -161,7 +161,7 @@ extends Mod {
         player.z(false);
         if (this.fakeEntityId != 0) {
             Minecraft.theWorld().M(this.fakePlayer);
-            ClientSettings.I(this.fakeEntityId);
+            ClientSettings.releaseReservedEntityId(this.fakeEntityId);
             this.fakeEntityId = 0;
         }
     }

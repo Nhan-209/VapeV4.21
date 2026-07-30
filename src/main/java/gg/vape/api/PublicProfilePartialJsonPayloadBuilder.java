@@ -10,25 +10,27 @@ import java.util.UUID;
 import org.jetbrains.annotations.Nullable;
 
 public class PublicProfilePartialJsonPayloadBuilder {
-    public static JsonObject c(long l, @Nullable UUID uUID, @Nullable String string, @Nullable String string2, @Nullable List<String> list, @Nullable Boolean bl, @Nullable Boolean bl2, @Nullable Boolean bl3, @Nullable JsonObject jsonObject) {
-        JsonArray jsonArray = new JsonArray();
-        if (list != null) {
-            for (String string3 : list) {
-                jsonArray.add((JsonElement)new JsonPrimitive(string3));
+    public static JsonObject build(long profileId, @Nullable UUID derivedFrom, @Nullable String name,
+                                   @Nullable String description, @Nullable List<String> tags,
+                                   @Nullable Boolean listed, @Nullable Boolean anonymous,
+                                   @Nullable Boolean shareCodeFriendsOnly, @Nullable JsonObject profileData) {
+        JsonArray tagsJson = new JsonArray();
+        if (tags != null) {
+            for (String tag : tags) {
+                tagsJson.add((JsonElement)new JsonPrimitive(tag));
             }
         }
-        JsonObject jsonObject2 = new JsonObject();
-        jsonObject2.addProperty("profileId", (Number)l);
-        jsonObject2.add("derivedFrom", ApiHttpClient.Z.toJsonTree((Object)uUID));
-        jsonObject2.addProperty("name", string);
-        jsonObject2.addProperty("vapeVersion", "4.21");
-        jsonObject2.addProperty("description", string2);
-        jsonObject2.add("tags", (JsonElement)jsonArray);
-        jsonObject2.addProperty("listed", bl);
-        jsonObject2.addProperty("anonymous", bl2);
-        jsonObject2.addProperty("shareCodeFriendsOnly", bl3);
-        jsonObject2.add("profileData", (JsonElement)jsonObject);
-        return jsonObject2;
+        JsonObject payload = new JsonObject();
+        payload.addProperty("profileId", (Number)profileId);
+        payload.add("derivedFrom", ApiHttpClient.GSON.toJsonTree((Object)derivedFrom));
+        payload.addProperty("name", name);
+        payload.addProperty("vapeVersion", "4.21");
+        payload.addProperty("description", description);
+        payload.add("tags", (JsonElement)tagsJson);
+        payload.addProperty("listed", listed);
+        payload.addProperty("anonymous", anonymous);
+        payload.addProperty("shareCodeFriendsOnly", shareCodeFriendsOnly);
+        payload.add("profileData", (JsonElement)profileData);
+        return payload;
     }
 }
-

@@ -21,7 +21,7 @@ extends Mapping {
     }
 
     public boolean V(Object object, Object object2) {
-        return this.D.e(object, object2);
+        return this.D.invokeBoolean(object, object2);
     }
 
     public static boolean N() {
@@ -30,7 +30,7 @@ extends Mapping {
     }
 
     public Object j(Object object, Object object2) {
-        return this.F.L(object, object2);
+        return this.F.invokeObject(object, object2);
     }
 
     private Object N$src$Ljava_lang_Object_$1l5xr4h() {
@@ -76,7 +76,7 @@ extends Mapping {
             boolean bl5 = true;
             String string4 = "EMPTY";
             MDataComponentMap mDataComponentMap4 = this;
-            this.T = this.u(string4, bl5, clazz4);
+            this.T = this.registerStaticField(string4, bl5, clazz4);
             return;
         }
         if (ForgeVersion.MC_1_21_6.d()) {
@@ -86,7 +86,7 @@ extends Mapping {
             String string = "get";
             Class clazz5 = MappedClasses.uS;
             MDataComponentMap mDataComponentMap = this;
-            this.F = mDataComponentMap.W(clazz5, string, bl6, clazz, classArray);
+            this.F = mDataComponentMap.registerInstanceMethodForOwner(clazz5, string, bl6, clazz, classArray);
         } else {
             Class[] classArray = new Class[]{MappedClasses.Fz};
             Class<Object> clazz = Object.class;
@@ -111,7 +111,7 @@ extends Mapping {
         boolean bl10 = true;
         String string6 = "EMPTY";
         MDataComponentMap mDataComponentMap6 = this;
-        this.T = this.u(string6, bl10, clazz7);
+        this.T = this.registerStaticField(string6, bl10, clazz7);
     }
 
     public static boolean v() {
@@ -119,7 +119,7 @@ extends Mapping {
     }
 
     private Object l(Object object) {
-        return this.j.L(object, new Object[0]);
+        return this.j.invokeObject(object, new Object[0]);
     }
 
     public static void d(boolean bl) {

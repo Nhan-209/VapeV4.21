@@ -25,9 +25,9 @@ public class MacroManager {
         FrameMacros.jo.v(macro);
     }
 
-    public Macro getMacro(String string) {
+    public Macro getMacro(String name) {
         for (Macro macro : this.macros) {
-            if (!macro.getName().equalsIgnoreCase(string)) continue;
+            if (!macro.getName().equalsIgnoreCase(name)) continue;
             return macro;
         }
         return null;
@@ -40,45 +40,45 @@ public class MacroManager {
         }
     }
 
-    public List<Macro> getMacros(List<Integer> list) {
-        ArrayList<Macro> arrayList = new ArrayList<Macro>();
+    public List<Macro> getMacros(List<Integer> boundInputs) {
+        ArrayList<Macro> matches = new ArrayList<Macro>();
         for (Macro macro : this.macros) {
-            if (!macro.getBoundInputs().equals(list)) continue;
-            arrayList.add(macro);
+            if (!macro.getBoundInputs().equals(boundInputs)) continue;
+            matches.add(macro);
         }
-        return arrayList;
+        return matches;
     }
 
-    public List<Macro> getMacros(int n) {
-        ArrayList<Macro> arrayList = new ArrayList<Macro>();
+    public List<Macro> getMacros(int inputCode) {
+        ArrayList<Macro> matches = new ArrayList<Macro>();
         for (Macro macro : this.macros) {
-            if (!macro.getBoundInputs().contains(n)) continue;
-            arrayList.add(macro);
+            if (!macro.getBoundInputs().contains(inputCode)) continue;
+            matches.add(macro);
         }
-        return arrayList;
+        return matches;
     }
 
     public JsonArray toJson() {
-        JsonArray jsonArray = new JsonArray();
+        JsonArray result = new JsonArray();
         for (Macro macro : this.macros) {
-            jsonArray.add((JsonElement)macro.toJson());
+            result.add((JsonElement)macro.toJson());
         }
-        return jsonArray;
+        return result;
     }
 
     public Set<Macro> getMacros() {
         return this.macros;
     }
 
-    public void loadJson(JsonArray jsonArray) {
+    public void loadJson(JsonArray serializedMacros) {
         this.clear();
-        for (int i = 0; i < jsonArray.size(); ++i) {
-            JsonObject jsonObject;
-            JsonElement jsonElement = jsonArray.get(i);
-            if (!jsonElement.isJsonObject() || jsonElement.isJsonNull() || (jsonObject = jsonElement.getAsJsonObject()).get("name") == null || jsonObject.get("name").isJsonNull()) continue;
-            String string = ConfigJsonUtils.c(jsonObject, "name");
-            Macro macro = Macro.create(string);
-            macro.loadJson(jsonObject);
+        for (int index = 0; index < serializedMacros.size(); ++index) {
+            JsonObject serializedMacro;
+            JsonElement element = serializedMacros.get(index);
+            if (!element.isJsonObject() || element.isJsonNull() || (serializedMacro = element.getAsJsonObject()).get("name") == null || serializedMacro.get("name").isJsonNull()) continue;
+            String name = ConfigJsonUtils.getDecodedStringOrEmpty(serializedMacro, "name");
+            Macro macro = Macro.create(name);
+            macro.loadJson(serializedMacro);
             this.addMacro(macro);
         }
     }

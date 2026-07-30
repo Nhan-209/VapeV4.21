@@ -15,12 +15,12 @@ extends Mapping {
         boolean bl = true;
         String string = "NONE";
         MSharedMonsterAttributesVariantBridge mSharedMonsterAttributesVariantBridge = this;
-        this.c = this.u(string, bl, clazz);
+        this.c = this.registerStaticField(string, bl, clazz);
         Class clazz2 = MappedClasses.Vx;
         boolean bl2 = true;
         String string2 = "ALL";
         MSharedMonsterAttributesVariantBridge mSharedMonsterAttributesVariantBridge2 = this;
-        this.U = this.u(string2, bl2, clazz2);
+        this.U = this.registerStaticField(string2, bl2, clazz2);
     }
 
     public Object D() {

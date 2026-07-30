@@ -26,53 +26,53 @@ import java.util.function.Consumer;
 
 public class UsernameEditorPanel
 extends PanelComponent {
-    private PanelComponent kv;
-    private IconButtonComponent kH = new IconButtonComponent("status online@2x", 1.4);
-    private IconButtonComponent kQ;
-    private FlowLayoutComponent kI = new FlowLayoutComponent(100.0);
-    private IconButtonComponent kL;
-    private static GuiComponent[] ke;
-    private AtomicBoolean kW;
-    private DebouncedTextInputComponent kw;
-    private TextLabel k4;
-    private PanelComponent kM;
-    private PanelComponent ka = new PanelComponent(20.0, 16.0);
-    private TextLabelComponent kq;
+    private final PanelComponent editPanel;
+    private final IconButtonComponent onlineStatusIcon = new IconButtonComponent("status online@2x", 1.4);
+    private final IconButtonComponent copyButton;
+    private final FlowLayoutComponent nameLayout = new FlowLayoutComponent(100.0);
+    private final IconButtonComponent editButton;
+    private static GuiComponent[] obfuscationComponents;
+    private final AtomicBoolean requestPending;
+    private final DebouncedTextInputComponent usernameInput;
+    private final TextLabel cancelLabel;
+    private final PanelComponent displayPanel;
+    private final PanelComponent actionsPanel = new PanelComponent(20.0, 16.0);
+    private final TextLabelComponent currentNameLabel;
 
-    public static void t(UsernameEditorPanel usernameEditorPanel) {
-        usernameEditorPanel.s$src$V$fb5sbm();
+    public static void toggleEditMode(UsernameEditorPanel panel) {
+        panel.toggleEditMode();
     }
 
     @Override
     public void g(GuiMouseEvent guiMouseEvent) {
     }
 
-    private void s$src$V$fb5sbm() {
-        if (this.kM.V$src$Z$1xhop3l()) {
-            this.kM.setVisible(false);
-            this.kv.setVisible(true);
-            LocalOnlineFriend localOnlineFriend = Vape.INSTANCE.getOnlineManager().r();
-            String string = localOnlineFriend.C();
-            this.kw.setText(string);
+    private void toggleEditMode() {
+        if (this.displayPanel.V$src$Z$1xhop3l()) {
+            this.displayPanel.setVisible(false);
+            this.editPanel.setVisible(true);
+            LocalOnlineFriend localFriend = Vape.INSTANCE.getOnlineManager().getLocalFriend();
+            String displayName = localFriend.getDisplayName();
+            this.usernameInput.setText(displayName);
         } else {
-            this.kM.setVisible(true);
-            this.kv.setVisible(false);
+            this.displayPanel.setVisible(true);
+            this.editPanel.setVisible(false);
         }
     }
 
-    public static void o(AtomicBoolean atomicBoolean, String string, Consumer<String> consumer, Consumer<String> consumer2) {
-        if (atomicBoolean.get()) {
+    public static void submitNameChange(AtomicBoolean requestPending, String newName, Consumer<String> successConsumer, Consumer<String> errorConsumer) {
+        if (requestPending.get()) {
             return;
         }
-        if (string.isEmpty() || string.equals(Vape.INSTANCE.getOnlineManager().r().C())) {
+        if (newName.isEmpty() || newName.equals(Vape.INSTANCE.getOnlineManager().getLocalFriend().getDisplayName())) {
             return;
         }
-        atomicBoolean.set(true);
-        ZeusConnectionManager.T().u().U(string, arg_0 -> UsernameEditorPanel.lambda$inputOnEnter$0(consumer, consumer2, arg_0), () -> UsernameEditorPanel.lambda$inputOnEnter$1(atomicBoolean));
+        requestPending.set(true);
+        ZeusConnectionManager.T().u().U(newName, response -> UsernameEditorPanel.handleNameChangeResponse(successConsumer, errorConsumer, response), () -> UsernameEditorPanel.clearRequestPending(requestPending));
     }
 
-    public static void t(GuiComponent[] guiComponentArray) {
-        ke = guiComponentArray;
+    public static void setObfuscationComponents(GuiComponent[] components) {
+        obfuscationComponents = components;
     }
 
     @Override
@@ -100,43 +100,43 @@ extends PanelComponent {
 
     @Override
     public void c() {
-        this.kH.Y(17.0);
-        this.kH.setExplicitWidth(8.0);
+        this.onlineStatusIcon.Y(17.0);
+        this.onlineStatusIcon.setExplicitWidth(8.0);
         GuiRenderPrimitives.C(this.G$src$D$1b2f02a() - 3.0, this.n(), this.A() + 7.0, this.L(), new Color(255, 255, 255, 10));
         super.c();
-        if (this.kv.V$src$Z$1xhop3l()) {
-            GuiRenderPrimitives.a(this.kw.G$src$D$1b2f02a() + 4.0, this.kw.n() + 13.0, this.kw.A() - 20.0, 1.0f, UsernameEditorPanel.J.y);
+        if (this.editPanel.V$src$Z$1xhop3l()) {
+            GuiRenderPrimitives.a(this.usernameInput.G$src$D$1b2f02a() + 4.0, this.usernameInput.n() + 13.0, this.usernameInput.A() - 20.0, 1.0f, UsernameEditorPanel.J.y);
         } else {
-            this.kq.setText(Vape.INSTANCE.getOnlineManager().r().C());
-            this.kq.setMaxWidth(this.w$src$Z$e457mb() ? this.A() - 36.0 : this.A() - 26.0);
+            this.currentNameLabel.setText(Vape.INSTANCE.getOnlineManager().getLocalFriend().getDisplayName());
+            this.currentNameLabel.setMaxWidth(this.w$src$Z$e457mb() ? this.A() - 36.0 : this.A() - 26.0);
         }
-        this.kL.setNormalColor(this.w$src$Z$e457mb() ? UsernameEditorPanel.J.W : UsernameEditorPanel.J.t);
+        this.editButton.setNormalColor(this.w$src$Z$e457mb() ? UsernameEditorPanel.J.W : UsernameEditorPanel.J.t);
     }
 
-    private static void lambda$inputOnEnter$0(Consumer consumer, Consumer consumer2, UserDisplayNameResponsePacket userDisplayNameResponsePacket) {
-        if (userDisplayNameResponsePacket.S() == UserDisplayNameStatus.SUCCESSFUL) {
-            Vape.INSTANCE.getAccountInfo().y(userDisplayNameResponsePacket.A());
-            consumer.accept(userDisplayNameResponsePacket.A());
-        } else if (userDisplayNameResponsePacket.S() == UserDisplayNameStatus.COOLDOWN) {
-            String string = userDisplayNameResponsePacket.f() / 1000L + "s";
-            consumer2.accept("On cooldown for " + string);
-        } else if (userDisplayNameResponsePacket.S() == UserDisplayNameStatus.USERNAME_VALIDATION_FAILED) {
-            consumer2.accept("Invalid characters were used");
-        } else if (userDisplayNameResponsePacket.S() == UserDisplayNameStatus.BANNED) {
-            consumer2.accept("You're banned from changing your username");
-        } else if (userDisplayNameResponsePacket.S() == UserDisplayNameStatus.USERNAME_TAKEN) {
-            consumer2.accept("Username already taken");
+    private static void handleNameChangeResponse(Consumer<String> successConsumer, Consumer<String> errorConsumer, UserDisplayNameResponsePacket response) {
+        if (response.getStatus() == UserDisplayNameStatus.SUCCESSFUL) {
+            Vape.INSTANCE.getAccountInfo().setUsername(response.getDisplayName());
+            successConsumer.accept(response.getDisplayName());
+        } else if (response.getStatus() == UserDisplayNameStatus.COOLDOWN) {
+            String cooldown = response.getUserIdOrCooldownEnd() / 1000L + "s";
+            errorConsumer.accept("On cooldown for " + cooldown);
+        } else if (response.getStatus() == UserDisplayNameStatus.USERNAME_VALIDATION_FAILED) {
+            errorConsumer.accept("Invalid characters were used");
+        } else if (response.getStatus() == UserDisplayNameStatus.BANNED) {
+            errorConsumer.accept("You're banned from changing your username");
+        } else if (response.getStatus() == UserDisplayNameStatus.USERNAME_TAKEN) {
+            errorConsumer.accept("Username already taken");
         } else {
-            consumer2.accept("Name change error");
+            errorConsumer.accept("Name change error");
         }
     }
 
-    public static AtomicBoolean I(UsernameEditorPanel usernameEditorPanel) {
-        return usernameEditorPanel.kW;
+    public static AtomicBoolean getRequestPending(UsernameEditorPanel panel) {
+        return panel.requestPending;
     }
 
     static {
-        UsernameEditorPanel.t(new GuiComponent[5]);
+        UsernameEditorPanel.setObfuscationComponents(new GuiComponent[5]);
     }
 
     @Override
@@ -145,61 +145,61 @@ extends PanelComponent {
 
     public UsernameEditorPanel() {
         super(104.0, 16.0);
-        this.kL = new IconButtonComponent("newedit", 0.6, UsernameEditorPanel.J.W, UsernameEditorPanel.J.f, 10.0, 10.0);
-        this.kQ = new IconButtonComponent("newcopy", 0.6, UsernameEditorPanel.J.h);
-        this.kM = new PanelComponent(104.0, 16.0);
-        this.kv = new PanelComponent(104.0, 16.0);
-        this.kW = new AtomicBoolean();
-        this.kw = new UsernameEditorTextInputComponent(this, "Enter username", 10000L);
-        this.k4 = new TextLabel("Cancel", 0.8, false, UsernameEditorPanel.J.l);
-        this.kH.Y(16.0);
-        this.kH.setNormalColor(Color.WHITE);
-        this.kH.setHoverColor(Color.WHITE);
-        this.kq = new UsernameEditorCurrentNameLabel(this, "", 0.6, 0.8, 0.1, this.w$src$Z$e457mb() ? this.A() - 36.0 : this.A() - 26.0, true, false, UsernameEditorPanel.J.h, this);
+        this.editButton = new IconButtonComponent("newedit", 0.6, UsernameEditorPanel.J.W, UsernameEditorPanel.J.f, 10.0, 10.0);
+        this.copyButton = new IconButtonComponent("newcopy", 0.6, UsernameEditorPanel.J.h);
+        this.displayPanel = new PanelComponent(104.0, 16.0);
+        this.editPanel = new PanelComponent(104.0, 16.0);
+        this.requestPending = new AtomicBoolean();
+        this.usernameInput = new UsernameEditorTextInputComponent(this, "Enter username", 10000L);
+        this.cancelLabel = new TextLabel("Cancel", 0.8, false, UsernameEditorPanel.J.l);
+        this.onlineStatusIcon.Y(16.0);
+        this.onlineStatusIcon.setNormalColor(Color.WHITE);
+        this.onlineStatusIcon.setHoverColor(Color.WHITE);
+        this.currentNameLabel = new UsernameEditorCurrentNameLabel(this, "", 0.6, 0.8, 0.1, this.w$src$Z$e457mb() ? this.A() - 36.0 : this.A() - 26.0, true, false, UsernameEditorPanel.J.h, this);
         this.setShowDisabledOverlay(false);
         this.t(16.0);
         this.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().Q(true);
-        this.kw.getActionButton().setIconResource("newnext");
-        this.kI.setShowDisabledOverlay(false);
-        this.kQ.setExplicitWidth(10.0);
-        this.kQ.setExplicitHeight(10.0);
-        this.kL.setExplicitWidth(10.0);
-        this.kL.setExplicitHeight(10.0);
-        this.kQ.setBorderColor(UsernameEditorPanel.J.y);
-        this.ka.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().Q(true);
-        this.ka.setShowDisabledOverlay(false);
-        this.ka.setExplicitWidth(25.0);
-        this.kI.addChildren(new SpacerComponent(2.0, 1.0), this.kH, this.kq);
-        this.ka.addChildren(this.kL);
-        this.ka.addChildren(new SpacerComponent(2.0, 1.0));
-        this.ka.addChildren(this.kQ);
-        this.kM.h(this.kI, new Object[0]);
-        this.kM.h(this.ka, "alignright");
-        this.kM.setShowDisabledOverlay(false);
-        this.kv.h(this.kw, new Object[0]);
-        this.kv.h(this.k4, new Object[0]);
-        this.kv.setVisible(false);
-        this.kv.setShowDisabledOverlay(false);
-        this.kw.setBackgroundVisible(false);
-        this.kw.setMaxLength(16);
-        this.kL.setBorderColor(UsernameEditorPanel.J.t);
-        this.k4.setExplicitHeight(10.0);
-        this.k4.setExplicitWidth(22.0);
-        this.kv.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().Q(true);
-        this.kL.w("Edit display name");
-        this.kQ.w("Copy display name");
-        this.h(this.kM, new Object[0]);
-        this.h(this.kv, new Object[0]);
-        this.kQ.addClickListener(new UsernameCopyClickHandler(this));
-        this.kL.addClickListener(new UsernameEditorEditButtonClickHandler(this));
-        this.k4.addClickListener(new UsernameEditorEditModeToggleClickHandler(this));
+        this.usernameInput.getActionButton().setIconResource("newnext");
+        this.nameLayout.setShowDisabledOverlay(false);
+        this.copyButton.setExplicitWidth(10.0);
+        this.copyButton.setExplicitHeight(10.0);
+        this.editButton.setExplicitWidth(10.0);
+        this.editButton.setExplicitHeight(10.0);
+        this.copyButton.setBorderColor(UsernameEditorPanel.J.y);
+        this.actionsPanel.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().Q(true);
+        this.actionsPanel.setShowDisabledOverlay(false);
+        this.actionsPanel.setExplicitWidth(25.0);
+        this.nameLayout.addChildren(new SpacerComponent(2.0, 1.0), this.onlineStatusIcon, this.currentNameLabel);
+        this.actionsPanel.addChildren(this.editButton);
+        this.actionsPanel.addChildren(new SpacerComponent(2.0, 1.0));
+        this.actionsPanel.addChildren(this.copyButton);
+        this.displayPanel.h(this.nameLayout, new Object[0]);
+        this.displayPanel.h(this.actionsPanel, "alignright");
+        this.displayPanel.setShowDisabledOverlay(false);
+        this.editPanel.h(this.usernameInput, new Object[0]);
+        this.editPanel.h(this.cancelLabel, new Object[0]);
+        this.editPanel.setVisible(false);
+        this.editPanel.setShowDisabledOverlay(false);
+        this.usernameInput.setBackgroundVisible(false);
+        this.usernameInput.setMaxLength(16);
+        this.editButton.setBorderColor(UsernameEditorPanel.J.t);
+        this.cancelLabel.setExplicitHeight(10.0);
+        this.cancelLabel.setExplicitWidth(22.0);
+        this.editPanel.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().Q(true);
+        this.editButton.w("Edit display name");
+        this.copyButton.w("Copy display name");
+        this.h(this.displayPanel, new Object[0]);
+        this.h(this.editPanel, new Object[0]);
+        this.copyButton.addClickListener(new UsernameCopyClickHandler(this));
+        this.editButton.addClickListener(new UsernameEditorEditButtonClickHandler(this));
+        this.cancelLabel.addClickListener(new UsernameEditorEditModeToggleClickHandler(this));
     }
 
-    public static GuiComponent[] C$src$ALgg_vape_ui_click_component_GuiComponent_$15ojrbs() {
-        return ke;
+    public static GuiComponent[] getObfuscationComponents() {
+        return obfuscationComponents;
     }
 
-    private static void lambda$inputOnEnter$1(AtomicBoolean atomicBoolean) {
-        atomicBoolean.set(false);
+    private static void clearRequestPending(AtomicBoolean requestPending) {
+        requestPending.set(false);
     }
 }

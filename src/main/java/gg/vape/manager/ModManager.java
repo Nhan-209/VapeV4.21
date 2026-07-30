@@ -147,101 +147,101 @@ implements EventListener {
     private Map<Class<? extends Mod>, Mod> activeModulesByType;
     private boolean suppressStateNotifications;
 
-    public Collection<Mod> f() {
-        ArrayList<Mod> arrayList = new ArrayList<Mod>();
-        for (Mod mod : this.s()) {
+    public Collection<Mod> getTopLevelModules() {
+        ArrayList<Mod> topLevelModules = new ArrayList<Mod>();
+        for (Mod mod : this.getAllModules()) {
             if (mod instanceof SubModule) continue;
-            arrayList.add(mod);
+            topLevelModules.add(mod);
         }
-        return arrayList;
+        return topLevelModules;
     }
 
     public void init() {
-        GuiComponent[] guiComponentArray = Category.N$src$ALgg_vape_ui_click_component_GuiComponent_$lect5v();
-        Mod[] modArray = new Mod[61];
-        modArray[0] = new ClientSettings();
-        modArray[1] = new LeftClicker();
-        modArray[2] = new RightClicker();
-        modArray[3] = new Velocity();
-        modArray[4] = new VelocityPacketReceiveMode();
-        modArray[5] = new VelocityPacketMode();
-        modArray[6] = new Reach();
-        modArray[7] = new Throwpot();
-        modArray[8] = new Refill();
-        modArray[9] = new Tracers();
-        modArray[10] = new NameTags();
-        modArray[11] = new Search();
-        modArray[12] = new ESP();
-        modArray[13] = new ChestSteal();
-        modArray[14] = new KeepSprint();
-        modArray[15] = new FastPlace();
-        modArray[16] = new HitBoxes();
-        modArray[17] = new SpawnerFinder();
-        modArray[18] = new StorageESP();
-        modArray[19] = new Scaffold();
-        modArray[20] = new Fullbright();
-        modArray[21] = new WTap();
-        modArray[22] = new AutoArmor();
-        modArray[23] = new AutoHotbar();
-        modArray[24] = new ThrowDebuff();
-        modArray[25] = new AutoTool();
-        modArray[26] = new AimAssist();
-        modArray[27] = new Trajectories();
-        modArray[28] = new AntiDebuff();
-        modArray[29] = new SafeWalk();
-        modArray[30] = new Projectiles();
-        modArray[31] = new Fly();
-        modArray[32] = new KillAura();
-        modArray[33] = new Arrows();
-        modArray[34] = new BlinkPacketRenderModule();
-        modArray[35] = new AutoPearl();
-        modArray[36] = new Panic();
-        modArray[37] = new AntiAFK();
-        modArray[38] = new ArmorSwitch();
-        modArray[39] = new ItemESP();
-        modArray[40] = new AutoMLG();
-        modArray[41] = new InventoryManager();
-        modArray[42] = new AutoSoup();
-        modArray[43] = new Explosions();
-        modArray[44] = new Parkour();
-        modArray[45] = new MurderMystery();
-        modArray[46] = new BowAimbot();
-        modArray[47] = new Indicators();
-        modArray[48] = new Sprint();
-        modArray[49] = new HealthDisplay();
-        modArray[50] = new HitSelect();
-        modArray[51] = new Animations();
+        GuiComponent[] legacyComponentsSnapshot = Category.N$src$ALgg_vape_ui_click_component_GuiComponent_$lect5v();
+        Mod[] coreModules = new Mod[61];
+        coreModules[0] = new ClientSettings();
+        coreModules[1] = new LeftClicker();
+        coreModules[2] = new RightClicker();
+        coreModules[3] = new Velocity();
+        coreModules[4] = new VelocityPacketReceiveMode();
+        coreModules[5] = new VelocityPacketMode();
+        coreModules[6] = new Reach();
+        coreModules[7] = new Throwpot();
+        coreModules[8] = new Refill();
+        coreModules[9] = new Tracers();
+        coreModules[10] = new NameTags();
+        coreModules[11] = new Search();
+        coreModules[12] = new ESP();
+        coreModules[13] = new ChestSteal();
+        coreModules[14] = new KeepSprint();
+        coreModules[15] = new FastPlace();
+        coreModules[16] = new HitBoxes();
+        coreModules[17] = new SpawnerFinder();
+        coreModules[18] = new StorageESP();
+        coreModules[19] = new Scaffold();
+        coreModules[20] = new Fullbright();
+        coreModules[21] = new WTap();
+        coreModules[22] = new AutoArmor();
+        coreModules[23] = new AutoHotbar();
+        coreModules[24] = new ThrowDebuff();
+        coreModules[25] = new AutoTool();
+        coreModules[26] = new AimAssist();
+        coreModules[27] = new Trajectories();
+        coreModules[28] = new AntiDebuff();
+        coreModules[29] = new SafeWalk();
+        coreModules[30] = new Projectiles();
+        coreModules[31] = new Fly();
+        coreModules[32] = new KillAura();
+        coreModules[33] = new Arrows();
+        coreModules[34] = new BlinkPacketRenderModule();
+        coreModules[35] = new AutoPearl();
+        coreModules[36] = new Panic();
+        coreModules[37] = new AntiAFK();
+        coreModules[38] = new ArmorSwitch();
+        coreModules[39] = new ItemESP();
+        coreModules[40] = new AutoMLG();
+        coreModules[41] = new InventoryManager();
+        coreModules[42] = new AutoSoup();
+        coreModules[43] = new Explosions();
+        coreModules[44] = new Parkour();
+        coreModules[45] = new MurderMystery();
+        coreModules[46] = new BowAimbot();
+        coreModules[47] = new Indicators();
+        coreModules[48] = new Sprint();
+        coreModules[49] = new HealthDisplay();
+        coreModules[50] = new HitSelect();
+        coreModules[51] = new Animations();
         SilentAura silentAura = new SilentAura();
-        modArray[52] = silentAura;
-        modArray[53] = new SilentAuraClicker(silentAura);
-        modArray[54] = new SilentAuraTargetingModule();
-        modArray[55] = new Clutch();
-        modArray[56] = new InvCleaner();
-        modArray[57] = new BlockHit();
-        modArray[58] = new Timer();
-        modArray[59] = new AutoClickerInputModule();
-        modArray[60] = new BedPlates();
-        this.L(Stream.of(modArray));
+        coreModules[52] = silentAura;
+        coreModules[53] = new SilentAuraClicker(silentAura);
+        coreModules[54] = new SilentAuraTargetingModule();
+        coreModules[55] = new Clutch();
+        coreModules[56] = new InvCleaner();
+        coreModules[57] = new BlockHit();
+        coreModules[58] = new Timer();
+        coreModules[59] = new AutoClickerInputModule();
+        coreModules[60] = new BedPlates();
+        this.registerModules(Stream.of(coreModules));
         ModRegistrationBuilder.create().setModule(new PearlESP()).addVersionConstraint(ForgeVersion.MC_1_16_5.b()).registerWith(this);
-        Mod[] modArray2 = new Mod[2];
-        modArray2[0] = new Chams();
+        Mod[] versionConstrainedModules = new Mod[2];
+        versionConstrainedModules[0] = new Chams();
         XRay xRay = new XRay();
         ModManager modManager = this;
         modManager.xrayModule = xRay;
-        modArray2[1] = xRay;
-        this.Y(Stream.of(modArray2), ModManager::lambda$addModules$0);
-        GuiComponent[] guiComponentArray2 = guiComponentArray;
+        versionConstrainedModules[1] = xRay;
+        this.registerModules(Stream.of(versionConstrainedModules), ModManager::addMinecraft1165Constraint);
+        GuiComponent[] preservedLegacyComponents = legacyComponentsSnapshot;
         ModRegistrationBuilder.create().setModule(new Freecam()).addVersionConstraint(ForgeVersion.MC_1_16_5.b()).addVersionConstraint(ForgeVersion.MC_1_21_11.n()).registerWith(this);
-        this.Y(Stream.of(new InvWalk()), ModManager::lambda$addModules$1);
-        this.Y(Stream.of(new Backtrack()), ModManager::lambda$addModules$2);
-        this.Y(Stream.of(new MLG(), new BedBreaker(), new BlockIn(), new FastUseModule()), ModManager::lambda$addModules$3);
-        this.Y(Stream.of(new BedPlates()), ModManager::lambda$addModules$4);
-        this.L(Stream.of(new AntiBot()));
-        this.Y(Stream.of(new AutoClicker(), new HitSwap(), new AnchorMacro(), new WindChargeJump(), new CrystalAura(), new AutoTotem()), ModManager::lambda$addModules$5);
-        this.Y(Stream.of(new NoFall(), new NoSlow(), new Speed(), new BlockHit(), new Timer()), ModManager::lambda$addModules$6);
-        this.h();
-        this.c();
-        if (guiComponentArray2 == null) {
+        this.registerModules(Stream.of(new InvWalk()), ModManager::addMinecraft189Constraint);
+        this.registerModules(Stream.of(new Backtrack()), ModManager::addBacktrackVersionConstraints);
+        this.registerModules(Stream.of(new MLG(), new BedBreaker(), new BlockIn(), new FastUseModule()), ModManager::addMinecraft1710Constraint);
+        this.registerModules(Stream.of(new BedPlates()), ModManager::addBedPlatesVersionConstraints);
+        this.registerModules(Stream.of(new AntiBot()));
+        this.registerModules(Stream.of(new AutoClicker(), new HitSwap(), new AnchorMacro(), new WindChargeJump(), new CrystalAura(), new AutoTotem()), ModManager::addMinecraft1214Constraint);
+        this.registerModules(Stream.of(new NoFall(), new NoSlow(), new Speed(), new BlockHit(), new Timer()), ModManager::addModernMinecraftConstraint);
+        this.registerTextGuiSettings();
+        this.registerHudModules();
+        if (preservedLegacyComponents == null) {
             GuiComponent.setLegacyComponentState(new GuiComponent[2]);
         }
     }
@@ -254,34 +254,32 @@ implements EventListener {
         return false;
     }
 
-    private static void lambda$addLegitModules$7(ModRegistrationBuilder modRegistrationBuilder) {
+    private static void addMinecraft1206Constraint(ModRegistrationBuilder modRegistrationBuilder) {
         modRegistrationBuilder.addVersionConstraint(ForgeVersion.MC_1_20_6.b());
     }
 
-    public JsonObject getJsonObj() {
-        JsonObject jsonObject = new JsonObject();
-        for (Mod mod : this.s()) {
+    public JsonObject getEnabledNonHudModuleStates() {
+        JsonObject enabledStates = new JsonObject();
+        for (Mod mod : this.getAllModules()) {
             if (mod instanceof HudModule || !mod.r$src$Z$14eylz9()) continue;
-            jsonObject.addProperty(mod.getName(), Boolean.valueOf(mod.r$src$Z$14eylz9()));
+            enabledStates.addProperty(mod.getName(), Boolean.valueOf(mod.r$src$Z$14eylz9()));
         }
-        return jsonObject;
+        return enabledStates;
     }
 
-    public void S(Profile profile) {
-        boolean bl = true;
-        ModManager modManager = this;
-        modManager.suppressStateNotifications = bl;
-        JsonObject jsonObject = profile.V();
-        int n = 0;
+    public void applyProfileModuleStates(Profile profile) {
+        this.suppressStateNotifications = true;
+        JsonObject enabledStates = profile.getEnabledModuleStates();
+        int enabledCount = 0;
         for (Mod mod : this.collectMods()) {
             if (mod instanceof HudModule || mod.getCategory().equals(Category.b)) continue;
             try {
-                if (jsonObject.has(mod.getName())) {
+                if (enabledStates.has(mod.getName())) {
                     if (!mod.O()) continue;
                     try {
                         if (mod.r$src$Z$14eylz9()) continue;
-                        mod.Y(jsonObject.get(mod.getName()).getAsBoolean());
-                        ++n;
+                        mod.Y(enabledStates.get(mod.getName()).getAsBoolean());
+                        ++enabledCount;
                     }
                     catch (Exception exception) {
                         Vape.logThrowable(exception);
@@ -295,83 +293,81 @@ implements EventListener {
                 Vape.logThrowable(exception);
             }
         }
-        boolean bl2 = false;
-        ModManager modManager2 = this;
-        modManager2.suppressStateNotifications = bl2;
-        if (Vape.INSTANCE.getPublicProfileSettings().A.getEffectiveValue().booleanValue()) {
-            this.profileSwitchNotification.withTitle("Profile swap to " + gg.vape.config.ClientSettings.F + "6" + profile.n$src$Ljava_lang_String_$xqhelw())
-                    .withMessage(n + " modules enabled").reset();
+        this.suppressStateNotifications = false;
+        if (Vape.INSTANCE.getPublicProfileSettings().profileSwitchNotifications.getEffectiveValue().booleanValue()) {
+            this.profileSwitchNotification.withTitle("Profile swap to " + gg.vape.config.ClientSettings.FORMAT_CODE + "6" + profile.getName())
+                    .withMessage(enabledCount + " modules enabled").reset();
             Vape.INSTANCE.getNotificationManager().show(this.profileSwitchNotification);
         }
     }
 
-    private static void lambda$addModules$6(ModRegistrationBuilder modRegistrationBuilder) {
+    private static void addModernMinecraftConstraint(ModRegistrationBuilder modRegistrationBuilder) {
         modRegistrationBuilder.addVersionConstraint(ForgeVersion.MC_1_21_4.b());
     }
 
-    public void A() {
+    public void initializeAllModules() {
         for (Mod mod : this.allModulesByType.values()) {
             mod.I();
         }
     }
 
-    private void Y(Stream<Mod> stream, Consumer<ModRegistrationBuilder<?>> consumer) {
-        stream.forEach(arg_0 -> this.lambda$registerStream$8(consumer, arg_0));
+    private void registerModules(Stream<Mod> modules, Consumer<ModRegistrationBuilder<?>> customizer) {
+        modules.forEach(module -> this.registerModuleWithCustomizer(customizer, module));
     }
 
     public HashSet<Mod> getMods() {
         return this.enabledModules;
     }
 
-    public static void Q(GuiComponent[] guiComponentArray) {
-        legacyCategoryComponents = guiComponentArray;
+    public static void setLegacyCategoryComponents(GuiComponent[] components) {
+        legacyCategoryComponents = components;
     }
 
-    private void L(Stream<Mod> stream) {
-        this.Y(stream, ModManager::lambda$registerStream$9);
+    private void registerModules(Stream<Mod> modules) {
+        this.registerModules(modules, ModManager::noAdditionalConstraints);
     }
 
-    void registerModule(Mod mod, List<List<MinecraftVersionConstraint>> list, boolean addToActiveList) {
-        this.allModulesByType.put(mod.getClass(), mod);
-        if (!list.isEmpty()) {
-            boolean bl2 = false;
-            for (List<MinecraftVersionConstraint> list2 : list) {
-                List<MinecraftVersionConstraint> activeConstraints = MinecraftVersionConstraint.o(list2);
+    void registerModule(Mod module, List<List<MinecraftVersionConstraint>> constraintGroups, boolean enableImmediately) {
+        this.allModulesByType.put(module.getClass(), module);
+        if (!constraintGroups.isEmpty()) {
+            boolean supported = false;
+            for (List<MinecraftVersionConstraint> constraints : constraintGroups) {
+                List<MinecraftVersionConstraint> activeConstraints = MinecraftVersionConstraint.o(constraints);
                 if (!activeConstraints.isEmpty()) continue;
-                bl2 = true;
+                supported = true;
             }
-            if (!bl2) {
+            if (!supported) {
                 return;
             }
         }
-        this.activeModulesByType.put(mod.getClass(), mod);
-        this.activeModuleList.add(mod);
-        for (Value<?, ?> value : mod.F$src$Ljava_util_List_$1kytx9u()) {
+        this.activeModulesByType.put(module.getClass(), module);
+        this.activeModuleList.add(module);
+        for (Value<?, ?> value : module.F$src$Ljava_util_List_$1kytx9u()) {
             if (!(value instanceof ModeValue)) continue;
             ModeValue modeValue = (ModeValue)value;
             for (ModeSelection modeSelection : modeValue.getModes()) {
                 SubModuleValue subModuleValue;
-                if (!(modeSelection instanceof SubModuleValue) || !((SubModule)(subModuleValue = (SubModuleValue)modeSelection).getInstance()).U()) continue;
-                this.registerModule((Mod)subModuleValue.getInstance(), list, false);
-                mod.k(new SubModule[]{subModuleValue.getInstance()});
+                if (!(modeSelection instanceof SubModuleValue) || !((SubModule)(subModuleValue = (SubModuleValue)modeSelection).getInstance()).isEnabled()) continue;
+                this.registerModule((Mod)subModuleValue.getInstance(), constraintGroups, false);
+                module.k(new SubModule[]{subModuleValue.getInstance()});
             }
         }
-        if (addToActiveList) {
-            mod.Y(true);
+        if (enableImmediately) {
+            module.Y(true);
         }
     }
 
-    private void h() {
+    private void registerTextGuiSettings() {
         ModRegistrationBuilder.create().setModule(new TextGuiSettings()).registerWith(this);
     }
 
-    private void lambda$registerStream$8(Consumer consumer, Mod mod) {
-        ModRegistrationBuilder<Mod> modRegistrationBuilder = ModRegistrationBuilder.create().setModule(mod);
-        consumer.accept(modRegistrationBuilder);
-        modRegistrationBuilder.registerWith(this);
+    private void registerModuleWithCustomizer(Consumer consumer, Mod module) {
+        ModRegistrationBuilder<Mod> builder = ModRegistrationBuilder.create().setModule(module);
+        consumer.accept(builder);
+        builder.registerWith(this);
     }
 
-    public void m() {
+    public void finishModuleInitialization() {
         for (Mod mod : this.activeModulesByType.values()) {
             mod.t();
         }
@@ -386,38 +382,38 @@ implements EventListener {
         }
     }
 
-    public String T() {
-        StringBuilder stringBuilder = new StringBuilder();
+    public String buildTranslationTemplate() {
+        StringBuilder translations = new StringBuilder();
         for (Mod mod : this.collectMods()) {
-            String string = mod.getName();
-            String string2 = string.replace(" ", "_").toLowerCase();
-            stringBuilder.append(string2 + "=" + string);
-            stringBuilder.append("\n");
+            String moduleName = mod.getName();
+            String moduleKey = moduleName.replace(" ", "_").toLowerCase();
+            translations.append(moduleKey + "=" + moduleName);
+            translations.append("\n");
             if (mod.n() != null && !mod.n().equals("")) {
-                stringBuilder.append(string2 + ".tooltip=" + mod.n().replace("\n", " "));
-                stringBuilder.append("\n");
+                translations.append(moduleKey + ".tooltip=" + mod.n().replace("\n", " "));
+                translations.append("\n");
             }
             for (Value<?, ?> value : mod.F$src$Ljava_util_List_$1kytx9u()) {
-                String string3 = value.getName();
-                String string4 = string2 + "." + value.getName().replace(" ", "_").toLowerCase();
-                stringBuilder.append(string4 + "=" + string3);
-                stringBuilder.append("\n");
+                String valueName = value.getName();
+                String valueKey = moduleKey + "." + value.getName().replace(" ", "_").toLowerCase();
+                translations.append(valueKey + "=" + valueName);
+                translations.append("\n");
                 if (value.getDescription() == null || value.getDescription().isEmpty()) continue;
-                String string5 = value.getDescription().replace("\n", " ");
-                String string6 = string4 + ".tooltip";
-                stringBuilder.append(string6 + "=" + string5);
-                stringBuilder.append("\n");
+                String description = value.getDescription().replace("\n", " ");
+                String tooltipKey = valueKey + ".tooltip";
+                translations.append(tooltipKey + "=" + description);
+                translations.append("\n");
             }
         }
-        return stringBuilder.toString();
+        return translations.toString();
     }
 
-    private static Exception a(Exception exception) {
+    private static Exception propagateException(Exception exception) {
         return exception;
     }
 
     @EventHandler
-    public void a(EventModStateChange eventModStateChange) {
+    public void onModuleStateChanged(EventModStateChange eventModStateChange) {
         Mod mod = eventModStateChange.getModule();
         if (mod.r$src$Z$14eylz9()) {
             this.enabledModules.add(mod);
@@ -427,89 +423,89 @@ implements EventListener {
         for (Mod mod2 : this.getMods()) {
             mod2.U(mod);
         }
-        if (ClientSettings.INSTANCE.isInputEnabled() && mod.q$src$Z$12h8h4c() && Vape.INSTANCE.getPublicProfileSettings().r.getEffectiveValue().booleanValue() && !this.suppressStateNotifications) {
+        if (ClientSettings.INSTANCE.isInputEnabled() && mod.q$src$Z$12h8h4c() && Vape.INSTANCE.getPublicProfileSettings().toggleAlerts.getEffectiveValue().booleanValue() && !this.suppressStateNotifications) {
             mod.B();
         }
     }
 
     @EventHandler
-    public void y(EventModStateChange eventModStateChange) {
+    public void onModuleEnabled(EventModStateChange eventModStateChange) {
         Mod mod = eventModStateChange.getModule();
         if (eventModStateChange.isEnabled()) {
             mod.j();
         }
     }
 
-    private static void lambda$addModules$5(ModRegistrationBuilder modRegistrationBuilder) {
+    private static void addMinecraft1214Constraint(ModRegistrationBuilder modRegistrationBuilder) {
         modRegistrationBuilder.addVersionConstraint(ForgeVersion.MC_1_21_4.n());
     }
 
     static {
-        ModManager.Q(new GuiComponent[4]);
+        ModManager.setLegacyCategoryComponents(new GuiComponent[4]);
     }
 
-    private void c() {
+    private void registerHudModules() {
         ModRegistrationBuilder.create().setModule(new FreeLookHudModule()).registerWith(this);
         ModRegistrationBuilder.create().setModule(new NoClickDelayHudModule()).addVersionConstraint(ForgeVersion.MC_1_7_10.N()).registerWith(this);
         ModRegistrationBuilder.create().setModule(new MouseDelayFix()).addVersionConstraint(ForgeVersion.MC_1_8_9.S()).registerWith(this);
-        this.L(Stream.of(new KeystrokesHudModule(), new ClockHudModule(), new PotionEffectsHudModule()));
+        this.registerModules(Stream.of(new KeystrokesHudModule(), new ClockHudModule(), new PotionEffectsHudModule()));
         ModRegistrationBuilder.create().setModule(new BlockhitAnimationHudModule()).addVersionConstraint(ForgeVersion.MC_1_8_9.S()).registerWith(this);
-        this.L(Stream.of(new NoHurtDelayHudModule(), new ArmorStatusHudModule(), new CompassHudModule(), new WeatherChangerHudModule(), new NoHurtCameraHudModule(), new TimeChangerHudModule(), new CoordinatesHudModule(), new FpsDisplayHudModule(), new ReachDisplayHudModule(), new NoFogHudModule(), new BlockOverlayHudModule()));
+        this.registerModules(Stream.of(new NoHurtDelayHudModule(), new ArmorStatusHudModule(), new CompassHudModule(), new WeatherChangerHudModule(), new NoHurtCameraHudModule(), new TimeChangerHudModule(), new CoordinatesHudModule(), new FpsDisplayHudModule(), new ReachDisplayHudModule(), new NoFogHudModule(), new BlockOverlayHudModule()));
         ModRegistrationBuilder.create().setModule(new BlockRenderColorOverrideHudModule()).addVersionConstraints(ForgeVersion.MC_1_7_10.N(), ForgeVersion.MC_1_16_5.b()).registerWith(this);
-        this.Y(Stream.of(new ScoreboardHudModule(), new InventoryBlurHudModule()), ModManager::lambda$addLegitModules$7);
+        this.registerModules(Stream.of(new ScoreboardHudModule(), new InventoryBlurHudModule()), ModManager::addMinecraft1206Constraint);
     }
 
-    public int x(Category category) {
-        int n = 0;
+    public int countEnabledModules(Category category) {
+        int count = 0;
         for (Mod mod : this.activeModulesByType.values()) {
             if (mod.getCategory() != category || !mod.r$src$Z$14eylz9()) continue;
-            ++n;
+            ++count;
         }
-        return n;
+        return count;
     }
 
     @Nullable
-    public XRay G() {
+    public XRay getXRayModule() {
         return this.xrayModule;
     }
 
-    public JsonArray toJson(boolean bl) {
-        JsonArray jsonArray = new JsonArray();
-        for (Mod mod : this.f()) {
-            JsonObject jsonObject = mod.q(bl);
-            if (jsonObject == null) continue;
-            jsonArray.add((JsonElement)jsonObject);
+    public JsonArray toJson(boolean includeDefaults) {
+        JsonArray serializedModules = new JsonArray();
+        for (Mod mod : this.getTopLevelModules()) {
+            JsonObject serializedModule = mod.q(includeDefaults);
+            if (serializedModule == null) continue;
+            serializedModules.add((JsonElement)serializedModule);
         }
-        return jsonArray;
+        return serializedModules;
     }
 
-    public JsonObject e() {
-        JsonObject jsonObject = new JsonObject();
-        for (Mod mod : this.s()) {
+    public JsonObject getEnabledHudModuleStates() {
+        JsonObject enabledStates = new JsonObject();
+        for (Mod mod : this.getAllModules()) {
             if (!(mod instanceof HudModule) || !mod.r$src$Z$14eylz9()) continue;
-            jsonObject.addProperty(mod.getName(), Boolean.valueOf(mod.r$src$Z$14eylz9()));
+            enabledStates.addProperty(mod.getName(), Boolean.valueOf(mod.r$src$Z$14eylz9()));
         }
-        return jsonObject;
+        return enabledStates;
     }
 
-    public static GuiComponent[] S() {
+    public static GuiComponent[] getLegacyCategoryComponents() {
         return legacyCategoryComponents;
     }
 
-    private static void lambda$addModules$2(ModRegistrationBuilder modRegistrationBuilder) {
+    private static void addBacktrackVersionConstraints(ModRegistrationBuilder modRegistrationBuilder) {
         modRegistrationBuilder.addVersionConstraint(ForgeVersion.MC_1_8_9.H()).addVersionConstraint(ForgeVersion.MC_1_21_4.n());
     }
 
-    public void T(JsonObject jsonObject) {
+    public void applyHudModuleStates(JsonObject enabledStates) {
         for (Mod mod : this.collectMods()) {
-            if (!(mod instanceof HudModule) || !jsonObject.has(mod.getName())) continue;
-            boolean bl = jsonObject.get(mod.getName()).getAsBoolean();
-            if (mod.r$src$Z$14eylz9() == bl) continue;
-            mod.Y(bl);
+            if (!(mod instanceof HudModule) || !enabledStates.has(mod.getName())) continue;
+            boolean enabled = enabledStates.get(mod.getName()).getAsBoolean();
+            if (mod.r$src$Z$14eylz9() == enabled) continue;
+            mod.Y(enabled);
         }
     }
 
-    private static void lambda$addModules$1(ModRegistrationBuilder modRegistrationBuilder) {
+    private static void addMinecraft189Constraint(ModRegistrationBuilder modRegistrationBuilder) {
         modRegistrationBuilder.addVersionConstraint(ForgeVersion.MC_1_8_9.H());
     }
 
@@ -517,9 +513,9 @@ implements EventListener {
         return (T)((Mod)this.activeModulesByType.get(clazz));
     }
 
-    public boolean N(Class<? extends InventoryActionModule> clazz) {
+    public boolean isOtherInventoryActionActive(Class<? extends InventoryActionModule> moduleType) {
         for (Mod mod : this.activeModulesByType.values()) {
-            if (mod.getClass() == clazz || !(mod instanceof InventoryActionModule)) continue;
+            if (mod.getClass() == moduleType || !(mod instanceof InventoryActionModule)) continue;
             InventoryActionModule inventoryActionModule = (InventoryActionModule)((Object)mod);
             if (!mod.r$src$Z$14eylz9() || !inventoryActionModule.isPerformingInventoryAction()) continue;
             return true;
@@ -527,65 +523,61 @@ implements EventListener {
         return false;
     }
 
-    public void y() {
-        boolean bl = true;
-        ModManager modManager = this;
-        modManager.suppressStateNotifications = bl;
+    public void disableNonHudModules() {
+        this.suppressStateNotifications = true;
         for (Mod mod : this.collectMods()) {
             if (mod.getCategory() == Category.b || !mod.r$src$Z$14eylz9() || mod instanceof HudModule) continue;
             mod.Y(false);
         }
-        boolean bl2 = false;
-        ModManager modManager2 = this;
-        modManager2.suppressStateNotifications = bl2;
+        this.suppressStateNotifications = false;
     }
 
-    public Mod getMod(String string) {
+    public Mod getMod(String name) {
         for (Map.Entry<Class<? extends Mod>, Mod> entry : this.activeModulesByType.entrySet()) {
-            if (!((Mod)entry.getValue()).getName().equals(string)) continue;
+            if (!((Mod)entry.getValue()).getName().equals(name)) continue;
             return (Mod)entry.getValue();
         }
         return null;
     }
 
-    private static void lambda$addModules$3(ModRegistrationBuilder modRegistrationBuilder) {
+    private static void addMinecraft1710Constraint(ModRegistrationBuilder modRegistrationBuilder) {
         modRegistrationBuilder.addVersionConstraint(ForgeVersion.MC_1_7_10.N());
     }
 
-    public List<Mod> F(JsonObject jsonObject) {
-        ArrayList<Mod> arrayList = new ArrayList<Mod>();
+    public List<Mod> getProfileModules(JsonObject enabledModuleStates) {
+        ArrayList<Mod> modules = new ArrayList<Mod>();
         for (Mod mod : this.collectMods()) {
-            if (!jsonObject.has(mod.getName()) || !mod.O() || mod.getCategory() == Category.b) continue;
-            arrayList.add(mod);
+            if (!enabledModuleStates.has(mod.getName()) || !mod.O() || mod.getCategory() == Category.b) continue;
+            modules.add(mod);
         }
-        return arrayList;
+        return modules;
     }
 
-    public Collection<Mod> s() {
+    public Collection<Mod> getAllModules() {
         return this.allModulesByType.values();
     }
 
-    private static void lambda$addModules$0(ModRegistrationBuilder modRegistrationBuilder) {
+    private static void addMinecraft1165Constraint(ModRegistrationBuilder modRegistrationBuilder) {
         modRegistrationBuilder.addVersionConstraint(ForgeVersion.MC_1_16_5.b());
     }
 
-    private static void lambda$registerStream$9(ModRegistrationBuilder modRegistrationBuilder) {
+    private static void noAdditionalConstraints(ModRegistrationBuilder modRegistrationBuilder) {
     }
 
     public Collection<Mod> collectMods() {
         return this.activeModulesByType.values();
     }
 
-    public void loadJson(JsonArray jsonArray) {
-        for (int i = 0; i < jsonArray.size(); ++i) {
-            JsonObject jsonObject;
-            JsonElement jsonElement = jsonArray.get(i);
-            if (!jsonElement.isJsonObject() || jsonElement.isJsonNull() || (jsonObject = jsonElement.getAsJsonObject()).get("name") == null || jsonObject.get("name").isJsonNull()) continue;
-            String string = jsonObject.get("name").getAsString();
-            for (Mod mod : this.f()) {
+    public void loadJson(JsonArray serializedModules) {
+        for (int index = 0; index < serializedModules.size(); ++index) {
+            JsonObject serializedModule;
+            JsonElement element = serializedModules.get(index);
+            if (!element.isJsonObject() || element.isJsonNull() || (serializedModule = element.getAsJsonObject()).get("name") == null || serializedModule.get("name").isJsonNull()) continue;
+            String moduleName = serializedModule.get("name").getAsString();
+            for (Mod mod : this.getTopLevelModules()) {
                 try {
-                    if (!mod.getName().equalsIgnoreCase(string)) continue;
-                    mod.loadJson(jsonObject);
+                    if (!mod.getName().equalsIgnoreCase(moduleName)) continue;
+                    mod.loadJson(serializedModule);
                 }
                 catch (Exception exception) {
                     Vape.debugLog(mod.getName());
@@ -595,20 +587,20 @@ implements EventListener {
         }
     }
 
-    public void i() {
-        int n = 0;
+    public void disableHiddenModules() {
+        int disabledCount = 0;
         for (Mod mod : this.collectMods()) {
             if (mod.O() || mod instanceof ClientSettings || mod.h() == 0 || !mod.r$src$Z$14eylz9()) continue;
-            ++n;
+            ++disabledCount;
             mod.F();
         }
-        if (n > 0) {
-            Vape.INSTANCE.getNotificationManager().show("Hidden Disabled", n + " module(s) have been disabled!", NotificationType.WARNING, 2500L);
+        if (disabledCount > 0) {
+            Vape.INSTANCE.getNotificationManager().show("Hidden Disabled", disabledCount + " module(s) have been disabled!", NotificationType.WARNING, 2500L);
         }
     }
 
     public ModManager() {
-        GuiComponent[] guiComponentArray = Category.N$src$ALgg_vape_ui_click_component_GuiComponent_$lect5v();
+        GuiComponent[] legacyComponentsSnapshot = Category.N$src$ALgg_vape_ui_click_component_GuiComponent_$lect5v();
         Object[] discardedSlotStorage = new Object[877];
         Array.newInstance(Long.TYPE, 837);
         Array.newInstance(Byte.TYPE, 904);
@@ -617,34 +609,24 @@ implements EventListener {
         Array.newInstance(Object.class, 823);
         Array.newInstance(Character.TYPE, 598);
         Array.newInstance(Double.TYPE, 654);
-        GuiComponent[] guiComponentArray2 = guiComponentArray;
+        GuiComponent[] preservedLegacyComponents = legacyComponentsSnapshot;
         Array.newInstance(Integer.TYPE, 556);
         Array.newInstance(Boolean.TYPE, 506);
-        LinkedHashMap linkedHashMap = new LinkedHashMap();
-        ModManager modManager = this;
-        modManager.allModulesByType = linkedHashMap;
-        LinkedHashMap linkedHashMap2 = new LinkedHashMap();
-        ModManager modManager2 = this;
-        modManager2.activeModulesByType = linkedHashMap2;
-        HashSet hashSet = new HashSet();
-        ModManager modManager3 = this;
-        modManager3.enabledModules = hashSet;
-        ArrayList arrayList = new ArrayList();
-        ModManager modManager4 = this;
-        modManager4.activeModuleList = arrayList;
-        ReusableTextNotification reusableTextNotification = new ReusableTextNotification(NotificationType.INFO, "", "", 2000L);
-        ModManager modManager5 = this;
-        modManager5.profileSwitchNotification = reusableTextNotification;
+        this.allModulesByType = new LinkedHashMap();
+        this.activeModulesByType = new LinkedHashMap();
+        this.enabledModules = new HashSet();
+        this.activeModuleList = new ArrayList();
+        this.profileSwitchNotification = new ReusableTextNotification(NotificationType.INFO, "", "", 2000L);
         if (GuiComponent.getLegacyComponentState() == null) {
             Category.q(new GuiComponent[1]);
         }
     }
 
-    public ArrayList<Mod> l() {
+    public ArrayList<Mod> getActiveModuleList() {
         return this.activeModuleList;
     }
 
-    private static void lambda$addModules$4(ModRegistrationBuilder modRegistrationBuilder) {
+    private static void addBedPlatesVersionConstraints(ModRegistrationBuilder modRegistrationBuilder) {
         modRegistrationBuilder.addVersionConstraints(ForgeVersion.MC_1_7_10.N(), ForgeVersion.MC_1_20_6.b());
     }
 }

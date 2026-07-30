@@ -11,14 +11,14 @@ extends Wrapper {
 
     public static RayTraceResult_type entity() {
         if (f == null) {
-            f = new RayTraceResult_type(MRayTraceResult_Type.G(RayTraceResult_type.c.getMappingsMapperCompat().q1));
+            f = new RayTraceResult_type(MRayTraceResult_Type.G(RayTraceResult_type.vapeInstance.getMappingsMapperCompat().q1));
         }
         return f;
     }
 
     public static RayTraceResult_type block() {
         if (r == null) {
-            r = new RayTraceResult_type(MRayTraceResult_Type.b(RayTraceResult_type.c.getMappingsMapperCompat().q1));
+            r = new RayTraceResult_type(MRayTraceResult_Type.b(RayTraceResult_type.vapeInstance.getMappingsMapperCompat().q1));
         }
         return r;
     }
@@ -30,7 +30,7 @@ extends Wrapper {
 
     public static RayTraceResult_type miss() {
         if (g == null) {
-            g = new RayTraceResult_type(RayTraceResult_type.c.getMappingsMapperCompat().q1.c());
+            g = new RayTraceResult_type(RayTraceResult_type.vapeInstance.getMappingsMapperCompat().q1.c());
         }
         return g;
     }

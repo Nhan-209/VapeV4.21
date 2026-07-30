@@ -14,20 +14,20 @@ import gg.vape.wrapper.impl.WorldClient;
 
 public class ClientListenerBootstrapEventListener
 implements EventListener {
-    private static GuiComponent[] E;
+    private static GuiComponent[] obfuscationState;
 
 
-    @EventHandler(A=EventPriority.LOW)
+    @EventHandler(priority=EventPriority.LOW)
     public void onPacketReceive(EventPacketReceive eventPacketReceive) {
         if (!eventPacketReceive.getPacket().isInstance(MappedClasses.lU)) {
             return;
         }
-        SPacketEntityStatus sPacketEntityStatus = new SPacketEntityStatus(eventPacketReceive.getPacket().getObject());
-        WorldClient worldClient = Minecraft.theWorld();
-        if (worldClient.isNull()) {
+        SPacketEntityStatus entityStatusPacket = new SPacketEntityStatus(eventPacketReceive.getPacket().getObject());
+        WorldClient world = Minecraft.theWorld();
+        if (world.isNull()) {
             return;
         }
-        Entity entity = worldClient.V(sPacketEntityStatus.X());
+        Entity entity = world.V(entityStatusPacket.X());
         if (entity.isNull()) {
             return;
         }
@@ -35,17 +35,17 @@ implements EventListener {
     }
 
     static {
-        if (ClientListenerBootstrapEventListener.g() != null) {
-            ClientListenerBootstrapEventListener.U(new GuiComponent[1]);
+        if (ClientListenerBootstrapEventListener.getObfuscationState() != null) {
+            ClientListenerBootstrapEventListener.setObfuscationState(new GuiComponent[1]);
         }
     }
 
-    public static GuiComponent[] g() {
-        return E;
+    public static GuiComponent[] getObfuscationState() {
+        return obfuscationState;
     }
 
-    public static void U(GuiComponent[] guiComponentArray) {
-        E = guiComponentArray;
+    public static void setObfuscationState(GuiComponent[] state) {
+        obfuscationState = state;
     }
 }
 

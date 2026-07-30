@@ -25,11 +25,11 @@ extends Mapping {
         Class<Boolean> clazz2 = Boolean.TYPE;
         String string2 = "isEmpty";
         MVoxelShape mVoxelShape2 = this;
-        this.h = this.u(string2, clazz2, classArray2).s();
+        this.h = this.methodBuilder(string2, clazz2, classArray2).buildMethod();
     }
 
     private Object q(Object object) {
-        return this.s.L(object, new Object[0]);
+        return this.s.invokeObject(object, new Object[0]);
     }
 
     public static Object o(MVoxelShape mVoxelShape, Object object) {
@@ -37,7 +37,7 @@ extends Mapping {
     }
 
     private boolean r(Object object) {
-        return this.h.e(object, new Object[0]);
+        return this.h.invokeBoolean(object, new Object[0]);
     }
 }
 

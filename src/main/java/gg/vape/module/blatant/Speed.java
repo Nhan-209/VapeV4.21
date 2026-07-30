@@ -18,10 +18,10 @@ import gg.vape.wrapper.impl.PotionRegistry;
 
 public class Speed
 extends Mod {
-    private final SubModuleValue antiCheatBMode = new MineplexSpeed(this, "AntiCheat B").r$src$Lgg_vape_value_SubModuleValue_$1rfa4wx();
+    private final SubModuleValue antiCheatBMode = new MineplexSpeed(this, "AntiCheat B").getSelectionValue();
     public double lastHorizontalDistance;
     private final ModeValue mode;
-    private final SubModuleValue bhopMode = new BhopSpeed(this, "Bhop").r$src$Lgg_vape_value_SubModuleValue_$1rfa4wx();
+    private final SubModuleValue bhopMode = new BhopSpeed(this, "Bhop").getSelectionValue();
     public double moveSpeed;
     public int stage;
 
@@ -72,7 +72,7 @@ extends Mod {
         eventMove.setZ(forwardInput * speed * sine - strafeInput * speed * cosine);
     }
 
-    @EventHandler(A=EventPriority.HIGH)
+    @EventHandler(priority=EventPriority.HIGH)
     public void onMotionUpdate(EventPreMotion eventPreMotion) {
         EntityPlayerSP player = Minecraft.thePlayer();
         double deltaX = player.z() - player.f();
@@ -87,7 +87,7 @@ extends Mod {
 
     @Override
     public void onEnable() {
-        Vape.INSTANCE.getClientSettings().k(this);
+        Vape.INSTANCE.getClientSettings().onModuleChanged(this);
         this.moveSpeed = this.defaultSpeed();
         this.lastHorizontalDistance = 0.0;
         this.stage = 2;

@@ -23,7 +23,7 @@ extends Mapping {
     public final MappingMethod L;
 
     public Object S(Object object, int n, int n2, int n3, int n4, Object object2) {
-        return this.I.L(object, n, n2, n3, n4, object2);
+        return this.I.invokeObject(object, n, n2, n3, n4, object2);
     }
 
     public static void p(int n) {
@@ -35,11 +35,11 @@ extends Mapping {
     }
 
     public boolean U(Object object, Object object2, Object object3, Object object4, int n, int n2, int n3, int n4, Object object5) {
-        return this.r.e(object, object2, object3, object4, n, n2, n3, n4, object5);
+        return this.r.invokeBoolean(object, object2, object3, object4, n, n2, n3, n4, object5);
     }
 
     private void U(Object object) {
-        this.f.F(object);
+        this.f.invokeVoidNoArgs(object);
     }
 
     private float X(Object object) {
@@ -52,28 +52,28 @@ extends Mapping {
 
     public float z(Object object) {
         if (ForgeVersion.MC_1_20_6.d()) {
-            return (float)this.K.F(object, new Object[0]);
+            return (float)this.K.invokeDouble(object, new Object[0]);
         }
-        return this.K.s(object, new Object[0]);
+        return this.K.invokeFloat(object, new Object[0]);
     }
 
     public void o(Object object) {
-        this.L.F(object);
+        this.L.invokeVoidNoArgs(object);
     }
 
     public Object H(Object object, Object object2, Object object3, Object object4) {
         if (ForgeVersion.MC_1_20_6.d()) {
-            return this.c.L(object, object2, object4);
+            return this.c.invokeObject(object, object2, object4);
         }
-        return this.c.L(object, object2, object3, object4);
+        return this.c.invokeObject(object, object2, object3, object4);
     }
 
     public Object N(Object object, int n, int n2, int n3, Object object2, Object object3) {
         if (ForgeVersion.MC_1_17.d()) {
-            this.I.c(object, n, n2, n3, object2, object3);
+            this.I.invokeVoid(object, n, n2, n3, object2, object3);
             return null;
         }
-        return this.I.L(object, n, n2, n3, object2, object3);
+        return this.I.invokeObject(object, n, n2, n3, object2, object3);
     }
 
 
@@ -170,7 +170,7 @@ extends Mapping {
             String string8 = "blockInteractionRange";
             Class clazz9 = MappedClasses.Yl;
             MPlayerControllerMP mPlayerControllerMP8 = this;
-            this.K = this.W(clazz9, string8, bl8, clazz8, classArray);
+            this.K = this.registerInstanceMethodForOwner(clazz9, string8, bl8, clazz8, classArray);
         } else {
             Class[] classArray = new Class[]{};
             Class<Float> clazz10 = Float.TYPE;
@@ -219,7 +219,7 @@ extends Mapping {
                     } else {
                         Class[] classArray7 = new Class[]{MappedClasses.z5, MappedClasses.Z, MappedClasses.Yf, MappedClasses.qF};
                         Class clazz16 = MappedClasses.zr;
-                        boolean bl15 = Wrapper.G;
+                        boolean bl15 = Wrapper.isNativeAvailable;
                         String string15 = "func_217292_a";
                         MPlayerControllerMP mPlayerControllerMP15 = this;
                         this.r = this.Y(string15, bl15, clazz16, classArray7);
@@ -252,9 +252,9 @@ extends Mapping {
 
     public Object e(Object object, Object object2, Object object3, Object object4, Object object5) {
         if (ForgeVersion.MC_1_20_6.d()) {
-            return this.r.L(object, object2, object4, object5);
+            return this.r.invokeObject(object, object2, object4, object5);
         }
-        return this.r.L(object, object2, object3, object4, object5);
+        return this.r.invokeObject(object, object2, object3, object4, object5);
     }
 
     public static boolean K(MPlayerControllerMP mPlayerControllerMP, Object object) {
@@ -262,7 +262,7 @@ extends Mapping {
     }
 
     public boolean Q(Object object, Object object2, Object object3, Object object4) {
-        return this.c.e(object, object2, object3, object4);
+        return this.c.invokeBoolean(object, object2, object3, object4);
     }
 
     public static void attackEntity(MPlayerControllerMP mPlayerControllerMP, Object object, Object object2, Object object3) {
@@ -274,7 +274,7 @@ extends Mapping {
     }
 
     public void onStoppedUsingItem(Object object, Object object2) {
-        this.O.c(object, object2);
+        this.O.invokeVoid(object, object2);
     }
 
     public static int d() {
@@ -282,7 +282,7 @@ extends Mapping {
     }
 
     public Object m(Object object, Object object2, Object object3, Object object4, Object object5, Object object6, Object object7) {
-        return this.r.L(object, object2, object3, object4, object5, object6, object7);
+        return this.r.invokeObject(object, object2, object3, object4, object5, object6, object7);
     }
 
     public static int V() {
@@ -294,7 +294,7 @@ extends Mapping {
     }
 
     private void q(Object object, Object object2, Object object3) {
-        this.i.c(object, object2, object3);
+        this.i.invokeVoid(object, object2, object3);
     }
 
     public static float l(MPlayerControllerMP mPlayerControllerMP, Object object) {
@@ -302,7 +302,7 @@ extends Mapping {
     }
 
     public boolean J(Object object, Object object2, Object object3, Object object4, Object object5, Object object6, Object object7) {
-        return this.r.e(object, object2, object3, object4, object5, object6, object7);
+        return this.r.invokeBoolean(object, object2, object3, object4, object5, object6, object7);
     }
 }
 

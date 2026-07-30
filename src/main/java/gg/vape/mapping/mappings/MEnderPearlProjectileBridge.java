@@ -34,7 +34,7 @@ extends Mapping {
             String string = "getOwner";
             Class<?> clazz2 = MappedClasses.YV;
             MEnderPearlProjectileBridge mEnderPearlProjectileBridge = this;
-            this.E = mEnderPearlProjectileBridge.W(clazz2, string, bl, clazz, classArray);
+            this.E = mEnderPearlProjectileBridge.registerInstanceMethodForOwner(clazz2, string, bl, clazz, classArray);
         } else if (ForgeVersion.MC_1_16_5.d()) {
             Class[] classArray = new Class[]{};
             Class clazz = MappedClasses.zc;
@@ -50,7 +50,7 @@ extends Mapping {
     }
 
     private Object a(Object object) {
-        return this.E.L(object, new Object[0]);
+        return this.E.invokeObject(object, new Object[0]);
     }
 
 }

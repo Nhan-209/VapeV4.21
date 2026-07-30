@@ -139,7 +139,7 @@ extends Mod {
             return;
         }
         KeyBinding sneakKey = Minecraft.gameSettings().d$src$Lgg_vape_wrapper_impl_KeyBinding_$adn2z0();
-        int keyCode = ClientSettings.H(sneakKey);
+        int keyCode = ClientSettings.getPlatformKeyCode(sneakKey);
         if (keyCode == eventKeyPress.getKey()) {
             eventKeyPress.setCancelled(true);
         }

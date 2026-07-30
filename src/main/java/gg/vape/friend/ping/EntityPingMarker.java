@@ -10,50 +10,50 @@ import org.jetbrains.annotations.Nullable;
 public class EntityPingMarker
 extends OnlineFriendPingMarker {
     @Nullable
-    private Entity n;
+    private Entity entity;
     @Nullable
-    private Long U;
-    private final int p;
+    private Long entityOwnerUserId;
+    private final int entityId;
 
-    public static double[] P(Entity entity) {
+    public static double[] getEntityPosition(Entity entity) {
         return new double[]{entity.c(), entity.A() + ((double)entity.Y() + 0.15), entity.Z()};
     }
 
-    public EntityPingMarker(OnlineFriend onlineFriend, @Nullable Long l, int n, double[] dArray) {
-        super(onlineFriend, dArray);
-        this.U = l;
-        this.p = n;
-        this.u(18.0);
-        this.Z(18.0);
+    public EntityPingMarker(OnlineFriend onlineFriend, @Nullable Long entityOwnerUserId, int entityId, double[] position) {
+        super(onlineFriend, position);
+        this.entityOwnerUserId = entityOwnerUserId;
+        this.entityId = entityId;
+        this.setWidth(18.0);
+        this.setHeight(18.0);
     }
 
 
-    public EntityPingMarker(OnlineFriend onlineFriend, @Nullable Long l, Entity entity) {
-        super(onlineFriend, EntityPingMarker.P(entity));
-        this.U = l;
-        this.p = entity.S();
-        this.n = entity;
-        this.u(18.0);
-        this.Z(18.0);
-    }
-
-    @Override
-    public void w(World world) {
-        Entity entity;
-        if (this.n != null && (this.n.isNull() || this.n.M$src$Z$ff28xj())) {
-            this.n = null;
-        }
-        if (this.n == null && (entity = world.V(this.p)) != null && entity.isNotNull() && !entity.M$src$Z$ff28xj()) {
-            this.n = entity;
-        }
-        if (this.n != null && this.n.isNotNull()) {
-            this.n(EntityPingMarker.P(this.n));
-        }
+    public EntityPingMarker(OnlineFriend onlineFriend, @Nullable Long entityOwnerUserId, Entity entity) {
+        super(onlineFriend, EntityPingMarker.getEntityPosition(entity));
+        this.entityOwnerUserId = entityOwnerUserId;
+        this.entityId = entity.S();
+        this.entity = entity;
+        this.setWidth(18.0);
+        this.setHeight(18.0);
     }
 
     @Override
-    public PingTargetData T() {
-        return PingTargetData.a(this.U, this.p, this.Z(), this.N(), this.F());
+    public void update(World world) {
+        Entity resolvedEntity;
+        if (this.entity != null && (this.entity.isNull() || this.entity.M$src$Z$ff28xj())) {
+            this.entity = null;
+        }
+        if (this.entity == null && (resolvedEntity = world.V(this.entityId)) != null && resolvedEntity.isNotNull() && !resolvedEntity.M$src$Z$ff28xj()) {
+            this.entity = resolvedEntity;
+        }
+        if (this.entity != null && this.entity.isNotNull()) {
+            this.setWorldPosition(EntityPingMarker.getEntityPosition(this.entity));
+        }
+    }
+
+    @Override
+    public PingTargetData toTargetData() {
+        return PingTargetData.a(this.entityOwnerUserId, this.entityId, this.getX(), this.getY(), this.getZ());
     }
 }
 

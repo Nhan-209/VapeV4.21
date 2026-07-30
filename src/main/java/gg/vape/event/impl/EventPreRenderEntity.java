@@ -6,13 +6,13 @@ import gg.vape.wrapper.impl.Entity;
 
 public class EventPreRenderEntity
 extends Event {
-    private Entity f = null;
-    private static final EventListeners x = new EventListeners();
-    private final Object E;
+    private Entity entity = null;
+    private static final EventListeners EVENT_LISTENERS = new EventListeners();
+    private final Object entityHandle;
 
     @Override
     public EventListeners getListeners() {
-        return x;
+        return EVENT_LISTENERS;
     }
 
 
@@ -22,18 +22,18 @@ extends Event {
     }
 
     public static EventListeners getEventListeners() {
-        return x;
+        return EVENT_LISTENERS;
     }
 
     public Entity getEntity() {
-        if (this.f == null) {
-            this.f = new Entity(this.E);
+        if (this.entity == null) {
+            this.entity = new Entity(this.entityHandle);
         }
-        return this.f;
+        return this.entity;
     }
 
-    public EventPreRenderEntity(Object object) {
-        this.E = object;
+    public EventPreRenderEntity(Object entityHandle) {
+        this.entityHandle = entityHandle;
     }
 }
 

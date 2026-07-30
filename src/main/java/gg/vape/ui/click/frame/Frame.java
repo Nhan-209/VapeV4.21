@@ -58,8 +58,8 @@ implements FrameStateSerializable {
     }
 
     public void j(boolean bl) {
-        int n = (int)((double)Minecraft.J() / 4.0 / Vape.INSTANCE.getClientSettings().s() - this.A() / 2.0);
-        int n2 = (int)((double)Minecraft.h() / 4.0 / Vape.INSTANCE.getClientSettings().s() - this.L() / 2.0);
+        int n = (int)((double)Minecraft.J() / 4.0 / Vape.INSTANCE.getClientSettings().getGuiScaleFactor() - this.A() / 2.0);
+        int n2 = (int)((double)Minecraft.h() / 4.0 / Vape.INSTANCE.getClientSettings().getGuiScaleFactor() - this.L() / 2.0);
         if (bl || this.G$src$D$1b2f02a() != (double)n || this.n() != (double)n2) {
             this.M(n, n2);
             this.H(true);
@@ -131,20 +131,20 @@ implements FrameStateSerializable {
     public void t(JsonObject jsonObject) {
         Boolean bl;
         Double d;
-        Double d2 = ConfigJsonUtils.p(jsonObject, "x");
+        Double d2 = ConfigJsonUtils.getDouble(jsonObject, "x");
         if (d2 != null) {
             this.K(d2);
             this.P$src$V$i0cha4();
         }
-        if ((d = ConfigJsonUtils.p(jsonObject, "y")) != null) {
+        if ((d = ConfigJsonUtils.getDouble(jsonObject, "y")) != null) {
             this.S(d);
             this.P$src$V$i0cha4();
         }
-        if ((bl = ConfigJsonUtils.t(jsonObject, "pinned")) != null) {
+        if ((bl = ConfigJsonUtils.getBoolean(jsonObject, "pinned")) != null) {
             this.c(bl);
         }
         if (this.Ir) {
-            Boolean bl2 = ConfigJsonUtils.t(jsonObject, "visible");
+            Boolean bl2 = ConfigJsonUtils.getBoolean(jsonObject, "visible");
             if (bl2 != null) {
                 this.t(jsonObject.get("visible").getAsBoolean(), false);
                 ClientSettings.markFramePositioned(this);
@@ -251,7 +251,7 @@ implements FrameStateSerializable {
     }
 
     public double g$src$D$1f6bh6i() {
-        double d = (double)Minecraft.h() / Vape.INSTANCE.getClientSettings().s();
+        double d = (double)Minecraft.h() / Vape.INSTANCE.getClientSettings().getGuiScaleFactor();
         return d / 2.0 - this.j$src$Lgg_vape_ui_click_frame_FrameHeaderComponent_$175vsfc().L() * 0.5;
     }
 
@@ -277,7 +277,7 @@ implements FrameStateSerializable {
     }
 
     public double T$src$D$1evvdwn() {
-        double d = (double)Minecraft.J() / Vape.INSTANCE.getClientSettings().s();
+        double d = (double)Minecraft.J() / Vape.INSTANCE.getClientSettings().getGuiScaleFactor();
         return d / 2.0 - this.A() * 0.25;
     }
 

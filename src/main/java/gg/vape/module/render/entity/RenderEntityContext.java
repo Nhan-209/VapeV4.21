@@ -67,10 +67,10 @@ public class RenderEntityContext {
     }
 
     public boolean canViewerSee() {
-        if (!this.visibilityCache.r()) {
-            this.visibilityCache.I(this.viewer.canEntityBeSeen(this.entity));
+        if (!this.visibilityCache.isCached()) {
+            this.visibilityCache.setValue(this.viewer.canEntityBeSeen(this.entity));
         }
-        return (Boolean)this.visibilityCache.F();
+        return (Boolean)this.visibilityCache.getCachedValue();
     }
 
     @Nullable
@@ -79,35 +79,35 @@ public class RenderEntityContext {
     }
 
     public boolean isAttackable() {
-        if (!this.attackableCache.r()) {
+        if (!this.attackableCache.isCached()) {
             if (this.entityPlayer != null) {
-                this.attackableCache.I(Vape.INSTANCE.getClientSettings().e(this.viewer, this.entity));
+                this.attackableCache.setValue(Vape.INSTANCE.getClientSettings().isTeammate(this.viewer, this.entity));
             } else {
-                this.attackableCache.I(false);
+                this.attackableCache.setValue(false);
             }
         }
-        return (Boolean)this.attackableCache.F();
+        return (Boolean)this.attackableCache.getCachedValue();
     }
 
     public float getHealth() {
-        if (!this.healthCache.r()) {
-            this.healthCache.I(Float.valueOf(this.entity.p()));
+        if (!this.healthCache.isCached()) {
+            this.healthCache.setValue(Float.valueOf(this.entity.p()));
         }
-        return ((Float)this.healthCache.F()).floatValue();
+        return ((Float)this.healthCache.getCachedValue()).floatValue();
     }
 
     public boolean isInvisible() {
-        if (!this.invisibleCache.r()) {
-            this.invisibleCache.I(this.entity.J$src$Z$fdev5g());
+        if (!this.invisibleCache.isCached()) {
+            this.invisibleCache.setValue(this.entity.J$src$Z$fdev5g());
         }
-        return (Boolean)this.invisibleCache.F();
+        return (Boolean)this.invisibleCache.getCachedValue();
     }
 
     public float getHeight() {
-        if (!this.heightCache.r()) {
-            this.heightCache.I(Float.valueOf(this.entity.Y()));
+        if (!this.heightCache.isCached()) {
+            this.heightCache.setValue(Float.valueOf(this.entity.Y()));
         }
-        return ((Float)this.heightCache.F()).floatValue();
+        return ((Float)this.heightCache.getCachedValue()).floatValue();
     }
 
     public int getEntityId() {
@@ -115,29 +115,29 @@ public class RenderEntityContext {
     }
 
     public boolean isInvisibleWithoutEquipment() {
-        if (!this.invisibleWithoutEquipmentCache.r()) {
-            this.invisibleWithoutEquipmentCache.I(RotationUtil.k(this.entity));
+        if (!this.invisibleWithoutEquipmentCache.isCached()) {
+            this.invisibleWithoutEquipmentCache.setValue(RotationUtil.k(this.entity));
         }
-        return (Boolean)this.invisibleWithoutEquipmentCache.F();
+        return (Boolean)this.invisibleWithoutEquipmentCache.getCachedValue();
     }
 
     public void update(EntityLivingBase entity, EntityPlayerSP viewer) {
         this.entity = entity;
         this.viewer = viewer;
-        this.syntheticEntityCache.S();
-        this.botCache.S();
-        this.visibilityCache.S();
-        this.invisibleCache.S();
-        this.invisibleWithoutEquipmentCache.S();
-        this.sneakingCache.S();
-        this.attackableCache.S();
-        this.friendCache.S();
-        this.enemyCache.S();
-        this.effectiveHealthCache.S();
-        this.maxHealthCache.S();
-        this.healthCache.S();
-        this.distanceCache.S();
-        this.heightCache.S();
+        this.syntheticEntityCache.clear();
+        this.botCache.clear();
+        this.visibilityCache.clear();
+        this.invisibleCache.clear();
+        this.invisibleWithoutEquipmentCache.clear();
+        this.sneakingCache.clear();
+        this.attackableCache.clear();
+        this.friendCache.clear();
+        this.enemyCache.clear();
+        this.effectiveHealthCache.clear();
+        this.maxHealthCache.clear();
+        this.healthCache.clear();
+        this.distanceCache.clear();
+        this.heightCache.clear();
         this.cachedName = null;
         this.cachedTypeName = null;
         this.heldItem = null;
@@ -182,12 +182,12 @@ public class RenderEntityContext {
     public MutableColor getRenderColor(boolean outline) {
         if (outline) {
             if (this.outlineColor == null) {
-                this.outlineColor = Vape.INSTANCE.getClientSettings().B(this, true, true);
+                this.outlineColor = Vape.INSTANCE.getClientSettings().resolveTeamColor(this, true, true);
             }
             return this.outlineColor;
         }
         if (this.fillColor == null) {
-            this.fillColor = Vape.INSTANCE.getClientSettings().y(this, false);
+            this.fillColor = Vape.INSTANCE.getClientSettings().resolveTeamColor(this, false);
         }
         return this.fillColor;
     }
@@ -214,14 +214,14 @@ public class RenderEntityContext {
     }
 
     public boolean isFriend() {
-        if (!this.friendCache.r()) {
+        if (!this.friendCache.isCached()) {
             if (this.entityPlayer != null) {
-                this.friendCache.I(Vape.INSTANCE.getFriendManager().E(this.getName()));
+                this.friendCache.setValue(Vape.INSTANCE.getFriendManager().isFriend(this.getName()));
             } else {
-                this.friendCache.I(false);
+                this.friendCache.setValue(false);
             }
         }
-        return (Boolean)this.friendCache.F();
+        return (Boolean)this.friendCache.getCachedValue();
     }
 
     @Nullable
@@ -239,39 +239,39 @@ public class RenderEntityContext {
     }
 
     public float getEffectiveHealth() {
-        if (!this.effectiveHealthCache.r()) {
+        if (!this.effectiveHealthCache.isCached()) {
             if (this.entityPlayer != null) {
-                this.effectiveHealthCache.I(Float.valueOf(AttackStrengthTracker.INSTANCE.getEstimatedHealth(this.entityPlayer)));
+                this.effectiveHealthCache.setValue(Float.valueOf(AttackStrengthTracker.INSTANCE.getEstimatedHealth(this.entityPlayer)));
             } else {
-                this.effectiveHealthCache.I(Float.valueOf(this.entity.w$src$F$15l9epb()));
+                this.effectiveHealthCache.setValue(Float.valueOf(this.entity.w$src$F$15l9epb()));
             }
         }
-        return ((Float)this.effectiveHealthCache.F()).floatValue();
+        return ((Float)this.effectiveHealthCache.getCachedValue()).floatValue();
     }
 
     public boolean isEnemy() {
-        if (!this.enemyCache.r()) {
+        if (!this.enemyCache.isCached()) {
             if (this.entityPlayer != null) {
-                this.enemyCache.I(Vape.INSTANCE.getEnemyManager().q(this.getName()));
+                this.enemyCache.setValue(Vape.INSTANCE.getEnemyManager().isEnemy(this.getName()));
             } else {
-                this.enemyCache.I(false);
+                this.enemyCache.setValue(false);
             }
         }
-        return (Boolean)this.enemyCache.F();
+        return (Boolean)this.enemyCache.getCachedValue();
     }
 
     public float getMaxHealth() {
-        if (!this.maxHealthCache.r()) {
-            this.maxHealthCache.I(Float.valueOf(this.entity.I$src$F$14vyvep()));
+        if (!this.maxHealthCache.isCached()) {
+            this.maxHealthCache.setValue(Float.valueOf(this.entity.I$src$F$14vyvep()));
         }
-        return ((Float)this.maxHealthCache.F()).floatValue();
+        return ((Float)this.maxHealthCache.getCachedValue()).floatValue();
     }
 
     public boolean isSneaking() {
-        if (!this.sneakingCache.r()) {
-            this.sneakingCache.I(this.entity.P());
+        if (!this.sneakingCache.isCached()) {
+            this.sneakingCache.setValue(this.entity.P());
         }
-        return (Boolean)this.sneakingCache.F();
+        return (Boolean)this.sneakingCache.getCachedValue();
     }
 
     public ModelPlayer getModelPlayer() {
@@ -282,10 +282,10 @@ public class RenderEntityContext {
     }
 
     public double getDistance() {
-        if (!this.distanceCache.r()) {
-            this.distanceCache.I(Float.valueOf(this.viewer.getDistanceToEntity(this.entity)));
+        if (!this.distanceCache.isCached()) {
+            this.distanceCache.setValue(Float.valueOf(this.viewer.getDistanceToEntity(this.entity)));
         }
-        return ((Float)this.distanceCache.F()).floatValue();
+        return ((Float)this.distanceCache.getCachedValue()).floatValue();
     }
 
     public String getTypeName() {
@@ -296,16 +296,16 @@ public class RenderEntityContext {
     }
 
     public boolean isSyntheticEntity() {
-        if (!this.syntheticEntityCache.r()) {
-            this.syntheticEntityCache.I(ClientSettings.B(this.entityId));
+        if (!this.syntheticEntityCache.isCached()) {
+            this.syntheticEntityCache.setValue(ClientSettings.isReservedEntityId(this.entityId));
         }
-        return (Boolean)this.syntheticEntityCache.F();
+        return (Boolean)this.syntheticEntityCache.getCachedValue();
     }
 
     public boolean isBot() {
-        if (!this.botCache.r()) {
-            this.botCache.I(Vape.INSTANCE.getClientSettings().J(this.entity));
+        if (!this.botCache.isCached()) {
+            this.botCache.setValue(Vape.INSTANCE.getClientSettings().isBot(this.entity));
         }
-        return (Boolean)this.botCache.F();
+        return (Boolean)this.botCache.getCachedValue();
     }
 }

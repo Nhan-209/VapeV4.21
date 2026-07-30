@@ -4,63 +4,63 @@ import gg.vape.protocol.ZeusPacketBuffer;
 import gg.vape.ui.click.component.GuiComponent;
 
 public class UserModel {
-    private static GuiComponent[] P;
-    private final String D;
-    private final long i;
+    private static GuiComponent[] obfuscationState;
+    private final String displayName;
+    private final long id;
 
     public String toString() {
-        return "UserModel{id=" + this.i + ", displayName='" + this.D + '\'' + '}';
+        return "UserModel{id=" + this.id + ", displayName='" + this.displayName + '\'' + '}';
     }
 
-    public UserModel(long l, String string) {
-        this.i = l;
-        this.D = string;
+    public UserModel(long id, String displayName) {
+        this.id = id;
+        this.displayName = displayName;
     }
 
     static {
-        UserModel.m(new GuiComponent[5]);
+        UserModel.setObfuscationState(new GuiComponent[5]);
     }
 
 
-    public void a(ZeusPacketBuffer zeusPacketBuffer) {
-        zeusPacketBuffer.v(this.i);
-        zeusPacketBuffer.y(this.D);
+    public void writeTo(ZeusPacketBuffer buffer) {
+        buffer.writeLong(this.id);
+        buffer.writeString(this.displayName);
     }
 
-    public boolean equals(Object object) {
-        if (this == object) {
+    public boolean equals(Object other) {
+        if (this == other) {
             return true;
         }
-        if (object == null || this.getClass() != object.getClass()) {
+        if (other == null || this.getClass() != other.getClass()) {
             return false;
         }
-        UserModel userModel = (UserModel)object;
-        return this.i == userModel.i;
+        UserModel userModel = (UserModel)other;
+        return this.id == userModel.id;
     }
 
-    public static GuiComponent[] O() {
-        return P;
+    public static GuiComponent[] getObfuscationState() {
+        return obfuscationState;
     }
 
-    public long g() {
-        return this.i;
+    public long getId() {
+        return this.id;
     }
 
     public int hashCode() {
-        return (int)(this.i ^ this.i >>> 32);
+        return (int)(this.id ^ this.id >>> 32);
     }
 
-    public String T() {
-        return this.D;
+    public String getDisplayName() {
+        return this.displayName;
     }
 
-    public static void m(GuiComponent[] guiComponentArray) {
-        P = guiComponentArray;
+    public static void setObfuscationState(GuiComponent[] state) {
+        obfuscationState = state;
     }
 
-    public UserModel(ZeusPacketBuffer zeusPacketBuffer) {
-        this.i = zeusPacketBuffer.a();
-        this.D = zeusPacketBuffer.v(16);
+    public UserModel(ZeusPacketBuffer buffer) {
+        this.id = buffer.readLong();
+        this.displayName = buffer.readString(16);
     }
 }
 

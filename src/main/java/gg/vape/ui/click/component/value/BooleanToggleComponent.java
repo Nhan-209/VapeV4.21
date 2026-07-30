@@ -107,7 +107,7 @@ implements BooleanStateAdapter<BooleanToggleComponent> {
         }
         this.renderLabel();
         GuiRenderPrimitives.j(switchX - 1.0, switchY - 0.5, 12.5, 7.0, switchColor);
-        GuiRenderPrimitives.V((float)switchX + 1.0f + (float)this.knobPositionAnimation.getInterpolatedValue().doubleValue(), (float)switchY + 1.0f, 4.0, (float)(0.8 / Vape.INSTANCE.getClientSettings().s()), BooleanToggleComponent.J.i);
+        GuiRenderPrimitives.V((float)switchX + 1.0f + (float)this.knobPositionAnimation.getInterpolatedValue().doubleValue(), (float)switchY + 1.0f, 4.0, (float)(0.8 / Vape.INSTANCE.getClientSettings().getGuiScaleFactor()), BooleanToggleComponent.J.i);
         if (this.getBoundValue() != null && this.getBoundValue() instanceof ConditionalValue && !((ConditionalValue)this.getBoundValue()).getDependentValues().isEmpty() && ((ConditionalValue)this.getBoundValue()).hasActiveDependentBranch() && this.getParentFrameComponent() != null) {
             FrameComponent parentFrame = this.getParentFrameComponent();
             List<Value> childValues = ((ConditionalValue)this.getBoundValue()).getDependentValues();

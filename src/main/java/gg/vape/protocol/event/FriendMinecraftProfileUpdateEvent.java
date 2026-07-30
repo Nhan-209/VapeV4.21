@@ -24,7 +24,7 @@ extends OnlineEvent {
     }
 
     public FriendMinecraftProfileUpdateEvent(ZeusClient zeusClient, FriendModel friendModel) {
-        this(zeusClient, friendModel.M(), friendModel.R(), friendModel.k());
+        this(zeusClient, friendModel.getUserId(), friendModel.getMinecraftUuid(), friendModel.getMinecraftUsername());
     }
 
     public FriendMinecraftProfileUpdateEvent(ZeusClient zeusClient, long l, UUID uUID, String string) {
@@ -42,4 +42,3 @@ extends OnlineEvent {
         return this.java_lang_String_b();
     }
 }
-

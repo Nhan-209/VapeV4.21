@@ -1,12 +1,11 @@
 package gg.vape.wrapper.impl;
 
 import gg.vape.wrapper.Wrapper;
-import gg.vape.wrapper.impl.TextureObjectHandle;
 
 public class TextureManagerHandle
 extends Wrapper {
     public TextureObjectHandle e() {
-        return new TextureObjectHandle(TextureManagerHandle.c.getMappingsMapperCompat().hL.A(this.I));
+        return new TextureObjectHandle(TextureManagerHandle.vapeInstance.getMappingsMapperCompat().hL.A(this.I));
     }
 
     public int k() {
@@ -18,7 +17,7 @@ extends Wrapper {
     }
 
     public TextureObjectHandle x() {
-        return new TextureObjectHandle(TextureManagerHandle.c.getMappingsMapperCompat().hL.C(this.I));
+        return new TextureObjectHandle(TextureManagerHandle.vapeInstance.getMappingsMapperCompat().hL.C(this.I));
     }
 
 

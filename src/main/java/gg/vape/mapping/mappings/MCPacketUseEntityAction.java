@@ -15,11 +15,11 @@ extends Mapping {
         Class clazz = MappedClasses.D5;
         String string = b;
         MCPacketUseEntityAction mCPacketUseEntityAction = this;
-        this.p = this.u(string, clazz, classArray).Q(true).s();
+        this.p = this.methodBuilder(string, clazz, classArray).setSkipAccessorGeneration(true).buildMethod();
     }
 
     public Object f(Object object) {
-        return this.p.L(object, new Object[0]);
+        return this.p.invokeObject(object, new Object[0]);
     }
 }
 

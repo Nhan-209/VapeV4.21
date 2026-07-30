@@ -9,18 +9,18 @@ import gg.vape.wrapper.impl.EnumWorldBlockLayer;
 
 public class EventBlockLayerRender
 extends Event {
-    private final EnumWorldBlockLayer s;
-    private final Block Y;
-    private static final EventListeners x = new EventListeners();
-    private boolean l;
+    private final EnumWorldBlockLayer blockLayer;
+    private final Block block;
+    private static final EventListeners EVENT_LISTENERS = new EventListeners();
+    private boolean shouldRender;
 
-    public void setShouldRender(boolean bl) {
-        this.l = bl;
+    public void setShouldRender(boolean shouldRender) {
+        this.shouldRender = shouldRender;
     }
 
     @Override
     public boolean fire() {
-        XRay xRay = Vape.INSTANCE.getModManager().G();
+        XRay xRay = Vape.INSTANCE.getModManager().getXRayModule();
         if (xRay == null || !xRay.boolean_r()) {
             return false;
         }
@@ -30,29 +30,29 @@ extends Event {
 
     @Override
     public EventListeners getListeners() {
-        return x;
+        return EVENT_LISTENERS;
     }
 
     public static EventListeners getEventListeners() {
-        return x;
+        return EVENT_LISTENERS;
     }
 
 
     public boolean shouldRender() {
-        return this.l;
+        return this.shouldRender;
     }
 
-    public EventBlockLayerRender(Object object, Object object2) {
-        this.Y = new Block(object);
-        this.s = new EnumWorldBlockLayer(object2);
+    public EventBlockLayerRender(Object blockHandle, Object blockLayerHandle) {
+        this.block = new Block(blockHandle);
+        this.blockLayer = new EnumWorldBlockLayer(blockLayerHandle);
     }
 
     public EnumWorldBlockLayer getEnumWorldBlockLayer() {
-        return this.s;
+        return this.blockLayer;
     }
 
     public Block getBlock() {
-        return this.Y;
+        return this.block;
     }
 }
 

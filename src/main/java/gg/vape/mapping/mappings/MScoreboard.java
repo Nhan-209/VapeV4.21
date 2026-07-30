@@ -14,7 +14,7 @@ extends Mapping {
     public MappingMethod a;
 
     private Collection I(Object object, Object object2) {
-        return (Collection)this.P.L(object, object2);
+        return (Collection)this.P.invokeObject(object, object2);
     }
 
     public static void c(int[] nArray) {
@@ -33,10 +33,10 @@ extends Mapping {
     private MScoreboard(int[] nArray) {
         super(MappedClasses.F6);
         int[] nArray2 = nArray;
-        if (ForgeVersion.MC_1_7_10.L() && !Wrapper.c.isVanillaMinecraftPresent()) {
+        if (ForgeVersion.MC_1_7_10.L() && !Wrapper.vapeInstance.isVanillaMinecraftPresent()) {
             Class[] classArray = new Class[]{MappedClasses.Y};
             Class<Collection> clazz = Collection.class;
-            boolean bl = Wrapper.G;
+            boolean bl = Wrapper.isNativeAvailable;
             String string = "func_96534_i";
             MScoreboard mScoreboard = this;
             this.P = mScoreboard.Y(string, bl, clazz, classArray);
@@ -50,14 +50,14 @@ extends Mapping {
         } else if (ForgeVersion.MC_1_17.d()) {
             Class[] classArray = new Class[]{MappedClasses.Y};
             Class<Collection> clazz = Collection.class;
-            boolean bl = Wrapper.G;
+            boolean bl = Wrapper.isNativeAvailable;
             String string = "m_83498_";
             MScoreboard mScoreboard = this;
             this.P = mScoreboard.Y(string, bl, clazz, classArray);
         } else if (ForgeVersion.MC_1_16_5.d()) {
             Class[] classArray = new Class[]{MappedClasses.Y};
             Class<Collection> clazz = Collection.class;
-            boolean bl = Wrapper.G;
+            boolean bl = Wrapper.isNativeAvailable;
             String string = "getSortedScores";
             MScoreboard mScoreboard = this;
             this.P = mScoreboard.Y(string, bl, clazz, classArray);
@@ -78,7 +78,7 @@ extends Mapping {
     }
 
     private Object o(Object object, String string) {
-        return this.a.L(object, string);
+        return this.a.invokeObject(object, string);
     }
 
     public static int[] X() {

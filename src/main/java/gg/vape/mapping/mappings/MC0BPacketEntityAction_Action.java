@@ -3,7 +3,6 @@ package gg.vape.mapping.mappings;
 import gg.vape.mapping.MappedClasses;
 import gg.vape.mapping.Mapping;
 import gg.vape.mapping.MappingField;
-import gg.vape.mapping.mappings.MPacketIdFactory;
 import gg.vape.ui.click.component.GuiComponent;
 import gg.vape.wrapper.Wrapper;
 import gg.vape.wrapper.impl.ForgeVersion;
@@ -28,35 +27,35 @@ extends Mapping {
             if (ForgeVersion.MC_1_16_5.d()) {
                 if (ForgeVersion.MC_1_21_6.v()) {
                     Class clazz = MappedClasses.Do;
-                    boolean bl = Wrapper.G;
+                    boolean bl = Wrapper.isNativeAvailable;
                     String string = "PRESS_SHIFT_KEY";
                     MC0BPacketEntityAction_Action mC0BPacketEntityAction_Action = this;
-                    this.L = mC0BPacketEntityAction_Action.u(string, bl, clazz);
+                    this.L = mC0BPacketEntityAction_Action.registerStaticField(string, bl, clazz);
                     Class clazz2 = MappedClasses.Do;
-                    boolean bl2 = Wrapper.G;
+                    boolean bl2 = Wrapper.isNativeAvailable;
                     String string2 = "RELEASE_SHIFT_KEY";
                     MC0BPacketEntityAction_Action mC0BPacketEntityAction_Action2 = this;
-                    this.f = this.u(string2, bl2, clazz2);
+                    this.f = this.registerStaticField(string2, bl2, clazz2);
                 }
             } else {
                 Class clazz = MappedClasses.Do;
-                boolean bl = Wrapper.G;
+                boolean bl = Wrapper.isNativeAvailable;
                 String string = "START_SNEAKING";
                 MC0BPacketEntityAction_Action mC0BPacketEntityAction_Action = this;
-                this.L = mC0BPacketEntityAction_Action.u(string, bl, clazz);
+                this.L = mC0BPacketEntityAction_Action.registerStaticField(string, bl, clazz);
                 Class clazz3 = MappedClasses.Do;
-                boolean bl3 = Wrapper.G;
+                boolean bl3 = Wrapper.isNativeAvailable;
                 String string3 = "STOP_SNEAKING";
                 MC0BPacketEntityAction_Action mC0BPacketEntityAction_Action3 = this;
-                this.f = this.u(string3, bl3, clazz3);
+                this.f = this.registerStaticField(string3, bl3, clazz3);
             }
             return;
         }
         Class clazz = MappedClasses.Do;
-        boolean bl = Wrapper.G;
+        boolean bl = Wrapper.isNativeAvailable;
         String string = "STOP_SNEAKING";
         MC0BPacketEntityAction_Action mC0BPacketEntityAction_Action = this;
-        this.f = mC0BPacketEntityAction_Action.u(string, bl, clazz); 
+        this.f = mC0BPacketEntityAction_Action.registerStaticField(string, bl, clazz);
     }
 
     public Object R() {

@@ -19,7 +19,7 @@ extends GuiComponent {
         this.o(d);
         this.Y(22.0);
         this.setShowDisabledOverlay(false);
-        String string = profile != null ? profile.n$src$Ljava_lang_String_$xqhelw() : "";
+        String string = profile != null ? profile.getName() : "";
         this.title = new TruncatedTextComponent(string, ELLIPSIS, d, 0.875, Color.WHITE, true);
         this.bindInput = new BindableInputComponent(profile, ClickGuiProfileHeaderComponent.J.Z);
         this.bindInput.setActiveOverride(false);
@@ -62,7 +62,7 @@ extends GuiComponent {
     }
 
     public void updateProfile(Profile profile) {
-        this.title.setText(profile != null ? profile.n$src$Ljava_lang_String_$xqhelw() : "");
+        this.title.setText(profile != null ? profile.getName() : "");
         this.bindInput.setBendable(profile);
         this.glyphPanel.setProfile(profile);
         this.glyphPanel.refreshVisibility();

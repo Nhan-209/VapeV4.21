@@ -6,24 +6,23 @@ import com.google.gson.annotations.SerializedName;
 public class YggdrasilProfile {
     @Expose
     @SerializedName(value="legacy")
-    private boolean T;
+    private boolean legacy;
     @Expose
     @SerializedName(value="id")
-    private String p;
+    private String id;
     @Expose
     @SerializedName(value="name")
-    private String n;
+    private String name;
 
-    public String v() {
-        return this.n;
+    public String getName() {
+        return this.name;
     }
 
-    public String s() {
-        return this.p;
+    public String getId() {
+        return this.id;
     }
 
-    public boolean u() {
-        return this.T;
+    public boolean isLegacy() {
+        return this.legacy;
     }
 }
-

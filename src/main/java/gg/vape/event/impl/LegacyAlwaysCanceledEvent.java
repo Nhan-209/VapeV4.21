@@ -5,15 +5,15 @@ import gg.vape.event.EventListeners;
 
 public class LegacyAlwaysCanceledEvent
 extends Event {
-    private static final EventListeners x = new EventListeners();
+    private static final EventListeners EVENT_LISTENERS = new EventListeners();
 
     @Override
     public EventListeners getListeners() {
-        return x;
+        return EVENT_LISTENERS;
     }
 
     public static EventListeners getEventListeners() {
-        return x;
+        return EVENT_LISTENERS;
     }
 
     @Override
@@ -22,4 +22,3 @@ extends Event {
         return super.fire();
     }
 }
-

@@ -9,22 +9,24 @@ import java.util.UUID;
 import org.jetbrains.annotations.Nullable;
 
 public class PublicProfileJsonPayloadBuilder {
-    public static JsonObject b(String string, String string2, String string3, List<String> list, boolean bl, boolean bl2, boolean bl3, @Nullable UUID uUID, JsonObject jsonObject) {
-        JsonArray jsonArray = new JsonArray();
-        for (String string4 : list) {
-            jsonArray.add((JsonElement)new JsonPrimitive(string4));
+    public static JsonObject build(String name, String vapeVersion, String description, List<String> tags,
+                                   boolean listed, boolean anonymous, boolean shareCodeFriendsOnly,
+                                   @Nullable UUID derivedFrom, JsonObject profileData) {
+        JsonArray tagsJson = new JsonArray();
+        for (String tag : tags) {
+            tagsJson.add((JsonElement)new JsonPrimitive(tag));
         }
-        JsonObject jsonObject2 = new JsonObject();
-        jsonObject2.addProperty("name", string);
-        jsonObject2.addProperty("vapeVersion", string2);
-        jsonObject2.addProperty("description", string3);
-        jsonObject2.add("tags", (JsonElement)jsonArray);
-        jsonObject2.addProperty("listed", Boolean.valueOf(bl));
-        jsonObject2.addProperty("anonymous", Boolean.valueOf(bl2));
-        jsonObject2.addProperty("shareCodeFriendsOnly", Boolean.valueOf(bl3));
-        jsonObject2.addProperty("derivedFrom", uUID != null ? uUID.toString() : null);
-        jsonObject2.add("profileData", (JsonElement)jsonObject);
-        return jsonObject2;
+        JsonObject payload = new JsonObject();
+        payload.addProperty("name", name);
+        payload.addProperty("vapeVersion", vapeVersion);
+        payload.addProperty("description", description);
+        payload.add("tags", (JsonElement)tagsJson);
+        payload.addProperty("listed", Boolean.valueOf(listed));
+        payload.addProperty("anonymous", Boolean.valueOf(anonymous));
+        payload.addProperty("shareCodeFriendsOnly", Boolean.valueOf(shareCodeFriendsOnly));
+        payload.addProperty("derivedFrom", derivedFrom != null ? derivedFrom.toString() : null);
+        payload.add("profileData", (JsonElement)profileData);
+        return payload;
     }
 
 }

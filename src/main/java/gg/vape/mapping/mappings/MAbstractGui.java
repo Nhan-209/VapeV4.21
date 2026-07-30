@@ -25,7 +25,7 @@ extends Mapping {
     }
 
     public void J(Object object, int n, int n2, int n3, int n4) {
-        this.B.c(object, n, n2, n3, n4);
+        this.B.invokeVoid(object, n, n2, n3, n4);
     }
 
     public Object B(Object object) {
@@ -38,7 +38,7 @@ extends Mapping {
 
 
     private void q(Object object, Object object2, int n, int n2, int n3, int n4, int n5, Object object3) {
-        this.V.c(object, object2, n, n2, n3, n4, n5, object3);
+        this.V.invokeVoid(object, object2, n, n2, n3, n4, n5, object3);
     }
 
     public static Object y(MAbstractGui mAbstractGui, Object object, Object object2, Object object3, Object[] objectArray) {
@@ -47,25 +47,25 @@ extends Mapping {
 
     private Object z(Object object, Object object2, Object object3, Object ... objectArray) {
         if (ForgeVersion.MC_1_21_11.d()) {
-            return this.m.O(object, object2, object3, (Integer)objectArray[0], (Integer)objectArray[1]);
+            return this.m.newInstance(object, object2, object3, (Integer)objectArray[0], (Integer)objectArray[1]);
         }
-        return this.m.O(object, object2, object3);
+        return this.m.newInstance(object, object2, object3);
     }
 
     private void G(Object object, Object object2, int n, int n2, int n3, int n4, int n5, float f, float f2, float f3, float f4) {
-        this.O.c(object, object2, n, n2, n3, n4, n5, Float.valueOf(f), Float.valueOf(f2), Float.valueOf(f3), Float.valueOf(f4));
+        this.O.invokeVoid(object, object2, n, n2, n3, n4, n5, Float.valueOf(f), Float.valueOf(f2), Float.valueOf(f3), Float.valueOf(f4));
     }
 
     public void Q(Object object, Object object2, String string, int n, int n2, int n3, boolean bl) {
-        this.x.c(object, object2, string, n, n2, n3, bl);
+        this.x.invokeVoid(object, object2, string, n, n2, n3, bl);
     }
 
     public void j(Object object) {
-        this.r.F(object);
+        this.r.invokeVoidNoArgs(object);
     }
 
     public void J(Object object) {
-        this.s.F(object);
+        this.s.invokeVoidNoArgs(object);
     }
 
     public static void e(MAbstractGui mAbstractGui, Object object, Object object2, int n, int n2, int n3, int n4, int n5, float f, float f2, float f3, float f4) {
@@ -115,11 +115,11 @@ extends Mapping {
                 if (ForgeVersion.MC_1_21_11.d()) {
                     Class[] classArray4 = new Class[]{MappedClasses.uP, MappedClasses.Dy, MappedClasses.i, Integer.TYPE, Integer.TYPE};
                     MAbstractGui mAbstractGui5 = this;
-                    this.m = this.g(classArray4);
+                    this.m = this.registerConstructor(classArray4);
                 } else {
                     Class[] classArray5 = new Class[]{MappedClasses.uP, MappedClasses.Dy, MappedClasses.i};
                     MAbstractGui mAbstractGui6 = this;
-                    this.m = this.g(classArray5);
+                    this.m = this.registerConstructor(classArray5);
                 }
                 Class clazz5 = MappedClasses.Dy;
                 boolean bl5 = true;
@@ -149,16 +149,16 @@ extends Mapping {
         } else {
             Class[] classArray = new Class[]{MappedClasses.DQ, Integer.TYPE, Integer.TYPE, Integer.TYPE, Integer.TYPE, Integer.TYPE, MappedClasses.Db};
             Class<Void> clazz = Void.TYPE;
-            boolean bl = Wrapper.G;
+            boolean bl = Wrapper.isNativeAvailable;
             String string = "func_238470_a_";
             MAbstractGui mAbstractGui = this;
-            this.V = mAbstractGui.x(string, bl, clazz, classArray); 
+            this.V = mAbstractGui.registerStaticMethod(string, bl, clazz, classArray);
             Class[] classArray8 = new Class[]{MappedClasses.qr, Integer.TYPE, Integer.TYPE, Integer.TYPE, Integer.TYPE, Integer.TYPE, Float.TYPE, Float.TYPE, Float.TYPE, Float.TYPE};
             Class<Void> clazz8 = Void.TYPE;
             boolean bl8 = true;
             String string8 = "innerBlit";
             MAbstractGui mAbstractGui10 = this;
-            this.O = this.x(string8, bl8, clazz8, classArray8);
+            this.O = this.registerStaticMethod(string8, bl8, clazz8, classArray8);
         }
     }
 }

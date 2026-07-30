@@ -1,12 +1,11 @@
 package gg.vape.mapping;
 
 public class InjectionParameterSpec {
-    public int C;
-    public Class r;
+    public int parameterIndex;
+    public Class parameterType;
 
-    public InjectionParameterSpec(int n, Class clazz) {
-        this.C = n;
-        this.r = clazz;
+    public InjectionParameterSpec(int parameterIndex, Class parameterType) {
+        this.parameterIndex = parameterIndex;
+        this.parameterType = parameterType;
     }
 }
-

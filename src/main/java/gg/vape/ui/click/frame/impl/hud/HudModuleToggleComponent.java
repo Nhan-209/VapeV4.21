@@ -98,11 +98,11 @@ extends GuiComponent {
         this.configFrame.c(true);
         this.configFrame.U();
         ScaledResolution scaledResolution = Minecraft.G();
-        if (this.configFrame.n() > (double)scaledResolution.G() || this.configFrame.n() < 0.0) {
-            this.configFrame.S((double)(scaledResolution.G() / 2));
+        if (this.configFrame.n() > (double)scaledResolution.getScaledHeight() || this.configFrame.n() < 0.0) {
+            this.configFrame.S((double)(scaledResolution.getScaledHeight() / 2));
         }
-        if (this.configFrame.G$src$D$1b2f02a() > (double)scaledResolution.T() || this.configFrame.G$src$D$1b2f02a() < 0.0) {
-            this.configFrame.K(scaledResolution.T() / 2);
+        if (this.configFrame.G$src$D$1b2f02a() > (double)scaledResolution.getScaledWidth() || this.configFrame.G$src$D$1b2f02a() < 0.0) {
+            this.configFrame.K(scaledResolution.getScaledWidth() / 2);
         }
         if (this.configFrame instanceof HudModuleConfigFrameBase) {
             HudModuleConfigFrameBase hudModuleConfigFrameBase = (HudModuleConfigFrameBase)this.configFrame;

@@ -6,14 +6,14 @@ import gg.vape.protocol.packet.ZeusSerializablePacket;
 
 public class ServerGroupOptionUpdatePacket
 implements ZeusSerializablePacket {
-    private GroupOption I;
+    private GroupOption option;
     private static int m;
-    private Object a;
+    private Object value;
 
     @Override
     public void S(ZeusPacketBuffer zeusPacketBuffer) {
-        this.I = zeusPacketBuffer.Y(GroupOption.class);
-        this.a = this.I.p().apply(zeusPacketBuffer);
+        this.option = zeusPacketBuffer.readEnum(GroupOption.class);
+        this.value = this.option.getValueReader().apply(zeusPacketBuffer);
     }
 
     public static int s() {
@@ -26,25 +26,25 @@ implements ZeusSerializablePacket {
 
     @Override
     public void o(ZeusPacketBuffer zeusPacketBuffer) {
-        zeusPacketBuffer.U(this.I);
-        this.I.O().accept(zeusPacketBuffer, this.a);
+        zeusPacketBuffer.writeEnum(this.option);
+        this.option.getValueWriter().accept(zeusPacketBuffer, this.value);
     }
 
-    public Object Z() {
-        return this.a;
+    public Object getValue() {
+        return this.value;
     }
 
-    public GroupOption f() {
-        return this.I;
+    public GroupOption getOption() {
+        return this.option;
     }
 
     public static int T() {
         return m;
     }
 
-    public ServerGroupOptionUpdatePacket(GroupOption groupOption, Object object) {
-        this.I = groupOption;
-        this.a = object;
+    public ServerGroupOptionUpdatePacket(GroupOption option, Object value) {
+        this.option = option;
+        this.value = value;
     }
 
     public static void j(int n) {
@@ -61,4 +61,3 @@ implements ZeusSerializablePacket {
         }
     }
 }
-

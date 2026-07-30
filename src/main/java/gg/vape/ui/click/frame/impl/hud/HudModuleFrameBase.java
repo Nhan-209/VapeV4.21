@@ -50,7 +50,7 @@ extends Frame {
 
     protected void repositionAnchoredSettings() {
         double settingsY = this.settingsButton.n();
-        if (this.settingsButton.G$src$D$1b2f02a() + this.settingsButton.A() + this.anchoredSettingsFrame.A() > (double)Minecraft.G().T()) {
+        if (this.settingsButton.G$src$D$1b2f02a() + this.settingsButton.A() + this.anchoredSettingsFrame.A() > (double)Minecraft.G().getScaledWidth()) {
             this.anchoredSettingsFrame.M(this.settingsButton.G$src$D$1b2f02a() - this.anchoredSettingsFrame.A() + 13.0, settingsY);
         } else {
             this.anchoredSettingsFrame.M(this.settingsButton.G$src$D$1b2f02a() + this.settingsButton.A() - 13.0, settingsY);
@@ -74,11 +74,11 @@ extends Frame {
     }
 
     public double getMaximumY() {
-        return Math.floor((double)Minecraft.h() / Vape.INSTANCE.getClientSettings().s() / 2.0 - this.L() - 2.5);
+        return Math.floor((double)Minecraft.h() / Vape.INSTANCE.getClientSettings().getGuiScaleFactor() / 2.0 - this.L() - 2.5);
     }
 
     public double getMaximumX() {
-        return Math.floor((double)Minecraft.J() / Vape.INSTANCE.getClientSettings().s() / 2.0 - this.A() - 2.5);
+        return Math.floor((double)Minecraft.J() / Vape.INSTANCE.getClientSettings().getGuiScaleFactor() / 2.0 - this.A() - 2.5);
     }
 
     protected void handleEditorMousePress(GuiMouseEvent guiMouseEvent) {
@@ -217,11 +217,11 @@ extends Frame {
     public void t(JsonObject jsonObject) {
         Double d;
         super.t(jsonObject);
-        Double d2 = ConfigJsonUtils.p(jsonObject, "width");
+        Double d2 = ConfigJsonUtils.getDouble(jsonObject, "width");
         if (d2 != null) {
             this.o(d2);
         }
-        if ((d = ConfigJsonUtils.p(jsonObject, "height")) != null) {
+        if ((d = ConfigJsonUtils.getDouble(jsonObject, "height")) != null) {
             this.Y(d);
         }
     }

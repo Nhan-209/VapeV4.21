@@ -36,7 +36,7 @@ extends ModuleCategoryFrame {
     public static void e() {
         U2.removeMarkedChildren();
         try {
-            CopyOnWriteArrayList<Mod> copyOnWriteArrayList = new CopyOnWriteArrayList<Mod>(Vape.INSTANCE.getModuleProfileMetadataCodec().k());
+            CopyOnWriteArrayList<Mod> copyOnWriteArrayList = new CopyOnWriteArrayList<Mod>(Vape.INSTANCE.getModuleProfileMetadataCodec().getSelectedModules());
             for (Mod mod : copyOnWriteArrayList) {
                 ModuleComponent moduleComponent = new ModuleComponent(U2, mod);
                 U2.h(moduleComponent, new Object[0]);

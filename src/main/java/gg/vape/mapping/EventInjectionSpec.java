@@ -8,109 +8,109 @@ import gg.vape.ui.click.component.GuiComponent;
 import java.lang.reflect.Method;
 
 public class EventInjectionSpec {
-    private static GuiComponent[] g;
-    private String c = null;
-    private boolean w = true;
-    private Class N;
-    private boolean G = true;
-    static int C;
-    private String J;
-    private final MappingMethod z;
-    private String R = "";
-    private final Class Q;
-    private String S;
+    private static GuiComponent[] obfuscationComponents;
+    private String constructorArguments = null;
+    private boolean insertBefore = true;
+    private Class instanceType;
+    private boolean useCancelableReturnGuard = true;
+    static int generatedEventCounter;
+    private String condition;
+    private final MappingMethod mappingMethod;
+    private String returnExpression = "";
+    private final Class eventClass;
+    private String afterCode;
 
-    public void d(String string) {
-        this.c = string;
+    public void setConstructorArguments(String constructorArguments) {
+        this.constructorArguments = constructorArguments;
     }
 
-    public MappingMethod F() {
-        return this.z;
+    public MappingMethod getMappingMethod() {
+        return this.mappingMethod;
     }
 
-    public void f(String string) {
-        this.J = string;
+    public void setCondition(String condition) {
+        this.condition = condition;
     }
 
-    public void v(Class clazz) {
-        this.N = clazz;
+    public void setInstanceType(Class instanceType) {
+        this.instanceType = instanceType;
     }
 
-    public boolean s() {
-        return this.w;
+    public boolean isInsertBefore() {
+        return this.insertBefore;
     }
 
-    public String n() {
-        boolean bl;
-        Object object;
-        Object object2 = "";
-        String string = "";
-        String string2 = "";
-        if (this.G) {
-            string2 = "event" + ++C;
-            String string3 = "res" + string2;
-            string = this.Q.getName() + " " + string2 + " = new " + this.Q.getName() + "(" + (this.c == null ? "" : this.c) + ");\n";
-            object2 = object = "boolean " + string3 + " = " + string2 + "." + EventBus.getFireMethod(this.Q).getName() + "();";
-            object2 = (String)object2 + "if(" + string3 + ") { return " + this.R.replace("$event", string2) + "; } ";
+    public String buildInjectionCode() {
+        boolean hasInsertedCallbackMarker;
+        Object listenerAccessor;
+        Object eventStatement = "";
+        String injectionStatement = "";
+        String generatedEventName = "";
+        if (this.useCancelableReturnGuard) {
+            generatedEventName = "event" + ++generatedEventCounter;
+            String returnGuardName = "res" + generatedEventName;
+            injectionStatement = this.eventClass.getName() + " " + generatedEventName + " = new " + this.eventClass.getName() + "(" + (this.constructorArguments == null ? "" : this.constructorArguments) + ");\n";
+            eventStatement = "boolean " + returnGuardName + " = " + generatedEventName + "." + EventBus.getFireMethod(this.eventClass).getName() + "();";
+            eventStatement = (String)eventStatement + "if(" + returnGuardName + ") { return " + this.returnExpression.replace("$event", generatedEventName) + "; } ";
         } else {
-            object2 = "new " + this.Q.getName() + "(" + (this.c == null ? "" : this.c) + ")." + EventBus.getFireMethod(this.Q).getName() + "();";
+            eventStatement = "new " + this.eventClass.getName() + "(" + (this.constructorArguments == null ? "" : this.constructorArguments) + ")." + EventBus.getFireMethod(this.eventClass).getName() + "();";
         }
-        if (this.J != null) {
-            object2 = "if (" + this.J + ") { " + (String)object2 + " }";
+        if (this.condition != null) {
+            eventStatement = "if (" + this.condition + ") { " + (String)eventStatement + " }";
         }
-        string = string + (String)object2;
-        if (this.S != null) {
-            string = string + this.S.replace("$event", string2);
+        injectionStatement = injectionStatement + (String)eventStatement;
+        if (this.afterCode != null) {
+            injectionStatement = injectionStatement + this.afterCode.replace("$event", generatedEventName);
         }
-        if (this.N != null) {
-            string = "if($0 instanceof " + this.N.getName() + ") { " + string + " }";
+        if (this.instanceType != null) {
+            injectionStatement = "if($0 instanceof " + this.instanceType.getName() + ") { " + injectionStatement + " }";
         }
-        boolean bl2 = bl = IEvent.class.isAssignableFrom(this.Q) && InsertedCallbackEventMarker.class.isAssignableFrom(this.Q);
-        if (bl) {
-            object = EventBus.findEventListenersAccessor(this.Q);
-            string = "if(" + this.Q.getName() + "#" + ((Method)object).getName() + "()." + EventBus.getHasListenersMethod().getName() + "()) { " + string + "}";
+        hasInsertedCallbackMarker = IEvent.class.isAssignableFrom(this.eventClass) && InsertedCallbackEventMarker.class.isAssignableFrom(this.eventClass);
+        if (hasInsertedCallbackMarker) {
+            listenerAccessor = EventBus.findEventListenersAccessor(this.eventClass);
+            injectionStatement = "if(" + this.eventClass.getName() + "#" + ((Method)listenerAccessor).getName() + "()." + EventBus.getHasListenersMethod().getName() + "()) { " + injectionStatement + "}";
         }
-        string = "{ " + string + " }";
-        return string;
+        injectionStatement = "{ " + injectionStatement + " }";
+        return injectionStatement;
     }
 
     public EventInjectionSpec(MappingMethod mappingMethod, Class clazz) {
-        this.z = mappingMethod;
-        this.Q = clazz;
+        this.mappingMethod = mappingMethod;
+        this.eventClass = clazz;
     }
 
     static {
-        EventInjectionSpec.o(null);
-        C = 0;
+        EventInjectionSpec.setObfuscationComponents(null);
+        generatedEventCounter = 0;
     }
 
 
-    public void V(String string) {
-        this.S = string;
+    public void setAfterCode(String afterCode) {
+        this.afterCode = afterCode;
     }
 
-    public void o(boolean bl) {
-        this.G = bl;
+    public void setCancelableReturnGuard(boolean useCancelableReturnGuard) {
+        this.useCancelableReturnGuard = useCancelableReturnGuard;
     }
 
-    public static void o(GuiComponent[] guiComponentArray) {
-        g = guiComponentArray;
+    public static void setObfuscationComponents(GuiComponent[] components) {
+        obfuscationComponents = components;
     }
 
-    public Class v() {
-        return this.Q;
+    public Class getEventClass() {
+        return this.eventClass;
     }
 
-    public void H(String string) {
-        this.R = string;
+    public void setReturnExpression(String returnExpression) {
+        this.returnExpression = returnExpression;
     }
 
-    public void Z(boolean bl) {
-        this.w = bl;
+    public void setInsertBefore(boolean insertBefore) {
+        this.insertBefore = insertBefore;
     }
 
-    public static GuiComponent[] F$src$ALgg_vape_ui_click_component_GuiComponent_$1y0d4sz() {
-        return g;
+    public static GuiComponent[] getObfuscationComponents() {
+        return obfuscationComponents;
     }
 }
 

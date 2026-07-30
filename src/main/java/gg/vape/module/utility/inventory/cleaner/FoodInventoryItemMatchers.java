@@ -19,8 +19,8 @@ import gg.vape.wrapper.impl.ItemStack;
 import gg.vape.wrapper.impl.TileEntityEnderChest;
 
 public class FoodInventoryItemMatchers {
-    public static final CompositeInventoryItemMatcher a;
-    public static final StringInventoryItemMatcher O;
+    public static final CompositeInventoryItemMatcher ANY_FOOD;
+    public static final StringInventoryItemMatcher COOKED_FOOD;
 
     private static boolean isFoodItem(ItemStack itemStack, Item item) {
         if (ForgeVersion.MC_1_20_6.d()) {
@@ -31,36 +31,36 @@ public class FoodInventoryItemMatchers {
     }
 
     static {
-        String[] stringArray = new String[]{"baked_", "cooked_", "cooked-food-hover@2x", "Cooked food", "Any type of cooked food", "food-hover@2x", "Any food", "Any type of food", "cooked-food", "any-food"};
-        a = ((InventoryItemMatcherBuilderFoundation)((InventoryItemMatcherBuilderFoundation)((InventoryItemMatcherBuilderFoundation)((InventoryItemMatcherBuilderFoundation)((InventoryItemMatcherBuilderFoundation)((InventoryItemMatcherBuilderFoundation)InventoryItemMatcher.builder().composite().withId(stringArray[9])).withName(stringArray[6])).withDescription(stringArray[7])).withIconName(stringArray[5])).withGroup(InventoryItemMatcherGroup.FOOD)).withPredicate(FoodInventoryItemMatchers::isFoodItem).withComparator(FoodInventoryItemMatchers::compareByNutrition)).build();
-        O = ((StringInventoryItemMatcherBuilder)((StringInventoryItemMatcherBuilder)((StringInventoryItemMatcherBuilder)((StringInventoryItemMatcherBuilder)((StringInventoryItemMatcherBuilder)((StringInventoryItemMatcherBuilder)InventoryItemMatcher.builder().stringMatcher().withId(stringArray[8])).withName(stringArray[3])).withDescription(stringArray[4])).withIconName(stringArray[2])).withGroup(InventoryItemMatcherGroup.FOOD)).addPattern(stringArray[1], StringMatchOperator.STARTS).addPattern(stringArray[0], StringMatchOperator.STARTS).withComparator(a.getComparator())).build();
+        String[] labels = new String[]{"baked_", "cooked_", "cooked-food-hover@2x", "Cooked food", "Any type of cooked food", "food-hover@2x", "Any food", "Any type of food", "cooked-food", "any-food"};
+        ANY_FOOD = ((InventoryItemMatcherBuilderFoundation)((InventoryItemMatcherBuilderFoundation)((InventoryItemMatcherBuilderFoundation)((InventoryItemMatcherBuilderFoundation)((InventoryItemMatcherBuilderFoundation)((InventoryItemMatcherBuilderFoundation)InventoryItemMatcher.builder().composite().withId(labels[9])).withName(labels[6])).withDescription(labels[7])).withIconName(labels[5])).withGroup(InventoryItemMatcherGroup.FOOD)).withPredicate(FoodInventoryItemMatchers::isFoodItem).withComparator(FoodInventoryItemMatchers::compareByNutrition)).build();
+        COOKED_FOOD = ((StringInventoryItemMatcherBuilder)((StringInventoryItemMatcherBuilder)((StringInventoryItemMatcherBuilder)((StringInventoryItemMatcherBuilder)((StringInventoryItemMatcherBuilder)((StringInventoryItemMatcherBuilder)InventoryItemMatcher.builder().stringMatcher().withId(labels[8])).withName(labels[3])).withDescription(labels[4])).withIconName(labels[2])).withGroup(InventoryItemMatcherGroup.FOOD)).addPattern(labels[1], StringMatchOperator.STARTS).addPattern(labels[0], StringMatchOperator.STARTS).withComparator(ANY_FOOD.getComparator())).build();
     }
 
     public static void initialize() {
-        InventoryItemMatcherRegistry.register(a);
-        InventoryItemMatcherRegistry.register(O);
+        InventoryItemMatcherRegistry.register(ANY_FOOD);
+        InventoryItemMatcherRegistry.register(COOKED_FOOD);
     }
 
-    private static int compareByNutrition(InventoryItemMatchContext inventoryItemMatchContext, InventoryItemMatchContext inventoryItemMatchContext2) {
+    private static int compareByNutrition(InventoryItemMatchContext firstContext, InventoryItemMatchContext secondContext) {
         if (ForgeVersion.MC_1_20_6.d()) {
-            DataComponentMap dataComponentMap = inventoryItemMatchContext.getItem().g();
-            DataComponentMap dataComponentMap2 = inventoryItemMatchContext2.getItem().g();
-            Object object = dataComponentMap.E(DataComponents.d());
-            Object object2 = dataComponentMap2.E(DataComponents.d());
-            if (object == null || object2 == null) {
+            DataComponentMap firstComponents = firstContext.getItem().g();
+            DataComponentMap secondComponents = secondContext.getItem().g();
+            Object firstFoodComponent = firstComponents.E(DataComponents.d());
+            Object secondFoodComponent = secondComponents.E(DataComponents.d());
+            if (firstFoodComponent == null || secondFoodComponent == null) {
                 return 0;
             }
-            FoodProperties foodProperties = new FoodProperties(object);
-            FoodProperties foodProperties2 = new FoodProperties(object2);
-            float f = (float)foodProperties.n() * foodProperties.M();
-            float f2 = (float)foodProperties2.n() * foodProperties2.M();
-            return Float.compare(f, f2);
+            FoodProperties firstFood = new FoodProperties(firstFoodComponent);
+            FoodProperties secondFood = new FoodProperties(secondFoodComponent);
+            float firstNutritionScore = (float)firstFood.n() * firstFood.M();
+            float secondNutritionScore = (float)secondFood.n() * secondFood.M();
+            return Float.compare(firstNutritionScore, secondNutritionScore);
         }
-        TileEntityEnderChest tileEntityEnderChest = new TileEntityEnderChest(inventoryItemMatchContext.getItem());
-        TileEntityEnderChest tileEntityEnderChest2 = new TileEntityEnderChest(inventoryItemMatchContext2.getItem());
-        float f = (float)tileEntityEnderChest.o$src$I$tnn4wh() * tileEntityEnderChest.o();
-        float f3 = (float)tileEntityEnderChest2.o$src$I$tnn4wh() * tileEntityEnderChest2.o();
-        return Float.compare(f, f3);
+        TileEntityEnderChest firstFood = new TileEntityEnderChest(firstContext.getItem());
+        TileEntityEnderChest secondFood = new TileEntityEnderChest(secondContext.getItem());
+        float firstNutritionScore = (float)firstFood.o$src$I$tnn4wh() * firstFood.o();
+        float secondNutritionScore = (float)secondFood.o$src$I$tnn4wh() * secondFood.o();
+        return Float.compare(firstNutritionScore, secondNutritionScore);
     }
 
 }

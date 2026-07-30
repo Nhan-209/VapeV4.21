@@ -18,7 +18,7 @@ extends JavassistMappingTask {
     }
 
     @Override
-    public void c() {
+    public void transform() {
         this.V();
     }
 
@@ -31,4 +31,3 @@ extends JavassistMappingTask {
         }
     }
 }
-

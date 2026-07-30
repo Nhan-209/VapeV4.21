@@ -202,12 +202,12 @@ public class BlockPathPlanner {
     }
 
     public void adjustMovementForRotation() {
-        ModeSelection modeSelection = (ModeSelection)Vape.INSTANCE.getClientSettings().o.getValue();
-        if (modeSelection.equals(ClientSettings.O)) {
+        ModeSelection modeSelection = (ModeSelection)Vape.INSTANCE.getClientSettings().movementCorrection.getValue();
+        if (modeSelection.equals(ClientSettings.NO_MOVEMENT_CORRECTION)) {
             return;
         }
-        boolean movementCorrectionEnabled = modeSelection.equals(ClientSettings.Y)
-                || modeSelection.equals(ClientSettings.u);
+        boolean movementCorrectionEnabled = modeSelection.equals(ClientSettings.PROPER_MOVEMENT_CORRECTION)
+                || modeSelection.equals(ClientSettings.SLOW_MOVEMENT_CORRECTION);
         if (!movementCorrectionEnabled) {
             return;
         }
@@ -227,7 +227,7 @@ public class BlockPathPlanner {
         float movementYaw = this.rotationManager.adjustMovementYaw(referenceYaw,
                 this.movementController.isForwardKeyDown(), this.movementController.isRightKeyDown(),
                 this.movementController.isLeftKeyDown(), this.movementController.isBackwardKeyDown());
-        float correctedYaw = modeSelection.equals(ClientSettings.u) ? movementYaw + 180.0f : this.simulatedYaw;
+        float correctedYaw = modeSelection.equals(ClientSettings.SLOW_MOVEMENT_CORRECTION) ? movementYaw + 180.0f : this.simulatedYaw;
         this.simulatedPlayer.H(correctedYaw);
         this.simulatedPlayer.z(correctedYaw);
         this.restoreYawPending = true;

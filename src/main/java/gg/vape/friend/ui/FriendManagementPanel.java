@@ -6,18 +6,18 @@ import gg.vape.ui.click.component.PanelComponent;
 
 public class FriendManagementPanel
 extends PanelComponent {
-    private final AddFriendInputPanel Te = new AddFriendInputPanel();
-    private static final String db = "wrap, spanWidth";
-    private final FriendEntriesPanel Tf = new FriendEntriesPanel();
+    private final AddFriendInputPanel addFriendPanel = new AddFriendInputPanel();
+    private static final String LAYOUT_MODE = "wrap, spanWidth";
+    private final FriendEntriesPanel entriesPanel = new FriendEntriesPanel();
 
-    public FriendEntriesPanel w$src$Lgg_vape_friend_ui_FriendEntriesPanel_$r03ijp() {
-        return this.Tf;
+    public FriendEntriesPanel getEntriesPanel() {
+        return this.entriesPanel;
     }
 
     public FriendManagementPanel() {
         super(104.0, 135.0);
-        this.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M(db);
-        this.addChildren(this.Te, this.Tf);
+        this.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M(LAYOUT_MODE);
+        this.addChildren(this.addFriendPanel, this.entriesPanel);
     }
 
     @Override
@@ -25,4 +25,3 @@ extends PanelComponent {
         super.c();
     }
 }
-

@@ -14,11 +14,11 @@ extends Mapping {
     public MappingMethod z;
 
     public boolean y(Object object, Object object2, Object object3) {
-        return this.u.e(object, object2, object3);
+        return this.u.invokeBoolean(object, object2, object3);
     }
 
     public int y(Object object) {
-        return this.X.Z(object, new Object[0]);
+        return this.X.invokeInt(object, new Object[0]);
     }
 
     public MItemAttributeModifiers() {
@@ -71,7 +71,7 @@ extends Mapping {
 
 
     public Collection g(Object object) {
-        return (Collection)this.z.L(object, new Object[0]);
+        return (Collection)this.z.invokeObject(object, new Object[0]);
     }
 }
 

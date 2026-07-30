@@ -3,40 +3,32 @@ package gg.vape.api;
 import gg.vape.runtime.NativeBridge;
 
 public class ApiAccessTokenProvider {
-    private static String z;
-    private static String b;
+    private static String cachedAccessToken;
+    private static String opaqueMarker;
 
-    public static void K(String string) {
-        b = string;
+    public static void setOpaqueMarker(String marker) {
+        opaqueMarker = marker;
     }
 
-    public static String h() {
-        return ApiAccessTokenProvider.H(true);
-    }
-
-    public static String H(boolean bl) {
-        if (z == null) {
-            ApiAccessTokenProvider.Q();
+    public static String getAccessToken() {
+        if (cachedAccessToken == null) {
+            ApiAccessTokenProvider.loadAccessToken();
         }
-        return z;
+        return cachedAccessToken;
     }
 
-    private static void Q() {
-        z = NativeBridge.gat();
+    private static void loadAccessToken() {
+        cachedAccessToken = NativeBridge.gat();
     }
 
-    public static String p() {
-        return b;
-    }
-
-    public static String i() {
-        return ApiAccessTokenProvider.H(false);
+    public static String getOpaqueMarker() {
+        return opaqueMarker;
     }
 
 
     static {
-        if (ApiAccessTokenProvider.p() == null) {
-            ApiAccessTokenProvider.K("Sx5Qoc");
+        if (ApiAccessTokenProvider.getOpaqueMarker() == null) {
+            ApiAccessTokenProvider.setOpaqueMarker("Sx5Qoc");
         }
     }
 }

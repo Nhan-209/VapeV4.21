@@ -34,7 +34,7 @@ public class GeneratedAccessorFactory {
     private static Method c;
 
     public static Class<? extends MethodInvoker> Y(Mapping mapping, MappingMethod mappingMethod) {
-        return GeneratedAccessorFactory.A(mapping.E(), mappingMethod);
+        return GeneratedAccessorFactory.A(mapping.getMappedClass(), mappingMethod);
     }
 
     public static Class<? extends FieldAccessor> U(Class<?> clazz, Field field) {
@@ -55,7 +55,7 @@ public class GeneratedAccessorFactory {
         generatorAdapter.visitCode();
         generatorAdapter.visitVarInsn(25, 1);
         generatorAdapter.visitTypeInsn(192, Type.getInternalName(clazz));
-        generatorAdapter.visitFieldInsn(Modifier.isStatic(field.getModifiers()) ? 178 : 180, Type.getInternalName(clazz), field.getName(), DescUtils.U(field.getType()));
+        generatorAdapter.visitFieldInsn(Modifier.isStatic(field.getModifiers()) ? 178 : 180, Type.getInternalName(clazz), field.getName(), DescUtils.getDescriptor(field.getType()));
         if (Boolean.TYPE == field.getType()) {
             generatorAdapter.visitMethodInsn(184, "java/lang/Boolean", "valueOf", "(Z)Ljava/lang/Boolean;", false);
         } else if (Byte.TYPE == field.getType()) {
@@ -72,7 +72,7 @@ public class GeneratedAccessorFactory {
             generatorAdapter.visitMethodInsn(184, "java/lang/Float", "valueOf", "(F)Ljava/lang/Float;", false);
         } else if (Double.TYPE == field.getType()) {
             generatorAdapter.visitMethodInsn(184, "java/lang/Double", "valueOf", "(D)Ljava/lang/Double;", false);
-        } else if (DescUtils.h(field.getType()) == null) {
+        } else if (DescUtils.getKnownDescriptor(field.getType()) == null) {
             generatorAdapter.visitTypeInsn(192, field.getType().getName());
         }
         generatorAdapter.visitInsn(176);
@@ -181,12 +181,12 @@ public class GeneratedAccessorFactory {
     }
 
     public static Class<? extends MethodInvoker> A(Class clazz, MappingMethod mappingMethod) {
-        if (mappingMethod.h()) {
+        if (mappingMethod.hasResolutionFailed()) {
             return null;
         }
         try {
             try {
-                Method method = clazz.getMethod(mappingMethod.v(), mappingMethod.T());
+                Method method = clazz.getMethod(mappingMethod.getResolvedName(), mappingMethod.getResolvedParameterTypes());
                 return GeneratedAccessorFactory.I(clazz, method);
             }
             catch (NoSuchMethodException noSuchMethodException) {
@@ -202,11 +202,11 @@ public class GeneratedAccessorFactory {
     }
 
     public static Class<? extends FieldAccessor> z(Mapping mapping, MappingField mappingField) {
-        if (mappingField.x()) {
+        if (mappingField.hasResolutionFailed()) {
             return null;
         }
         try {
-            return GeneratedAccessorFactory.U(mapping.E(), mappingField.H$src$Ljava_lang_reflect_Field_$1cv5a8g());
+            return GeneratedAccessorFactory.U(mapping.getMappedClass(), mappingField.findReflectedField());
         }
         catch (Throwable throwable) {
             return null;
@@ -337,7 +337,7 @@ public class GeneratedAccessorFactory {
                 generatorAdapter.visitMethodInsn(184, "java/lang/Float", "valueOf", "(F)Ljava/lang/Float;", false);
             } else if (Double.TYPE == method.getReturnType()) {
                 generatorAdapter.visitMethodInsn(184, "java/lang/Double", "valueOf", "(D)Ljava/lang/Double;", false);
-            } else if (DescUtils.h(method.getReturnType()) == null) {
+            } else if (DescUtils.getKnownDescriptor(method.getReturnType()) == null) {
                 // empty if block
             }
             generatorAdapter.visitInsn(176);

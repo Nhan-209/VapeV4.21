@@ -58,7 +58,7 @@ public final class ClientSettingsComponentFactory {
     private static void lambda$createMainChildren$9() {
         Vape.debugLog("Saving settings...");
         JsonObject jsonObject = Vape.INSTANCE.getSyncThread().buildSettingsPayload(true);
-        ApiServices.d().c().a(jsonObject).thenAccept(ClientSettingsComponentFactory::lambda$null$7).exceptionally(ClientSettingsComponentFactory::lambda$null$8);
+        ApiServices.getInstance().getUserDataApi().saveUserData(jsonObject).thenAccept(ClientSettingsComponentFactory::lambda$null$7).exceptionally(ClientSettingsComponentFactory::lambda$null$8);
     }
 
     private static GuiComponent[] W(ClientSettings clientSettings, boolean bl) {
@@ -70,11 +70,11 @@ public final class ClientSettingsComponentFactory {
             arrayList.add(new BooleanToggleComponent(clientSettings.showLegitMode));
         }
         arrayList.add(new NumberSliderComponent(clientSettings.rainbowSpeed));
-        arrayList.add(new DropdownSelectComponent(Vape.INSTANCE.getPublicProfileSettings().n));
+        arrayList.add(new DropdownSelectComponent(Vape.INSTANCE.getPublicProfileSettings().guiStyle));
         if (bl) {
             arrayList.add(new BooleanToggleComponent(clientSettings.showEnabledCount));
         }
-        arrayList.add(new DropdownSelectComponent(Vape.INSTANCE.getClientSettings().W));
+        arrayList.add(new DropdownSelectComponent(Vape.INSTANCE.getClientSettings().guiScale));
         if (!bl) {
             arrayList.add(new DropdownSelectComponent(ClientSettings.INSTANCE.searchBarStyle));
         }
@@ -93,7 +93,7 @@ public final class ClientSettingsComponentFactory {
 
     public static List<GuiComponent> M(ThemeColors themeColors, gg.vape.config.ClientSettings clientSettings, ClientSettings clientSettings2, boolean bl) {
         ArrayList<GuiComponent> arrayList = new ArrayList<GuiComponent>();
-        ClientSettingsColorValueEditorComponent clientSettingsColorValueEditorComponent = new ClientSettingsColorValueEditorComponent(clientSettings.w);
+        ClientSettingsColorValueEditorComponent clientSettingsColorValueEditorComponent = new ClientSettingsColorValueEditorComponent(clientSettings.guiColor);
         arrayList.add(clientSettingsColorValueEditorComponent);
         arrayList.add(new BindValueRowComponent("Rebind GUI", clientSettings2.a()).w("Change the bind of the GUI"));
         arrayList.add(new ColorDividerComponent(themeColors.i));
@@ -101,7 +101,7 @@ public final class ClientSettingsComponentFactory {
     }
 
     private static void lambda$createSubmenuComponents$13() {
-        Vape.INSTANCE.getProfilesManager().v();
+        Vape.INSTANCE.getProfilesManager().resetAllSettings();
     }
 
     private static void lambda$createSubmenuComponents$16() {
@@ -147,7 +147,7 @@ public final class ClientSettingsComponentFactory {
     }
 
     private static void lambda$createMainChildren$12() {
-        if (OnlineConnectionManager.T.n() != OnlineConnectionState.ONLINE) {
+        if (OnlineConnectionManager.INSTANCE.getConnectionState() != OnlineConnectionState.ONLINE) {
             Vape.INSTANCE.getNotificationManager().showInfo("Vape Online", "You must be logged in to perform this action!", 3000L);
             return;
         }
@@ -155,17 +155,17 @@ public final class ClientSettingsComponentFactory {
     }
 
     private static void lambda$createMainChildren$6() {
-        ApiServices.d().c().R().thenAccept(ClientSettingsComponentFactory::lambda$null$4).exceptionally(ClientSettingsComponentFactory::lambda$null$5);
+        ApiServices.getInstance().getUserDataApi().getUserData().thenAccept(ClientSettingsComponentFactory::lambda$null$4).exceptionally(ClientSettingsComponentFactory::lambda$null$5);
     }
 
     private static void lambda$null$11() {
     }
 
     private static void lambda$null$10(GroupCreateResponsePacket groupCreateResponsePacket) {
-        if (groupCreateResponsePacket.q$src$Lgg_vape_protocol_packet_GroupCreateStatus_$1c0kqtl() == GroupCreateStatus.SUCCESS) {
+        if (groupCreateResponsePacket.getStatus() == GroupCreateStatus.SUCCESS) {
             Vape.INSTANCE.getNotificationManager().showInfo("Vape Online", "Party created", 3000L);
         } else {
-            Vape.INSTANCE.getNotificationManager().showInfo("Vape Online", "Party creation error: " + (Object)((Object)groupCreateResponsePacket.q$src$Lgg_vape_protocol_packet_GroupCreateStatus_$1c0kqtl()), 3000L);
+            Vape.INSTANCE.getNotificationManager().showInfo("Vape Online", "Party creation error: " + (Object)((Object)groupCreateResponsePacket.getStatus()), 3000L);
         }
     }
 
@@ -176,7 +176,7 @@ public final class ClientSettingsComponentFactory {
 
     private static void lambda$createMainChildren$2() {
         ItemMappingEntry itemMappingEntry = Vape.INSTANCE.getItemStackResolver().resolve(Minecraft.thePlayer().B$src$Lgg_vape_wrapper_impl_ItemStack_$impdvt());
-        Vape.INSTANCE.getNotificationManager().showInfo("Universal Item", "You're holding: " + (itemMappingEntry != null ? itemMappingEntry.M() : null), 3000L);
+        Vape.INSTANCE.getNotificationManager().showInfo("Universal Item", "You're holding: " + (itemMappingEntry != null ? itemMappingEntry.getResourceKey() : null), 3000L);
     }
 
     private static void lambda$createSubmenuComponents$15() {
@@ -204,12 +204,12 @@ public final class ClientSettingsComponentFactory {
     public static Map<ThemeComponentGroupKey, GuiComponent[]> d(ThemeColors themeColors, gg.vape.config.ClientSettings clientSettings, ClientSettings clientSettings2, boolean bl) {
         PublicProfileSettings publicProfileSettings = Vape.INSTANCE.getPublicProfileSettings();
         LinkedHashMap<ThemeComponentGroupKey, GuiComponent[]> linkedHashMap = new LinkedHashMap<ThemeComponentGroupKey, GuiComponent[]>();
-        linkedHashMap.put(new ThemeComponentGroupKey("General", null), new GuiComponent[]{new BooleanToggleComponent(clientSettings2.multiKeybinding), new BooleanToggleComponent(publicProfileSettings.o), new BooleanToggleComponent(OnlineConnectionManager.T.g().F()), new PublicProfileModeDropdownComponent(publicProfileSettings.k), new ClientSettingsActionButtonRowComponent("Reset current profile", ClientSettingsComponentFactory::lambda$createSubmenuComponents$13).w("This will set your current profile to the default settings of Vape")});
-        linkedHashMap.put(new ThemeComponentGroupKey("Modules", null), new GuiComponent[]{new ColorDividerComponent(themeColors.l), new BooleanToggleComponent(clientSettings.N), new BooleanToggleComponent(clientSettings.T), new BooleanToggleComponent(clientSettings.S), new BooleanToggleComponent(clientSettings.healthPrediction), new ClientSettingsEntityCheckDependentToggleComponent(clientSettings.estimateFoodHealing, clientSettings), new ClientSettingsThemeBooleanToggle(clientSettings.estimateFallDamage, clientSettings)});
-        linkedHashMap.put(new ThemeComponentGroupKey("Silent Aim", null), new GuiComponent[]{new DropdownSelectComponent(clientSettings.o), new BooleanToggleComponent(clientSettings.c), new BooleanToggleComponent(clientSettings.e), new BooleanToggleComponent(clientSettings.C), new BooleanToggleComponent(clientSettings.A)});
+        linkedHashMap.put(new ThemeComponentGroupKey("General", null), new GuiComponent[]{new BooleanToggleComponent(clientSettings2.multiKeybinding), new BooleanToggleComponent(publicProfileSettings.autoSave), new BooleanToggleComponent(OnlineConnectionManager.INSTANCE.getGlobalSettingsController().getCacheData()), new PublicProfileModeDropdownComponent(publicProfileSettings.language), new ClientSettingsActionButtonRowComponent("Reset current profile", ClientSettingsComponentFactory::lambda$createSubmenuComponents$13).w("This will set your current profile to the default settings of Vape")});
+        linkedHashMap.put(new ThemeComponentGroupKey("Modules", null), new GuiComponent[]{new ColorDividerComponent(themeColors.l), new BooleanToggleComponent(clientSettings.lobbyCheck), new BooleanToggleComponent(clientSettings.sanityCheck), new BooleanToggleComponent(clientSettings.showNbtTags), new BooleanToggleComponent(clientSettings.healthPrediction), new ClientSettingsEntityCheckDependentToggleComponent(clientSettings.estimateFoodHealing, clientSettings), new ClientSettingsThemeBooleanToggle(clientSettings.estimateFallDamage, clientSettings)});
+        linkedHashMap.put(new ThemeComponentGroupKey("Silent Aim", null), new GuiComponent[]{new DropdownSelectComponent(clientSettings.movementCorrection), new BooleanToggleComponent(clientSettings.thirdPersonAimView), new BooleanToggleComponent(clientSettings.aimIndicator), new BooleanToggleComponent(clientSettings.useReach), new BooleanToggleComponent(clientSettings.useHitboxes)});
         linkedHashMap.put(new ThemeComponentGroupKey("GUI", "newgui"), ClientSettingsComponentFactory.W(clientSettings2, bl));
-        linkedHashMap.put(new ThemeComponentGroupKey("Sound", null), new GuiComponent[]{new NumberSliderComponent(publicProfileSettings.h), new BooleanToggleComponent(publicProfileSettings.m)});
-        linkedHashMap.put(new ThemeComponentGroupKey("Notifications", null), new GuiComponent[]{new BooleanToggleComponent(publicProfileSettings.R), new ClientSettingsPrimaryBooleanToggle(publicProfileSettings.r, publicProfileSettings), new ClientSettingsTertiaryBooleanToggle(publicProfileSettings.A, publicProfileSettings), new ClientSettingsSecondaryBooleanToggle(publicProfileSettings.H, publicProfileSettings)});
+        linkedHashMap.put(new ThemeComponentGroupKey("Sound", null), new GuiComponent[]{new NumberSliderComponent(publicProfileSettings.volume), new BooleanToggleComponent(publicProfileSettings.muted)});
+        linkedHashMap.put(new ThemeComponentGroupKey("Notifications", null), new GuiComponent[]{new BooleanToggleComponent(publicProfileSettings.notifications), new ClientSettingsPrimaryBooleanToggle(publicProfileSettings.toggleAlerts, publicProfileSettings), new ClientSettingsTertiaryBooleanToggle(publicProfileSettings.profileSwitchNotifications, publicProfileSettings), new ClientSettingsSecondaryBooleanToggle(publicProfileSettings.friendNotifications, publicProfileSettings)});
         return linkedHashMap;
     }
 

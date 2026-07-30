@@ -1,14 +1,11 @@
 package gg.vape.wrapper.impl;
 
 import gg.vape.mapping.MappedClasses;
-import gg.vape.wrapper.impl.ForgeVersion;
-import gg.vape.wrapper.impl.OpenedChestTypeSentinel;
-import gg.vape.wrapper.impl.TileEntity;
 
 public class TileEntityOpenedChest
 extends TileEntity {
     public float getLidAngle() {
-        return TileEntityOpenedChest.c.getMappingsMapperCompat().h5.Z(this.getObject());
+        return TileEntityOpenedChest.vapeInstance.getMappingsMapperCompat().h5.Z(this.getObject());
     }
 
     public int getNumPlayersUsing() {
@@ -19,14 +16,14 @@ extends TileEntity {
             return 0;
         }
         if (ForgeVersion.MC_1_12_2.d()) {
-            OpenedChestTypeSentinel openedChestTypeSentinel = new OpenedChestTypeSentinel(TileEntityOpenedChest.c.getMappingsMapperCompat().h5.b(this.getObject()));
+            OpenedChestTypeSentinel openedChestTypeSentinel = new OpenedChestTypeSentinel(TileEntityOpenedChest.vapeInstance.getMappingsMapperCompat().h5.b(this.getObject()));
             if (openedChestTypeSentinel.isNull()) {
                 return 0;
             }
-            int n = TileEntityOpenedChest.c.getMappingsMapperCompat().h5.b(this.getObject()).equals(OpenedChestTypeSentinel.Y().getObject()) ? 0 : 1;
+            int n = TileEntityOpenedChest.vapeInstance.getMappingsMapperCompat().h5.b(this.getObject()).equals(OpenedChestTypeSentinel.Y().getObject()) ? 0 : 1;
             return n;
         }
-        return TileEntityOpenedChest.c.getMappingsMapperCompat().h5.s(this.getObject());
+        return TileEntityOpenedChest.vapeInstance.getMappingsMapperCompat().h5.s(this.getObject());
     }
 
 
@@ -36,9 +33,9 @@ extends TileEntity {
 
     public float Y() {
         if (ForgeVersion.MC_1_17.d()) {
-            return TileEntityOpenedChest.c.getMappingsMapperCompat().h5.o(this.getObject(), 0.0f);
+            return TileEntityOpenedChest.vapeInstance.getMappingsMapperCompat().h5.o(this.getObject(), 0.0f);
         }
-        return TileEntityOpenedChest.c.getMappingsMapperCompat().h5.G(this.getObject());
+        return TileEntityOpenedChest.vapeInstance.getMappingsMapperCompat().h5.G(this.getObject());
     }
 }
 

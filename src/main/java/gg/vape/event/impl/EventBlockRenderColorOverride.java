@@ -7,34 +7,34 @@ import java.nio.FloatBuffer;
 
 public class EventBlockRenderColorOverride
 extends Event {
-    private static boolean e;
-    private static final EventListeners T;
-    private static float f;
-    private static float w;
-    private static float m;
-    private static float L;
+    private static boolean colorOverridePending;
+    private static final EventListeners EVENT_LISTENERS;
+    private static float alpha;
+    private static float red;
+    private static float green;
+    private static float blue;
 
     public static void flip(FloatBuffer floatBuffer) {
-        if (!e) {
+        if (!colorOverridePending) {
             return;
         }
         floatBuffer.position(0);
-        floatBuffer.put(w);
-        floatBuffer.put(m);
-        floatBuffer.put(L);
-        floatBuffer.put(f);
-        e = false;
+        floatBuffer.put(red);
+        floatBuffer.put(green);
+        floatBuffer.put(blue);
+        floatBuffer.put(alpha);
+        colorOverridePending = false;
     }
 
     public static EventListeners getEventListeners() {
-        return T;
+        return EVENT_LISTENERS;
     }
 
     public EventBlockRenderColorOverride() {
-        w = 1.0f;
-        m = 0.0f;
-        L = 0.0f;
-        f = ForgeVersion.MC_1_7_10.L() ? 0.4f : 0.3f;
+        red = 1.0f;
+        green = 0.0f;
+        blue = 0.0f;
+        alpha = ForgeVersion.MC_1_7_10.L() ? 0.4f : 0.3f;
     }
 
     @Override
@@ -44,20 +44,20 @@ extends Event {
 
     @Override
     public EventListeners getListeners() {
-        return T;
+        return EVENT_LISTENERS;
     }
 
 
-    public static void setColor(float f, float f2, float f3, float f4) {
-        w = f;
-        m = f2;
-        L = f3;
-        EventBlockRenderColorOverride.f = f4;
-        e = true;
+    public static void setColor(float red, float green, float blue, float alpha) {
+        EventBlockRenderColorOverride.red = red;
+        EventBlockRenderColorOverride.green = green;
+        EventBlockRenderColorOverride.blue = blue;
+        EventBlockRenderColorOverride.alpha = alpha;
+        colorOverridePending = true;
     }
 
     static {
-        T = new EventListeners();
+        EVENT_LISTENERS = new EventListeners();
     }
 }
 

@@ -22,11 +22,11 @@ extends Mapping {
     }
 
     private void F(Object object) {
-        this.s.F(object);
+        this.s.invokeVoidNoArgs(object);
     }
 
     private void k(Object object, float f) {
-        this.d.c(object, Float.valueOf(f));
+        this.d.invokeVoid(object, Float.valueOf(f));
     }
 
     public static void f(MLightTexture mLightTexture, Object object) {
@@ -34,7 +34,7 @@ extends Mapping {
     }
 
     private void d(Object object) {
-        this.k.F(object);
+        this.k.invokeVoidNoArgs(object);
     }
 
     public MLightTexture() {

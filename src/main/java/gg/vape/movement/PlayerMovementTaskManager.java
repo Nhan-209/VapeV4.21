@@ -36,7 +36,7 @@ implements EventListener {
         return this.activeTask != null && !this.activeTask.isCompleted();
     }
 
-    @EventHandler(A=EventPriority.HIGH)
+    @EventHandler(priority=EventPriority.HIGH)
     public void onPreLocalPlayerTick(EventPreLocalPlayerTick event) {
         if (this.activeTask == null && Minecraft.thePlayer().isNotNull()) {
             return;

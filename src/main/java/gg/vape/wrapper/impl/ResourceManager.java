@@ -6,7 +6,7 @@ import java.util.Collection;
 public class ResourceManager
 extends Wrapper {
     public Collection<String> U() {
-        return (Collection)ResourceManager.c.getMappingsMapperCompat().C2.e(this.I);
+        return (Collection)ResourceManager.vapeInstance.getMappingsMapperCompat().C2.e(this.I);
     }
 
     public ResourceManager(Object object) {

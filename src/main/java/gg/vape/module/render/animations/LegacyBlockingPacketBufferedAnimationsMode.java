@@ -51,7 +51,7 @@ extends AnimationsMode {
         }
         if (this.findTarget() != null) {
             boolean shouldBlock = this.isHoldingSword();
-            if (((Animations)this.getParent()).requiresMouseDown() && !gg.vape.config.ClientSettings.V()) {
+            if (((Animations)this.getParent()).requiresMouseDown() && !gg.vape.config.ClientSettings.isUseItemButtonDown()) {
                 shouldBlock = false;
             }
             if (event.getThePlayer().c$src$I$15a9iwo() > AttackPacketTimingTracker.INSTANCE.getExpectedHurtTimeTicks() + 1) {
@@ -80,7 +80,7 @@ extends AnimationsMode {
             }
             return;
         }
-        if (this.isHoldingSword() && ((Animations)this.getParent()).requiresMouseDown() && ((Animations)this.getParent()).ignoreManualBlock.getEffectiveValue().booleanValue() && !this.bufferingPackets && gg.vape.config.ClientSettings.V() && Minecraft.thePlayer().o$src$Z$1iprrmi()) {
+        if (this.isHoldingSword() && ((Animations)this.getParent()).requiresMouseDown() && ((Animations)this.getParent()).ignoreManualBlock.getEffectiveValue().booleanValue() && !this.bufferingPackets && gg.vape.config.ClientSettings.isUseItemButtonDown() && Minecraft.thePlayer().o$src$Z$1iprrmi()) {
             KeyBindingInputState.sendRightButtonUp();
             this.blocking = false;
             this.blockCycleCompleted = false;
@@ -122,7 +122,7 @@ extends AnimationsMode {
     }
 
     private void flushPackets() {
-        if (!Thread.currentThread().equals(EventTickBase.S.getOwnerThread())) {
+        if (!Thread.currentThread().equals(EventTickBase.PRE_TICK_EXECUTOR.getOwnerThread())) {
             return;
         }
         NetHandlerPlayClientImpl connection = Minecraft.thePlayer().sendQueue();
@@ -140,7 +140,7 @@ extends AnimationsMode {
     }
 
 
-    @EventHandler(A=EventPriority.LOWEST)
+    @EventHandler(priority=EventPriority.LOWEST)
     public void onPacketSend(EventPacketSend event) {
         if (event.isCanceled()) {
             return;
@@ -155,7 +155,7 @@ extends AnimationsMode {
         if (Minecraft.thePlayer().isNull() || packet.isInstance(MappedClasses.VP)) {
             return;
         }
-        if (!Thread.currentThread().equals(EventTickBase.S.getOwnerThread())) {
+        if (!Thread.currentThread().equals(EventTickBase.PRE_TICK_EXECUTOR.getOwnerThread())) {
             return;
         }
         if (this.bufferingPackets) {

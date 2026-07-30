@@ -1,8 +1,6 @@
 package gg.vape.wrapper.impl;
 
 import gg.vape.wrapper.Wrapper;
-import gg.vape.wrapper.impl.ForgeVersion;
-import gg.vape.wrapper.impl.Vector3f;
 
 public class Quaternion
 extends Wrapper {
@@ -15,11 +13,11 @@ extends Wrapper {
         float f4 = j__02.D() * f2;
         float f5 = j__02.R() * f2;
         float f6 = (float)Math.cos(f / 2.0f);
-        return new Quaternion(Quaternion.c.getMappingsMapperCompat().qf.N(f3, f4, f5, f6));
+        return new Quaternion(Quaternion.vapeInstance.getMappingsMapperCompat().qf.N(f3, f4, f5, f6));
     }
 
     public float P() {
-        return Quaternion.c.getMappingsMapperCompat().qf.O(this.I);
+        return Quaternion.vapeInstance.getMappingsMapperCompat().qf.O(this.I);
     }
 
 
@@ -40,17 +38,17 @@ extends Wrapper {
             float f11 = f5 * f6 * f9 - f4 * f7 * f8;
             float f12 = f4 * f6 * f9 + f5 * f7 * f8;
             float f13 = f5 * f7 * f9 - f4 * f6 * f8;
-            return new Quaternion(Quaternion.c.getMappingsMapperCompat().qf.N(f10, f11, f12, f13));
+            return new Quaternion(Quaternion.vapeInstance.getMappingsMapperCompat().qf.N(f10, f11, f12, f13));
         }
-        return new Quaternion(Quaternion.c.getMappingsMapperCompat().qf.v(f, f2, f3, bl));
+        return new Quaternion(Quaternion.vapeInstance.getMappingsMapperCompat().qf.v(f, f2, f3, bl));
     }
 
     public float Q() {
-        return Quaternion.c.getMappingsMapperCompat().qf.V(this.I);
+        return Quaternion.vapeInstance.getMappingsMapperCompat().qf.V(this.I);
     }
 
     public float q() {
-        return Quaternion.c.getMappingsMapperCompat().qf.h(this.I);
+        return Quaternion.vapeInstance.getMappingsMapperCompat().qf.h(this.I);
     }
 
     public Quaternion(Object object) {
@@ -58,7 +56,7 @@ extends Wrapper {
     }
 
     public float N() {
-        return Quaternion.c.getMappingsMapperCompat().qf.v(this.I);
+        return Quaternion.vapeInstance.getMappingsMapperCompat().qf.v(this.I);
     }
 }
 

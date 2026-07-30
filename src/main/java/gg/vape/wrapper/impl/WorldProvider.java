@@ -1,7 +1,6 @@
 package gg.vape.wrapper.impl;
 
 import gg.vape.wrapper.Wrapper;
-import gg.vape.wrapper.impl.TickEvent_Phase;
 
 public class WorldProvider
 extends Wrapper {
@@ -10,7 +9,7 @@ extends Wrapper {
     }
 
     public Object v(TickEvent_Phase wm_22) {
-        return WorldProvider.c.getMappingsMapperCompat().V.v(this.I, wm_22.getObject());
+        return WorldProvider.vapeInstance.getMappingsMapperCompat().V.v(this.I, wm_22.getObject());
     }
 }
 

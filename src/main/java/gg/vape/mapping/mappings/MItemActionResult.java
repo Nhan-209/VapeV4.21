@@ -19,7 +19,7 @@ extends Mapping {
         if (this.K == null) {
             return true;
         }
-        return this.K.e(object, new Object[0]);
+        return this.K.invokeBoolean(object, new Object[0]);
     }
 
     public MItemActionResult() {
@@ -31,7 +31,7 @@ extends Mapping {
         if (stringArray != null) {
             Class[] classArray = new Class[]{MappedClasses.Zi, MappedClasses.lj};
             MItemActionResult mItemActionResult = this;
-            this.u = mItemActionResult.g(classArray);
+            this.u = mItemActionResult.registerConstructor(classArray);
             if (ForgeVersion.MC_1_21_10.v()) {
                 Class[] classArray2 = new Class[]{};
                 Class<Boolean> clazz = Boolean.TYPE;
@@ -97,23 +97,23 @@ extends Mapping {
     }
 
     public Object T(Object object) {
-        return this.N.L(object, new Object[0]);
+        return this.N.invokeObject(object, new Object[0]);
     }
 
     public Object d(Object object, Object object2) {
-        return this.u.L(null, object, object2);
+        return this.u.invokeObject(null, object, object2);
     }
 
     public boolean P(Object object) {
-        return this.Z.e(object, new Object[0]);
+        return this.Z.invokeBoolean(object, new Object[0]);
     }
 
     public Object Z(Object object, Object object2) {
-        return this.c.L(object, object2);
+        return this.c.invokeObject(object, object2);
     }
 
     public Object z(Object object) {
-        return this.V.L(object, new Object[0]);
+        return this.V.invokeObject(object, new Object[0]);
     }
 
 }

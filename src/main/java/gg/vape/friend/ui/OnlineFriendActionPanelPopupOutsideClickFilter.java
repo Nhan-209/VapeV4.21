@@ -7,21 +7,21 @@ import java.awt.Point;
 
 public class OnlineFriendActionPanelPopupOutsideClickFilter
 implements GuiMouseListener {
-    final OnlineFriendActionPanel w;
-    final PopupFrame G;
+    private final OnlineFriendActionPanel actionPanel;
+    private final PopupFrame popupFrame;
 
 
     @Override
     public boolean Q(Point point) {
-        if (this.w.L$src$Lgg_vape_ui_click_frame_Frame_$1djx6sa().getBounds().R(point) && !this.G.getBounds().R(point)) {
+        if (this.actionPanel.L$src$Lgg_vape_ui_click_frame_Frame_$1djx6sa().getBounds().R(point) && !this.popupFrame.getBounds().R(point)) {
             return true;
         }
         return GuiMouseListener.super.Q(point);
     }
 
     public OnlineFriendActionPanelPopupOutsideClickFilter(OnlineFriendActionPanel onlineFriendActionPanel, PopupFrame popupFrame) {
-        this.w = onlineFriendActionPanel;
-        this.G = popupFrame;
+        this.actionPanel = onlineFriendActionPanel;
+        this.popupFrame = popupFrame;
     }
 }
 

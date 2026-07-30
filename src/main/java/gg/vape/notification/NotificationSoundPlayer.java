@@ -29,7 +29,7 @@ public class NotificationSoundPlayer {
     }
 
     public boolean isMuted() {
-        return Vape.INSTANCE.getPublicProfileSettings().m.getEffectiveValue();
+        return Vape.INSTANCE.getPublicProfileSettings().muted.getEffectiveValue();
     }
 
     public static int[] getControlFlowMarker() {
@@ -42,7 +42,7 @@ public class NotificationSoundPlayer {
 
 
     public float getVolumePercent() {
-        return ((Double)Vape.INSTANCE.getPublicProfileSettings().h.getValue()).floatValue();
+        return ((Double)Vape.INSTANCE.getPublicProfileSettings().volume.getValue()).floatValue();
     }
 
     public void queue(SoundClip sound) {
@@ -65,4 +65,3 @@ public class NotificationSoundPlayer {
         }
     }
 }
-

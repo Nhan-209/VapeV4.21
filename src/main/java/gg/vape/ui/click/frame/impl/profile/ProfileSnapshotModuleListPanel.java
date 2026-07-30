@@ -132,7 +132,7 @@ extends PanelComponent {
 
     public void setSnapshot(ProfileSnapshot snapshot) {
         this.snapshot = snapshot;
-        this.profileNameLabel.setText(snapshot.getProfile().n$src$Ljava_lang_String_$xqhelw());
+        this.profileNameLabel.setText(snapshot.getProfile().getName());
         this.applyBar.setSnapshot(snapshot);
         this.rebuildModuleRows();
     }

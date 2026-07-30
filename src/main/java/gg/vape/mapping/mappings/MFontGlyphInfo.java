@@ -17,17 +17,17 @@ extends Mapping {
     }
 
     public float k(Object object) {
-        if (this.s == null || this.s.h()) {
+        if (this.s == null || this.s.hasResolutionFailed()) {
             return 1.0f;
         }
-        return this.s.s(object, new Object[0]);
+        return this.s.invokeFloat(object, new Object[0]);
     }
 
     public float v(Object object) {
-        if (this.i == null || this.i.h()) {
+        if (this.i == null || this.i.hasResolutionFailed()) {
             return 1.0f;
         }
-        return this.i.s(object, new Object[0]);
+        return this.i.invokeFloat(object, new Object[0]);
     }
 
     public static int[] T() {
@@ -35,11 +35,11 @@ extends Mapping {
     }
 
     public float e(Object object, boolean bl) {
-        if (this.a == null || this.a.h()) {
+        if (this.a == null || this.a.hasResolutionFailed()) {
             float f = this.B(object);
             return bl ? f + this.v(object) : f;
         }
-        return this.a.s(object, bl);
+        return this.a.invokeFloat(object, bl);
     }
 
     static {
@@ -48,10 +48,10 @@ extends Mapping {
 
 
     public float B(Object object) {
-        if (this.U == null || this.U.h()) {
+        if (this.U == null || this.U.hasResolutionFailed()) {
             return 0.0f;
         }
-        return this.U.s(object, new Object[0]);
+        return this.U.invokeFloat(object, new Object[0]);
     }
 
     public MFontGlyphInfo() {

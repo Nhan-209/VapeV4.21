@@ -47,12 +47,12 @@ extends Mapping {
         boolean bl = true;
         String string = "DISTANCE_TO_ORIGIN";
         MTickEventPhase mTickEventPhase = this;
-        this.y = this.u(string, bl, clazz);
+        this.y = this.registerStaticField(string, bl, clazz);
         Class clazz2 = MappedClasses.VT;
         boolean bl2 = true;
         String string2 = "ORTHOGRAPHIC_Z";
         MTickEventPhase mTickEventPhase2 = this;
-        this.h = this.u(string2, bl2, clazz2);
+        this.h = this.registerStaticField(string2, bl2, clazz2);
         if (GuiComponent.getLegacyComponentState() == null) {
             MTickEventPhase.m(new GuiComponent[2]);
         }

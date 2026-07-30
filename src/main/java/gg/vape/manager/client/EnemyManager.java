@@ -19,55 +19,55 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class EnemyManager {
-    public BooleanValue z;
-    public ColorValue i;
-    public BooleanValue L;
-    public BooleanValue p;
-    public BooleanValue O;
-    private final Set<Enemy> x = new HashSet<Enemy>();
-    private static int[] U;
+    public BooleanValue useAlias;
+    public ColorValue enemyColor;
+    public BooleanValue useEnemies;
+    public BooleanValue useColor;
+    public BooleanValue spoofAlias;
+    private final Set<Enemy> enemies = new HashSet<Enemy>();
+    private static int[] obfuscationState;
 
     public EnemyManager() {
-        this.L = BooleanValue.create(this, "Use Enemies", true);
-        this.z = BooleanValue.create(this, "Use Alias", true);
-        this.O = BooleanValue.create(this, "Spoof alias", false, "This will make the enemies name be replaced in chat with their alias.\nApplies on regular Nametags as well");
-        this.p = BooleanValue.create(this, "Use color", true, "Re-colors certain render modules to use \"Enemies Color\" on enemies");
-        this.i = ColorValue.create(this, "Enemies Color", new Color(244, 66, 66));
-        this.O.addChangeListener(this::lambda$new$0);
+        this.useEnemies = BooleanValue.create(this, "Use Enemies", true);
+        this.useAlias = BooleanValue.create(this, "Use Alias", true);
+        this.spoofAlias = BooleanValue.create(this, "Spoof alias", false, "This will make the enemies name be replaced in chat with their alias.\nApplies on regular Nametags as well");
+        this.useColor = BooleanValue.create(this, "Use color", true, "Re-colors certain render modules to use \"Enemies Color\" on enemies");
+        this.enemyColor = ColorValue.create(this, "Enemies Color", new Color(244, 66, 66));
+        this.spoofAlias.addChangeListener(this::onSpoofAliasChanged);
     }
 
-    public static void x(int[] nArray) {
-        U = nArray;
+    public static void setObfuscationState(int[] state) {
+        obfuscationState = state;
     }
 
-    public void I() {
-        this.y().clear();
+    public void clearEnemies() {
+        this.getEnemies().clear();
     }
 
-    public boolean q(String string) {
-        if (!this.L.getEffectiveValue().booleanValue()) {
+    public boolean isEnemy(String name) {
+        if (!this.useEnemies.getEffectiveValue().booleanValue()) {
             return false;
         }
-        Enemy enemy = this.A(string);
+        Enemy enemy = this.getEnemy(name);
         return enemy != null;
     }
 
-    private void lambda$new$0(BooleanValue booleanValue) {
-        this.f();
+    private void onSpoofAliasChanged(BooleanValue ignored) {
+        this.refreshPlayerNames();
     }
 
-    public void Q(Enemy enemy) {
-        Enemy enemy2 = this.A(enemy.y());
-        if (enemy2 != null) {
-            this.x.remove(enemy2);
+    public void addEnemy(Enemy enemy) {
+        Enemy existing = this.getEnemy(enemy.getName());
+        if (existing != null) {
+            this.enemies.remove(existing);
         }
-        this.x.add(enemy);
-        this.f();
+        this.enemies.add(enemy);
+        this.refreshPlayerNames();
     }
 
-    public Enemy f(String string, boolean bl) {
-        if (this.L.getEffectiveValue().booleanValue() || !bl) {
-            Enemy enemy = this.A(string);
+    public Enemy findTargetedEnemy(String name, boolean respectEnabledSetting) {
+        if (this.useEnemies.getEffectiveValue().booleanValue() || !respectEnabledSetting) {
+            Enemy enemy = this.getEnemy(name);
             if (enemy != null) {
                 return null;
             }
@@ -77,88 +77,88 @@ public class EnemyManager {
     }
 
     static {
-        EnemyManager.x(null);
+        EnemyManager.setObfuscationState(null);
     }
 
-    public boolean y(EntityLivingBase entityLivingBase) {
-        Enemy enemy = this.r(entityLivingBase.getName());
+    public boolean isExclusiveEnemy(EntityLivingBase entity) {
+        Enemy enemy = this.findTargetedEnemy(entity.getName());
         if (enemy != null) {
-            return enemy.t();
+            return enemy.isExclusive();
         }
         return false;
     }
 
-    public static int[] A() {
-        return U;
+    public static int[] getObfuscationState() {
+        return obfuscationState;
     }
 
-    public boolean R(EntityLivingBase entityLivingBase) {
-        return this.q(entityLivingBase.getName());
+    public boolean isEnemy(EntityLivingBase entity) {
+        return this.isEnemy(entity.getName());
     }
 
-    public void f() {
+    public void refreshPlayerNames() {
         if (Minecraft.theWorld().isNull()) {
             return;
         }
-        for (Object e : Minecraft.theWorld().X()) {
-            new EntityPlayer(e).w$src$V$1iu649y();
+        for (Object playerObject : Minecraft.theWorld().X()) {
+            new EntityPlayer(playerObject).w$src$V$1iu649y();
         }
     }
 
-    private static Exception a(Exception exception) {
+    private static Exception propagateException(Exception exception) {
         return exception;
     }
 
-    public JsonArray H() {
-        JsonArray jsonArray = new JsonArray();
-        for (Enemy enemy : this.y()) {
-            jsonArray.add((JsonElement)enemy.s$src$Lcom_google_gson_JsonObject_$hkaqtu());
+    public JsonArray toJson() {
+        JsonArray result = new JsonArray();
+        for (Enemy enemy : this.getEnemies()) {
+            result.add((JsonElement)enemy.toJson());
         }
-        return jsonArray;
+        return result;
     }
 
-    public void d(JsonArray jsonArray) {
-        if (jsonArray.size() == 0) {
+    public void loadJson(JsonArray serializedEnemies) {
+        if (serializedEnemies.size() == 0) {
             return;
         }
-        this.I();
-        for (int i = 0; i < jsonArray.size(); ++i) {
+        this.clearEnemies();
+        for (int index = 0; index < serializedEnemies.size(); ++index) {
             try {
-                JsonElement jsonElement = jsonArray.get(i);
-                if (!jsonElement.isJsonObject() || jsonElement.isJsonNull()) continue;
-                Enemy enemy = Enemy.c(jsonElement.getAsJsonObject());
-                this.Q(enemy);
+                JsonElement element = serializedEnemies.get(index);
+                if (!element.isJsonObject() || element.isJsonNull()) continue;
+                Enemy enemy = Enemy.fromJson(element.getAsJsonObject());
+                this.addEnemy(enemy);
                 continue;
             }
             catch (Exception exception) {
                 // empty catch block
             }
         }
-        ClientSettings.getFrame(EnemySettingsFrame.class).Q$src$V$1u5tkk5();
+        ClientSettings.getFrame(EnemySettingsFrame.class).refreshEntries();
     }
 
-    public Enemy A(String string) {
-        for (Enemy enemy : this.x) {
-            if (!enemy.y().equalsIgnoreCase(string)) continue;
+    public Enemy getEnemy(String name) {
+        for (Enemy enemy : this.enemies) {
+            if (!enemy.getName().equalsIgnoreCase(name)) continue;
             return enemy;
         }
         return null;
     }
 
-    public Enemy r(String string) {
-        return this.f(string, true);
+    public Enemy findTargetedEnemy(String name) {
+        return this.findTargetedEnemy(name, true);
     }
 
-    public void s(Enemy enemy) {
-        this.x.remove(enemy);
-        this.f();
+    public void removeEnemy(Enemy enemy) {
+        this.enemies.remove(enemy);
+        this.refreshPlayerNames();
     }
 
-    public Set<Enemy> y() {
-        return this.x;
+    public Set<Enemy> getEnemies() {
+        return this.enemies;
     }
 
-    public void c() {
+    public void toggleCrosshairTarget() {
         RayTraceResult rayTraceResult = Minecraft.p$src$Lgg_vape_wrapper_impl_RayTraceResult_$5rw6n0();
         if (rayTraceResult.isNull()) {
             return;
@@ -169,12 +169,12 @@ public class EnemyManager {
         }
         if (entity.isInstance(MappedClasses.lG)) {
             EntityOtherPlayerMP entityOtherPlayerMP = new EntityOtherPlayerMP(entity);
-            String string = entityOtherPlayerMP.getName();
-            Enemy enemy = this.A(string);
+            String name = entityOtherPlayerMP.getName();
+            Enemy enemy = this.getEnemy(name);
             if (enemy != null) {
-                this.s(enemy);
+                this.removeEnemy(enemy);
             } else {
-                this.Q(new Enemy(string, string));
+                this.addEnemy(new Enemy(name, name));
             }
         }
     }

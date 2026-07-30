@@ -2,53 +2,43 @@ package gg.vape.wrapper.impl;
 
 import gg.vape.mapping.mappings.MPlayerControllerMP;
 import gg.vape.wrapper.Wrapper;
-import gg.vape.wrapper.impl.ClickType;
-import gg.vape.wrapper.impl.Entity;
-import gg.vape.wrapper.impl.EntityPlayer;
-import gg.vape.wrapper.impl.EnumActionResult;
-import gg.vape.wrapper.impl.EnumHand;
-import gg.vape.wrapper.impl.ForgeVersion;
-import gg.vape.wrapper.impl.ItemStack;
-import gg.vape.wrapper.impl.Minecraft;
-import gg.vape.wrapper.impl.NetHandlerPlayClientImpl;
-import gg.vape.wrapper.impl.World;
 
 public class PlayerControllerMP
 extends Wrapper {
     public void Q() {
-        MPlayerControllerMP.v(PlayerControllerMP.c.getMappingsMapperCompat().hj, this.I);
+        MPlayerControllerMP.v(PlayerControllerMP.vapeInstance.getMappingsMapperCompat().hj, this.I);
     }
 
     public void attackEntity(EntityPlayer entityPlayer, Entity entity) {
-        MPlayerControllerMP.attackEntity(PlayerControllerMP.c.getMappingsMapperCompat().hj, this.I, entityPlayer.getObject(), entity.getObject());
+        MPlayerControllerMP.attackEntity(PlayerControllerMP.vapeInstance.getMappingsMapperCompat().hj, this.I, entityPlayer.getObject(), entity.getObject());
     }
 
     public void onStoppedUsingItem(EntityPlayer entityPlayer) {
-        PlayerControllerMP.c.getMappingsMapperCompat().hj.onStoppedUsingItem(this.I, entityPlayer.getObject());
+        PlayerControllerMP.vapeInstance.getMappingsMapperCompat().hj.onStoppedUsingItem(this.I, entityPlayer.getObject());
     }
 
     public void B() {
-        PlayerControllerMP.c.getMappingsMapperCompat().hj.o(this.I);
+        PlayerControllerMP.vapeInstance.getMappingsMapperCompat().hj.o(this.I);
     }
 
 
     public boolean a() {
-        return MPlayerControllerMP.K(PlayerControllerMP.c.getMappingsMapperCompat().hj, this.I);
+        return MPlayerControllerMP.K(PlayerControllerMP.vapeInstance.getMappingsMapperCompat().hj, this.I);
     }
 
     public float c() {
-        return MPlayerControllerMP.l(PlayerControllerMP.c.getMappingsMapperCompat().hj, this.I);
+        return MPlayerControllerMP.l(PlayerControllerMP.vapeInstance.getMappingsMapperCompat().hj, this.I);
     }
 
     public ItemStack O(int n, int n2, int n3, int n4, EntityPlayer entityPlayer) {
         if (ForgeVersion.MC_1_17.d()) {
-            PlayerControllerMP.c.getMappingsMapperCompat().hj.N(this.I, n, n2, n3, ClickType.b[n4].getObject(), entityPlayer.getObject());
+            PlayerControllerMP.vapeInstance.getMappingsMapperCompat().hj.N(this.I, n, n2, n3, ClickType.b[n4].getObject(), entityPlayer.getObject());
             return null;
         }
         if (ForgeVersion.MC_1_12_2.d()) {
-            return new ItemStack(PlayerControllerMP.c.getMappingsMapperCompat().hj.N(this.I, n, n2, n3, ClickType.b[n4].getObject(), entityPlayer.getObject()));
+            return new ItemStack(PlayerControllerMP.vapeInstance.getMappingsMapperCompat().hj.N(this.I, n, n2, n3, ClickType.b[n4].getObject(), entityPlayer.getObject()));
         }
-        return new ItemStack(PlayerControllerMP.c.getMappingsMapperCompat().hj.S(this.I, n, n2, n3, n4, entityPlayer.getObject()));
+        return new ItemStack(PlayerControllerMP.vapeInstance.getMappingsMapperCompat().hj.S(this.I, n, n2, n3, n4, entityPlayer.getObject()));
     }
 
     public PlayerControllerMP(Object object) {
@@ -61,21 +51,21 @@ extends Wrapper {
 
     public float N() {
         if (ForgeVersion.MC_1_20_6.d()) {
-            return PlayerControllerMP.c.getMappingsMapperCompat().hj.z(Minecraft.a_xH_J().getObject());
+            return PlayerControllerMP.vapeInstance.getMappingsMapperCompat().hj.z(Minecraft.a_xH_J().getObject());
         }
-        return PlayerControllerMP.c.getMappingsMapperCompat().hj.z(this.I);
+        return PlayerControllerMP.vapeInstance.getMappingsMapperCompat().hj.z(this.I);
     }
 
     public NetHandlerPlayClientImpl n() {
-        return new NetHandlerPlayClientImpl(MPlayerControllerMP.w(PlayerControllerMP.c.getMappingsMapperCompat().hj, this.I));
+        return new NetHandlerPlayClientImpl(MPlayerControllerMP.w(PlayerControllerMP.vapeInstance.getMappingsMapperCompat().hj, this.I));
     }
 
     public boolean sendUseItem(EntityPlayer entityPlayer, World world, ItemStack itemStack) {
         if (ForgeVersion.MC_1_12_2.d()) {
-            EnumActionResult enumActionResult = new EnumActionResult(PlayerControllerMP.c.getMappingsMapperCompat().hj.H(this.I, entityPlayer.getObject(), world.getObject(), EnumHand.M().getObject()));
+            EnumActionResult enumActionResult = new EnumActionResult(PlayerControllerMP.vapeInstance.getMappingsMapperCompat().hj.H(this.I, entityPlayer.getObject(), world.getObject(), EnumHand.M().getObject()));
             return enumActionResult.equals(EnumActionResult.A());
         }
-        return PlayerControllerMP.c.getMappingsMapperCompat().hj.Q(this.I, entityPlayer.getObject(), world.getObject(), itemStack.getObject());
+        return PlayerControllerMP.vapeInstance.getMappingsMapperCompat().hj.Q(this.I, entityPlayer.getObject(), world.getObject(), itemStack.getObject());
     }
 }
 

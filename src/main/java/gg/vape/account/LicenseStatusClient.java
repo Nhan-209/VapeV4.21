@@ -12,45 +12,44 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 public class LicenseStatusClient {
-    HttpURLConnection S;
-    private final Gson j = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+    HttpURLConnection connection;
+    private final Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
 
-    public LicenseStatus J(String string) {
+    public LicenseStatus generateAccount(String licenseKey) {
         try {
-            String string2;
-            URL uRL = new URL("http://api.thealtening.com/v2/generate?key=" + string);
-            this.S = (HttpURLConnection)uRL.openConnection();
-            this.S.setRequestMethod("GET");
-            this.S.setUseCaches(false);
-            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(this.S.getInputStream()));
-            StringBuffer stringBuffer = new StringBuffer();
-            while ((string2 = bufferedReader.readLine()) != null) {
-                stringBuffer.append(string2);
-                stringBuffer.append('\r');
+            String responseLine;
+            URL endpoint = new URL("http://api.thealtening.com/v2/generate?key=" + licenseKey);
+            this.connection = (HttpURLConnection)endpoint.openConnection();
+            this.connection.setRequestMethod("GET");
+            this.connection.setUseCaches(false);
+            BufferedReader responseReader = new BufferedReader(new InputStreamReader(this.connection.getInputStream()));
+            StringBuffer responseBody = new StringBuffer();
+            while ((responseLine = responseReader.readLine()) != null) {
+                responseBody.append(responseLine);
+                responseBody.append('\r');
             }
-            bufferedReader.close();
-            LicenseStatusResponse licenseStatusResponse = (LicenseStatusResponse)this.j.fromJson(stringBuffer.toString(), LicenseStatusResponse.class);
-            if (licenseStatusResponse.e() != null && !licenseStatusResponse.e().equals("")) {
-                return new LicenseStatus(licenseStatusResponse.e());
+            responseReader.close();
+            LicenseStatusResponse response = (LicenseStatusResponse)this.gson.fromJson(responseBody.toString(), LicenseStatusResponse.class);
+            if (response.getToken() != null && !response.getToken().equals("")) {
+                return new LicenseStatus(response.getToken());
             }
         }
-        catch (Exception exception) {
-            Vape.logThrowable(exception);
+        catch (Exception error) {
+            Vape.logThrowable(error);
             try {
-                if (this.S.getResponseCode() == 403) {
+                if (this.connection.getResponseCode() == 403) {
                     return null;
                 }
-                System.out.println("Unhandled error code: " + this.S.getResponseCode());
+                System.out.println("Unhandled error code: " + this.connection.getResponseCode());
             }
-            catch (IOException iOException) {
-                Vape.logThrowable(iOException);
+            catch (IOException responseError) {
+                Vape.logThrowable(responseError);
             }
         }
         return null;
     }
 
-    private static Exception a(Exception exception) {
-        return exception;
+    private static Exception preserveException(Exception error) {
+        return error;
     }
 }
-

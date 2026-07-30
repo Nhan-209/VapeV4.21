@@ -13,18 +13,18 @@ import java.awt.Color;
 
 public class TutorialWelcomePanel
 extends TutorialOverlayPanelBase {
-    private static int rv;
+    private static int obfuscationState;
 
     static {
-        TutorialWelcomePanel.K(88);
+        TutorialWelcomePanel.setObfuscationState(88);
     }
 
-    public static void K(int n) {
-        rv = n;
+    public static void setObfuscationState(int state) {
+        obfuscationState = state;
     }
 
-    public static int E() {
-        return rv;
+    public static int getObfuscationState() {
+        return obfuscationState;
     }
 
     @Override
@@ -71,7 +71,7 @@ extends TutorialOverlayPanelBase {
 
 
     public static int P$src$I$x6acxy() {
-        int n = TutorialWelcomePanel.E();
+        int n = TutorialWelcomePanel.getObfuscationState();
         return 0;
     }
 }

@@ -102,7 +102,7 @@ extends GuiComponent {
         if (itemStack != null && !itemStack.isNull()) {
             this.w("");
             float effectiveScale = this.scale;
-            if (effectiveScale >= 1.0f && Vape.INSTANCE.getClientSettings().s() > 1.0) {
+            if (effectiveScale >= 1.0f && Vape.INSTANCE.getClientSettings().getGuiScaleFactor() > 1.0) {
                 effectiveScale = 0.95f;
             }
             float iconSize = 16.0f * effectiveScale;
@@ -122,7 +122,7 @@ extends GuiComponent {
             this.w("Unknown item: " + this.selection.getItemName());
             this.getAlternateFontRenderer(1.0).W("?", this.G$src$D$1b2f02a() + this.A() / 2.0, this.n() + this.L() / 2.0 - 4.0, ItemFilterSelectionComponent.J.A);
         } else {
-            if (this.selection.getMatcher() != null && this.selection.getMatcher().equals(HiddenInventoryItemMatchers.R) && this.hasPresetPreview()) {
+            if (this.selection.getMatcher() != null && this.selection.getMatcher().equals(HiddenInventoryItemMatchers.ANY_ITEM) && this.hasPresetPreview()) {
                 return;
             }
             this.w("");

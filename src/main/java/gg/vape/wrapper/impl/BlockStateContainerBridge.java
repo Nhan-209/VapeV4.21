@@ -1,17 +1,15 @@
 package gg.vape.wrapper.impl;
 
 import gg.vape.wrapper.Wrapper;
-import gg.vape.wrapper.impl.BlockStateBridge;
-import gg.vape.wrapper.impl.TextComponentTranslation;
 
 public class BlockStateContainerBridge
 extends Wrapper {
     public BlockStateBridge C() {
-        return new BlockStateBridge(BlockStateContainerBridge.c.getMappingsMapperCompat().Ds.V(this.I));
+        return new BlockStateBridge(BlockStateContainerBridge.vapeInstance.getMappingsMapperCompat().Ds.V(this.I));
     }
 
     public Object w(TextComponentTranslation wi_12) {
-        return BlockStateContainerBridge.c.getMappingsMapperCompat().Ds.N(this.I, wi_12.getObject());
+        return BlockStateContainerBridge.vapeInstance.getMappingsMapperCompat().Ds.N(this.I, wi_12.getObject());
     }
 
     public BlockStateContainerBridge(Object object) {

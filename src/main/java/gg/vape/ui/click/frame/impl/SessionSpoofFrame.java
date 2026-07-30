@@ -32,8 +32,8 @@ extends Frame {
         if (this.nu == null) {
             this.nu = Minecraft.Q$src$Lgg_vape_account_MinecraftSessionWrapper_$1ftnn3u();
         }
-        this.nR.setLabelText("Offline as " + this.n4 + "\nReset (" + this.nu.M() + ")");
-        MinecraftSessionWrapper minecraftSessionWrapper = MinecraftSessionWrapper.U(this.n4, "00000000-0000-0000-0000-000000000000", "", "mojang");
+        this.nR.setLabelText("Offline as " + this.n4 + "\nReset (" + this.nu.getUsername() + ")");
+        MinecraftSessionWrapper minecraftSessionWrapper = MinecraftSessionWrapper.createLegacy(this.n4, "00000000-0000-0000-0000-000000000000", "", "mojang");
         Minecraft.w(minecraftSessionWrapper);
     }
 

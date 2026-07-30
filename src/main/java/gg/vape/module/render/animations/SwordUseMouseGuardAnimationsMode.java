@@ -33,7 +33,7 @@ extends AnimationsMode {
             return;
         }
         int buttonBinding = -100 + event.getButton();
-        if (event.getButtonState() && buttonBinding == Minecraft.gameSettings().b$src$Lgg_vape_wrapper_impl_KeyBinding_$1yi3362().getKeyCode() && ((Animations)this.getParent()).requiresMouseDown() && ClientSettings.M()) {
+        if (event.getButtonState() && buttonBinding == Minecraft.gameSettings().b$src$Lgg_vape_wrapper_impl_KeyBinding_$1yi3362().getKeyCode() && ((Animations)this.getParent()).requiresMouseDown() && ClientSettings.isAttackButtonDown()) {
             event.setCancelled(true);
             return;
         }
@@ -41,7 +41,7 @@ extends AnimationsMode {
 
 
     private boolean shouldBlockSwordUse() {
-        if (((Animations)this.getParent()).requiresMouseDown() && !ClientSettings.V()) {
+        if (((Animations)this.getParent()).requiresMouseDown() && !ClientSettings.isUseItemButtonDown()) {
             return false;
         }
         boolean shouldBlock = true;

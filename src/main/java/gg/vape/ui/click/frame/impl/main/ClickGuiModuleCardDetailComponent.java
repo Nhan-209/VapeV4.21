@@ -57,7 +57,7 @@ extends GuiComponent {
                     d9 = d7 + 1.5;
                     double d11 = d4 + d5 / 2.0 - 1.25;
                     Color color = this.m(clickGuiModuleCardRenderState.u());
-                    GuiRenderPrimitives.V(d9, d11, 2.5, 1.0 / Vape.INSTANCE.getClientSettings().s(), color);
+                    GuiRenderPrimitives.V(d9, d11, 2.5, 1.0 / Vape.INSTANCE.getClientSettings().getGuiScaleFactor(), color);
                     d7 += d10;
                     d8 -= d10;
                     continue;

@@ -5,7 +5,6 @@ import gg.vape.mapping.Mapping;
 import gg.vape.mapping.MappingField;
 import gg.vape.mapping.MappingMethod;
 import gg.vape.mapping.MappingMethodBuilder;
-import gg.vape.mapping.mappings.MNBTTagList;
 import gg.vape.ui.click.component.GuiComponent;
 import gg.vape.wrapper.Wrapper;
 import gg.vape.wrapper.impl.ForgeVersion;
@@ -21,9 +20,9 @@ extends Mapping {
 
     private short F(Object object, String string) {
         if (ForgeVersion.MC_1_21_6.d()) {
-            return this.m.A(object, string, -1);
+            return this.m.invokeShort(object, string, -1);
         }
-        return this.m.A(object, string);
+        return this.m.invokeShort(object, string);
     }
 
     private boolean n(Object object, String string, int n) {
@@ -31,7 +30,7 @@ extends Mapping {
             Map map = this.G(object);
             return map != null && map.containsKey(string);
         }
-        return this.M.e(object, string, n);
+        return this.M.invokeBoolean(object, string, n);
     }
 
     public static Map a(MNBTTagCompound mNBTTagCompound, Object object) {
@@ -55,18 +54,18 @@ extends Mapping {
         Class clazz3 = MappedClasses.YR;
         String string3 = "getTag";
         MNBTTagCompound mNBTTagCompound3 = this;
-        this.a = ((MappingMethodBuilder)this.u(string3, clazz3, classArray2).A(ForgeVersion.MC_1_16_5.n(), "get")).s();
+        this.a = ((MappingMethodBuilder)this.methodBuilder(string3, clazz3, classArray2).setNameForVersion(ForgeVersion.MC_1_16_5.n(), "get")).buildMethod();
         if (MNBTTagList.Y() != null) {
             Class[] classArray3 = new Class[]{String.class, Integer.TYPE};
             Class clazz4 = MappedClasses.qt;
             String string4 = "getTagList";
             MNBTTagCompound mNBTTagCompound4 = this;
-            this.V = ((MappingMethodBuilder)((MappingMethodBuilder)this.u(string4, clazz4, classArray3).A(ForgeVersion.MC_1_16_5.n(), "getList")).T(ForgeVersion.MC_1_21_6.n())).s();
+            this.V = ((MappingMethodBuilder)((MappingMethodBuilder)this.methodBuilder(string4, clazz4, classArray3).setNameForVersion(ForgeVersion.MC_1_16_5.n(), "getList")).skipForVersion(ForgeVersion.MC_1_21_6.n())).buildMethod();
             Class[] classArray4 = new Class[]{String.class, Integer.TYPE};
             Class<Boolean> clazz5 = Boolean.TYPE;
             String string5 = "hasKey";
             MNBTTagCompound mNBTTagCompound5 = this;
-            this.M = ((MappingMethodBuilder)((MappingMethodBuilder)((MappingMethodBuilder)((MappingMethodBuilder)this.u(string5, clazz5, classArray4).A(ForgeVersion.MC_1_16_5.n(), "contains")).A(ForgeVersion.MC_1_7_10.S(), "func_150297_b")).i(ForgeVersion.MC_1_7_10.S(), Wrapper.G)).T(ForgeVersion.MC_1_21_6.n())).s();
+            this.M = ((MappingMethodBuilder)((MappingMethodBuilder)((MappingMethodBuilder)((MappingMethodBuilder)this.methodBuilder(string5, clazz5, classArray4).setNameForVersion(ForgeVersion.MC_1_16_5.n(), "contains")).setNameForVersion(ForgeVersion.MC_1_7_10.S(), "func_150297_b")).setMappedMemberForVersion(ForgeVersion.MC_1_7_10.S(), Wrapper.isNativeAvailable)).skipForVersion(ForgeVersion.MC_1_21_6.n())).buildMethod();
             GuiComponent.setLegacyComponentState(new GuiComponent[5]);
             return;
         }
@@ -74,12 +73,12 @@ extends Mapping {
         Class clazz6 = MappedClasses.qt;
         String string6 = "getTagList";
         MNBTTagCompound mNBTTagCompound6 = this;
-        this.V = ((MappingMethodBuilder)((MappingMethodBuilder)this.u(string6, clazz6, classArray5).A(ForgeVersion.MC_1_16_5.n(), "getList")).T(ForgeVersion.MC_1_21_6.n())).s();
+        this.V = ((MappingMethodBuilder)((MappingMethodBuilder)this.methodBuilder(string6, clazz6, classArray5).setNameForVersion(ForgeVersion.MC_1_16_5.n(), "getList")).skipForVersion(ForgeVersion.MC_1_21_6.n())).buildMethod();
         Class[] classArray6 = new Class[]{String.class, Integer.TYPE};
         Class<Boolean> clazz7 = Boolean.TYPE;
         String string7 = "hasKey";
         MNBTTagCompound mNBTTagCompound7 = this;
-        this.M = ((MappingMethodBuilder)((MappingMethodBuilder)((MappingMethodBuilder)((MappingMethodBuilder)this.u(string7, clazz7, classArray6).A(ForgeVersion.MC_1_16_5.n(), "contains")).A(ForgeVersion.MC_1_7_10.S(), "func_150297_b")).i(ForgeVersion.MC_1_7_10.S(), Wrapper.G)).T(ForgeVersion.MC_1_21_6.n())).s();
+        this.M = ((MappingMethodBuilder)((MappingMethodBuilder)((MappingMethodBuilder)((MappingMethodBuilder)this.methodBuilder(string7, clazz7, classArray6).setNameForVersion(ForgeVersion.MC_1_16_5.n(), "contains")).setNameForVersion(ForgeVersion.MC_1_7_10.S(), "func_150297_b")).setMappedMemberForVersion(ForgeVersion.MC_1_7_10.S(), Wrapper.isNativeAvailable)).skipForVersion(ForgeVersion.MC_1_21_6.n())).buildMethod();
     }
 
     public static Object c(MNBTTagCompound mNBTTagCompound, Object object, String string) {
@@ -91,7 +90,7 @@ extends Mapping {
         if (this.V == null || ForgeVersion.MC_1_21_6.d()) {
             return null;
         }
-        return this.V.L(object, string, n);
+        return this.V.invokeObject(object, string, n);
     }
 
     public static short z(MNBTTagCompound mNBTTagCompound, Object object, String string) {
@@ -99,7 +98,7 @@ extends Mapping {
     }
 
     private Object J(Object object, String string) {
-        return this.a.L(object, string);
+        return this.a.invokeObject(object, string);
     }
 
     public static Object c(MNBTTagCompound mNBTTagCompound, Object object, String string, int n) {

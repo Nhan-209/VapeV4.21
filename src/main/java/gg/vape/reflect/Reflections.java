@@ -11,47 +11,47 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Reflections {
-    public static final Map<Integer, Method> methodMap = new HashMap<Integer, Method>();
-    public static final Map<Integer, Field> fieldMap = new HashMap<Integer, Field>();
-    public static final Map<Integer, Constructor<?>> constructorMap = new HashMap();
+    public static final Map<Integer, Method> METHODS_BY_ID = new HashMap<Integer, Method>();
+    public static final Map<Integer, Field> FIELDS_BY_ID = new HashMap<Integer, Field>();
+    public static final Map<Integer, Constructor<?>> CONSTRUCTORS_BY_ID = new HashMap();
 
-    public static void getMethod(int id, Class<?> cls, String name, String desc, boolean remap, boolean isStatic) throws NoSuchMethodException {
+    public static void getMethod(int id, Class<?> owner, String name, String descriptor, boolean remap, boolean isStatic) throws NoSuchMethodException {
         if (id == 465) {
             System.out.println("465");
-            System.out.println(name + " " + cls.getName() + " " + desc + " " + remap + " " + isStatic);
+            System.out.println(name + " " + owner.getName() + " " + descriptor + " " + remap + " " + isStatic);
         }
         if (name.equals("<init>")) {
-            Reflections.getConstructor(id, cls, desc);
+            Reflections.getConstructor(id, owner, descriptor);
             return;
         }
         if (!name.equals("ordinal") && !name.equals("values")) {
             boolean skipParameterCheck = name.equals("getEnchantmentModifierDamage");
-            for (Method method : cls.getDeclaredMethods()) {
-                if (!MappingRegistry.matches(method, name) || !ParameterResolver.matchesDescriptor(method.getParameterTypes(), method.getReturnType(), desc) && !skipParameterCheck) continue;
+            for (Method method : owner.getDeclaredMethods()) {
+                if (!MappingRegistry.matches(method, name) || !ParameterResolver.matchesDescriptor(method.getParameterTypes(), method.getReturnType(), descriptor) && !skipParameterCheck) continue;
                 method.setAccessible(true);
-                methodMap.put(id, method);
+                METHODS_BY_ID.put(id, method);
                 return;
             }
-            for (Method method : cls.getMethods()) {
-                if (method.getDeclaringClass() == cls || !MappingRegistry.matches(method, name) || !ParameterResolver.matchesDescriptor(method.getParameterTypes(), method.getReturnType(), desc) && !skipParameterCheck) continue;
+            for (Method method : owner.getMethods()) {
+                if (method.getDeclaringClass() == owner || !MappingRegistry.matches(method, name) || !ParameterResolver.matchesDescriptor(method.getParameterTypes(), method.getReturnType(), descriptor) && !skipParameterCheck) continue;
                 method.setAccessible(true);
-                methodMap.put(id, method);
+                METHODS_BY_ID.put(id, method);
                 return;
             }
             throw new NoSuchMethodException();
         }
-        for (Method method : Reflections.getAllMethods(cls)) {
+        for (Method method : Reflections.getAllMethods(owner)) {
             if (!method.getName().equals(name)) continue;
-            methodMap.put(id, method);
+            METHODS_BY_ID.put(id, method);
         }
     }
 
-    public static void getMinecraftMethod(int id, Class<?> cls, String name, String desc, boolean remap) throws NoSuchMethodException {
-        Reflections.getMethod(id, cls, name, desc, remap, false);
+    public static void getMinecraftMethod(int id, Class<?> owner, String name, String descriptor, boolean remap) throws NoSuchMethodException {
+        Reflections.getMethod(id, owner, name, descriptor, remap, false);
     }
 
-    public static void getMethod(int id, Class<?> cls, String name, String desc, boolean remap) throws NoSuchMethodException {
-        Reflections.getMethod(id, cls, name, desc, remap, true);
+    public static void getMethod(int id, Class<?> owner, String name, String descriptor, boolean remap) throws NoSuchMethodException {
+        Reflections.getMethod(id, owner, name, descriptor, remap, true);
     }
 
     public static Method[] getAllMethods(Class<?> clazz) {
@@ -69,11 +69,11 @@ public class Reflections {
         return methods.toArray(new Method[0]);
     }
 
-    public static void getConstructor(int id, Class<?> cls, String desc) {
-        for (Constructor<?> constructor : cls.getDeclaredConstructors()) {
-            if (!ParameterResolver.matchesDescriptor(constructor.getParameterTypes(), Void.TYPE, desc)) continue;
+    public static void getConstructor(int id, Class<?> owner, String descriptor) {
+        for (Constructor<?> constructor : owner.getDeclaredConstructors()) {
+            if (!ParameterResolver.matchesDescriptor(constructor.getParameterTypes(), Void.TYPE, descriptor)) continue;
             constructor.setAccessible(true);
-            constructorMap.put(id, constructor);
+            CONSTRUCTORS_BY_ID.put(id, constructor);
             return;
         }
     }
@@ -146,37 +146,37 @@ public class Reflections {
         return Reflections.invokeMethod(id, instance, Object[].class, params);
     }
 
-    public static <T> T invokeMethod(int id, Object instance, Class<T> type, Object ... params) {
+    public static <T> T invokeMethod(int id, Object instance, Class<T> resultType, Object ... arguments) {
         try {
-            return (T)methodMap.get(id).invoke(instance, params);
+            return (T)METHODS_BY_ID.get(id).invoke(instance, arguments);
         }
         catch (Throwable failure) {
-            System.out.println("Failed invoke method: " + id + "," + type.getName() + "," + instance + "," + Arrays.toString(params));
+            System.out.println("Failed invoke method: " + id + "," + resultType.getName() + "," + instance + "," + Arrays.toString(arguments));
             failure.printStackTrace();
             return null;
         }
     }
 
-    public static void getMinecraftField(int id, Class<?> cls, String name, String type, boolean remap) throws NoSuchFieldException {
-        Reflections.getField(id, cls, name, type, remap, false);
+    public static void getMinecraftField(int id, Class<?> owner, String name, String descriptor, boolean remap) throws NoSuchFieldException {
+        Reflections.getField(id, owner, name, descriptor, remap, false);
     }
 
-    public static void getField(int id, Class<?> cls, String name, String type, boolean remap) throws NoSuchFieldException {
-        Reflections.getField(id, cls, name, type, remap, true);
+    public static void getField(int id, Class<?> owner, String name, String descriptor, boolean remap) throws NoSuchFieldException {
+        Reflections.getField(id, owner, name, descriptor, remap, true);
     }
 
-    public static void getField(int id, Class<?> cls, String name, String type, boolean remap, boolean isStatic) throws NoSuchFieldException {
+    public static void getField(int id, Class<?> owner, String name, String descriptor, boolean remap, boolean isStatic) throws NoSuchFieldException {
         if (id == 465) {
             System.out.println("465");
-            System.out.println(name + " " + cls.getName() + " " + type + " " + remap + " " + isStatic);
+            System.out.println(name + " " + owner.getName() + " " + descriptor + " " + remap + " " + isStatic);
         }
-        for (Field field : cls.getDeclaredFields()) {
+        for (Field field : owner.getDeclaredFields()) {
             if (!MappingRegistry.matches(field, name)) continue;
             field.setAccessible(true);
-            fieldMap.put(id, field);
+            FIELDS_BY_ID.put(id, field);
             return;
         }
-        System.out.println("Failed allocate field: " + id + " " + name + " IN " + cls.getName());
+        System.out.println("Failed allocate field: " + id + " " + name + " IN " + owner.getName());
         throw new NoSuchFieldException();
     }
 
@@ -285,7 +285,7 @@ public class Reflections {
             return (T)Reflections.field(id).get(instance);
         }
         catch (Exception failure) {
-            System.err.println("Failed allocate field: " + id + " IN " + instance + " " + fieldMap.size());
+            System.err.println("Failed allocate field: " + id + " IN " + instance + " " + FIELDS_BY_ID.size());
             failure.printStackTrace();
             return null;
         }
@@ -386,7 +386,7 @@ public class Reflections {
         Reflections.setObjectField(id, instance, value);
     }
 
-    public static void setFieldObjetcArray(int id, Object instance, Object[] value) {
+    public static void setFieldObjectArray(int id, Object instance, Object[] value) {
         Reflections.setObjectField(id, instance, value);
     }
 
@@ -409,7 +409,7 @@ public class Reflections {
 
     public static <T> T invokeConstructor(int id, Object ... params) {
         try {
-            return (T)constructorMap.get(id).newInstance(params);
+            return (T)CONSTRUCTORS_BY_ID.get(id).newInstance(params);
         }
         catch (Throwable failure) {
             throw Reflections.sneakyThrow(failure);
@@ -425,7 +425,7 @@ public class Reflections {
     }
 
     public static String getMethodName(int id) {
-        return methodMap.get(id).getName();
+        return METHODS_BY_ID.get(id).getName();
     }
 
     public static Object invokeMethodObjects(int id, Object instance, Object ... params) {
@@ -433,7 +433,7 @@ public class Reflections {
     }
 
     private static Field field(int id) {
-        return fieldMap.get(id);
+        return FIELDS_BY_ID.get(id);
     }
 
     @SuppressWarnings("unchecked")

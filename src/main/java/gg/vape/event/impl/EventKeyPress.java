@@ -14,44 +14,44 @@ import gg.vape.wrapper.impl.Minecraft;
 
 public class EventKeyPress
 extends EventKeyInputBase {
-    private static final EventListeners w = new EventListeners();
+    private static final EventListeners EVENT_LISTENERS = new EventListeners();
 
-    public EventKeyPress(int n, boolean bl) {
-        super(n, bl);
+    public EventKeyPress(int key, boolean down) {
+        super(key, down);
     }
 
     @Override
     public EventListeners getListeners() {
-        return w;
+        return EVENT_LISTENERS;
     }
 
     @Override
     public boolean fire() {
         if (!gg.vape.module.none.ClientSettings.INSTANCE.isInputEnabled() && KeyboardInput.isKeyDown(9) && KeyboardInput.isKeyDown(114)) {
-            boolean bl = EventBus.y = !EventBus.y;
+            boolean timingEnabled = EventBus.timingEnabled = !EventBus.timingEnabled;
         }
         if (!gg.vape.module.none.ClientSettings.INSTANCE.isInputEnabled() && this.getKey() != 27) {
-            boolean bl = gg.vape.module.none.ClientSettings.INSTANCE.handleSearchShortcut(this);
-            return bl;
+            boolean handled = gg.vape.module.none.ClientSettings.INSTANCE.handleSearchShortcut(this);
+            return handled;
         }
         if (this.getKey() > 0 && this.isDown() && Minecraft.currentScreen().getObject() == null) {
-            for (Profile profile : Vape.INSTANCE.getProfilesManager().b()) {
+            for (Profile profile : Vape.INSTANCE.getProfilesManager().getProfiles()) {
                 if (!profile.activateIfMatched(this.getKey())) continue;
             }
         }
         for (Mod mod : Vape.INSTANCE.getModManager().collectMods()) {
             mod.u(this);
         }
-        OnlineConnectionManager.T.S().y(this);
+        OnlineConnectionManager.INSTANCE.getSettings().handleKeyPress(this);
         return super.fire();
     }
 
     public static EventListeners getEventListeners() {
-        return w;
+        return EVENT_LISTENERS;
     }
 
     public boolean isKeybinding(KeyBinding keyBinding) {
-        return this.getKey() == ClientSettings.H(keyBinding);
+        return this.getKey() == ClientSettings.getPlatformKeyCode(keyBinding);
     }
 
 }

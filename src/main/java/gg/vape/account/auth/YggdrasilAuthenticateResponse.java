@@ -10,65 +10,65 @@ public class YggdrasilAuthenticateResponse
 implements YggdrasilAuthResponse {
     @Expose
     @SerializedName(value="errorMessage")
-    private String c;
+    private String errorMessage;
     @Expose
     @SerializedName(value="selectedProfile")
-    private YggdrasilProfile P;
+    private YggdrasilProfile selectedProfile;
     @Expose
     @SerializedName(value="accessToken")
-    private String t;
+    private String accessToken;
     @Expose
     @SerializedName(value="clientToken")
-    private String x;
-    private static int f;
+    private String clientToken;
+    private static int opaqueState;
     @Expose
     @SerializedName(value="availableProfiles")
-    private List<YggdrasilProfile> b;
+    private List<YggdrasilProfile> availableProfiles;
 
-    public YggdrasilProfile j() {
-        return this.P;
+    public YggdrasilProfile getSelectedProfile() {
+        return this.selectedProfile;
     }
 
-    public String c() {
-        return this.c;
+    public String getErrorMessage() {
+        return this.errorMessage;
     }
 
-    public String R() {
-        return this.t;
+    public String getAccessToken() {
+        return this.accessToken;
     }
 
-    public static int T() {
-        int n = YggdrasilAuthenticateResponse.Y();
-        if (n == 0) {
+    public static int opaquePredicate() {
+        int state = YggdrasilAuthenticateResponse.getOpaqueState();
+        if (state == 0) {
             return 14;
         }
         return 0;
     }
 
-    public static void Z(int n) {
-        f = n;
+    public static void setOpaqueState(int state) {
+        opaqueState = state;
     }
 
-    public List<YggdrasilProfile> i() {
-        return this.b;
+    public List<YggdrasilProfile> getAvailableProfiles() {
+        return this.availableProfiles;
     }
 
 
-    public static int Y() {
-        return f;
+    public static int getOpaqueState() {
+        return opaqueState;
     }
 
-    public void m() {
-        this.c = null;
+    public void clearErrorMessage() {
+        this.errorMessage = null;
     }
 
-    public String G() {
-        return this.x;
+    public String getClientToken() {
+        return this.clientToken;
     }
 
     static {
-        if (YggdrasilAuthenticateResponse.T() == 0) {
-            YggdrasilAuthenticateResponse.Z(1);
+        if (YggdrasilAuthenticateResponse.opaquePredicate() == 0) {
+            YggdrasilAuthenticateResponse.setOpaqueState(1);
         }
     }
 }

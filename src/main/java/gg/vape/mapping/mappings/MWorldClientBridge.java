@@ -55,7 +55,7 @@ extends Mapping {
             this.r.setLong(object, l);
             return;
         }
-        this.I.c(object, l);
+        this.I.invokeVoid(object, l);
     }
 
     public void G(Object object, long l) {
@@ -63,7 +63,7 @@ extends Mapping {
             this.r.setLong(object, l);
             return;
         }
-        this.M.c(object, l);
+        this.M.invokeVoid(object, l);
     }
 
 }

@@ -10,33 +10,33 @@ import org.lwjgl.opengl.GL11;
 
 public class NotificationAlertEventListener
 implements EventListener {
-    private boolean e = false;
-    private static int I;
+    private boolean errorReported = false;
+    private static int obfuscationState;
 
-    public static void E(int n) {
-        I = n;
+    public static void setObfuscationState(int state) {
+        obfuscationState = state;
     }
 
-    public static int Q() {
-        return I;
+    public static int getObfuscationState() {
+        return obfuscationState;
     }
 
-    public static int j() {
-        int n = NotificationAlertEventListener.Q();
+    public static int getObfuscationConstant() {
+        int state = NotificationAlertEventListener.getObfuscationState();
         return 0;
     }
 
 
     static {
-        NotificationAlertEventListener.E(77);
+        NotificationAlertEventListener.setObfuscationState(77);
     }
 
-    @EventHandler(A=EventPriority.HIGHEST)
-    public void t(EventPostRenderTick eventPostRenderTick) {
-        int n;
-        if (!this.e && (n = GL11.glGetError()) != 0) {
-            Vape.INSTANCE.getNotificationManager().show("GL Error " + n, "Please contact support and report this error code", NotificationType.ALERT, 10000L);
-            this.e = true;
+    @EventHandler(priority=EventPriority.HIGHEST)
+    public void onPostRenderTick(EventPostRenderTick eventPostRenderTick) {
+        int errorCode;
+        if (!this.errorReported && (errorCode = GL11.glGetError()) != 0) {
+            Vape.INSTANCE.getNotificationManager().show("GL Error " + errorCode, "Please contact support and report this error code", NotificationType.ALERT, 10000L);
+            this.errorReported = true;
         }
     }
 }

@@ -9,62 +9,62 @@ import gg.vape.wrapper.impl.Tessellator;
 
 public class EventLegacyXRayBlockRenderBase
 extends Event {
-    private static boolean r;
-    private final Tessellator M;
-    private static final EventListeners v;
-    private final Block x;
+    private static boolean obfuscationState;
+    private final Tessellator tessellator;
+    private static final EventListeners EVENT_LISTENERS;
+    private final Block block;
 
     public Tessellator getTessellator() {
-        return this.M;
+        return this.tessellator;
     }
 
     @Override
     public boolean fire() {
-        XRay xRay = Vape.INSTANCE.getModManager().G();
+        XRay xRay = Vape.INSTANCE.getModManager().getXRayModule();
         if (xRay == null || !xRay.boolean_r()) {
             return false;
         }
-        if (!xRay.isTargetBlock(this.x) && this.M.w()) {
-            this.M.u(255, 255, 255, xRay.getOpacity());
+        if (!xRay.isTargetBlock(this.block) && this.tessellator.w()) {
+            this.tessellator.u(255, 255, 255, xRay.getOpacity());
         }
         return this.isCanceled();
     }
 
     @Override
     public EventListeners getListeners() {
-        return v;
+        return EVENT_LISTENERS;
     }
 
     public Block getBlock() {
-        return this.x;
+        return this.block;
     }
 
-    public static void h(boolean bl) {
-        r = bl;
+    public static void setXRayObfuscationState(boolean state) {
+        obfuscationState = state;
     }
 
     public static EventListeners getEventListeners() {
-        return v;
+        return EVENT_LISTENERS;
     }
 
 
-    public EventLegacyXRayBlockRenderBase(Object object) {
-        this.x = new Block(object);
-        this.M = Tessellator.getInstance();
+    public EventLegacyXRayBlockRenderBase(Object blockHandle) {
+        this.block = new Block(blockHandle);
+        this.tessellator = Tessellator.getInstance();
     }
 
-    public static boolean a() {
-        return r;
+    public static boolean getXRayObfuscationState() {
+        return obfuscationState;
     }
 
-    public static boolean C() {
-        boolean bl = EventLegacyXRayBlockRenderBase.a();
+    public static boolean getObfuscationConstant() {
+        boolean state = EventLegacyXRayBlockRenderBase.getXRayObfuscationState();
         return true;
     }
 
     static {
-        v = new EventListeners();
-        EventLegacyXRayBlockRenderBase.h(false);
+        EVENT_LISTENERS = new EventListeners();
+        EventLegacyXRayBlockRenderBase.setXRayObfuscationState(false);
     }
 }
 

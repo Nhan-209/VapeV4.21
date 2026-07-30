@@ -280,7 +280,7 @@ public class ClickEngine {
         if (!this.holdToClick.getEffectiveValue().booleanValue()) {
             return Minecraft.a();
         }
-        return ClientSettings.H$src$Z$9w16bz(this.getConfiguredKeyBinding());
+        return ClientSettings.isKeyBindingDown(this.getConfiguredKeyBinding());
     }
 
     public void generateJitter() {

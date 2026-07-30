@@ -20,7 +20,7 @@ extends Mapping {
     private MappingField f;
 
     public boolean O(Object object) {
-        return this.T.e(object, new Object[0]);
+        return this.T.invokeBoolean(object, new Object[0]);
     }
 
     public static int[] u() {
@@ -28,15 +28,15 @@ extends Mapping {
     }
 
     public boolean A(Object object) {
-        return this.p.e(object, new Object[0]);
+        return this.p.invokeBoolean(object, new Object[0]);
     }
 
     public boolean M(Object object) {
-        return this.S.e(object, new Object[0]);
+        return this.S.invokeBoolean(object, new Object[0]);
     }
 
     public boolean b(Object object) {
-        return this.B.e(object, new Object[0]);
+        return this.B.invokeBoolean(object, new Object[0]);
     }
 
 
@@ -53,51 +53,51 @@ extends Mapping {
                 boolean bl = true;
                 String string = "AIR";
                 MMaterial mMaterial = this;
-                this.c = mMaterial.u(string, bl, clazz);
+                this.c = mMaterial.registerStaticField(string, bl, clazz);
                 Class clazz2 = MappedClasses.ZN;
                 boolean bl2 = true;
                 String string2 = "WATER";
                 MMaterial mMaterial2 = this;
-                this.n = this.u(string2, bl2, clazz2);
+                this.n = this.registerStaticField(string2, bl2, clazz2);
                 Class clazz3 = MappedClasses.ZN;
                 boolean bl3 = true;
                 String string3 = "FIRE";
                 MMaterial mMaterial3 = this;
-                this.u = this.u(string3, bl3, clazz3);
+                this.u = this.registerStaticField(string3, bl3, clazz3);
                 if (ForgeVersion.MC_1_16_5.d()) {
                     Class clazz4 = MappedClasses.ZN;
                     boolean bl4 = true;
                     String string4 = "TALL_PLANTS";
                     MMaterial mMaterial4 = this;
-                    this.f = this.u(string4, bl4, clazz4);
+                    this.f = this.registerStaticField(string4, bl4, clazz4);
                 } else {
                     Class clazz5 = MappedClasses.ZN;
                     boolean bl5 = true;
                     String string5 = "VINE";
                     MMaterial mMaterial5 = this;
-                    this.f = this.u(string5, bl5, clazz5);
+                    this.f = this.registerStaticField(string5, bl5, clazz5);
                 }
             } else {
                 Class clazz = MappedClasses.ZN;
                 boolean bl = true;
                 String string = "air";
                 MMaterial mMaterial = this;
-                this.c = mMaterial.u(string, bl, clazz);
+                this.c = mMaterial.registerStaticField(string, bl, clazz);
                 Class clazz6 = MappedClasses.ZN;
                 boolean bl6 = true;
                 String string6 = "water";
                 MMaterial mMaterial6 = this;
-                this.n = this.u(string6, bl6, clazz6);
+                this.n = this.registerStaticField(string6, bl6, clazz6);
                 Class clazz7 = MappedClasses.ZN;
                 boolean bl7 = true;
                 String string7 = "vine";
                 MMaterial mMaterial7 = this;
-                this.f = this.u(string7, bl7, clazz7);
+                this.f = this.registerStaticField(string7, bl7, clazz7);
                 Class clazz8 = MappedClasses.ZN;
                 boolean bl8 = true;
                 String string8 = "fire";
                 MMaterial mMaterial8 = this;
-                this.u = this.u(string8, bl8, clazz8);
+                this.u = this.registerStaticField(string8, bl8, clazz8);
             }
         }
         if (ForgeVersion.MC_1_16_5.v()) {
@@ -135,7 +135,7 @@ extends Mapping {
     }
 
     public boolean z(Object object) {
-        return this.C.e(object, new Object[0]);
+        return this.C.invokeBoolean(object, new Object[0]);
     }
 
     public static void r(int[] nArray) {

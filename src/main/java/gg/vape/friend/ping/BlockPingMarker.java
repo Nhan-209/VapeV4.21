@@ -19,22 +19,22 @@ import org.lwjgl.opengl.GL11;
 
 public class BlockPingMarker
 extends PingMarker {
-    private static boolean i;
+    private static boolean obfuscationFlag;
 
-    public void F(AxisAlignedBB axisAlignedBB, Color color, float f) {
+    public void drawOutline(AxisAlignedBB axisAlignedBB, Color color, float lineWidth) {
         if (GuiRenderPrimitives.d()) {
-            BufferedRenderPrimitives.drawLine3D(axisAlignedBB.getMinX(), axisAlignedBB.getMinY(), axisAlignedBB.getMinZ(), axisAlignedBB.getMinX(), axisAlignedBB.getMaxY(), axisAlignedBB.getMinZ(), f, color);
-            BufferedRenderPrimitives.drawLine3D(axisAlignedBB.getMaxX(), axisAlignedBB.getMinY(), axisAlignedBB.getMinZ(), axisAlignedBB.getMaxX(), axisAlignedBB.getMaxY(), axisAlignedBB.getMinZ(), f, color);
-            BufferedRenderPrimitives.drawLine3D(axisAlignedBB.getMinX(), axisAlignedBB.getMinY(), axisAlignedBB.getMaxZ(), axisAlignedBB.getMinX(), axisAlignedBB.getMaxY(), axisAlignedBB.getMaxZ(), f, color);
-            BufferedRenderPrimitives.drawLine3D(axisAlignedBB.getMaxX(), axisAlignedBB.getMinY(), axisAlignedBB.getMaxZ(), axisAlignedBB.getMaxX(), axisAlignedBB.getMaxY(), axisAlignedBB.getMaxZ(), f, color);
-            BufferedRenderPrimitives.drawLine3D(axisAlignedBB.getMaxX(), axisAlignedBB.getMinY(), axisAlignedBB.getMinZ(), axisAlignedBB.getMaxX(), axisAlignedBB.getMinY(), axisAlignedBB.getMaxZ(), f, color);
-            BufferedRenderPrimitives.drawLine3D(axisAlignedBB.getMaxX(), axisAlignedBB.getMaxY(), axisAlignedBB.getMinZ(), axisAlignedBB.getMaxX(), axisAlignedBB.getMaxY(), axisAlignedBB.getMaxZ(), f, color);
-            BufferedRenderPrimitives.drawLine3D(axisAlignedBB.getMinX(), axisAlignedBB.getMinY(), axisAlignedBB.getMinZ(), axisAlignedBB.getMinX(), axisAlignedBB.getMinY(), axisAlignedBB.getMaxZ(), f, color);
-            BufferedRenderPrimitives.drawLine3D(axisAlignedBB.getMinX(), axisAlignedBB.getMaxY(), axisAlignedBB.getMinZ(), axisAlignedBB.getMinX(), axisAlignedBB.getMaxY(), axisAlignedBB.getMaxZ(), f, color);
-            BufferedRenderPrimitives.drawLine3D(axisAlignedBB.getMinX(), axisAlignedBB.getMinY(), axisAlignedBB.getMinZ(), axisAlignedBB.getMaxX(), axisAlignedBB.getMinY(), axisAlignedBB.getMinZ(), f, color);
-            BufferedRenderPrimitives.drawLine3D(axisAlignedBB.getMinX(), axisAlignedBB.getMaxY(), axisAlignedBB.getMinZ(), axisAlignedBB.getMaxX(), axisAlignedBB.getMaxY(), axisAlignedBB.getMinZ(), f, color);
-            BufferedRenderPrimitives.drawLine3D(axisAlignedBB.getMinX(), axisAlignedBB.getMinY(), axisAlignedBB.getMaxZ(), axisAlignedBB.getMaxX(), axisAlignedBB.getMinY(), axisAlignedBB.getMaxZ(), f, color);
-            BufferedRenderPrimitives.drawLine3D(axisAlignedBB.getMinX(), axisAlignedBB.getMaxY(), axisAlignedBB.getMaxZ(), axisAlignedBB.getMaxX(), axisAlignedBB.getMaxY(), axisAlignedBB.getMaxZ(), f, color);
+            BufferedRenderPrimitives.drawLine3D(axisAlignedBB.getMinX(), axisAlignedBB.getMinY(), axisAlignedBB.getMinZ(), axisAlignedBB.getMinX(), axisAlignedBB.getMaxY(), axisAlignedBB.getMinZ(), lineWidth, color);
+            BufferedRenderPrimitives.drawLine3D(axisAlignedBB.getMaxX(), axisAlignedBB.getMinY(), axisAlignedBB.getMinZ(), axisAlignedBB.getMaxX(), axisAlignedBB.getMaxY(), axisAlignedBB.getMinZ(), lineWidth, color);
+            BufferedRenderPrimitives.drawLine3D(axisAlignedBB.getMinX(), axisAlignedBB.getMinY(), axisAlignedBB.getMaxZ(), axisAlignedBB.getMinX(), axisAlignedBB.getMaxY(), axisAlignedBB.getMaxZ(), lineWidth, color);
+            BufferedRenderPrimitives.drawLine3D(axisAlignedBB.getMaxX(), axisAlignedBB.getMinY(), axisAlignedBB.getMaxZ(), axisAlignedBB.getMaxX(), axisAlignedBB.getMaxY(), axisAlignedBB.getMaxZ(), lineWidth, color);
+            BufferedRenderPrimitives.drawLine3D(axisAlignedBB.getMaxX(), axisAlignedBB.getMinY(), axisAlignedBB.getMinZ(), axisAlignedBB.getMaxX(), axisAlignedBB.getMinY(), axisAlignedBB.getMaxZ(), lineWidth, color);
+            BufferedRenderPrimitives.drawLine3D(axisAlignedBB.getMaxX(), axisAlignedBB.getMaxY(), axisAlignedBB.getMinZ(), axisAlignedBB.getMaxX(), axisAlignedBB.getMaxY(), axisAlignedBB.getMaxZ(), lineWidth, color);
+            BufferedRenderPrimitives.drawLine3D(axisAlignedBB.getMinX(), axisAlignedBB.getMinY(), axisAlignedBB.getMinZ(), axisAlignedBB.getMinX(), axisAlignedBB.getMinY(), axisAlignedBB.getMaxZ(), lineWidth, color);
+            BufferedRenderPrimitives.drawLine3D(axisAlignedBB.getMinX(), axisAlignedBB.getMaxY(), axisAlignedBB.getMinZ(), axisAlignedBB.getMinX(), axisAlignedBB.getMaxY(), axisAlignedBB.getMaxZ(), lineWidth, color);
+            BufferedRenderPrimitives.drawLine3D(axisAlignedBB.getMinX(), axisAlignedBB.getMinY(), axisAlignedBB.getMinZ(), axisAlignedBB.getMaxX(), axisAlignedBB.getMinY(), axisAlignedBB.getMinZ(), lineWidth, color);
+            BufferedRenderPrimitives.drawLine3D(axisAlignedBB.getMinX(), axisAlignedBB.getMaxY(), axisAlignedBB.getMinZ(), axisAlignedBB.getMaxX(), axisAlignedBB.getMaxY(), axisAlignedBB.getMinZ(), lineWidth, color);
+            BufferedRenderPrimitives.drawLine3D(axisAlignedBB.getMinX(), axisAlignedBB.getMinY(), axisAlignedBB.getMaxZ(), axisAlignedBB.getMaxX(), axisAlignedBB.getMinY(), axisAlignedBB.getMaxZ(), lineWidth, color);
+            BufferedRenderPrimitives.drawLine3D(axisAlignedBB.getMinX(), axisAlignedBB.getMaxY(), axisAlignedBB.getMaxZ(), axisAlignedBB.getMaxX(), axisAlignedBB.getMaxY(), axisAlignedBB.getMaxZ(), lineWidth, color);
             return;
         }
         OpenGlBackendHolder.backend.setColor((float)color.getRed() / 255.0f, (float)color.getGreen() / 255.0f, (float)color.getBlue() / 255.0f, (float)color.getAlpha() / 255.0f);
@@ -67,22 +67,22 @@ extends PingMarker {
     }
 
     static {
-        if (!BlockPingMarker.B()) {
-            BlockPingMarker.e(true);
+        if (!BlockPingMarker.getObfuscationConstant()) {
+            BlockPingMarker.setObfuscationFlag(true);
         }
     }
 
-    public static void e(boolean bl) {
-        i = bl;
+    public static void setObfuscationFlag(boolean flag) {
+        obfuscationFlag = flag;
     }
 
 
     @Override
-    public PingTargetData T() {
-        return PingTargetData.Y((int)this.Z(), (int)this.N(), (int)this.F());
+    public PingTargetData toTargetData() {
+        return PingTargetData.Y((int)this.getX(), (int)this.getY(), (int)this.getZ());
     }
 
-    public void J(AxisAlignedBB axisAlignedBB, Color color) {
+    public void drawFill(AxisAlignedBB axisAlignedBB, Color color) {
         if (GuiRenderPrimitives.d()) {
             BufferedRenderPrimitives.fillQuad(axisAlignedBB.getMinX(), axisAlignedBB.getMinY(), axisAlignedBB.getMinZ(), axisAlignedBB.getMaxX(), axisAlignedBB.getMinY(), axisAlignedBB.getMinZ(), axisAlignedBB.getMaxX(), axisAlignedBB.getMaxY(), axisAlignedBB.getMinZ(), axisAlignedBB.getMinX(), axisAlignedBB.getMaxY(), axisAlignedBB.getMinZ(), color);
             BufferedRenderPrimitives.fillQuad(axisAlignedBB.getMaxX(), axisAlignedBB.getMinY(), axisAlignedBB.getMaxZ(), axisAlignedBB.getMinX(), axisAlignedBB.getMinY(), axisAlignedBB.getMaxZ(), axisAlignedBB.getMinX(), axisAlignedBB.getMaxY(), axisAlignedBB.getMaxZ(), axisAlignedBB.getMaxX(), axisAlignedBB.getMaxY(), axisAlignedBB.getMaxZ(), color);
@@ -121,41 +121,41 @@ extends PingMarker {
         GL11.glEnd();
     }
 
-    public BlockPingMarker(OnlineFriend onlineFriend, double[] dArray) {
-        super(onlineFriend, dArray);
+    public BlockPingMarker(OnlineFriend onlineFriend, double[] position) {
+        super(onlineFriend, position);
     }
 
-    public static boolean l() {
-        return i;
+    public static boolean isObfuscationFlagSet() {
+        return obfuscationFlag;
     }
 
     @Override
-    public void d() {
-        double d = MathUtil.floor(this.Z());
-        double d2 = MathUtil.floor(this.N());
-        double d3 = MathUtil.floor(this.F());
-        Block block = Minecraft.theWorld().getBlock(d, d2, d3);
+    public void render3D() {
+        double blockX = MathUtil.floor(this.getX());
+        double blockY = MathUtil.floor(this.getY());
+        double blockZ = MathUtil.floor(this.getZ());
+        Block block = Minecraft.theWorld().getBlock(blockX, blockY, blockZ);
         if (block == null || block.isNull()) {
             return;
         }
         OpenGlBackendHolder.backend.pushMatrix();
-        boolean bl = OpenGlBackendHolder.backend.isCapabilityEnabled(3042);
-        if (bl) {
+        boolean blendEnabled = OpenGlBackendHolder.backend.isCapabilityEnabled(3042);
+        if (blendEnabled) {
             GL11.glBlendFunc((int)770, (int)771);
             OpenGlBackendHolder.backend.enableCapability(2848);
             OpenGlBackendHolder.backend.setLineWidth(2.0f);
             OpenGlBackendHolder.backend.disableCapability(3553);
             OpenGlBackendHolder.backend.setDepthMask(false);
-            double d4 = Minecraft.D().getRenderPosX();
-            double d5 = Minecraft.D().getRenderPosY();
-            double d6 = Minecraft.D().getRenderPosZ();
-            OpenGlBackendHolder.backend.translate(-d4, -d5, -d6);
-            OpenGlBackendHolder.backend.translate(d, d2, d3);
+            double renderX = Minecraft.D().getRenderPosX();
+            double renderY = Minecraft.D().getRenderPosY();
+            double renderZ = Minecraft.D().getRenderPosZ();
+            OpenGlBackendHolder.backend.translate(-renderX, -renderY, -renderZ);
+            OpenGlBackendHolder.backend.translate(blockX, blockY, blockZ);
             RenderUtils.g();
             Color color = Color.red;
             Color color2 = Color.red;
-            this.J(AxisAlignedBB.create(-0.001, -0.001, -0.001, 1.001, 1.001, 1.001), color);
-            this.F(AxisAlignedBB.create(0.0, 0.0, 0.0, 1.0, 1.0, 1.0).expand(0.002f, 0.002f, 0.002f), color2, 2.0f);
+            this.drawFill(AxisAlignedBB.create(-0.001, -0.001, -0.001, 1.001, 1.001, 1.001), color);
+            this.drawOutline(AxisAlignedBB.create(0.0, 0.0, 0.0, 1.0, 1.0, 1.0).expand(0.002f, 0.002f, 0.002f), color2, 2.0f);
             OpenGlBackendHolder.backend.setDepthMask(true);
             RenderUtils.f();
             OpenGlBackendHolder.backend.enableCapability(3553);
@@ -169,16 +169,16 @@ extends PingMarker {
         OpenGlBackendHolder.backend.setLineWidth(2.0f);
         OpenGlBackendHolder.backend.disableCapability(3553);
         OpenGlBackendHolder.backend.setDepthMask(false);
-        double d7 = Minecraft.D().getRenderPosX();
-        double d8 = Minecraft.D().getRenderPosY();
-        double d9 = Minecraft.D().getRenderPosZ();
-        OpenGlBackendHolder.backend.translate(-d7, -d8, -d9);
-        OpenGlBackendHolder.backend.translate(d, d2, d3);
+        double renderX = Minecraft.D().getRenderPosX();
+        double renderY = Minecraft.D().getRenderPosY();
+        double renderZ = Minecraft.D().getRenderPosZ();
+        OpenGlBackendHolder.backend.translate(-renderX, -renderY, -renderZ);
+        OpenGlBackendHolder.backend.translate(blockX, blockY, blockZ);
         RenderUtils.g();
         Color color = Color.red;
         Color color3 = Color.red;
-        this.J(AxisAlignedBB.create(-0.001, -0.001, -0.001, 1.001, 1.001, 1.001), color);
-        this.F(AxisAlignedBB.create(0.0, 0.0, 0.0, 1.0, 1.0, 1.0).expand(0.002f, 0.002f, 0.002f), color3, 2.0f);
+        this.drawFill(AxisAlignedBB.create(-0.001, -0.001, -0.001, 1.001, 1.001, 1.001), color);
+        this.drawOutline(AxisAlignedBB.create(0.0, 0.0, 0.0, 1.0, 1.0, 1.0).expand(0.002f, 0.002f, 0.002f), color3, 2.0f);
         OpenGlBackendHolder.backend.setDepthMask(true);
         RenderUtils.f();
         OpenGlBackendHolder.backend.enableCapability(3553);
@@ -187,21 +187,21 @@ extends PingMarker {
         OpenGlBackendHolder.backend.popMatrix();
     }
 
-    public static boolean B() {
-        boolean bl = BlockPingMarker.l();
-        return !bl;
+    public static boolean getObfuscationConstant() {
+        boolean flag = BlockPingMarker.isObfuscationFlagSet();
+        return !flag;
     }
 
     @Override
-    public void K(boolean bl) {
-        Color color = OnlineFriendColorUtil.u(this.O());
-        double d = 0.0;
-        double d2 = 0.0;
-        double d3 = 12.0;
-        double d4 = d3 / 2.0;
-        GuiRenderPrimitives.m((float)(0.0 - d4), (float)(0.0 - d4 - 8.0), (float)d3, 6.0f, 1.0f, color);
+    public void render2D(boolean offscreen) {
+        Color color = OnlineFriendColorUtil.getGroupRoleColor(this.getFriend());
+        double centerX = 0.0;
+        double centerY = 0.0;
+        double markerSize = 12.0;
+        double halfMarkerSize = markerSize / 2.0;
+        GuiRenderPrimitives.m((float)(centerX - halfMarkerSize), (float)(centerY - halfMarkerSize - 8.0), (float)markerSize, 6.0f, 1.0f, color);
         SmoothFontRenderer smoothFontRenderer = Vape.INSTANCE.getFontManager().W(1.0, false);
-        smoothFontRenderer.f(this.j(), 0.0, 0.0 + d4 - 6.0, color);
+        smoothFontRenderer.f(this.getLabel(), centerX, centerY + halfMarkerSize - 6.0, color);
     }
 }
 

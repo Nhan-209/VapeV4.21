@@ -31,26 +31,26 @@ import java.util.function.Predicate;
 public class OnlineCombatStatsSettingsFrame
 extends HudSettingsFrameBase
 implements EventListener {
-    private int IM;
-    private World IA;
-    private int IY;
-    private int Iu;
-    private int Im;
-    private OnlineCombatStatComparisonComponent IN;
-    private EntityPlayer Ii;
-    private double Ij;
-    private int If;
-    private OnlineCombatStatsTargetLabelComponent IK = new OnlineCombatStatsTargetLabelComponent(this);
-    private OnlineCombatStatComparisonComponent I4;
-    private double In;
-    private String I0;
-    private double Ig;
+    private int localPotionCount;
+    private World previousWorld;
+    private int targetHitCount;
+    private int targetPotionCount;
+    private int pendingLocalPotionEntities;
+    private OnlineCombatStatComparisonComponent potionComparison;
+    private EntityPlayer targetPlayer;
+    private double previousPlayerY;
+    private int localHitCount;
+    private final OnlineCombatStatsTargetLabelComponent targetLabelComponent = new OnlineCombatStatsTargetLabelComponent(this);
+    private OnlineCombatStatComparisonComponent hitComparison;
+    private double previousPlayerX;
+    private String targetLabel;
+    private double previousPlayerZ;
 
     @Override
     public void v() {
-        double d = this.j$src$Lgg_vape_ui_click_frame_FrameHeaderComponent_$175vsfc() != null && this.j$src$Lgg_vape_ui_click_frame_FrameHeaderComponent_$175vsfc().V$src$Z$1xhop3l() ? this.j$src$Lgg_vape_ui_click_frame_FrameHeaderComponent_$175vsfc().L() : 0.0;
+        double headerHeight = this.j$src$Lgg_vape_ui_click_frame_FrameHeaderComponent_$175vsfc() != null && this.j$src$Lgg_vape_ui_click_frame_FrameHeaderComponent_$175vsfc().V$src$Z$1xhop3l() ? this.j$src$Lgg_vape_ui_click_frame_FrameHeaderComponent_$175vsfc().L() : 0.0;
         Color color = new Color(OnlineCombatStatsSettingsFrame.J.m.getRed(), OnlineCombatStatsSettingsFrame.J.m.getGreen(), OnlineCombatStatsSettingsFrame.J.m.getBlue(), 240);
-        GuiRenderPrimitives.d(this.G$src$D$1b2f02a(), this.n() + d, this.A(), this.L() - d, color);
+        GuiRenderPrimitives.d(this.G$src$D$1b2f02a(), this.n() + headerHeight, this.A(), this.L() - headerHeight, color);
     }
 
     @Override
@@ -65,69 +65,69 @@ implements EventListener {
 
     @Override
     public void V() {
-        EntityPlayerSP entityPlayerSP = Minecraft.thePlayer();
+        EntityPlayerSP localPlayer = Minecraft.thePlayer();
         if (!this.y$src$Z$1f55jvh() || Minecraft.thePlayer().isNull()) {
-            this.fq();
+            this.resetTargetSearch();
             return;
         }
-        boolean bl = Math.abs(entityPlayerSP.z() - this.In) > 120.0 || Math.abs(entityPlayerSP.N() - this.Ij) > 120.0 || Math.abs(entityPlayerSP.h() - this.Ig) > 120.0;
-        this.In = entityPlayerSP.z();
-        this.Ij = entityPlayerSP.N();
-        this.Ig = entityPlayerSP.h();
-        if (this.e() || bl) {
-            this.fq();
+        boolean movedTooFar = Math.abs(localPlayer.z() - this.previousPlayerX) > 120.0 || Math.abs(localPlayer.N() - this.previousPlayerY) > 120.0 || Math.abs(localPlayer.h() - this.previousPlayerZ) > 120.0;
+        this.previousPlayerX = localPlayer.z();
+        this.previousPlayerY = localPlayer.N();
+        this.previousPlayerZ = localPlayer.h();
+        if (this.hasWorldChanged() || movedTooFar) {
+            this.resetTargetSearch();
             return;
         }
         if (Minecraft.theWorld().isNull()) {
             return;
         }
-        if (this.Ii == null || this.Ii.isNull()) {
-            this.fd();
+        if (this.targetPlayer == null || this.targetPlayer.isNull()) {
+            this.findNearbyTarget();
         } else {
-            if (entityPlayerSP.M$src$Z$ff28xj() || this.Ii.M$src$Z$ff28xj()) {
-                this.fq();
+            if (localPlayer.M$src$Z$ff28xj() || this.targetPlayer.M$src$Z$ff28xj()) {
+                this.resetTargetSearch();
                 return;
             }
-            boolean bl2 = false;
-            for (Object e : Minecraft.theWorld().X()) {
-                if (this.Ii.getObject().equals(e)) {
-                    bl2 = true;
+            boolean targetStillPresent = false;
+            for (Object entityObject : Minecraft.theWorld().X()) {
+                if (this.targetPlayer.getObject().equals(entityObject)) {
+                    targetStillPresent = true;
                     break;
                 }
-                EntityPlayer entityPlayer = new EntityPlayer(e);
-                if (this.Ii.getObject().equals(entityPlayer.getObject()) || !this.Ii.getName().equalsIgnoreCase(entityPlayer.getName())) continue;
-                this.Ii = entityPlayer;
+                EntityPlayer player = new EntityPlayer(entityObject);
+                if (this.targetPlayer.getObject().equals(player.getObject()) || !this.targetPlayer.getName().equalsIgnoreCase(player.getName())) continue;
+                this.targetPlayer = player;
             }
-            if (!bl2) {
-                this.Ii = null;
-                this.fd();
+            if (!targetStillPresent) {
+                this.targetPlayer = null;
+                this.findNearbyTarget();
             }
         }
     }
 
-    public EntityPlayer m$src$Lgg_vape_wrapper_impl_EntityPlayer_$1x97g87() {
-        return this.Ii;
+    public EntityPlayer getTargetPlayer() {
+        return this.targetPlayer;
     }
 
     @EventHandler
-    public void Y(EventEntityJoinWorld eventEntityJoinWorld) {
-        if (this.Ii == null || this.Ii.isNull() || Minecraft.thePlayer().isNull()) {
+    public void onEntityJoinWorld(EventEntityJoinWorld event) {
+        if (this.targetPlayer == null || this.targetPlayer.isNull() || Minecraft.thePlayer().isNull()) {
             return;
         }
-        if (!eventEntityJoinWorld.getEntity().isInstance(MappedClasses.Zf)) {
+        if (!event.getEntity().isInstance(MappedClasses.Zf)) {
             return;
         }
-        EntityPotion entityPotion = new EntityPotion(eventEntityJoinWorld.getEntity());
-        if (entityPotion.getPotion().isNull() || !ItemStackScoreUtil.i(entityPotion.getPotion())) {
+        EntityPotion potionEntity = new EntityPotion(event.getEntity());
+        if (potionEntity.getPotion().isNull() || !ItemStackScoreUtil.i(potionEntity.getPotion())) {
             return;
         }
-        if (this.Im > 0) {
-            ++this.IM;
-            --this.Im;
+        if (this.pendingLocalPotionEntities > 0) {
+            ++this.localPotionCount;
+            --this.pendingLocalPotionEntities;
         } else {
-            ++this.Iu;
+            ++this.targetPotionCount;
         }
-        this.ff();
+        this.updateComparisons();
     }
 
     @Override
@@ -137,22 +137,22 @@ implements EventListener {
         GuiRenderPrimitives.d(this.G$src$D$1b2f02a(), this.n(), this.A(), this.L(), this.applyDefaultEditorAlpha(color));
     }
 
-    private void ff() {
-        this.I4.n(this.IY);
-        this.I4.N(this.If);
-        this.IN.n(this.Iu);
-        this.IN.N(this.IM);
+    private void updateComparisons() {
+        this.hitComparison.setTargetCount(this.targetHitCount);
+        this.hitComparison.setLocalCount(this.localHitCount);
+        this.potionComparison.setTargetCount(this.targetPotionCount);
+        this.potionComparison.setLocalCount(this.localPotionCount);
     }
 
     public OnlineCombatStatsSettingsFrame() {
         super("newduelinfo", "Duel Info");
-        this.IN = new OnlineCombatStatComparisonComponent("Potions", this);
-        this.I4 = new OnlineCombatStatComparisonComponent("Sword Hits", this);
+        this.potionComparison = new OnlineCombatStatComparisonComponent("Potions", this);
+        this.hitComparison = new OnlineCombatStatComparisonComponent("Sword Hits", this);
         if (this.q()) {
             this.w();
         }
-        this.addSettings(this.IK, this.IN, this.I4);
-        this.fq();
+        this.addSettings(this.targetLabelComponent, this.potionComparison, this.hitComparison);
+        this.resetTargetSearch();
         EventBus.getInstance().registerListener(this, new Predicate[0]);
     }
 
@@ -163,80 +163,80 @@ implements EventListener {
     }
 
     @EventHandler
-    public void C(EventPlayerUseItem eventPlayerUseItem) {
-        if (this.Ii == null || this.Ii.isNull()) {
+    public void onPlayerUseItem(EventPlayerUseItem event) {
+        if (this.targetPlayer == null || this.targetPlayer.isNull()) {
             return;
         }
-        ItemStack itemStack = eventPlayerUseItem.getItemStack();
+        ItemStack itemStack = event.getItemStack();
         if (itemStack.isNotNull() && MappedClasses.Di.isInstance(itemStack.getItem().getObject()) && ItemStackScoreUtil.i(itemStack)) {
-            ++this.Im;
+            ++this.pendingLocalPotionEntities;
         }
     }
 
-    private void fq() {
-        this.I0 = "Searching...";
-        this.Ii = null;
-        this.IM = 0;
-        this.Iu = 0;
-        this.Im = 0;
-        this.IY = 0;
-        this.If = 0;
-        this.ff();
+    private void resetTargetSearch() {
+        this.targetLabel = "Searching...";
+        this.targetPlayer = null;
+        this.localPotionCount = 0;
+        this.targetPotionCount = 0;
+        this.pendingLocalPotionEntities = 0;
+        this.targetHitCount = 0;
+        this.localHitCount = 0;
+        this.updateComparisons();
     }
 
-    private void fd() {
+    private void findNearbyTarget() {
         WorldClient worldClient = Minecraft.theWorld();
-        EntityPlayerSP entityPlayerSP = Minecraft.thePlayer();
-        if (worldClient.isNull() || entityPlayerSP.isNull()) {
+        EntityPlayerSP localPlayer = Minecraft.thePlayer();
+        if (worldClient.isNull() || localPlayer.isNull()) {
             return;
         }
-        this.I0 = "Searching...";
-        CopyOnWriteArrayList copyOnWriteArrayList = new CopyOnWriteArrayList(worldClient.X());
-        ArrayList<EntityPlayer> arrayList = new ArrayList<EntityPlayer>();
-        for (Object e : copyOnWriteArrayList) {
-            EntityPlayer entityPlayer;
-            if (!MappedClasses.Yl.isInstance(e) || (entityPlayer = new EntityPlayer(e)).J$src$Z$fdev5g() || entityPlayer.getObject().equals(entityPlayerSP.getObject()) || entityPlayer.M$src$Z$ff28xj() || entityPlayer.S() == -420 || !(entityPlayerSP.getDistanceToEntity(entityPlayer) < 32.0f)) continue;
-            arrayList.add(entityPlayer);
+        this.targetLabel = "Searching...";
+        CopyOnWriteArrayList worldEntities = new CopyOnWriteArrayList(worldClient.X());
+        ArrayList<EntityPlayer> nearbyPlayers = new ArrayList<EntityPlayer>();
+        for (Object entityObject : worldEntities) {
+            EntityPlayer player;
+            if (!MappedClasses.Yl.isInstance(entityObject) || (player = new EntityPlayer(entityObject)).J$src$Z$fdev5g() || player.getObject().equals(localPlayer.getObject()) || player.M$src$Z$ff28xj() || player.S() == -420 || !(localPlayer.getDistanceToEntity(player) < 32.0f)) continue;
+            nearbyPlayers.add(player);
         }
-        if (arrayList.size() > 1) {
-            this.I0 = "More than one target";
-        } else if (arrayList.size() == 1) {
-            this.Ii = (EntityPlayer)arrayList.get(0);
-            this.I0 = this.Ii.getName();
-            this.ff();
+        if (nearbyPlayers.size() > 1) {
+            this.targetLabel = "More than one target";
+        } else if (nearbyPlayers.size() == 1) {
+            this.targetPlayer = nearbyPlayers.get(0);
+            this.targetLabel = this.targetPlayer.getName();
+            this.updateComparisons();
         }
     }
 
-    public String b$src$Ljava_lang_String_$tewuww() {
-        return this.I0;
+    public String getTargetLabel() {
+        return this.targetLabel;
     }
 
     @EventHandler
-    public void onUpdate(EventLivingUpdate eventLivingUpdate) {
-        if (this.Ii == null || this.I0 == null) {
+    public void onLivingUpdate(EventLivingUpdate event) {
+        if (this.targetPlayer == null || this.targetLabel == null) {
             return;
         }
-        if (Minecraft.thePlayer().getDistanceToEntity(this.Ii) > 6.0f) {
+        if (Minecraft.thePlayer().getDistanceToEntity(this.targetPlayer) > 6.0f) {
             return;
         }
-        if (eventLivingUpdate.getEntity().getObject().equals(Minecraft.thePlayer().getObject())) {
-            ++this.If;
+        if (event.getEntity().getObject().equals(Minecraft.thePlayer().getObject())) {
+            ++this.localHitCount;
         }
-        if (eventLivingUpdate.getEntity().getObject().equals(this.Ii.getObject())) {
-            ++this.IY;
+        if (event.getEntity().getObject().equals(this.targetPlayer.getObject())) {
+            ++this.targetHitCount;
         }
-        this.ff();
+        this.updateComparisons();
     }
 
-    private boolean e() {
-        WorldClient worldClient = Minecraft.theWorld();
-        if (this.IA == null) {
-            this.IA = worldClient;
+    private boolean hasWorldChanged() {
+        WorldClient currentWorld = Minecraft.theWorld();
+        if (this.previousWorld == null) {
+            this.previousWorld = currentWorld;
             return true;
         }
-        boolean bl = worldClient.isNotNull() && !worldClient.getObject().equals(this.IA.getObject());
-        this.IA = worldClient;
-        return bl;
+        boolean changed = currentWorld.isNotNull() && !currentWorld.getObject().equals(this.previousWorld.getObject());
+        this.previousWorld = currentWorld;
+        return changed;
     }
 }
 

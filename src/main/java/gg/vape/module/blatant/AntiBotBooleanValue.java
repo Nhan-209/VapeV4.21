@@ -87,7 +87,7 @@ extends Value<Integer, AntiBotBooleanValue> {
     @Override
     public boolean loadJson(JsonObject jsonObject) {
         if (this.matchesJsonId(jsonObject)) {
-            String string = ConfigJsonUtils.P(jsonObject, "value");
+            String string = ConfigJsonUtils.getString(jsonObject, "value");
             if (string != null) {
                 this.parse(string);
             }

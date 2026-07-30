@@ -1,12 +1,7 @@
 package gg.vape.wrapper.impl;
 
 import gg.vape.mapping.mappings.MEntityLiving;
-import gg.vape.wrapper.impl.EntityLivingBase;
-import gg.vape.wrapper.impl.EquipmentSlotSet;
-import gg.vape.wrapper.impl.ForgeVersion;
-import gg.vape.wrapper.impl.InventoryListBridge;
-import gg.vape.wrapper.impl.ItemStack;
-import gg.vape.wrapper.impl.MappedFieldSingletonWrapper;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Map;
@@ -14,11 +9,11 @@ import java.util.Map;
 public class EntityLiving
 extends EntityLivingBase {
     public Map T$src$Ljava_util_Map_$f5d6t2() {
-        return MEntityLiving.l(EntityLiving.c.getMappings().W, this.I);
+        return MEntityLiving.l(EntityLiving.vapeInstance.getMappings().W, this.I);
     }
 
     public Iterable V$src$Ljava_lang_Iterable_$149sooa() {
-        return (Iterable)MEntityLiving.F(EntityLiving.c.getMappings().W, this.I);
+        return (Iterable)MEntityLiving.F(EntityLiving.vapeInstance.getMappings().W, this.I);
     }
 
     public ItemStack d(int n) {
@@ -27,9 +22,9 @@ extends EntityLivingBase {
             if (equipmentSlotSet == null) {
                 return null;
             }
-            return new ItemStack(MEntityLiving.L(EntityLiving.c.getMappings().W, this.I, equipmentSlotSet.getObject()));
+            return new ItemStack(MEntityLiving.L(EntityLiving.vapeInstance.getMappings().W, this.I, equipmentSlotSet.getObject()));
         }
-        return new ItemStack(MEntityLiving.v(EntityLiving.c.getMappings().W, this.I, n));
+        return new ItemStack(MEntityLiving.v(EntityLiving.vapeInstance.getMappings().W, this.I, n));
     }
 
     public ArrayList<ItemStack> I$src$Ljava_util_ArrayList_$15zosdi() {
@@ -44,7 +39,7 @@ extends EntityLivingBase {
                 for (Object e : InventoryListBridge.u().p()) {
                     ItemStack itemStack;
                     EquipmentSlotSet equipmentSlotSet = new EquipmentSlotSet(e);
-                    if (!equipmentSlotSet.y().equals(MappedFieldSingletonWrapper.T()) || !(itemStack = new ItemStack(MEntityLiving.L(EntityLiving.c.getMappings().W, this.I, equipmentSlotSet.getObject()))).isNotNull() || itemStack.r()) continue;
+                    if (!equipmentSlotSet.y().equals(MappedFieldSingletonWrapper.T()) || !(itemStack = new ItemStack(MEntityLiving.L(EntityLiving.vapeInstance.getMappings().W, this.I, equipmentSlotSet.getObject()))).isNotNull() || itemStack.r()) continue;
                     arrayList.add(itemStack);
                 }
             }
@@ -57,7 +52,7 @@ extends EntityLivingBase {
     }
 
     public boolean F$src$Z$3efut5() {
-        return MEntityLiving.S(EntityLiving.c.getMappings().W, this.I);
+        return MEntityLiving.S(EntityLiving.vapeInstance.getMappings().W, this.I);
     }
 
     public EntityLiving(Object object) {
@@ -66,7 +61,7 @@ extends EntityLivingBase {
 
 
     public void C(boolean bl) {
-        MEntityLiving.b(EntityLiving.c.getMappings().W, this.I, bl);
+        MEntityLiving.b(EntityLiving.vapeInstance.getMappings().W, this.I, bl);
     }
 }
 

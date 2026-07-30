@@ -14,11 +14,11 @@ extends Mapping {
 
 
     public Object N(Object object, Object object2) {
-        return this.J.L(object, object2);
+        return this.J.invokeObject(object, object2);
     }
 
     public Optional<Object> W(Object object, Object object2) {
-        return (Optional)this.F.L(object, object2);
+        return (Optional)this.F.invokeObject(object, object2);
     }
 
     public MResourceKeyRegistryLookup() {

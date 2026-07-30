@@ -5,14 +5,14 @@ import gg.vape.ui.click.component.GuiClickListener;
 
 public class CurrentPartyLeaveDeleteClickHandler
 implements GuiClickListener {
-    final CurrentPartyPanel N;
+    private final CurrentPartyPanel panel;
 
-    public CurrentPartyLeaveDeleteClickHandler(CurrentPartyPanel kB) {
-        this.N = kB;
+    public CurrentPartyLeaveDeleteClickHandler(CurrentPartyPanel panel) {
+        this.panel = panel;
     }
 
     @Override
     public void onPrimaryClick() {
-        CurrentPartyPanel.M(this.N);
+        CurrentPartyPanel.performLeaveOrDisband(this.panel);
     }
 }

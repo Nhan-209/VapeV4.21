@@ -1,8 +1,6 @@
 package gg.vape.wrapper.impl;
 
 import gg.vape.wrapper.Wrapper;
-import gg.vape.wrapper.impl.CPacketUseEntity;
-import gg.vape.wrapper.impl.CPacketUseEntityActionConstructorMarker;
 
 public class CPacketUseEntityAction
 extends Wrapper {
@@ -15,7 +13,7 @@ extends Wrapper {
     }
 
     public CPacketUseEntity w() {
-        return new CPacketUseEntity(CPacketUseEntityAction.c.getMappingsMapperCompat().qz.f(this.I), null);
+        return new CPacketUseEntity(CPacketUseEntityAction.vapeInstance.getMappingsMapperCompat().qz.f(this.I), null);
     }
 }
 

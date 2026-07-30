@@ -31,7 +31,7 @@ extends Mapping {
 
 
     public Object t(Object object, Object object2) {
-        return this.p.L(object, object2);
+        return this.p.invokeObject(object, object2);
     }
 }
 

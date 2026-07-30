@@ -4,49 +4,48 @@ import gg.vape.account.AccountCredentials;
 
 public class LicenseStatus
 implements AccountCredentials {
-    private final String k;
-    private static final String b;
-    private final String d;
-    private final boolean v;
-    private static String X;
+    private final String password;
+    private static final String GENERATED_ACCOUNT_PASSWORD;
+    private final String username;
+    private final boolean generatedAccount;
+    private static String sharedStatus;
 
-    public static String S() {
-        return X;
+    public static String getSharedStatus() {
+        return sharedStatus;
     }
 
-    public boolean x() {
-        return this.v;
+    public boolean isGeneratedAccount() {
+        return this.generatedAccount;
     }
 
-    public static void F(String string) {
-        X = string;
+    public static void setSharedStatus(String status) {
+        sharedStatus = status;
     }
 
     @Override
-    public String y() {
-        return this.d;
+    public String getUsername() {
+        return this.username;
     }
 
     static {
-        LicenseStatus.F(null);
-        b = "password";
+        LicenseStatus.setSharedStatus(null);
+        GENERATED_ACCOUNT_PASSWORD = "password";
     }
 
-    public LicenseStatus(String string) {
-        this.d = string;
-        this.k = b;
-        this.v = true;
+    public LicenseStatus(String token) {
+        this.username = token;
+        this.password = GENERATED_ACCOUNT_PASSWORD;
+        this.generatedAccount = true;
     }
 
-    public LicenseStatus(String string, String string2) {
-        this.d = string;
-        this.k = string2;
-        this.v = false;
+    public LicenseStatus(String username, String password) {
+        this.username = username;
+        this.password = password;
+        this.generatedAccount = false;
     }
 
     @Override
-    public String U() {
-        return this.k;
+    public String getPassword() {
+        return this.password;
     }
 }
-

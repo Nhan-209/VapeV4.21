@@ -13,29 +13,24 @@ import java.util.ArrayList;
 public class MultiComponentHighlightTutorialAction
 extends HighlightTutorialAction {
     private static final String g = "start ";
-    private TutorialTargetSelector y;
-    private final GuiComponent Q;
+    private final TutorialTargetSelector targetSelector;
+    private final GuiComponent searchRoot;
 
     @Override
-    public boolean X() {
-        return this.Q.V$src$Z$1xhop3l();
+    public boolean isTargetReady() {
+        return this.searchRoot.V$src$Z$1xhop3l();
     }
 
     @Override
-    public boolean boolean_X() {
-        return this.X();
-    }
-
-    @Override
-    public RectData t() {
-        if (this.B().size() < 1) {
+    public RectData getHighlightBounds() {
+        if (this.getHighlightedComponents().size() < 1) {
             return new RectData(0.0, 0.0, 0.0, 0.0);
         }
         GuiComponent guiComponent = null;
         GuiComponent guiComponent2 = null;
-        for (int i = 0; i < this.B().size(); ++i) {
-            GuiComponent guiComponent3 = this.B().get(i);
-            if (!guiComponent3.V$src$Z$1xhop3l() && !this.M()) continue;
+        for (int i = 0; i < this.getHighlightedComponents().size(); ++i) {
+            GuiComponent guiComponent3 = this.getHighlightedComponents().get(i);
+            if (!guiComponent3.V$src$Z$1xhop3l() && !this.includesInactiveTargets()) continue;
             guiComponent3.c();
             if (guiComponent == null) {
                 guiComponent = guiComponent3;
@@ -49,18 +44,18 @@ extends HighlightTutorialAction {
     }
 
     @Override
-    public void X$src$V$d06mc() {
+    public void start() {
         Vape.debugLog(g + this);
-        for (GuiComponent object : this.Q.f()) {
-            ArrayList<GuiComponent> arrayList = this.y.v(object);
+        for (GuiComponent object : this.searchRoot.f()) {
+            ArrayList<GuiComponent> arrayList = this.targetSelector.findTargets(object);
             if (arrayList == null) continue;
-            this.B().addAll(arrayList);
+            this.getHighlightedComponents().addAll(arrayList);
         }
-        if (this.V()) {
-            this.I().G$src$Lgg_vape_ui_click_component_gui_TextButton_$82emrx().setVisible(false);
+        if (this.includesHiddenComponents()) {
+            this.getComponent().getActionButton().setVisible(false);
             MultiComponentHighlightAdvanceClickListener multiComponentHighlightAdvanceClickListener = new MultiComponentHighlightAdvanceClickListener(this);
-            for (GuiComponent guiComponent : this.B()) {
-                this.H(guiComponent, multiComponentHighlightAdvanceClickListener);
+            for (GuiComponent guiComponent : this.getHighlightedComponents()) {
+                this.registerMouseListener(guiComponent, multiComponentHighlightAdvanceClickListener);
             }
         }
     }
@@ -72,7 +67,7 @@ extends HighlightTutorialAction {
 
     public MultiComponentHighlightTutorialAction(GuiComponent guiComponent, TutorialTargetSelector tutorialTargetSelector, String string, String string2, boolean bl) {
         super(new TutorialActionComponent(string, string2), bl);
-        this.y = tutorialTargetSelector;
-        this.Q = guiComponent;
+        this.targetSelector = tutorialTargetSelector;
+        this.searchRoot = guiComponent;
     }
 }

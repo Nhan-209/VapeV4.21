@@ -3,7 +3,6 @@ package gg.vape.mapping.mappings;
 import gg.vape.mapping.MappedClasses;
 import gg.vape.mapping.Mapping;
 import gg.vape.mapping.MappingField;
-import gg.vape.mapping.mappings.MPacketIdFactory;
 import gg.vape.ui.click.component.GuiComponent;
 import gg.vape.wrapper.Wrapper;
 import gg.vape.wrapper.impl.ForgeVersion;
@@ -36,9 +35,9 @@ extends Mapping {
         super(MappedClasses.YB);
         GuiComponent[] guiComponentArray2 = guiComponentArray;
         if (ForgeVersion.MC_1_16_5_ACTUAL.v()) {
-            if (ForgeVersion.MC_1_7_10.L() && !Wrapper.c.isVanillaMinecraftPresent()) {
+            if (ForgeVersion.MC_1_7_10.L() && !Wrapper.vapeInstance.isVanillaMinecraftPresent()) {
                 Class clazz = MappedClasses.VK;
-                boolean bl = Wrapper.G;
+                boolean bl = Wrapper.isNativeAvailable;
                 String string = "field_149580_e";
                 MCPacketPlayerBlockPlacement mCPacketPlayerBlockPlacement = this;
                 this.a = mCPacketPlayerBlockPlacement.J(string, bl, clazz);

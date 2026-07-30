@@ -13,12 +13,12 @@ extends Mapping {
 
     private Object getCachedEntity(Object object, Object object2) {
         if (ForgeVersion.MC_1_20_6.d()) {
-            return this.W.L(object, object2, null);
+            return this.W.invokeObject(object, object2, null);
         }
         if (ForgeVersion.MC_1_17.d()) {
-            return this.W.L(object, object2);
+            return this.W.invokeObject(object, object2);
         }
-        return this.W.L(object, new Object[0]);
+        return this.W.invokeObject(object, new Object[0]);
     }
 
     public static String getEntityNameToSpawn(MMobSpawnerBaseLogic mMobSpawnerBaseLogic, Object object) {
@@ -26,7 +26,7 @@ extends Mapping {
     }
 
     private String getEntityNameToSpawn(Object object) {
-        return (String)this.X.L(object, new Object[0]);
+        return (String)this.X.invokeObject(object, new Object[0]);
     }
 
 

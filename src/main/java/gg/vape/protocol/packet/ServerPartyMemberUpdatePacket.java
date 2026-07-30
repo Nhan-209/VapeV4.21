@@ -13,8 +13,8 @@ implements ZeusSerializablePacket {
 
     @Override
     public void o(ZeusPacketBuffer zeusPacketBuffer) {
-        this.E.f(zeusPacketBuffer);
-        zeusPacketBuffer.U(this.o);
+        this.E.writeTo(zeusPacketBuffer);
+        zeusPacketBuffer.writeEnum(this.o);
     }
 
     public static void x(String string) {
@@ -40,7 +40,7 @@ implements ZeusSerializablePacket {
     @Override
     public void S(ZeusPacketBuffer zeusPacketBuffer) {
         this.E = new GroupUserModel(zeusPacketBuffer);
-        this.o = zeusPacketBuffer.Y(PartyMemberActionType.class);
+        this.o = zeusPacketBuffer.readEnum(PartyMemberActionType.class);
     }
 
     public PartyMemberActionType a_EN_o() {

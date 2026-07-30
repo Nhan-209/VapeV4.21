@@ -14,8 +14,7 @@ extends JavassistMappingTask {
     }
 
     @Override
-    public void c() {
+    public void transform() {
         this.k(Vape.INSTANCE.getMappings().qB.v, EventPreRenderEntityForgeCallback.class, c);
     }
 }
-

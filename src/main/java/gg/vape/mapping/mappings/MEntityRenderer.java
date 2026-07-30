@@ -64,9 +64,9 @@ extends Mapping {
     private void u(Object object, Object object2) {
         if (this.C != null) {
             if (ForgeVersion.MC_26_1.d()) {
-                this.C.c(object, object2, false);
+                this.C.invokeVoid(object, object2, false);
             } else {
-                this.C.c(object, object2);
+                this.C.invokeVoid(object, object2);
             }
         }
     }
@@ -87,14 +87,14 @@ extends Mapping {
             return this.O(object);
         }
         if (ForgeVersion.MC_1_21_4.d()) {
-            float f2 = this.m.s(object, object2, Float.valueOf(f), bl);
-            return this.r.L(object, Float.valueOf(f2));
+            float f2 = this.m.invokeFloat(object, object2, Float.valueOf(f), bl);
+            return this.r.invokeObject(object, Float.valueOf(f2));
         }
         if (ForgeVersion.MC_1_20_6.d()) {
-            double d = this.m.F(object, object2, Float.valueOf(f), bl);
-            return this.r.L(object, d);
+            double d = this.m.invokeDouble(object, object2, Float.valueOf(f), bl);
+            return this.r.invokeObject(object, d);
         }
-        return this.r.L(object, object2, Float.valueOf(f), bl);
+        return this.r.invokeObject(object, object2, Float.valueOf(f), bl);
     }
 
     public static boolean c$src$Z$4ble0w(MEntityRenderer mEntityRenderer, Object object) {
@@ -160,9 +160,9 @@ extends Mapping {
 
     private void S(Object object, double d) {
         if (ForgeVersion.MC_1_7_10.Y()) {
-            this.e.F(object);
+            this.e.invokeVoidNoArgs(object);
         } else {
-            this.e.c(object, d);
+            this.e.invokeVoid(object, d);
         }
     }
 
@@ -214,9 +214,9 @@ extends Mapping {
 
     private void x(Object object, double d) {
         if (ForgeVersion.MC_1_7_10.Y()) {
-            this.W.F(object);
+            this.W.invokeVoidNoArgs(object);
         } else {
-            this.W.c(object, d);
+            this.W.invokeVoid(object, d);
         }
     }
 
@@ -225,7 +225,7 @@ extends Mapping {
     }
 
     private void G(Object object, Object object2) {
-        this.a.c(object, object2);
+        this.a.invokeVoid(object, object2);
     }
 
     public static Object b(MEntityRenderer mEntityRenderer, Object object) {
@@ -236,11 +236,11 @@ extends Mapping {
         if (this.l == null) {
             return;
         }
-        this.l.c(object, object2, Float.valueOf(f));
+        this.l.invokeVoid(object, object2, Float.valueOf(f));
     }
 
     private void Y(Object object, float f, long l) {
-        this.J.c(object, Float.valueOf(f));
+        this.J.invokeVoid(object, Float.valueOf(f));
     }
 
     public static Object E(MEntityRenderer mEntityRenderer, Object object) {
@@ -263,7 +263,7 @@ extends Mapping {
         if (this.g == null) {
             return;
         }
-        this.g.c(object, object2, Float.valueOf(f));
+        this.g.invokeVoid(object, object2, Float.valueOf(f));
     }
 
     private Object u(Object object) {
@@ -279,11 +279,11 @@ extends Mapping {
     }
 
     private Object s() {
-        return this.Q.L(null, new Object[0]);
+        return this.Q.invokeObject(null, new Object[0]);
     }
 
     private void z(Object object, float f, long l) {
-        this.a.c(object, Float.valueOf(f), l);
+        this.a.invokeVoid(object, Float.valueOf(f), l);
     }
 
     public static Object Q(MEntityRenderer mEntityRenderer, Object object) {
@@ -351,25 +351,25 @@ extends Mapping {
                 String string2 = "guiRenderState";
                 Class clazz3 = MappedClasses.uI;
                 MEntityRenderer mEntityRenderer2 = this;
-                this.G = this.X(clazz3, string2, bl2, clazz2);
+                this.G = this.registerInstanceFieldForOwner(clazz3, string2, bl2, clazz2);
                 Class clazz4 = MappedClasses.z6;
                 boolean bl3 = true;
                 String string3 = "levelRenderState";
                 Class clazz5 = MappedClasses.uI;
                 MEntityRenderer mEntityRenderer3 = this;
-                this.u = this.X(clazz5, string3, bl3, clazz4);
+                this.u = this.registerInstanceFieldForOwner(clazz5, string3, bl3, clazz4);
                 Class clazz6 = MappedClasses.zf;
                 boolean bl4 = true;
                 String string4 = "cameraRenderState";
                 Class clazz7 = MappedClasses.z6;
                 MEntityRenderer mEntityRenderer4 = this;
-                this.f = this.X(clazz7, string4, bl4, clazz6);
+                this.f = this.registerInstanceFieldForOwner(clazz7, string4, bl4, clazz6);
                 Class clazz8 = MappedClasses.qr;
                 boolean bl5 = true;
                 String string5 = "projectionMatrix";
                 Class clazz9 = MappedClasses.zf;
                 MEntityRenderer mEntityRenderer5 = this;
-                this.h = this.X(clazz9, string5, bl5, clazz8);
+                this.h = this.registerInstanceFieldForOwner(clazz9, string5, bl5, clazz8);
             } else {
                 Class clazz = MappedClasses.i;
                 boolean bl = true;
@@ -407,13 +407,13 @@ extends Mapping {
                 boolean bl = true;
                 String string = "SHADERS_TEXTURES";
                 MEntityRenderer mEntityRenderer = this;
-                this.d = mEntityRenderer.u(string, bl, clazz);
+                this.d = mEntityRenderer.registerStaticField(string, bl, clazz);
             } else {
                 Class<?> clazz = DescUtils.getArrayType(MappedClasses.zC);
                 boolean bl = true;
                 String string = "shaderResourceLocations";
                 MEntityRenderer mEntityRenderer = this;
-                this.d = mEntityRenderer.u(string, bl, clazz);
+                this.d = mEntityRenderer.registerStaticField(string, bl, clazz);
             }
         }
         if (ForgeVersion.MC_1_16_5.d()) {
@@ -435,13 +435,13 @@ extends Mapping {
                 Class<Void> clazz12 = Void.TYPE;
                 String string8 = "update";
                 MEntityRenderer mEntityRenderer8 = this;
-                this.x = ((MappingMethodBuilder)((MappingMethodBuilder)this.u(string8, clazz12, classArray).y(MappedClasses.lt)).A(ForgeVersion.MC_1_21_11.n(), "setup")).v(ForgeVersion.MC_1_21_11.n(), MappedClasses.YU, MappedClasses.zc, Boolean.TYPE, Boolean.TYPE, Float.TYPE).s();
+                this.x = ((MappingMethodBuilder)((MappingMethodBuilder)this.methodBuilder(string8, clazz12, classArray).setOwnerClass(MappedClasses.lt)).setNameForVersion(ForgeVersion.MC_1_21_11.n(), "setup")).setParameterTypesForVersion(ForgeVersion.MC_1_21_11.n(), MappedClasses.YU, MappedClasses.zc, Boolean.TYPE, Boolean.TYPE, Float.TYPE).buildMethod();
             } else {
                 Class[] classArray = new Class[]{MappedClasses.uy};
                 Class<Void> clazz13 = Void.TYPE;
                 String string9 = "update";
                 MEntityRenderer mEntityRenderer9 = this;
-                this.x = ((MappingMethodBuilder)this.u(string9, clazz13, classArray).y(MappedClasses.lt)).s();
+                this.x = ((MappingMethodBuilder)this.methodBuilder(string9, clazz13, classArray).setOwnerClass(MappedClasses.lt)).buildMethod();
             }
             Class clazz14 = MappedClasses.lt;
             boolean bl8 = true;
@@ -484,7 +484,7 @@ extends Mapping {
             String string15 = "pointedEntity";
             Class clazz20 = MappedClasses.uP;
             MEntityRenderer mEntityRenderer15 = this;
-            this.v = this.X(clazz20, string15, bl13, clazz19);
+            this.v = this.registerInstanceFieldForOwner(clazz20, string15, bl13, clazz19);
             if (ForgeVersion.MC_1_20_6.d()) {
                 if (ForgeVersion.MC_26_1.d()) {
                     this.m = null;
@@ -506,7 +506,7 @@ extends Mapping {
             } else {
                 Class[] classArray = new Class[]{MappedClasses.lt, Float.TYPE, Boolean.TYPE};
                 Class<Double> clazz23 = Double.TYPE;
-                boolean bl16 = Wrapper.G;
+                boolean bl16 = Wrapper.isNativeAvailable;
                 String string18 = "func_215311_a";
                 MEntityRenderer mEntityRenderer18 = this;
                 this.m = this.Y(string18, bl16, clazz23, classArray);
@@ -521,7 +521,7 @@ extends Mapping {
             Class<Void> clazz25 = Void.TYPE;
             String string20 = "renderLevel";
             MEntityRenderer mEntityRenderer20 = this;
-            this.a = this.u(string20, clazz25, classArray).v(ForgeVersion.MC_1_21_0.n(), MappedClasses.uy).v(ForgeVersion.MC_1_20_6.S(), Float.TYPE, Long.TYPE).s();
+            this.a = this.methodBuilder(string20, clazz25, classArray).setParameterTypesForVersion(ForgeVersion.MC_1_21_0.n(), MappedClasses.uy).setParameterTypesForVersion(ForgeVersion.MC_1_20_6.S(), Float.TYPE, Long.TYPE).buildMethod();
             if (ForgeVersion.MC_1_21_11.d()) {
                 Class[] classArray5;
                 String string21 = ForgeVersion.MC_26_1.d() ? "update" : "updateCamera";
@@ -645,7 +645,7 @@ extends Mapping {
                 } else {
                     Class[] classArray15 = new Class[]{Float.TYPE, Long.TYPE};
                     Class<Void> clazz38 = Void.TYPE;
-                    boolean bl30 = Wrapper.G;
+                    boolean bl30 = Wrapper.isNativeAvailable;
                     String string34 = "func_181560_a";
                     MEntityRenderer mEntityRenderer33 = this;
                     this.J = this.Y(string34, bl30, clazz38, classArray15);
@@ -676,7 +676,7 @@ extends Mapping {
             String string38 = "enableLightmap";
             MEntityRenderer mEntityRenderer37 = this;
             this.W = this.Y(string38, bl34, clazz42, classArray19);
-            if (Wrapper.c.isVanillaMinecraftPresent()) {
+            if (Wrapper.vapeInstance.isVanillaMinecraftPresent()) {
                 Class[] classArray20 = new Class[]{Float.TYPE};
                 Class<Void> clazz43 = Void.TYPE;
                 boolean bl35 = true;
@@ -686,7 +686,7 @@ extends Mapping {
             } else {
                 Class[] classArray21 = new Class[]{Float.TYPE};
                 Class<Void> clazz44 = Void.TYPE;
-                boolean bl36 = Wrapper.G;
+                boolean bl36 = Wrapper.isNativeAvailable;
                 String string40 = "func_78480_b";
                 MEntityRenderer mEntityRenderer39 = this;
                 this.J = this.Y(string40, bl36, clazz44, classArray21);
@@ -707,7 +707,7 @@ extends Mapping {
                 boolean bl38 = true;
                 String string42 = "getPositionColorShader";
                 MEntityRenderer mEntityRenderer41 = this;
-                this.Q = this.x(string42, bl38, clazz46, classArray23);
+                this.Q = this.registerStaticMethod(string42, bl38, clazz46, classArray23);
             }
         }
     }
@@ -717,7 +717,7 @@ extends Mapping {
     }
 
     private void w(Object object, int n, int n2) {
-        this.M.c(object, n, n2);
+        this.M.invokeVoid(object, n, n2);
     }
 
     private void S(Object object, boolean bl) {
@@ -732,15 +732,15 @@ extends Mapping {
         if (this.k == null) {
             return;
         }
-        this.k.c(object, Float.valueOf(f));
+        this.k.invokeVoid(object, Float.valueOf(f));
     }
 
     private void J(Object object, float f, long l, Object object2) {
-        this.a.c(object, Float.valueOf(f), l, object2);
+        this.a.invokeVoid(object, Float.valueOf(f), l, object2);
     }
 
     private void X(Object object, float f, int n) {
-        this.i.c(object, Float.valueOf(f), n);
+        this.i.invokeVoid(object, Float.valueOf(f), n);
     }
 
     public static Object[] k(MEntityRenderer mEntityRenderer) {
@@ -785,7 +785,7 @@ extends Mapping {
     }
 
     private void z(Object object, Object object2) {
-        this.p.c(object, object2);
+        this.p.invokeVoid(object, object2);
     }
 
     public static void c(int n) {
@@ -817,7 +817,7 @@ extends Mapping {
     }
 
     private void M(Object object, float f) {
-        this.B.c(object, Float.valueOf(f));
+        this.B.invokeVoid(object, Float.valueOf(f));
     }
 
     public static Object G(MEntityRenderer mEntityRenderer) {

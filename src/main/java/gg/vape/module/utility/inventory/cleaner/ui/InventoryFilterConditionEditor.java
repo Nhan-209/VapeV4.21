@@ -60,7 +60,7 @@ extends ScrollableFrameComponent {
     }
 
     private static void setPotionEntry(PotionEffectFilterCondition potionEffectFilterCondition, DropdownSelectComponent dropdownSelectComponent) {
-        potionEffectFilterCondition.withPotionId(((PotionEntry)dropdownSelectComponent.getSelectedValue()).T());
+        potionEffectFilterCondition.withPotionId(((PotionEntry)dropdownSelectComponent.getSelectedValue()).getLegacyId());
     }
 
     private void handlePotionModeChanged(PotionEffectFilterCondition potionEffectFilterCondition, DropdownSelectComponent dropdownSelectComponent) {
@@ -68,15 +68,15 @@ extends ScrollableFrameComponent {
         this.rebuild();
     }
 
-    private static int comparePotionNames(PotionEntry potionEntry, PotionEntry potionEntry2) {
-        return potionEntry.G().compareToIgnoreCase(potionEntry2.G());
+    private static int comparePotionNames(PotionEntry firstPotion, PotionEntry secondPotion) {
+        return firstPotion.getName().compareToIgnoreCase(secondPotion.getName());
     }
 
-    private void handleTextInput(TextFilterCondition<?> textFilterCondition, TextSuggestionInputComponent textSuggestionInputComponent, char c, int n) {
+    private void handleTextInput(TextFilterCondition<?> textFilterCondition, TextSuggestionInputComponent textSuggestionInputComponent, char character, int keyCode) {
         if (textFilterCondition.getMatchMode().supportsMultipleValues()) {
-            String string;
-            if (n == 9 && !(string = textSuggestionInputComponent.getInput().getText().trim()).isEmpty()) {
-                textFilterCondition.addText(string);
+            String enteredText;
+            if (keyCode == 9 && !(enteredText = textSuggestionInputComponent.getInput().getText().trim()).isEmpty()) {
+                textFilterCondition.addText(enteredText);
                 textSuggestionInputComponent.getInput().setText("");
                 this.rebuild();
             }
@@ -111,7 +111,7 @@ extends ScrollableFrameComponent {
             emptyInput.setNumericOnly(true);
             this.h(emptyInput, new Object[0]);
         } else {
-            boolean bl = true;
+            boolean requiresComparisonValue = true;
             if (this.condition instanceof EnchantmentFilterCondition) {
                 EnchantmentFilterCondition enchantmentCondition = (EnchantmentFilterCondition)this.condition;
                 DropdownSelectComponent<EnchantmentFilterMode> enchantmentModeDropdown = this.createDropdown("Select...", enchantmentCondition.getMode(), OptionTextFormatter.namedValues(), EnchantmentFilterMode.VALUES);
@@ -129,7 +129,7 @@ extends ScrollableFrameComponent {
                 enchantmentDropdown.addSelectionListener(() -> InventoryFilterConditionEditor.setEnchantment(enchantmentCondition, enchantmentDropdown));
                 this.h(enchantmentDropdown, new Object[0]);
                 if (enchantmentCondition.getMode() == EnchantmentFilterMode.HAS) {
-                    bl = false;
+                    requiresComparisonValue = false;
                 }
             }
             if (this.condition instanceof PotionEffectFilterCondition) {
@@ -145,7 +145,7 @@ extends ScrollableFrameComponent {
                 potionDropdown.addSelectionListener(() -> InventoryFilterConditionEditor.setPotionEntry(potionCondition, potionDropdown));
                 this.h(potionDropdown, new Object[0]);
                 if (potionCondition.getMode() == PotionEffectFilterMode.HAS) {
-                    bl = false;
+                    requiresComparisonValue = false;
                 }
             }
             if (this.condition instanceof ItemDurabilityFilterCondition) {
@@ -154,7 +154,7 @@ extends ScrollableFrameComponent {
                 durabilityDropdown.addSelectionListener(() -> this.handleDurabilityModeChanged(durabilityCondition, durabilityDropdown));
                 this.h(durabilityDropdown, new Object[0]);
             }
-            if (this.condition instanceof NumericFilterCondition && bl) {
+            if (this.condition instanceof NumericFilterCondition && requiresComparisonValue) {
                 NumericFilterCondition numericCondition = (NumericFilterCondition)this.condition;
                 DropdownSelectComponent<ComparisonOperator> comparisonDropdown = this.createDropdown("Select item...", numericCondition.getOperator(), OptionTextFormatter.namedValues(), ComparisonOperator.VALUES);
                 comparisonDropdown.setExplicitWidth(82.0);
@@ -173,7 +173,7 @@ extends ScrollableFrameComponent {
                 numericInput.o(this.A() - this.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().C() - 17.5 - 20.0);
                 numericInput.Y(15.0);
                 numericInput.setNumericOnly(true);
-                numericInput.addKeyTypedListener((arg_0, arg_1) -> InventoryFilterConditionEditor.parseNumericValue(numericCondition, numericInput, arg_0, arg_1));
+                numericInput.addKeyTypedListener((character, keyCode) -> InventoryFilterConditionEditor.parseNumericValue(numericCondition, numericInput, character, keyCode));
                 this.h(new PaddedComponent(2.5, 0.0, 0.0, 0.0, numericInput), new Object[0]);
             } else if (this.condition instanceof TextFilterCondition) {
                 TextFilterCondition<?> textCondition = (TextFilterCondition<?>)this.condition;
@@ -181,11 +181,11 @@ extends ScrollableFrameComponent {
                 textModeDropdown.setExplicitWidth(textModeDropdown.getExplicitWidth() + 25.0);
                 textModeDropdown.addSelectionListener(() -> this.handleTextModeChanged(textCondition, textModeDropdown));
                 this.h(textModeDropdown, new Object[0]);
-                TextSuggestionInputComponent suggestionInput = new TextSuggestionInputComponent("", arg_0 -> InventoryFilterConditionEditor.removeTextValue(textCondition, arg_0), this.A() - this.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().C() - 17.5 - 20.0, 15.0, false, true);
+                TextSuggestionInputComponent suggestionInput = new TextSuggestionInputComponent("", row -> InventoryFilterConditionEditor.removeTextValue(textCondition, row), this.A() - this.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().C() - 17.5 - 20.0, 15.0, false, true);
                 if (textCondition.getMatchMode().supportsMultipleValues()) {
                     suggestionInput.getInput().setText("");
-                    for (String string : textCondition.getTexts()) {
-                        suggestionInput.addRow(new TextSuggestionRow(string));
+                    for (String text : textCondition.getTexts()) {
+                        suggestionInput.addRow(new TextSuggestionRow(text));
                     }
                 } else {
                     suggestionInput.getInput().setText(textCondition.getTexts().isEmpty() ? "" : textCondition.getTexts().get(0));
@@ -197,7 +197,7 @@ extends ScrollableFrameComponent {
                 suggestionInput.getInput().setVerticalInset(0.0f);
                 suggestionInput.getInput().getActionButton().setVisible(false);
                 suggestionInput.getInput().setPlaceholderColor(InventoryFilterConditionEditor.J.h);
-                suggestionInput.getInput().addKeyTypedListener((arg_0, arg_1) -> this.handleTextInput(textCondition, suggestionInput, arg_0, arg_1));
+                suggestionInput.getInput().addKeyTypedListener((character, keyCode) -> this.handleTextInput(textCondition, suggestionInput, character, keyCode));
                 this.h(new PaddedComponent(2.5, 0.0, 0.0, 0.0, suggestionInput), new Object[0]);
             } else if (this.condition instanceof MaterialFilterCondition) {
                 MaterialFilterCondition materialCondition = (MaterialFilterCondition)this.condition;
@@ -236,7 +236,7 @@ extends ScrollableFrameComponent {
     }
 
     private static String formatPotionName(PotionEntry potionEntry) {
-        return potionEntry != null ? potionEntry.G() : "";
+        return potionEntry != null ? potionEntry.getName() : "";
     }
 
     private void handleConditionTypeChanged(DropdownSelectComponent dropdownSelectComponent) {
@@ -268,9 +268,9 @@ extends ScrollableFrameComponent {
         enchantmentFilterCondition.withEnchantment((String)dropdownSelectComponent.getSelectedValue());
     }
 
-    private static void parseNumericValue(NumericFilterCondition numericFilterCondition, LabeledTextInputComponent labeledTextInputComponent, char c, int n) {
+    private static void parseNumericValue(NumericFilterCondition numericFilterCondition, LabeledTextInputComponent input, char character, int keyCode) {
         try {
-            numericFilterCondition.parseValue(labeledTextInputComponent.getText());
+            numericFilterCondition.parseValue(input.getText());
         }
         catch (NumberFormatException numberFormatException) {
             // empty catch block
@@ -312,14 +312,14 @@ extends ScrollableFrameComponent {
         ClientSettings.UI_EXECUTOR.execute(this::removeCondition);
     }
 
-    public InventoryFilterConditionEditor(double d, InventoryFilterRule inventoryFilterRule, InventoryFilterConditionGroup inventoryFilterConditionGroup, InventoryFilterCondition<?> inventoryFilterCondition, Runnable runnable) {
-        super(d);
-        this.v(d);
+    public InventoryFilterConditionEditor(double width, InventoryFilterRule filterRule, InventoryFilterConditionGroup conditionGroup, InventoryFilterCondition<?> condition, Runnable onChanged) {
+        super(width);
+        this.v(width);
         this.h(15.0);
-        this.filterRule = inventoryFilterRule;
-        this.conditionGroup = inventoryFilterConditionGroup;
-        this.condition = inventoryFilterCondition;
-        this.onChanged = runnable;
+        this.filterRule = filterRule;
+        this.conditionGroup = conditionGroup;
+        this.condition = condition;
+        this.onChanged = onChanged;
         this.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M("widthwrap");
         this.setShowDisabledOverlay(false);
         this.rebuild();

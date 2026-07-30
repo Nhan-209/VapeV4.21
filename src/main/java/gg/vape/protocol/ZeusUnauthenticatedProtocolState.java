@@ -12,17 +12,17 @@ final class ZeusUnauthenticatedProtocolState {
 
     private ZeusUnauthenticatedProtocolState(ZeusProtocolState state) {
         this.state = state;
-        this.p(ZeusPacketDirection.SERVER, HandshakePacket.class);
-        this.p(ZeusPacketDirection.CLIENT, HandshakeResponsePacket.class);
-        this.p(ZeusPacketDirection.SERVER, AuthenticationPacket.class);
-        this.p(ZeusPacketDirection.CLIENT, AuthenticationResponsePacket.class);
+        this.registerPacket(ZeusPacketDirection.SERVER, HandshakePacket.class);
+        this.registerPacket(ZeusPacketDirection.CLIENT, HandshakeResponsePacket.class);
+        this.registerPacket(ZeusPacketDirection.SERVER, AuthenticationPacket.class);
+        this.registerPacket(ZeusPacketDirection.CLIENT, AuthenticationResponsePacket.class);
     }
 
     static void register(ZeusProtocolState state) {
         new ZeusUnauthenticatedProtocolState(state);
     }
 
-    private void p(ZeusPacketDirection direction, Class<? extends gg.vape.protocol.packet.ZeusSerializablePacket> packetClass) {
-        this.state.p(direction, packetClass);
+    private void registerPacket(ZeusPacketDirection direction, Class<? extends gg.vape.protocol.packet.ZeusSerializablePacket> packetClass) {
+        this.state.registerPacket(direction, packetClass);
     }
 }

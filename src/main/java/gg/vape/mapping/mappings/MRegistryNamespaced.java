@@ -16,11 +16,11 @@ extends Mapping {
         Class<Object> clazz = Object.class;
         String string = "getByValue";
         MRegistryNamespaced mRegistryNamespaced = this;
-        this.m = ((MappingMethodBuilder)((MappingMethodBuilder)this.u(string, clazz, classArray).A(ForgeVersion.MC_1_16_5.n(), "byId")).Q(ForgeVersion.MC_1_21_4.n(), MappedClasses.ua)).s();
+        this.m = ((MappingMethodBuilder)((MappingMethodBuilder)this.methodBuilder(string, clazz, classArray).setNameForVersion(ForgeVersion.MC_1_16_5.n(), "byId")).setOwnerClassForVersion(ForgeVersion.MC_1_21_4.n(), MappedClasses.ua)).buildMethod();
     }
 
     public Object e(Object object, int n) {
-        return this.m.L(object, n);
+        return this.m.invokeObject(object, n);
     }
 }
 

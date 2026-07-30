@@ -4,7 +4,6 @@ import gg.vape.mapping.MappedClasses;
 import gg.vape.mapping.Mapping;
 import gg.vape.mapping.MappingField;
 import gg.vape.mapping.MappingMethod;
-import gg.vape.mapping.mappings.MPacketIdFactory;
 import gg.vape.ui.click.component.GuiComponent;
 import gg.vape.wrapper.Wrapper;
 import gg.vape.wrapper.impl.ForgeVersion;
@@ -49,7 +48,7 @@ extends Mapping {
             this.G = mCPacketPlayer.Y(string, bl, clazz, classArray);
         }
         if (ForgeVersion.MC_1_7_10.L()) {
-            if (Wrapper.c.isVanillaMinecraftPresent()) {
+            if (Wrapper.vapeInstance.isVanillaMinecraftPresent()) {
                 Class<Double> clazz = Double.TYPE;
                 boolean bl = true;
                 String string = "x";
@@ -77,33 +76,33 @@ extends Mapping {
                 this.L = this.J(string5, bl5, clazz5);
             } else {
                 Class<Double> clazz = Double.TYPE;
-                boolean bl = Wrapper.G;
+                boolean bl = Wrapper.isNativeAvailable;
                 String string = "field_149479_a";
                 MCPacketPlayer mCPacketPlayer = this;
                 this.K = mCPacketPlayer.J(string, bl, clazz);
                 Class<Double> clazz6 = Double.TYPE;
-                boolean bl6 = Wrapper.G;
+                boolean bl6 = Wrapper.isNativeAvailable;
                 String string6 = "field_149477_b";
                 MCPacketPlayer mCPacketPlayer6 = this;
                 this.w = this.J(string6, bl6, clazz6);
                 Class<Double> clazz7 = Double.TYPE;
-                boolean bl7 = Wrapper.G;
+                boolean bl7 = Wrapper.isNativeAvailable;
                 String string7 = "field_149475_d";
                 MCPacketPlayer mCPacketPlayer7 = this;
                 this.U = this.J(string7, bl7, clazz7);
                 Class<Float> clazz8 = Float.TYPE;
-                boolean bl8 = Wrapper.G;
+                boolean bl8 = Wrapper.isNativeAvailable;
                 String string8 = "field_149476_e";
                 MCPacketPlayer mCPacketPlayer8 = this;
                 this.i = this.J(string8, bl8, clazz8);
                 Class<Float> clazz9 = Float.TYPE;
-                boolean bl9 = Wrapper.G;
+                boolean bl9 = Wrapper.isNativeAvailable;
                 String string9 = "field_149473_f";
                 MCPacketPlayer mCPacketPlayer9 = this;
                 this.L = this.J(string9, bl9, clazz9);
             }
             Class<Boolean> clazz = Boolean.TYPE;
-            boolean bl = Wrapper.G;
+            boolean bl = Wrapper.isNativeAvailable;
             String string = "field_149480_h";
             MCPacketPlayer mCPacketPlayer = this;
             this.n = mCPacketPlayer.J(string, bl, clazz);
@@ -159,7 +158,7 @@ extends Mapping {
     }
 
     private Object o(double d, double d2, double d3, float f, float f2, boolean bl, boolean bl2, boolean bl3) {
-        return this.G.O(d, d2, d3, Float.valueOf(f), Float.valueOf(f2), bl, bl2, bl3);
+        return this.G.newInstance(d, d2, d3, Float.valueOf(f), Float.valueOf(f2), bl, bl2, bl3);
     }
 
     public boolean g(Object object) {
@@ -179,7 +178,7 @@ extends Mapping {
     }
 
     private Object S(double d, double d2, double d3, float f, float f2, boolean bl, boolean bl2, boolean bl3, boolean bl4) {
-        return this.G.O(d, d2, d3, Float.valueOf(f), Float.valueOf(f2), bl, bl2, bl3, bl4);
+        return this.G.newInstance(d, d2, d3, Float.valueOf(f), Float.valueOf(f2), bl, bl2, bl3, bl4);
     }
 
     public static Object s(MCPacketPlayer mCPacketPlayer, double d, double d2, double d3, float f, float f2, boolean bl, boolean bl2, boolean bl3) {
@@ -196,7 +195,7 @@ extends Mapping {
     }
 
     private Object S(boolean bl) {
-        return this.G.O(bl);
+        return this.G.newInstance(bl);
     }
 }
 

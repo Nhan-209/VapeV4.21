@@ -14,6 +14,6 @@ extends IEvent {
     }
 
 
-    public void setCancelled(boolean var1);
+    public void setCancelled(boolean canceled);
 }
 

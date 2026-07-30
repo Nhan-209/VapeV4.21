@@ -17,7 +17,7 @@ extends HudModule {
 
     @EventHandler
     public void onTick(EventPreTick event) {
-        if (ForgeVersion.MC_1_8_9.d() && ClientSettings.M() && Minecraft.currentScreen().isNull()) {
+        if (ForgeVersion.MC_1_8_9.d() && ClientSettings.isAttackButtonDown() && Minecraft.currentScreen().isNull()) {
             Minecraft.r(0);
         }
     }

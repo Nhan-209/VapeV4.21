@@ -7,15 +7,15 @@ import gg.vape.ui.click.component.GuiClickListener;
 
 public class HotbarSlotRuleItemPickerSearchCloseClickHandler
 implements GuiClickListener {
-    final HotbarSlotRuleItemSearchComponent d;
+    final HotbarSlotRuleItemSearchComponent searchComponent;
 
     @Override
     public void onPrimaryClick() {
-        ClientSettings.getFrame(HotbarSlotRuleItemPickerFrame.class).Z$src$V$7seznp();
-        ClientSettings.getFrame(HotbarSlotRuleItemPickerFrame.class).N$src$V$7ltgjd();
+        ClientSettings.getFrame(HotbarSlotRuleItemPickerFrame.class).commitSelection();
+        ClientSettings.getFrame(HotbarSlotRuleItemPickerFrame.class).closePicker();
     }
 
     public HotbarSlotRuleItemPickerSearchCloseClickHandler(HotbarSlotRuleItemSearchComponent hotbarSlotRuleItemSearchComponent) {
-        this.d = hotbarSlotRuleItemSearchComponent;
+        this.searchComponent = hotbarSlotRuleItemSearchComponent;
     }
 }

@@ -38,7 +38,7 @@ public class SyncThread {
     public void saveSettings() {
         try {
             SettingsSyncStatusNotification notification = new SettingsSyncStatusNotification();
-            if (!this.vape.getPublicProfileSettings().o.getEffectiveValue()) {
+            if (!this.vape.getPublicProfileSettings().autoSave.getEffectiveValue()) {
                 this.vape.getNotificationManager().enqueue(notification, true);
             }
 
@@ -46,24 +46,24 @@ public class SyncThread {
             this.prepareActiveProfileForSave();
 
             JsonObject settingsPayload = this.buildSettingsPayload(true);
-            JsonObject profilesPayload = this.vape.getProfilesManager().q(true);
-            for (Profile profile : this.vape.getProfilesManager().b()) {
-                profile.T(true);
+            JsonObject profilesPayload = this.vape.getProfilesManager().toJson(true);
+            for (Profile profile : this.vape.getProfilesManager().getProfiles()) {
+                profile.setSaveQueued(true);
             }
 
-            ApiResponse<Boolean> settingsResponse = ApiServices.d().c().a(settingsPayload)
+            ApiResponse<Boolean> settingsResponse = ApiServices.getInstance().getUserDataApi().saveUserData(settingsPayload)
                     .exceptionally(error -> handleSettingsSaveFailure(notification, error))
                     .join();
             this.updateSettingsSaveStatus(notification, settingsResponse);
 
-            ApiResponse<RemoteProfileDataMap> profilesResponse = ApiServices.d().c().F(profilesPayload)
+            ApiResponse<RemoteProfileDataMap> profilesResponse = ApiServices.getInstance().getUserDataApi().saveProfileData(profilesPayload)
                     .exceptionally(error -> handleProfilesSaveFailure(notification, error))
                     .join();
             this.updateProfilesSaveStatus(notification, profilesResponse);
             this.applySavedProfileIds(profilesResponse);
 
             notification.complete();
-            if (notification.hasSaveError() && this.vape.getPublicProfileSettings().o.getEffectiveValue()) {
+            if (notification.hasSaveError() && this.vape.getPublicProfileSettings().autoSave.getEffectiveValue()) {
                 this.vape.getNotificationManager().show(notification);
             }
         }
@@ -77,9 +77,9 @@ public class SyncThread {
 
     private void prepareActiveProfileForSave() {
         try {
-            Profile activeProfile = this.vape.getProfilesManager().M();
+            Profile activeProfile = this.vape.getProfilesManager().getActiveProfile();
             if (activeProfile != null) {
-                activeProfile.a();
+                activeProfile.captureCurrentState();
             }
         }
         catch (Throwable throwable) {
@@ -94,7 +94,7 @@ public class SyncThread {
             }
             return;
         }
-        if (response.t()) {
+        if (response.isSuccessful()) {
             notification.setSettingsSaveStatus(1);
         } else if (isRateLimited(response)) {
             notification.setSettingsSaveStatus(3);
@@ -110,54 +110,54 @@ public class SyncThread {
             }
             return;
         }
-        if (response.t()) {
+        if (response.isSuccessful()) {
             notification.setProfilesSaveStatus(1);
-            for (Profile profile : this.vape.getProfilesManager().b()) {
-                profile.c(false);
+            for (Profile profile : this.vape.getProfilesManager().getProfiles()) {
+                profile.setDirty(false);
             }
         } else if (isRateLimited(response)) {
             notification.setProfilesSaveStatus(3);
         } else {
             notification.setProfilesSaveStatus(4);
-            notification.setApiErrorDetail(response.N());
+            notification.setApiErrorDetail(response.getError());
         }
     }
 
     private void applySavedProfileIds(ApiResponse<RemoteProfileDataMap> response) {
-        if (response == null || !response.t()) {
+        if (response == null || !response.isSuccessful()) {
             return;
         }
-        RemoteProfileDataMap responseData = response.T();
+        RemoteProfileDataMap responseData = response.getData();
         assert responseData != null;
         if (responseData == null) {
             throw new IllegalStateException("Successful profile save response did not include profile data");
         }
-        for (Profile profile : this.vape.getProfilesManager().b()) {
+        for (Profile profile : this.vape.getProfilesManager().getProfiles()) {
             RemoteProfileData savedProfile = responseData.getProfiles().values().stream()
                     .filter(candidate -> matchesProfileName(profile, candidate))
                     .findFirst()
                     .orElse(null);
-            if (savedProfile != null && !savedProfile.getProfileId().equals(profile.P$src$Ljava_util_UUID_$kdhg08())) {
-                profile.K(savedProfile.getProfileId());
+            if (savedProfile != null && !savedProfile.getProfileId().equals(profile.getOnlineId())) {
+                profile.setOnlineId(savedProfile.getProfileId());
             }
         }
     }
 
     private static boolean matchesProfileName(Profile profile, RemoteProfileData remoteProfile) {
-        String profileName = profile.n$src$Ljava_lang_String_$xqhelw();
+        String profileName = profile.getName();
         return remoteProfile.getName().equals(profileName)
                 || remoteProfile.getName().equals("b64:" + Base64Util.encodeUtf8Base64(profileName));
     }
 
     private static boolean isRateLimited(ApiResponse<?> response) {
-        String error = response.N();
+        String error = response.getError();
         return error != null && (error.contains("Slow down") || error.contains("Rate limited"));
     }
 
     private static ApiResponse<Boolean> handleSettingsSaveFailure(SettingsSyncStatusNotification notification, Throwable error) {
         Throwable cause = rootCause(error);
         if (cause instanceof ApiHttpStatusException) {
-            notification.setSettingsSaveStatus(((ApiHttpStatusException)cause).m());
+            notification.setSettingsSaveStatus(((ApiHttpStatusException)cause).getStatusCode());
         } else {
             notification.setSettingsSaveStatus(2);
         }
@@ -167,7 +167,7 @@ public class SyncThread {
     private static ApiResponse<RemoteProfileDataMap> handleProfilesSaveFailure(SettingsSyncStatusNotification notification, Throwable error) {
         Throwable cause = rootCause(error);
         if (cause instanceof ApiHttpStatusException) {
-            notification.setProfilesSaveStatus(((ApiHttpStatusException)cause).m());
+            notification.setProfilesSaveStatus(((ApiHttpStatusException)cause).getStatusCode());
         } else {
             notification.setProfilesSaveStatus(2);
             if (cause instanceof IOException) {
@@ -205,7 +205,7 @@ public class SyncThread {
 
     public void loadConfig() {
         try {
-            if (this.vape.getAccountInfo().r()) {
+            if (this.vape.getAccountInfo().hasProfilesEnabled()) {
                 this.loadRemoteConfig();
             } else {
                 this.loadStandaloneConfig();
@@ -216,31 +216,31 @@ public class SyncThread {
     }
 
     private void loadRemoteConfig() {
-        ApiResponse<UserDataResponse> response = ApiServices.d().c().R()
+        ApiResponse<UserDataResponse> response = ApiServices.getInstance().getUserDataApi().getUserData()
                 .exceptionally(error -> null)
                 .join();
-        if (response == null || !response.t()) {
+        if (response == null || !response.isSuccessful()) {
             return;
         }
-        UserDataResponse userData = response.T();
+        UserDataResponse userData = response.getData();
         assert userData != null;
         if (userData == null) {
             return;
         }
 
         HashMap<UUID, JsonObject> profiles = new HashMap<UUID, JsonObject>();
-        for (RemoteProfileData remoteProfile : userData.F().values()) {
+        for (RemoteProfileData remoteProfile : userData.getProfiles().values()) {
             profiles.put(remoteProfile.getProfileId(), remoteProfile.toJson());
         }
-        this.vape.getPublicProfileManager().j(userData.s().values());
+        this.vape.getPublicProfileManager().replaceProfiles(userData.getPublicProfiles().values());
 
         JsonObject config = new JsonObject();
-        if (userData.D() != null) {
-            config.add("friends", userData.D());
+        if (userData.getFriends() != null) {
+            config.add("friends", userData.getFriends());
         }
-        config.add("profiles", ApiHttpClient.Z.toJsonTree(profiles));
-        if (userData.y() != null) {
-            config.add("otherData", userData.y());
+        config.add("profiles", ApiHttpClient.GSON.toJsonTree(profiles));
+        if (userData.getOtherData() != null) {
+            config.add("otherData", userData.getOtherData());
         }
         this.vape.loadConfigData(config, true);
     }
@@ -257,8 +257,8 @@ public class SyncThread {
             return;
         }
         this.vape.loadConfigData(config, false);
-        for (Profile profile : this.vape.getProfilesManager().b()) {
-            profile.c(true);
+        for (Profile profile : this.vape.getProfilesManager().getProfiles()) {
+            profile.setDirty(true);
         }
     }
 
@@ -276,9 +276,9 @@ public class SyncThread {
     }
 
     private void syncOnlineSettings() {
-        if (!OnlineConnectionManager.T.S().M()) {
+        if (!OnlineConnectionManager.INSTANCE.getSettings().hasLoadFailed()) {
             try {
-                ApiServices.d().v().u(SettingsDataType.ONLINE, OnlineConnectionManager.T.S().X());
+                ApiServices.getInstance().getSettingsApi().saveSettings(SettingsDataType.ONLINE, OnlineConnectionManager.INSTANCE.getSettings().getPayload());
             }
             catch (Exception ignored) {
             }
@@ -288,12 +288,12 @@ public class SyncThread {
             boolean shouldApplySettings = onlineSettingsState[0];
             boolean secondaryState = onlineSettingsState[1];
             if (!this.onlineSettingsApplied && shouldApplySettings) {
-                OnlineConnectionManager.T.g().F().setPersistenceSuppressed(true);
-                OnlineConnectionManager.T.g().F().setValue(secondaryState);
-                OnlineConnectionManager.T.g().F().setPersistenceSuppressed(false);
+                OnlineConnectionManager.INSTANCE.getGlobalSettingsController().getCacheData().setPersistenceSuppressed(true);
+                OnlineConnectionManager.INSTANCE.getGlobalSettingsController().getCacheData().setValue(secondaryState);
+                OnlineConnectionManager.INSTANCE.getGlobalSettingsController().getCacheData().setPersistenceSuppressed(false);
                 this.onlineSettingsApplied = true;
             }
-            OnlineConnectionManager.T.g().i();
+            OnlineConnectionManager.INSTANCE.getGlobalSettingsController().save();
         }
         catch (Throwable ignored) {
         }
@@ -304,7 +304,7 @@ public class SyncThread {
         payload.add("friends", this.vape.getFriendManager().toJson());
         payload.add(splitProfiles ? "otherData" : "otherdata", this.vape.getSettingsManager().toJson());
         if (!splitProfiles) {
-            payload.add("profiles", this.vape.getProfilesManager().q(false));
+            payload.add("profiles", this.vape.getProfilesManager().toJson(false));
         }
         return payload;
     }

@@ -62,11 +62,11 @@ extends Mapping {
     }
 
     private Object p(Object object) {
-        return this.v.L(object, new Object[0]);
+        return this.v.invokeObject(object, new Object[0]);
     }
 
     private Object c(Object object) {
-        return this.K.L(object, new Object[0]);
+        return this.K.invokeObject(object, new Object[0]);
     }
 
     public static String O(MScoreObjective mScoreObjective, Object object) {
@@ -74,7 +74,7 @@ extends Mapping {
     }
 
     private String V(Object object) {
-        return (String)this.v.L(object, new Object[0]);
+        return (String)this.v.invokeObject(object, new Object[0]);
     }
 
     public static Object g(MScoreObjective mScoreObjective, Object object) {
@@ -82,7 +82,7 @@ extends Mapping {
     }
 
     private Object E(Object object) {
-        return this.b.L(object, new Object[0]);
+        return this.b.invokeObject(object, new Object[0]);
     }
 
     public static Object r(MScoreObjective mScoreObjective, Object object) {

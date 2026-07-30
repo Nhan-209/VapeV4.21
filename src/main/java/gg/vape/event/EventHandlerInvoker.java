@@ -7,15 +7,14 @@ import gg.vape.event.ReflectiveEventHandlerInvoker;
 import java.lang.reflect.Method;
 
 public interface EventHandlerInvoker {
-    public <T extends IEvent> void B(T var1);
+    public <T extends IEvent> void invoke(T event);
 
-    public static EventHandlerInvoker create(EventListener eventListener, Class<? extends IEvent> clazz, Method method) {
+    public static EventHandlerInvoker create(EventListener listener, Class<? extends IEvent> eventType, Method method) {
         try {
-            return new GeneratedEventHandlerInvoker(eventListener, clazz, method);
+            return new GeneratedEventHandlerInvoker(listener, eventType, method);
         }
         catch (Throwable throwable) {
-            return new ReflectiveEventHandlerInvoker(eventListener, clazz, method);
+            return new ReflectiveEventHandlerInvoker(listener, eventType, method);
         }
     }
 }
-

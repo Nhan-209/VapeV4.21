@@ -14,10 +14,10 @@ extends Value<List<HotbarSlotRule>, HotbarSlotRuleValue> {
     private HotbarSlotRuleEditorComponent editor;
 
     public List<HotbarSlotRule> getRules() {
-        if (this.editor == null || this.editor.q$src$Lgg_vape_module_utility_inventory_HotbarSlotRule$1uq9d6u() == null) {
+        if (this.editor == null || this.editor.getSelectedGroup() == null) {
             return new ArrayList<HotbarSlotRule>();
         }
-        return this.editor.q$src$Lgg_vape_module_utility_inventory_HotbarSlotRule$1uq9d6u().u$src$Ljava_util_List_$1u5n2i3();
+        return this.editor.getSelectedGroup().getRules();
     }
 
     public HotbarSlotRuleValue createCopy() {
@@ -45,7 +45,7 @@ extends Value<List<HotbarSlotRule>, HotbarSlotRuleValue> {
     @Override
     public boolean loadJson(JsonObject jsonObject) {
         if (this.editor != null) {
-            this.editor.f(jsonObject);
+            this.editor.loadJson(jsonObject);
         }
         return true;
     }
@@ -64,7 +64,7 @@ extends Value<List<HotbarSlotRule>, HotbarSlotRuleValue> {
 
     @Override
     public JsonObject toJson(boolean bl) {
-        JsonObject jsonObject = this.editor != null ? this.editor.A$src$Lcom_google_gson_JsonObject_$167pnb8() : new JsonObject();
+        JsonObject jsonObject = this.editor != null ? this.editor.serializeRules() : new JsonObject();
         jsonObject.addProperty("id", this.getId());
         return jsonObject;
     }

@@ -20,176 +20,176 @@ import java.util.Set;
 
 public class VapeClientEventListener
 implements EventListener {
-    private final TimerUtil C = new TimerUtil();
-    private Set<String> Y;
-    private List<String> S;
-    private boolean a;
-    private Object z;
+    private final TimerUtil resourceCheckTimer = new TimerUtil();
+    private Set<String> resourceManagerEntries;
+    private List<String> configuredResourcePacks;
+    private boolean resourcePackChangePending;
+    private Object resourceMap;
 
-    private static Exception a(Exception exception) {
+    private static Exception identityException(Exception exception) {
         return exception;
     }
 
-    private void v() {
+    private void clearRenderCaches() {
         ItemIconRenderer.clear();
         EntityModelRenderCache.clear();
         PotionEffectIconRenderer.clear();
         NameTagsRenderStateTracker.INSTANCE.clear();
     }
 
-    private void Z() {
-        List<String> list = Minecraft.gameSettings().f$src$Ljava_util_List_$1i0ug5l();
-        if (list != null) {
-            boolean bl;
-            Map map = Minecraft.P();
-            if (map != null) {
-                boolean bl2;
-                boolean bl3;
-                ArrayList<String> arrayList = new ArrayList<String>(list);
-                if (this.S == null) {
-                    this.S = arrayList;
-                    this.z = map;
+    private void checkModernResourceState() {
+        List<String> configuredPacks = Minecraft.gameSettings().f$src$Ljava_util_List_$1i0ug5l();
+        if (configuredPacks != null) {
+            boolean resourcePacksChangedWithoutMap;
+            Map currentResourceMap = Minecraft.P();
+            if (currentResourceMap != null) {
+                boolean resourceMapChangedWithoutPackChange;
+                boolean resourcePacksChanged;
+                ArrayList<String> resourcePackSnapshot = new ArrayList<String>(configuredPacks);
+                if (this.configuredResourcePacks == null) {
+                    this.configuredResourcePacks = resourcePackSnapshot;
+                    this.resourceMap = currentResourceMap;
                     return;
                 }
-                boolean bl4 = bl3 = !this.S.equals(arrayList);
-                if (bl3) {
-                    boolean bl5;
-                    boolean bl6 = bl5 = this.z != null && map != this.z;
-                    if (bl5) {
-                        this.S = arrayList;
-                        this.a = true;
-                        if (this.a) {
-                            this.z = map;
-                            this.a = false;
-                            this.v();
+                boolean resourcePacksChangedAlias = resourcePacksChanged = !this.configuredResourcePacks.equals(resourcePackSnapshot);
+                if (resourcePacksChanged) {
+                    boolean resourceMapChanged;
+                    boolean resourceMapChangedAlias = resourceMapChanged = this.resourceMap != null && currentResourceMap != this.resourceMap;
+                    if (resourceMapChanged) {
+                        this.configuredResourcePacks = resourcePackSnapshot;
+                        this.resourcePackChangePending = true;
+                        if (this.resourcePackChangePending) {
+                            this.resourceMap = currentResourceMap;
+                            this.resourcePackChangePending = false;
+                            this.clearRenderCaches();
                             return;
                         }
-                        if (!this.a) {
-                            this.z = map;
-                            this.v();
+                        if (!this.resourcePackChangePending) {
+                            this.resourceMap = currentResourceMap;
+                            this.clearRenderCaches();
                             return;
                         }
-                        if (this.z == null) {
-                            this.z = map;
+                        if (this.resourceMap == null) {
+                            this.resourceMap = currentResourceMap;
                         }
                         return;
                     }
-                    this.S = arrayList;
-                    this.a = true;
-                    if (this.a) {
+                    this.configuredResourcePacks = resourcePackSnapshot;
+                    this.resourcePackChangePending = true;
+                    if (this.resourcePackChangePending) {
                         // empty if block
                     }
-                    if (!this.a) {
+                    if (!this.resourcePackChangePending) {
                         // empty if block
                     }
-                    if (this.z == null) {
-                        this.z = map;
+                    if (this.resourceMap == null) {
+                        this.resourceMap = currentResourceMap;
                     }
                     return;
                 }
-                boolean bl7 = bl2 = this.z != null && map != this.z;
-                if (bl2) {
-                    if (this.a) {
-                        this.z = map;
-                        this.a = false;
-                        this.v();
+                boolean resourceMapChangedAlias = resourceMapChangedWithoutPackChange = this.resourceMap != null && currentResourceMap != this.resourceMap;
+                if (resourceMapChangedWithoutPackChange) {
+                    if (this.resourcePackChangePending) {
+                        this.resourceMap = currentResourceMap;
+                        this.resourcePackChangePending = false;
+                        this.clearRenderCaches();
                         return;
                     }
-                    if (!this.a) {
-                        this.z = map;
-                        this.v();
+                    if (!this.resourcePackChangePending) {
+                        this.resourceMap = currentResourceMap;
+                        this.clearRenderCaches();
                         return;
                     }
-                    if (this.z == null) {
-                        this.z = map;
+                    if (this.resourceMap == null) {
+                        this.resourceMap = currentResourceMap;
                     }
                     return;
                 }
-                if (this.a) {
+                if (this.resourcePackChangePending) {
                     // empty if block
                 }
-                if (!this.a) {
+                if (!this.resourcePackChangePending) {
                     // empty if block
                 }
-                if (this.z == null) {
-                    this.z = map;
+                if (this.resourceMap == null) {
+                    this.resourceMap = currentResourceMap;
                 }
                 return;
             }
-            ArrayList<String> arrayList = new ArrayList<String>(list);
-            if (this.S == null) {
-                this.S = arrayList;
-                this.z = map;
+            ArrayList<String> resourcePackSnapshot = new ArrayList<String>(configuredPacks);
+            if (this.configuredResourcePacks == null) {
+                this.configuredResourcePacks = resourcePackSnapshot;
+                this.resourceMap = currentResourceMap;
                 return;
             }
-            boolean bl8 = bl = !this.S.equals(arrayList);
-            if (bl) {
-                boolean bl9 = false;
-                this.S = arrayList;
-                this.a = true;
-                if (this.a) {
+            boolean resourcePacksChangedAlias = resourcePacksChangedWithoutMap = !this.configuredResourcePacks.equals(resourcePackSnapshot);
+            if (resourcePacksChangedWithoutMap) {
+                boolean resourceMapChanged = false;
+                this.configuredResourcePacks = resourcePackSnapshot;
+                this.resourcePackChangePending = true;
+                if (this.resourcePackChangePending) {
                     // empty if block
                 }
-                if (!this.a) {
+                if (!this.resourcePackChangePending) {
                     // empty if block
                 }
-                if (this.z == null) {
-                    this.z = map;
+                if (this.resourceMap == null) {
+                    this.resourceMap = currentResourceMap;
                 }
                 return;
             }
-            boolean bl10 = false;
-            if (this.a) {
+            boolean resourceMapChanged = false;
+            if (this.resourcePackChangePending) {
                 // empty if block
             }
-            if (!this.a) {
+            if (!this.resourcePackChangePending) {
                 // empty if block
             }
-            if (this.z == null) {
-                this.z = map;
+            if (this.resourceMap == null) {
+                this.resourceMap = currentResourceMap;
             }
             return;
         }
-        Map map = Minecraft.P();
-        if (map != null) {
-            this.F();
+        Map currentResourceMap = Minecraft.P();
+        if (currentResourceMap != null) {
+            this.checkResourceManagerState();
             return;
         }
-        this.F();
+        this.checkResourceManagerState();
     }
 
-    private void F() {
+    private void checkResourceManagerState() {
         ResourceManager resourceManager = Minecraft.c();
         if (resourceManager.isNull()) {
             return;
         }
-        Collection<String> collection = resourceManager.U();
-        if (collection == null) {
+        Collection<String> entries = resourceManager.U();
+        if (entries == null) {
             return;
         }
-        HashSet<String> hashSet = new HashSet<String>(collection);
-        if (this.Y == null) {
-            this.Y = hashSet;
+        HashSet<String> entrySnapshot = new HashSet<String>(entries);
+        if (this.resourceManagerEntries == null) {
+            this.resourceManagerEntries = entrySnapshot;
             return;
         }
-        if (!this.Y.equals(hashSet)) {
-            this.Y = hashSet;
-            this.v();
+        if (!this.resourceManagerEntries.equals(entrySnapshot)) {
+            this.resourceManagerEntries = entrySnapshot;
+            this.clearRenderCaches();
         }
     }
 
     @EventHandler
     public void onTick(EventPreTick eventPreTick) {
-        if (!this.C.hasTimeElapsed(1000L)) {
+        if (!this.resourceCheckTimer.hasTimeElapsed(1000L)) {
             return;
         }
-        this.C.reset();
+        this.resourceCheckTimer.reset();
         try {
             if (ForgeVersion.MC_1_21_10.d()) {
-                this.Z();
+                this.checkModernResourceState();
                 return;
             }
-            this.F();
+            this.checkResourceManagerState();
         }
         catch (Exception exception) {
             // empty catch block

@@ -5,24 +5,24 @@ import gg.vape.event.EventListeners;
 
 public class EventKeyBindingState
 extends Event {
-    private final Object r;
-    private static final EventListeners P = new EventListeners();
-    private final int n;
-    private static String[] y;
-    private final boolean p;
+    private final Object keyBinding;
+    private static final EventListeners EVENT_LISTENERS = new EventListeners();
+    private final int keyCode;
+    private static String[] obfuscationState;
+    private final boolean pressed;
 
-    public static void I(String[] stringArray) {
-        y = stringArray;
+    public static void setKeyBindingObfuscationState(String[] state) {
+        obfuscationState = state;
     }
 
-    public EventKeyBindingState(Object object, boolean bl) {
-        this.r = object;
-        this.n = 0;
-        this.p = bl;
+    public EventKeyBindingState(Object keyBinding, boolean pressed) {
+        this.keyBinding = keyBinding;
+        this.keyCode = 0;
+        this.pressed = pressed;
     }
 
     public Object getKeyBinding() {
-        return this.r;
+        return this.keyBinding;
     }
 
     @Override
@@ -30,35 +30,34 @@ extends Event {
         return super.fire();
     }
 
-    public EventKeyBindingState(int n, boolean bl) {
-        this.r = null;
-        this.n = n;
-        this.p = bl;
+    public EventKeyBindingState(int keyCode, boolean pressed) {
+        this.keyBinding = null;
+        this.keyCode = keyCode;
+        this.pressed = pressed;
     }
 
     public int getKeyCode() {
-        return this.n;
+        return this.keyCode;
     }
 
     @Override
     public EventListeners getListeners() {
-        return P;
+        return EVENT_LISTENERS;
     }
 
     public boolean isPressed() {
-        return this.p;
+        return this.pressed;
     }
 
-    public static String[] J() {
-        return y;
+    public static String[] getKeyBindingObfuscationState() {
+        return obfuscationState;
     }
 
     public static EventListeners getEventListeners() {
-        return P;
+        return EVENT_LISTENERS;
     }
 
     static {
-        EventKeyBindingState.I(null);
+        EventKeyBindingState.setKeyBindingObfuscationState(null);
     }
 }
-

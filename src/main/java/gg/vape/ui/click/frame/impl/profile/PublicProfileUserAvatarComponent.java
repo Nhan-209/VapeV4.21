@@ -27,7 +27,7 @@ extends ImageTextureComponent {
     }
 
     public PublicProfileUserAvatarComponent(@Nullable PublicProfileUser publicProfileUser, double d, double d2) {
-        this(publicProfileUser != null ? publicProfileUser.j() : -1L, d, d2);
+        this(publicProfileUser != null ? publicProfileUser.getUserId() : -1L, d, d2);
     }
 
     public void W(long l) {

@@ -11,11 +11,11 @@ extends Wrapper {
     }
 
     public static ArrayList u(Iterable iterable) {
-        return Lists.c.getMappingsMapperCompat().hY.V(iterable);
+        return Lists.vapeInstance.getMappingsMapperCompat().hY.V(iterable);
     }
 
     public static List k(List list) {
-        return Lists.c.getMappingsMapperCompat().hY.c(list);
+        return Lists.vapeInstance.getMappingsMapperCompat().hY.c(list);
     }
 }
 

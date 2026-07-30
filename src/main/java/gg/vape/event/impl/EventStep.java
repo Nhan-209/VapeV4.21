@@ -6,25 +6,25 @@ import gg.vape.wrapper.impl.Entity;
 
 public class EventStep
 extends Event {
-    private static final EventListeners c = new EventListeners();
-    private final Entity b;
-    private static float a;
+    private static final EventListeners EVENT_LISTENERS = new EventListeners();
+    private final Entity entity;
+    private static float originalStepHeight;
 
-    static float access$002(float f) {
-        a = f;
-        return a;
+    static float storeOriginalStepHeight(float stepHeight) {
+        originalStepHeight = stepHeight;
+        return originalStepHeight;
     }
 
     public double getStepHeight() {
-        return this.b.u();
+        return this.entity.u();
     }
 
-    public void setStepHeight(double d) {
-        this.b.K((float)d);
+    public void setStepHeight(double stepHeight) {
+        this.entity.K((float)stepHeight);
     }
 
-    static float access$000() {
-        return a;
+    static float getOriginalStepHeight() {
+        return originalStepHeight;
     }
 
     @Override
@@ -33,24 +33,23 @@ extends Event {
     }
 
     public static EventListeners getEventListeners() {
-        return c;
+        return EVENT_LISTENERS;
     }
 
     public Entity getEntity() {
-        return this.b;
+        return this.entity;
     }
 
     @Override
     public EventListeners getListeners() {
-        return c;
+        return EVENT_LISTENERS;
     }
 
     public double getRealHeight() {
-        return a;
+        return originalStepHeight;
     }
 
-    EventStep(Object object) {
-        this.b = new Entity(object);
+    EventStep(Object entityHandle) {
+        this.entity = new Entity(entityHandle);
     }
 }
-

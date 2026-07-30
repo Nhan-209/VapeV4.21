@@ -7,7 +7,7 @@ import gg.vape.friend.OnlineFriend;
 
 public class ExternalFriend
 extends FriendEntry {
-    private final OnlineFriend R;
+    private final OnlineFriend onlineFriend;
 
 
     @Override
@@ -16,20 +16,20 @@ extends FriendEntry {
     }
 
     @Override
-    public String s() {
-        if (this.R.u()) {
-            return this.R.I();
+    public String getName() {
+        if (this.onlineFriend.isVisible()) {
+            return this.onlineFriend.getMinecraftUsername();
         }
         return "";
     }
 
     @Override
-    public boolean m() {
+    public boolean isPersistent() {
         return false;
     }
 
-    public OnlineFriend d() {
-        return this.R;
+    public OnlineFriend getOnlineFriend() {
+        return this.onlineFriend;
     }
 
     @Override
@@ -38,7 +38,7 @@ extends FriendEntry {
     }
 
     public ExternalFriend(OnlineFriend onlineFriend) {
-        this.R = onlineFriend;
+        this.onlineFriend = onlineFriend;
     }
 }
 

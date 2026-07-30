@@ -3,29 +3,28 @@ package gg.vape.utils.datas;
 import gg.vape.wrapper.impl.ItemStack;
 
 public class ItemStackData {
-    private boolean V;
-    private final ItemStack F;
-    private final int J;
+    private boolean processed;
+    private final ItemStack itemStack;
+    private final int slot;
 
-    public ItemStack w() {
-        return this.F;
+    public ItemStack getItemStack() {
+        return this.itemStack;
     }
 
-    public ItemStackData(int n, ItemStack itemStack) {
-        this.J = n;
-        this.F = itemStack;
+    public ItemStackData(int slot, ItemStack itemStack) {
+        this.slot = slot;
+        this.itemStack = itemStack;
     }
 
-    public void w(boolean bl) {
-        this.V = bl;
+    public void setProcessed(boolean processed) {
+        this.processed = processed;
     }
 
-    public boolean H() {
-        return this.V;
+    public boolean isProcessed() {
+        return this.processed;
     }
 
-    public int Y() {
-        return this.J;
+    public int getSlot() {
+        return this.slot;
     }
 }
-

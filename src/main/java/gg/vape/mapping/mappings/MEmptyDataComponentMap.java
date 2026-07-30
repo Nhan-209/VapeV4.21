@@ -35,7 +35,7 @@ extends Mapping {
     }
 
     public Object L(Object object) {
-        return this.x.O(object);
+        return this.x.newInstance(object);
     }
 
 

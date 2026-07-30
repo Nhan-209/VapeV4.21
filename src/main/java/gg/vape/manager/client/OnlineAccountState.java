@@ -7,16 +7,15 @@ public enum OnlineAccountState {
     REGISTRATION_OFFLINE,
     CONNECTING;
 
-    private static final /* synthetic */ OnlineAccountState[] O;
+    private static final /* synthetic */ OnlineAccountState[] cachedValues;
 
     static {
-        String[] stringArray = new String[]{"REGISTRATION_OFFLINE", "CONNECTING", "BANNED", "REGISTERED", "UNREGISTERED"};
+        String[] obfuscationNames = new String[]{"REGISTRATION_OFFLINE", "CONNECTING", "BANNED", "REGISTERED", "UNREGISTERED"};
 
 
 
 
 
-        O = new OnlineAccountState[]{REGISTERED, BANNED, UNREGISTERED, REGISTRATION_OFFLINE, CONNECTING};
+        cachedValues = new OnlineAccountState[]{REGISTERED, BANNED, UNREGISTERED, REGISTRATION_OFFLINE, CONNECTING};
     }
 }
-

@@ -13,11 +13,11 @@ extends Mapping {
     private final MappingMethod x;
 
     public String L(Object object) {
-        return (String)this.r.L(object, new Object[0]);
+        return (String)this.r.invokeObject(object, new Object[0]);
     }
 
     public String v(Object object, Object object2) {
-        return (String)this.x.L(object, object2);
+        return (String)this.x.invokeObject(object, object2);
     }
 
 

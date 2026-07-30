@@ -10,7 +10,7 @@ extends Wrapper {
     }
 
     public void loadRenderers() {
-        MRenderGlobal.d(RenderGlobal.c.getMappingsMapperCompat().Df, this.I);
+        MRenderGlobal.d(RenderGlobal.vapeInstance.getMappingsMapperCompat().Df, this.I);
     }
 }
 

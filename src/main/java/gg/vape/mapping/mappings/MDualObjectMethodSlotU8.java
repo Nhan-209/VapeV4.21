@@ -26,11 +26,11 @@ extends Mapping {
     }
 
     public Object y(Object object) {
-        return this.h.L(object, new Object[0]);
+        return this.h.invokeObject(object, new Object[0]);
     }
 
     public Object E(Object object) {
-        return this.W.L(object, new Object[0]);
+        return this.W.invokeObject(object, new Object[0]);
     }
 }
 

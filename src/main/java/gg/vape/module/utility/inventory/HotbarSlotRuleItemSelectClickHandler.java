@@ -8,20 +8,20 @@ import java.util.List;
 
 class HotbarSlotRuleItemSelectClickHandler
 implements GuiClickListener {
-    final HotbarSlotRuleItemListFrame p;
-    final List T;
-    final int V;
+    final HotbarSlotRuleItemListFrame itemListFrame;
+    final List<ItemStack> items;
+    final int itemIndex;
 
     HotbarSlotRuleItemSelectClickHandler(HotbarSlotRuleItemListFrame hotbarSlotRuleItemListFrame, List list, int itemIndex) {
-        this.p = hotbarSlotRuleItemListFrame;
-        this.T = list;
-        this.V = itemIndex;
+        this.itemListFrame = hotbarSlotRuleItemListFrame;
+        this.items = list;
+        this.itemIndex = itemIndex;
     }
 
     @Override
     public void onPrimaryClick() {
-        HotbarSlotRule hotbarSlotRule = HotbarSlotRule.fromItemStack((ItemStack)this.T.get(this.V));
-        HotbarSlotRuleItemListFrame.a(this.p).N$src$Lgg_vape_module_utility_inventory_HotbarSlotRule$xa58f().u$src$Ljava_util_List_$1u5n2i3().set(HotbarSlotRuleItemListFrame.a(this.p).X$src$I$7rbe5s(), hotbarSlotRule);
+        HotbarSlotRule hotbarSlotRule = HotbarSlotRule.fromItemStack(this.items.get(this.itemIndex));
+        HotbarSlotRuleItemListFrame.getPickerFrame(this.itemListFrame).getGroupComponent().getRules().set(HotbarSlotRuleItemListFrame.getPickerFrame(this.itemListFrame).getSelectedSlot(), hotbarSlotRule);
     }
 }
 

@@ -271,7 +271,7 @@ extends PanelComponent {
 
     private void resetPagination(boolean keepExistingChildren) {
         this.nextPageIndex = this.initialPageIndex;
-        this.lastPageReached = this.pageMetadata != null && this.pageMetadata.F();
+        this.lastPageReached = this.pageMetadata != null && this.pageMetadata.isLastPage();
         this.contentUpdated = false;
         this.componentCount = 0;
         if (!keepExistingChildren) {
@@ -313,8 +313,8 @@ extends PanelComponent {
         if (loadingPlaceholderSupplier != null) {
             int placeholdersToAdd = this.placeholderCount;
             PagedResult<?> metadata = this.pageMetadata;
-            if (metadata != null && this.nextPageIndex > metadata.A()) {
-                placeholdersToAdd = (int)metadata.L() % this.placeholderCount;
+            if (metadata != null && this.nextPageIndex > metadata.getTotalPages()) {
+                placeholdersToAdd = (int)metadata.getTotalElements() % this.placeholderCount;
             }
             ArrayList<GuiComponent> placeholders = new ArrayList<GuiComponent>();
             for (int index = 0; index < placeholdersToAdd; ++index) {
@@ -356,7 +356,7 @@ extends PanelComponent {
 
     public void setPageMetadata(@Nullable PagedResult<?> pageMetadata) {
         this.pageMetadata = pageMetadata;
-        if (pageMetadata != null && pageMetadata.F()) {
+        if (pageMetadata != null && pageMetadata.isLastPage()) {
             this.lastPageReached = true;
         }
     }

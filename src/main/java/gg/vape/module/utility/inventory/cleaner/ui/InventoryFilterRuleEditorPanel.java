@@ -233,10 +233,10 @@ extends PanelComponent {
                 categoryPopup.setUseContentInset(false);
                 categoryPopup.setEnabled(false);
                 categoryPopup.setDividerColor(null);
-                SimpleTextLabelComponent object72 = new SimpleTextLabelComponent("Prioritization", 0.7, InventoryFilterRuleEditorPanel.J.A);
-                object72.setBold(true);
-                object72.setExtraHeight(5);
-                this.contentPanel.h(new PaddedComponent(6.0, 0.0, object72), new Object[0]);
+                SimpleTextLabelComponent priorityLabel = new SimpleTextLabelComponent("Prioritization", 0.7, InventoryFilterRuleEditorPanel.J.A);
+                priorityLabel.setBold(true);
+                priorityLabel.setExtraHeight(5);
+                this.contentPanel.h(new PaddedComponent(6.0, 0.0, priorityLabel), new Object[0]);
                 this.contentPanel.h(new SpacerComponent((this.A() - categoryPopup.A()) / 2.0, 0.0), "widthwrap");
                 this.contentPanel.h(categoryPopup, new Object[0]);
             } else if (this.rule instanceof ItemInventoryFilterRule) {
@@ -252,19 +252,19 @@ extends PanelComponent {
                     actionButtons.add(textButton);
                     textButton.addClickListener(() -> this.setFilterAction(itemRule, action));
                 }
-                PopupMenuButtonComponent popupMenuButtonComponent5 = new PopupMenuButtonComponent(selectedAction.getName(), actionButtons, InventoryFilterRuleEditorPanel.J.Q, InventoryFilterRuleEditorPanel.J.Q, null, 0.0f, 0.0f);
-                popupMenuButtonComponent5.o(88.0);
-                popupMenuButtonComponent5.Y(14.0);
-                popupMenuButtonComponent5.setCenterLabel(false);
-                popupMenuButtonComponent5.setUseContentInset(false);
-                popupMenuButtonComponent5.setEnabled(false);
-                popupMenuButtonComponent5.setDividerColor(null);
-                SimpleTextLabelComponent object112 = new SimpleTextLabelComponent("Action", 0.7, InventoryFilterRuleEditorPanel.J.A);
-                object112.setBold(true);
-                object112.setExtraHeight(5);
-                this.contentPanel.h(new PaddedComponent(6.0, 0.0, object112), new Object[0]);
-                this.contentPanel.h(new SpacerComponent((this.A() - popupMenuButtonComponent5.A()) / 2.0, 0.0), "widthwrap");
-                this.contentPanel.h(popupMenuButtonComponent5, new Object[0]);
+                PopupMenuButtonComponent actionPopup = new PopupMenuButtonComponent(selectedAction.getName(), actionButtons, InventoryFilterRuleEditorPanel.J.Q, InventoryFilterRuleEditorPanel.J.Q, null, 0.0f, 0.0f);
+                actionPopup.o(88.0);
+                actionPopup.Y(14.0);
+                actionPopup.setCenterLabel(false);
+                actionPopup.setUseContentInset(false);
+                actionPopup.setEnabled(false);
+                actionPopup.setDividerColor(null);
+                SimpleTextLabelComponent actionTitle = new SimpleTextLabelComponent("Action", 0.7, InventoryFilterRuleEditorPanel.J.A);
+                actionTitle.setBold(true);
+                actionTitle.setExtraHeight(5);
+                this.contentPanel.h(new PaddedComponent(6.0, 0.0, actionTitle), new Object[0]);
+                this.contentPanel.h(new SpacerComponent((this.A() - actionPopup.A()) / 2.0, 0.0), "widthwrap");
+                this.contentPanel.h(actionPopup, new Object[0]);
             } else {
                 this.contentPanel.h(new SpacerComponent(0.0, 25.0), new Object[0]);
             }

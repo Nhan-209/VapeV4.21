@@ -35,7 +35,7 @@ public class BedTargetRenderState {
 
     public void renderIndicator(RectData rectData, boolean selected, float breakProgress) {
         Vec3 playerView = Minecraft.F().O(1.0f);
-        double targetDistance = playerView.distanceTo(new Vec3d((double)this.targetPosition.getBlockX() + 0.5, (double)this.targetPosition.getBlockY() + 0.5, (double)this.targetPosition.getBlockZ() + 0.5).n());
+        double targetDistance = playerView.distanceTo(new Vec3d((double)this.targetPosition.getBlockX() + 0.5, (double)this.targetPosition.getBlockY() + 0.5, (double)this.targetPosition.getBlockZ() + 0.5).toVec3());
         float partialTicks = RenderWorldLastEvent.getPartialTicks();
         float screenHeight = Minecraft.h();
         ProjectedEntityBounds bounds = this.projectedBounds;
@@ -49,7 +49,7 @@ public class BedTargetRenderState {
         boolean reticleContainsTarget = rectData.z(left + projectedWidth / 2.0, top + projectedHeight / 2.0, indicatorSize / 2.0f);
         boolean obstructionReachable = false;
         if (this.obstructionPoint != null) {
-            double obstructionDistance = playerView.distanceTo(this.obstructionPoint.n());
+            double obstructionDistance = playerView.distanceTo(this.obstructionPoint.toVec3());
             if (obstructionDistance < 4.5) {
                 obstructionReachable = true;
             }
@@ -111,4 +111,3 @@ public class BedTargetRenderState {
     }
 
 }
-

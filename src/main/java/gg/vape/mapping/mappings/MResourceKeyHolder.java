@@ -23,7 +23,7 @@ extends Mapping {
         boolean bl = true;
         String string3 = b;
         MResourceKeyHolder mResourceKeyHolder = this;
-        this.u = this.u(string3, bl, clazz);
+        this.u = this.registerStaticField(string3, bl, clazz);
         if (GuiComponent.getLegacyComponentState() == null) {
             MEquippable.z("Xwix5b");
         }

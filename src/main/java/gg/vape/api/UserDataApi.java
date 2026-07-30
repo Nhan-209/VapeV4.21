@@ -11,69 +11,69 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 public class UserDataApi {
-    private final String s;
+    private final String baseUrl;
 
-    public CompletableFuture<ApiResponse<Boolean>> a(JsonObject jsonObject) {
-        String string = ApiAccessTokenProvider.h();
-        return CompletableFuture.supplyAsync(() -> this.lambda$savePrivateData$1(string, jsonObject));
+    public CompletableFuture<ApiResponse<Boolean>> saveUserData(JsonObject userData) {
+        String accessToken = ApiAccessTokenProvider.getAccessToken();
+        return CompletableFuture.supplyAsync(() -> this.requestSaveUserData(accessToken, userData));
     }
 
-    private ApiResponse lambda$savePrivateData$1(String string, JsonObject jsonObject) {
+    private ApiResponse requestSaveUserData(String accessToken, JsonObject userData) {
         try {
-            return ApiHttpClient.z(this.s + "/api/v1/" + string + "/profile/private/save/user/", jsonObject, JsonElement::getAsBoolean);
+            return ApiHttpClient.postApiResponse(this.baseUrl + "/api/v1/" + accessToken + "/profile/private/save/user/", userData, JsonElement::getAsBoolean);
         }
         catch (Exception exception) {
             throw new RuntimeException(exception);
         }
     }
 
-    public CompletableFuture<ApiResponse<RemoteProfileDataMap>> F(JsonObject jsonObject) {
-        String string = ApiAccessTokenProvider.h();
-        return CompletableFuture.supplyAsync(() -> this.lambda$savePrivateProfileData$2(string, jsonObject));
+    public CompletableFuture<ApiResponse<RemoteProfileDataMap>> saveProfileData(JsonObject profileData) {
+        String accessToken = ApiAccessTokenProvider.getAccessToken();
+        return CompletableFuture.supplyAsync(() -> this.requestSaveProfileData(accessToken, profileData));
     }
 
-    private ApiResponse lambda$savePrivateProfileData$2(String string, JsonObject jsonObject) {
+    private ApiResponse requestSaveProfileData(String accessToken, JsonObject profileData) {
         try {
-            return ApiHttpClient.z(this.s + "/api/v1/" + string + "/profile/private/save/profile/", jsonObject, RemoteProfileDataMap::fromJson);
+            return ApiHttpClient.postApiResponse(this.baseUrl + "/api/v1/" + accessToken + "/profile/private/save/profile/", profileData, RemoteProfileDataMap::fromJson);
         }
         catch (Exception exception) {
             throw new RuntimeException(exception);
         }
     }
 
-    private ApiResponse lambda$getUserData$0(String string) {
+    private ApiResponse requestUserData(String accessToken) {
         try {
-            return ApiHttpClient.V(this.s + "/api/v1/" + string + "/profile/private/all", UserDataResponse::S);
+            return ApiHttpClient.getApiResponse(this.baseUrl + "/api/v1/" + accessToken + "/profile/private/all", UserDataResponse::fromJson);
         }
         catch (Exception exception) {
             throw new RuntimeException(exception);
         }
     }
 
-    private ApiResponse lambda$reserveUuid$4(String string) {
+    private ApiResponse requestReservedProfileId(String accessToken) {
         try {
-            return ApiHttpClient.z(this.s + "/api/v1/" + string + "/profile/private/reserve/", null, UserDataApi::lambda$null$3);
+            return ApiHttpClient.postApiResponse(this.baseUrl + "/api/v1/" + accessToken + "/profile/private/reserve/", null, UserDataApi::parseProfileId);
         }
         catch (Exception exception) {
             throw new RuntimeException(exception);
         }
     }
 
-    public CompletableFuture<ApiResponse<UserDataResponse>> R() {
-        String string = ApiAccessTokenProvider.h();
-        return CompletableFuture.supplyAsync(() -> this.lambda$getUserData$0(string));
+    public CompletableFuture<ApiResponse<UserDataResponse>> getUserData() {
+        String accessToken = ApiAccessTokenProvider.getAccessToken();
+        return CompletableFuture.supplyAsync(() -> this.requestUserData(accessToken));
     }
 
-    private static UUID lambda$null$3(JsonElement jsonElement) {
-        return UUID.fromString(jsonElement.getAsString());
+    private static UUID parseProfileId(JsonElement profileIdElement) {
+        return UUID.fromString(profileIdElement.getAsString());
     }
 
-    public CompletableFuture<ApiResponse<UUID>> u() {
-        String string = ApiAccessTokenProvider.h();
-        return CompletableFuture.supplyAsync(() -> this.lambda$reserveUuid$4(string));
+    public CompletableFuture<ApiResponse<UUID>> reserveProfileId() {
+        String accessToken = ApiAccessTokenProvider.getAccessToken();
+        return CompletableFuture.supplyAsync(() -> this.requestReservedProfileId(accessToken));
     }
 
-    public UserDataApi(String string) {
-        this.s = string;
+    public UserDataApi(String baseUrl) {
+        this.baseUrl = baseUrl;
     }
 }

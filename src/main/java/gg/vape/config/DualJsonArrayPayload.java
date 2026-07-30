@@ -7,35 +7,35 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nullable;
 
 public class DualJsonArrayPayload {
-    private final JsonArray P;
-    private final JsonArray M;
+    private final JsonArray friends;
+    private final JsonArray otherData;
 
-    public JsonArray D() {
-        return this.M;
+    public JsonArray getOtherData() {
+        return this.otherData;
     }
 
-    public JsonArray X() {
-        return this.P;
+    public JsonArray getFriends() {
+        return this.friends;
     }
 
 
-    DualJsonArrayPayload(JsonArray jsonArray, JsonArray jsonArray2) {
-        this.P = jsonArray;
-        this.M = jsonArray2;
+    DualJsonArrayPayload(JsonArray friends, JsonArray otherData) {
+        this.friends = friends;
+        this.otherData = otherData;
     }
 
     public String toString() {
-        return "PrivateUserDataResponse{friends=" + this.P + ", otherData=" + this.M + '}';
+        return "PrivateUserDataResponse{friends=" + this.friends + ", otherData=" + this.otherData + '}';
     }
 
     @Nullable
     @Contract(value="!null -> !null; null -> null")
-    public static DualJsonArrayPayload i(@Nullable JsonElement jsonElement) {
-        if (jsonElement == null || jsonElement.isJsonNull()) {
+    public static DualJsonArrayPayload fromJson(@Nullable JsonElement element) {
+        if (element == null || element.isJsonNull()) {
             return null;
         }
-        JsonObject jsonObject = jsonElement.getAsJsonObject();
-        return new DualJsonArrayPayload(jsonObject.get("friends").getAsJsonArray(), jsonObject.get("otherData").getAsJsonArray());
+        JsonObject object = element.getAsJsonObject();
+        return new DualJsonArrayPayload(object.get("friends").getAsJsonArray(), object.get("otherData").getAsJsonArray());
     }
 }
 

@@ -313,7 +313,7 @@ extends HudModuleFrameBase {
             this.applySnapping(rectData2);
         }
         ScaledResolution scaledResolution = Minecraft.G();
-        this.applySnapping(new RectData((double)scaledResolution.T() / 2.0, 0.0, 20.0, scaledResolution.G()));
+        this.applySnapping(new RectData((double)scaledResolution.getScaledWidth() / 2.0, 0.0, 20.0, scaledResolution.getScaledHeight()));
     }
 
     public boolean shouldDrawBackground() {

@@ -56,11 +56,11 @@ extends SubModule<AimAssist> {
         Vec3d closestPoint = RotationUtil.T(Minecraft.thePlayer(), this.target.R$src$Lgg_vape_wrapper_impl_AxisAlignedBB_$r19dfl(), 0.0, 0.0, 0.0);
         double targetMotionX = this.target.z() - this.target.f();
         double targetMotionZ = this.target.h() - this.target.R();
-        double previousClosestX = closestPoint.Y() - targetMotionX;
-        double previousClosestZ = closestPoint.o() - targetMotionZ;
+        double previousClosestX = closestPoint.getX() - targetMotionX;
+        double previousClosestZ = closestPoint.getZ() - targetMotionZ;
         float partialTicks = Minecraft.getTimer().renderPartialTicks();
-        this.targetX = previousClosestX + (closestPoint.Y() - previousClosestX) * (double)partialTicks;
-        this.targetZ = previousClosestZ + (closestPoint.o() - previousClosestZ) * (double)partialTicks;
+        this.targetX = previousClosestX + (closestPoint.getX() - previousClosestX) * (double)partialTicks;
+        this.targetZ = previousClosestZ + (closestPoint.getZ() - previousClosestZ) * (double)partialTicks;
     }
 
     private void updateDrift() {
@@ -196,7 +196,7 @@ extends SubModule<AimAssist> {
         if (this.target != null && this.target.isNull()) {
             this.target = null;
         }
-        if (aimAssist.getRequireMouseDown().getEffectiveValue().booleanValue() && !gg.vape.config.ClientSettings.M()) {
+        if (aimAssist.getRequireMouseDown().getEffectiveValue().booleanValue() && !gg.vape.config.ClientSettings.isAttackButtonDown()) {
             this.target = null;
             this.resetRotationState();
             return;
@@ -205,7 +205,7 @@ extends SubModule<AimAssist> {
             this.resetRotationState();
             this.target = null;
         }
-        if (aimAssist.getRequireMouseDown().getEffectiveValue().booleanValue() && gg.vape.config.ClientSettings.M() && this.target == null || !aimAssist.getRequireMouseDown().getEffectiveValue().booleanValue()) {
+        if (aimAssist.getRequireMouseDown().getEffectiveValue().booleanValue() && gg.vape.config.ClientSettings.isAttackButtonDown() && this.target == null || !aimAssist.getRequireMouseDown().getEffectiveValue().booleanValue()) {
             EntityLivingBase candidateTarget = aimAssist.findBestTarget();
             if (!aimAssist.getRequireMouseDown().getEffectiveValue().booleanValue()) {
                 ++this.retargetCounter;

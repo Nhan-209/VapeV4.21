@@ -6,11 +6,11 @@ import java.awt.Color;
 
 public class PartyFriendTertiaryActionLabelComponent
 extends AnimatedCenteredTextLabelComponent {
-    final PartyFriendRowComponent Se;
+    private final PartyFriendRowComponent row;
 
     public PartyFriendTertiaryActionLabelComponent(PartyFriendRowComponent partyFriendRowComponent, String string, Color color) {
         super(string, color);
-        this.Se = partyFriendRowComponent;
+        this.row = partyFriendRowComponent;
     }
 
     @Override

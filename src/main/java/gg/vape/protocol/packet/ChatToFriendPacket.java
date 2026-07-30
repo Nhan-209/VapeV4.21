@@ -25,18 +25,18 @@ extends ZeusTrackedPacket<ChatToFriendResponsePacket> {
 
     @Override
     public void x(ZeusPacketBuffer zeusPacketBuffer) {
-        this.q = zeusPacketBuffer.long_a();
-        this.Z = zeusPacketBuffer.v(255);
+        this.q = zeusPacketBuffer.readLong();
+        this.Z = zeusPacketBuffer.readString(255);
     }
 
     @Override
     public void T(ZeusPacketBuffer zeusPacketBuffer) {
-        zeusPacketBuffer.v(this.q);
-        zeusPacketBuffer.y(this.Z);
+        zeusPacketBuffer.writeLong(this.q);
+        zeusPacketBuffer.writeString(this.Z);
     }
 
     public ChatToFriendPacket(UserModel userModel, String string) {
-        this.q = userModel.g();
+        this.q = userModel.getId();
         this.Z = string;
     }
 

@@ -10,12 +10,11 @@ extends EventMove {
         return super.fire();
     }
 
-    public EventPostMove(Object object) {
-        this(new Vec3(object).getX(), new Vec3(object).getY(), new Vec3(object).getZ());
+    public EventPostMove(Object vectorHandle) {
+        this(new Vec3(vectorHandle).getX(), new Vec3(vectorHandle).getY(), new Vec3(vectorHandle).getZ());
     }
 
-    public EventPostMove(double d, double d2, double d3) {
-        super(d, d2, d3);
+    public EventPostMove(double x, double y, double z) {
+        super(x, y, z);
     }
 }
-

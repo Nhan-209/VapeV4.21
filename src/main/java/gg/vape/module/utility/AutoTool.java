@@ -39,7 +39,7 @@ extends Mod {
             return;
         }
         RayTraceResult rayTraceResult = RotationManager.INSTANCE.getExtendedReachRayTrace();
-        boolean mouseDown = ClientSettings.M();
+        boolean mouseDown = ClientSettings.isAttackButtonDown();
         int currentSlot = eventPrePlayerTick.getThePlayer().V$src$Lgg_vape_wrapper_impl_InventoryPlayer_$erqak6().v();
         int bestSlot = this.findBestToolSlot(this.swapWeapon.getEffectiveValue());
         if (this.requireMouseDown.getEffectiveValue().booleanValue() && !mouseDown) {
@@ -117,7 +117,7 @@ extends Mod {
             for (int i = 0; i < 9; ++i) {
                 ItemStack itemStack = inventory.c(i);
                 if (itemStack.isNull() || itemStack.getItem().isNull() || !ItemStackScoreUtil.h(itemStack.getItem()) && !ItemStackScoreUtil.I(itemStack.getItem())) continue;
-                float score = (float)ClientSettings.U(itemStack);
+                float score = (float)ClientSettings.getWeaponDamageScore(itemStack);
                 if (ItemStackScoreUtil.h(itemStack.getItem())) {
                     score = (float)((double)score + 0.01);
                 }

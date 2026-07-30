@@ -24,7 +24,7 @@ extends Mapping {
     }
 
     public byte[] G(Object object) {
-        return this.B.u(object);
+        return this.B.getByteArray(object);
     }
 
     public int S(Object object) {

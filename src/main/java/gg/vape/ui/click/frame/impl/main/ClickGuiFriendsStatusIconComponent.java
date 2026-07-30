@@ -25,14 +25,14 @@ extends GuiComponent {
 
     @Nullable
     private GlImageTexture loadAvatarTexture() {
-        if (!this.owner.getFriend().u()) {
+        if (!this.owner.getFriend().isVisible()) {
             return null;
         }
-        String string = this.owner.getFriend().I();
+        String string = this.owner.getFriend().getMinecraftUsername();
         if (string == null || string.isEmpty()) {
             return null;
         }
-        if (this.owner.getFriend().F() == OnlineStatus.OFFLINE) {
+        if (this.owner.getFriend().getStatus() == OnlineStatus.OFFLINE) {
             return null;
         }
         return RemoteImageTextureManager.getInstance().getTexture(string, 32);
@@ -52,9 +52,9 @@ extends GuiComponent {
         double d3 = 10.0;
         Color color = this.emphasized ? ClickGuiFriendsStatusIconComponent.J.M : ClickGuiFriendsStatusIconComponent.J.E;
         GuiRenderPrimitives.m((float)d, (float)d2, 10.0f, 1.0f, 0.8f, color);
-        OnlineStatus onlineStatus = this.owner.getFriend().F();
+        OnlineStatus onlineStatus = this.owner.getFriend().getStatus();
         if (onlineStatus != null) {
-            Color color2 = onlineStatus.P();
+            Color color2 = onlineStatus.getColor();
             double d4 = d + 10.0 - this.statusDotSize;
             double d5 = d2 + 10.0 - this.statusDotSize;
             GuiRenderPrimitives.V((float)(d4 - 1.0), (float)(d5 - 1.0), (float)(this.statusDotSize + 2.0), 0.8f, ClickGuiFriendsStatusIconComponent.J.m);

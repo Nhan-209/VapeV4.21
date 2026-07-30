@@ -26,7 +26,7 @@ extends Mapping {
     }
 
     private Object A(Object object) {
-        return this.w.L(object, new Object[0]);
+        return this.w.invokeObject(object, new Object[0]);
     }
 
     public static Object Y(MBlockPosCarrier mBlockPosCarrier, Object object) {

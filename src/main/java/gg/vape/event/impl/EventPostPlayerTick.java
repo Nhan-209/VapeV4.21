@@ -4,8 +4,7 @@ import gg.vape.event.impl.EventPlayerTickBase;
 
 public class EventPostPlayerTick
 extends EventPlayerTickBase {
-    public EventPostPlayerTick(Object object) {
-        super(object);
+    public EventPostPlayerTick(Object playerHandle) {
+        super(playerHandle);
     }
 }
-

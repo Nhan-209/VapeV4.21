@@ -15,7 +15,7 @@ extends Mapping {
     }
 
     public Object N(Object object, Object object2) {
-        return this.u.L(object, object2);
+        return this.u.invokeObject(object, object2);
     }
 
     public MBlockStateContainerBridge() {

@@ -54,12 +54,12 @@ public class AntiBotStateTracker {
                 continue;
             }
             String teamPrefix = team.A();
-            if (!teamPrefix.contains(ClientSettings.F)) {
+            if (!teamPrefix.contains(ClientSettings.FORMAT_CODE)) {
                 continue;
             }
             for (int index = teamPrefix.length(); index > 0; --index) {
                 String character = String.valueOf(teamPrefix.charAt(index - 1));
-                if (character.equals(ClientSettings.F)) {
+                if (character.equals(ClientSettings.FORMAT_CODE)) {
                     char colorCode = teamPrefix.charAt(index);
                     if (colorCode <= 'f') {
                         return colorCode;
@@ -72,11 +72,11 @@ public class AntiBotStateTracker {
 
     public char findColorCodeBeforeName(String playerName, String formattedName) {
         int nameIndex;
-        if (formattedName.contains(ClientSettings.F)
+        if (formattedName.contains(ClientSettings.FORMAT_CODE)
                 && (nameIndex = formattedName.indexOf(playerName)) > 0) {
             for (int index = nameIndex - 1; index >= 0; --index) {
                 String character = String.valueOf(formattedName.charAt(index));
-                if (character.equals(ClientSettings.F)) {
+                if (character.equals(ClientSettings.FORMAT_CODE)) {
                     char colorCode = formattedName.charAt(index + 1);
                     if (colorCode <= 'f') {
                         return colorCode;

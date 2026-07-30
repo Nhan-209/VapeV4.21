@@ -2,13 +2,7 @@ package gg.vape.wrapper.impl;
 
 import gg.vape.mapping.MappedClasses;
 import gg.vape.mapping.mappings.MItemPotion;
-import gg.vape.wrapper.impl.BiomeProvider;
-import gg.vape.wrapper.impl.DataComponents;
-import gg.vape.wrapper.impl.ForgeVersion;
-import gg.vape.wrapper.impl.ITextComponent;
-import gg.vape.wrapper.impl.Item;
-import gg.vape.wrapper.impl.ItemStack;
-import gg.vape.wrapper.impl.PotionEffect;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,10 +11,10 @@ extends Item {
     @Override
     public String getItemStackDisplayName(ItemStack itemStack) {
         if (ForgeVersion.MC_1_16_5.d()) {
-            ITextComponent iTextComponent = new ITextComponent(MItemPotion.M(ItemSplashPotion.c.getMappings().CI, this.I, itemStack.getObject()));
+            ITextComponent iTextComponent = new ITextComponent(MItemPotion.M(ItemSplashPotion.vapeInstance.getMappings().CI, this.I, itemStack.getObject()));
             return iTextComponent.getFormattedText();
         }
-        return MItemPotion.B(ItemSplashPotion.c.getMappings().CI, this.I, itemStack.getObject());
+        return MItemPotion.B(ItemSplashPotion.vapeInstance.getMappings().CI, this.I, itemStack.getObject());
     }
 
     public List getRawPotionEffects(ItemStack itemStack) {
@@ -32,12 +26,12 @@ extends Item {
             }
             return arrayList;
         }
-        return MItemPotion.R(ItemSplashPotion.c.getMappings().CI, this.I, itemStack.getObject());
+        return MItemPotion.R(ItemSplashPotion.vapeInstance.getMappings().CI, this.I, itemStack.getObject());
     }
 
     public List<PotionEffect> getPotionEffects(ItemStack itemStack) {
         ArrayList<PotionEffect> arrayList = new ArrayList<PotionEffect>();
-        List list = ForgeVersion.MC_1_20_6.d() ? this.getRawPotionEffects(itemStack) : MItemPotion.R(ItemSplashPotion.c.getMappings().CI, this.I, itemStack.getObject());
+        List list = ForgeVersion.MC_1_20_6.d() ? this.getRawPotionEffects(itemStack) : MItemPotion.R(ItemSplashPotion.vapeInstance.getMappings().CI, this.I, itemStack.getObject());
         for (Object e : list) {
             arrayList.add(new PotionEffect(e));
         }
@@ -55,12 +49,12 @@ extends Item {
     }
 
     public List b(ItemStack itemStack) {
-        return MItemPotion.R(ItemSplashPotion.c.getMappings().CI, this.I, itemStack.getObject());
+        return MItemPotion.R(ItemSplashPotion.vapeInstance.getMappings().CI, this.I, itemStack.getObject());
     }
 
     public List<PotionEffect> getPotionEffects(int n) {
         ArrayList<PotionEffect> arrayList = new ArrayList<PotionEffect>();
-        List list = MItemPotion.R(ItemSplashPotion.c.getMappings().CI, this.I, n);
+        List list = MItemPotion.R(ItemSplashPotion.vapeInstance.getMappings().CI, this.I, n);
         for (Object e : list) {
             arrayList.add(new PotionEffect(e));
         }

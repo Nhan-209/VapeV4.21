@@ -25,7 +25,7 @@ extends Mapping {
     }
 
     private Object C(Object object, Object object2, Object object3) {
-        return this.L.L(object, object2, object3);
+        return this.L.invokeObject(object, object2, object3);
     }
 
     public static String d(MGuiPlayerTabOverlay mGuiPlayerTabOverlay, Object object, Object object2) {
@@ -46,45 +46,45 @@ extends Mapping {
         if (n != 0) {
             if (ForgeVersion.MC_1_20_6.d()) {
                 Class<Comparator> clazz = Comparator.class;
-                boolean bl = Wrapper.G;
+                boolean bl = Wrapper.isNativeAvailable;
                 String string = "PLAYER_COMPARATOR";
                 MGuiPlayerTabOverlay mGuiPlayerTabOverlay = this;
-                this.h = mGuiPlayerTabOverlay.u(string, bl, clazz);
+                this.h = mGuiPlayerTabOverlay.registerStaticField(string, bl, clazz);
             } else {
                 Class clazz = MappedClasses.F4;
-                boolean bl = Wrapper.G;
+                boolean bl = Wrapper.isNativeAvailable;
                 String string = "field_175252_a";
                 MGuiPlayerTabOverlay mGuiPlayerTabOverlay = this;
-                this.h = mGuiPlayerTabOverlay.u(string, bl, clazz);
+                this.h = mGuiPlayerTabOverlay.registerStaticField(string, bl, clazz);
             }
             Class[] classArray = new Class[]{MappedClasses.Zc};
             Class<String> clazz = String.class;
             String string = "getPlayerName";
             MGuiPlayerTabOverlay mGuiPlayerTabOverlay = this;
-            this.O = ((MappingMethodBuilder)((MappingMethodBuilder)mGuiPlayerTabOverlay.u(string, clazz, classArray).X(ForgeVersion.MC_1_16_5.n(), MappedClasses.Yr)).A(ForgeVersion.MC_1_16_5.n(), "getNameForDisplay")).s();
+            this.O = ((MappingMethodBuilder)((MappingMethodBuilder)mGuiPlayerTabOverlay.methodBuilder(string, clazz, classArray).setTypeForVersion(ForgeVersion.MC_1_16_5.n(), MappedClasses.Yr)).setNameForVersion(ForgeVersion.MC_1_16_5.n(), "getNameForDisplay")).buildMethod();
             if (ForgeVersion.MC_1_16_5.d()) {
                 Class[] classArray2 = new Class[]{MappedClasses.Zc, MappedClasses.YO};
                 Class clazz2 = MappedClasses.Yr;
                 String string2 = "decorateName";
                 MGuiPlayerTabOverlay mGuiPlayerTabOverlay2 = this;
-                this.L = ((MappingMethodBuilder)this.u(string2, clazz2, classArray2).v(ForgeVersion.MC_1_20_6.n(), MappedClasses.Zc, MappedClasses.uM).X(ForgeVersion.MC_1_20_6.n(), MappedClasses.Yr)).s();
+                this.L = ((MappingMethodBuilder)this.methodBuilder(string2, clazz2, classArray2).setParameterTypesForVersion(ForgeVersion.MC_1_20_6.n(), MappedClasses.Zc, MappedClasses.uM).setTypeForVersion(ForgeVersion.MC_1_20_6.n(), MappedClasses.Yr)).buildMethod();
             }
             return;
         }
         Class clazz = MappedClasses.F4;
-        boolean bl = Wrapper.G;
+        boolean bl = Wrapper.isNativeAvailable;
         String string = "field_175252_a";
         MGuiPlayerTabOverlay mGuiPlayerTabOverlay = this;
-        this.h = mGuiPlayerTabOverlay.u(string, bl, clazz); 
+        this.h = mGuiPlayerTabOverlay.registerStaticField(string, bl, clazz);
         Class[] classArray = new Class[]{MappedClasses.Zc};
         Class<String> clazz3 = String.class;
         String string3 = "getPlayerName";
         MGuiPlayerTabOverlay mGuiPlayerTabOverlay3 = this;
-        this.L = ((MappingMethodBuilder)((MappingMethodBuilder)this.u(string3, clazz3, classArray).X(ForgeVersion.MC_1_16_5.n(), MappedClasses.Yr)).A(ForgeVersion.MC_1_16_5.n(), "getNameForDisplay")).s();
+        this.L = ((MappingMethodBuilder)((MappingMethodBuilder)this.methodBuilder(string3, clazz3, classArray).setTypeForVersion(ForgeVersion.MC_1_16_5.n(), MappedClasses.Yr)).setNameForVersion(ForgeVersion.MC_1_16_5.n(), "getNameForDisplay")).buildMethod();
     }
 
     private String K(Object object, Object object2) {
-        return (String)this.O.L(object, object2);
+        return (String)this.O.invokeObject(object, object2);
     }
 }
 

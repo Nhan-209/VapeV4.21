@@ -4,8 +4,7 @@ import gg.vape.mapping.MappedClasses;
 import gg.vape.mapping.mappings.MPacket;
 import gg.vape.module.blatant.BacktrackPacketQueueEntry;
 import gg.vape.wrapper.Wrapper;
-import gg.vape.wrapper.impl.ForgeVersion;
-import gg.vape.wrapper.impl.NetworkPacketHandle;
+
 import java.util.function.Consumer;
 
 public class Packet
@@ -22,7 +21,7 @@ extends Wrapper {
 
 
     public boolean hasPriority() {
-        return MPacket.hasPriority(Packet.c.getMappings().Cx, this.I);
+        return MPacket.hasPriority(Packet.vapeInstance.getMappings().Cx, this.I);
     }
 
     public static void n(Packet packet, Consumer<Packet> consumer) {
@@ -41,7 +40,7 @@ extends Wrapper {
     }
 
     public void processPacket(NetworkPacketHandle networkPacketHandle) {
-        MPacket.processPacket(Packet.c.getMappings().Cx, this.I, networkPacketHandle.getObject());
+        MPacket.processPacket(Packet.vapeInstance.getMappings().Cx, this.I, networkPacketHandle.getObject());
     }
 
     public static boolean h() {

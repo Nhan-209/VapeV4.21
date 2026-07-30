@@ -2,7 +2,6 @@ package gg.vape.wrapper.impl;
 
 import gg.vape.Vape;
 import gg.vape.wrapper.Wrapper;
-import gg.vape.wrapper.impl.ForgeVersion;
 
 public class TooltipFlagBridge
 extends Wrapper {
@@ -15,7 +14,7 @@ extends Wrapper {
         if (ForgeVersion.MC_1_20_6.d()) {
             Vape.notifyNativeStackTrace();
         }
-        return new TooltipFlagBridge(TooltipFlagBridge.c.getMappings().hO.h());
+        return new TooltipFlagBridge(TooltipFlagBridge.vapeInstance.getMappings().hO.h());
     }
 }
 

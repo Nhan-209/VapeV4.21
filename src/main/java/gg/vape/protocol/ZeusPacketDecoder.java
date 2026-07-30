@@ -13,30 +13,30 @@ import java.util.List;
 
 public class ZeusPacketDecoder
 extends ByteToMessageDecoder {
-    private final ZeusPacketDirection z;
-    private final boolean d;
-    private static final String b = "Read packet with no bytes";
+    private final ZeusPacketDirection packetDirection;
+    private final boolean failOnEmptyPacket;
+    private static final String EMPTY_PACKET_MESSAGE = "Read packet with no bytes";
 
-    private static Exception a(Exception exception) {
+    private static Exception propagateException(Exception exception) {
         return exception;
     }
 
     protected void decode(ChannelHandlerContext channelHandlerContext, ByteBuf byteBuf, List<Object> list) throws Exception {
         if (byteBuf.readableBytes() == 0) {
-            if (this.d) {
-                throw new RuntimeException(b);
+            if (this.failOnEmptyPacket) {
+                throw new RuntimeException(EMPTY_PACKET_MESSAGE);
             }
             return;
         }
         ZeusProtocolState zeusProtocolState = (ZeusProtocolState)((Object)channelHandlerContext.channel().attr(ZeusProtocolConstants.Q).get());
-        int n = ZeusPacketBufferUtil.P(byteBuf);
-        ZeusSerializablePacket zeusSerializablePacket = zeusProtocolState.V(this.z, n);
+        int n = ZeusPacketBufferUtil.readVarInt(byteBuf);
+        ZeusSerializablePacket zeusSerializablePacket = zeusProtocolState.createPacket(this.packetDirection, n);
         try {
             zeusSerializablePacket.S(new ZeusPacketBuffer(byteBuf));
             list.add(zeusSerializablePacket);
         }
         catch (Exception exception) {
-            if (this.d) {
+            if (this.failOnEmptyPacket) {
                 exception.printStackTrace();
             }
             throw exception;
@@ -44,8 +44,7 @@ extends ByteToMessageDecoder {
     }
 
     public ZeusPacketDecoder(ZeusPacketDirection zeusPacketDirection, boolean bl) {
-        this.z = zeusPacketDirection;
-        this.d = bl;
+        this.packetDirection = zeusPacketDirection;
+        this.failOnEmptyPacket = bl;
     }
 }
-

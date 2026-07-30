@@ -1,30 +1,29 @@
 package gg.vape.utils;
 
 public class MutablePair<First, Second> {
-    private First o;
-    private Second P;
+    private First first;
+    private Second second;
 
-    public First O() {
-        return this.o;
+    public First getFirst() {
+        return this.first;
     }
 
-    public MutablePair(First First2, Second Second) {
-        this.o = First2;
-        this.P = Second;
+    public MutablePair(First first, Second second) {
+        this.first = first;
+        this.second = second;
     }
 
-    public MutablePair<First, Second> w(First First2) {
-        this.o = First2;
+    public MutablePair<First, Second> setFirst(First first) {
+        this.first = first;
         return this;
     }
 
-    public Second K() {
-        return this.P;
+    public Second getSecond() {
+        return this.second;
     }
 
-    public MutablePair<First, Second> Q(Second Second) {
-        this.P = Second;
+    public MutablePair<First, Second> setSecond(Second second) {
+        this.second = second;
         return this;
     }
 }
-

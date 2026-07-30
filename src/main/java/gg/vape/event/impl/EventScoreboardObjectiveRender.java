@@ -9,30 +9,30 @@ import gg.vape.wrapper.impl.ScoreObjective;
 
 public class EventScoreboardObjectiveRender
 extends Event {
-    private static final EventListeners U = new EventListeners();
+    private static final EventListeners EVENT_LISTENERS = new EventListeners();
 
     @Override
     public EventListeners getListeners() {
-        return U;
+        return EVENT_LISTENERS;
     }
 
 
-    public EventScoreboardObjectiveRender(Object object, Object object2) {
+    public EventScoreboardObjectiveRender(Object objectiveOrMatrixStackHandle, Object objectiveOrRenderContextHandle) {
         ScoreboardHudModule scoreboardHudModule = Vape.INSTANCE.getModManager().getMod(ScoreboardHudModule.class);
         if (ForgeVersion.MC_1_16_5.d()) {
-            scoreboardHudModule.updateObjective(new ScoreObjective(object2));
+            scoreboardHudModule.updateObjective(new ScoreObjective(objectiveOrRenderContextHandle));
         } else {
-            scoreboardHudModule.updateObjective(new ScoreObjective(object));
+            scoreboardHudModule.updateObjective(new ScoreObjective(objectiveOrMatrixStackHandle));
         }
     }
 
-    public EventScoreboardObjectiveRender(Object object, int n, int n2, Object object2) {
+    public EventScoreboardObjectiveRender(Object objectiveHandle, int x, int y, Object scoreboardHandle) {
         ScoreboardHudModule scoreboardHudModule = Vape.INSTANCE.getModManager().getMod(ScoreboardHudModule.class);
-        scoreboardHudModule.updateObjective(new ScoreObjective(object));
+        scoreboardHudModule.updateObjective(new ScoreObjective(objectiveHandle));
     }
 
     public static EventListeners getEventListeners() {
-        return U;
+        return EVENT_LISTENERS;
     }
 
     @Override

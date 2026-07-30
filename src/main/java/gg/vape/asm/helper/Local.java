@@ -14,128 +14,128 @@ import org.objectweb.asm.tree.VarInsnNode;
 
 public class Local
 implements ITramsformNode {
-    private String g = null;
-    protected VarInsnNode d;
-    protected VarInsnNode M;
-    protected String F;
-    private String s;
-    protected InsnList H;
-    private boolean h;
-    private static boolean C;
-    private String K;
-    protected InsnList v = new InsnList();
-    protected LocalVariableNode P;
+    private String descriptorOverride = null;
+    protected VarInsnNode storeInstruction;
+    protected VarInsnNode loadInstruction;
+    protected String resolvedDescriptor;
+    private String localName;
+    protected InsnList storeInstructions;
+    private boolean ownerSet;
+    private static boolean opaqueState;
+    private String ownerInternalName;
+    protected InsnList loadInstructions = new InsnList();
+    protected LocalVariableNode localVariable;
 
-    public Local(String string) {
-        this.H = new InsnList();
-        this.s = string;
+    public Local(String localName) {
+        this.storeInstructions = new InsnList();
+        this.localName = localName;
     }
 
-    public static boolean u() {
-        boolean bl = Local.G();
+    public static boolean opaquePredicate() {
+        boolean state = Local.getOpaqueState();
         return false;
     }
 
     @Override
-    public ITramsformNode setOwner(Class clazz) {
-        this.h = true;
-        this.K = clazz.getName().replace(".", "/");
+    public ITramsformNode setOwner(Class ownerClass) {
+        this.ownerSet = true;
+        this.ownerInternalName = ownerClass.getName().replace(".", "/");
         return this;
     }
 
-    void setLocalVariableEnd(LabelNode labelNode) {
-        if (this.P != null) {
-            this.P.start = labelNode;
+    void setLocalVariableStart(LabelNode startLabel) {
+        if (this.localVariable != null) {
+            this.localVariable.start = startLabel;
         }
     }
 
     @Override
-    public InsnList R() {
-        return this.v;
+    public InsnList getLoadInstructions() {
+        return this.loadInstructions;
     }
 
     @Override
-    public String p() {
-        if (this.g != null) {
-            return this.g;
+    public String getDescriptor() {
+        if (this.descriptorOverride != null) {
+            return this.descriptorOverride;
         }
-        return this.F;
+        return this.resolvedDescriptor;
     }
 
 
     static {
-        Local.A(true);
+        Local.setOpaqueState(true);
     }
 
     @Override
     public boolean hasOwner() {
-        return this.h;
+        return this.ownerSet;
     }
 
-    public static boolean G() {
-        return C;
+    public static boolean getOpaqueState() {
+        return opaqueState;
     }
 
-    public Local setDescriptorClass(Class clazz) {
-        this.g = DescUtils.U(clazz);
+    public Local setDescriptorClass(Class descriptorClass) {
+        this.descriptorOverride = DescUtils.getDescriptor(descriptorClass);
         return this;
     }
 
     @Override
-    public String F() {
-        return this.K;
+    public String getOwnerInternalName() {
+        return this.ownerInternalName;
     }
 
-    public static void A(boolean bl) {
-        C = bl;
-    }
-
-    @Override
-    public InsnList h() {
-        return this.H;
+    public static void setOpaqueState(boolean state) {
+        opaqueState = state;
     }
 
     @Override
-    public void onTransform(ClassNode classNode, MethodNode methodNode) {
-        if (this.s.equals("this") && methodNode.localVariables.size() == 0) {
-            AbstractInsnNode object;
-            String string = "L" + classNode.name + ";";
-            LabelNode labelNode = null;
-            LabelNode labelNode2 = null;
-            ListIterator<AbstractInsnNode> listIterator = methodNode.instructions.iterator();
-            block0: while (listIterator.hasNext()) {
-                object = listIterator.next();
-                if (!(object instanceof LabelNode)) continue;
-                labelNode = (LabelNode)object;
-                while (listIterator.hasNext()) {
-                    listIterator.next();
-                    if (listIterator.hasNext()) continue;
-                    while (listIterator.hasPrevious()) {
-                        object = listIterator.previous();
-                        if (!(object instanceof LabelNode)) continue;
-                        labelNode2 = (LabelNode)object;
+    public InsnList getStoreInstructions() {
+        return this.storeInstructions;
+    }
+
+    @Override
+    public void prepare(ClassNode classNode, MethodNode methodNode) {
+        if (this.localName.equals("this") && methodNode.localVariables.size() == 0) {
+            AbstractInsnNode instruction;
+            String descriptor = "L" + classNode.name + ";";
+            LabelNode startLabel = null;
+            LabelNode endLabel = null;
+            ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
+            block0: while (iterator.hasNext()) {
+                instruction = iterator.next();
+                if (!(instruction instanceof LabelNode)) continue;
+                startLabel = (LabelNode)instruction;
+                while (iterator.hasNext()) {
+                    iterator.next();
+                    if (iterator.hasNext()) continue;
+                    while (iterator.hasPrevious()) {
+                        instruction = iterator.previous();
+                        if (!(instruction instanceof LabelNode)) continue;
+                        endLabel = (LabelNode)instruction;
                         break block0;
                     }
                 }
             }
-            LocalVariableNode localVariable = new LocalVariableNode("this", string, null, labelNode, labelNode2, 0);
+            LocalVariableNode localVariable = new LocalVariableNode("this", descriptor, null, startLabel, endLabel, 0);
             methodNode.localVariables.add(localVariable);
-            this.P = localVariable;
-            this.M = new VarInsnNode(25, 0);
-            this.v.add(this.M);
-            this.d = new VarInsnNode(58, 0);
-            this.H.add(this.d);
-            this.F = string;
+            this.localVariable = localVariable;
+            this.loadInstruction = new VarInsnNode(25, 0);
+            this.loadInstructions.add(this.loadInstruction);
+            this.storeInstruction = new VarInsnNode(58, 0);
+            this.storeInstructions.add(this.storeInstruction);
+            this.resolvedDescriptor = descriptor;
             return;
         }
-        for (LocalVariableNode localVariableNode : methodNode.localVariables) {
-            if (!localVariableNode.name.equals(this.s)) continue;
-            this.P = localVariableNode;
-            this.M = new VarInsnNode(EventBuilder.j(localVariableNode.desc), localVariableNode.index);
-            this.v.add(this.M);
-            this.d = new VarInsnNode(EventBuilder.o(localVariableNode.desc), localVariableNode.index);
-            this.H.add(this.d);
-            this.F = this.P.desc;
+        for (LocalVariableNode candidate : methodNode.localVariables) {
+            if (!candidate.name.equals(this.localName)) continue;
+            this.localVariable = candidate;
+            this.loadInstruction = new VarInsnNode(EventBuilder.getLoadOpcode(candidate.desc), candidate.index);
+            this.loadInstructions.add(this.loadInstruction);
+            this.storeInstruction = new VarInsnNode(EventBuilder.getStoreOpcode(candidate.desc), candidate.index);
+            this.storeInstructions.add(this.storeInstruction);
+            this.resolvedDescriptor = this.localVariable.desc;
         }
     }
 }

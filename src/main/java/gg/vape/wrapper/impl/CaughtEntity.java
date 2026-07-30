@@ -10,11 +10,11 @@ extends Wrapper {
     }
 
     public boolean G() {
-        return MCaughtEntityActionBridge.g(CaughtEntity.c.getMappingsMapperCompat().hC, this.I);
+        return MCaughtEntityActionBridge.g(CaughtEntity.vapeInstance.getMappingsMapperCompat().hC, this.I);
     }
 
     public void F(Runnable runnable) {
-        MCaughtEntityActionBridge.H(CaughtEntity.c.getMappingsMapperCompat().hC, this.I, runnable);
+        MCaughtEntityActionBridge.H(CaughtEntity.vapeInstance.getMappingsMapperCompat().hC, this.I, runnable);
     }
 }
 

@@ -8,20 +8,20 @@ import org.jetbrains.annotations.Nullable;
 
 public class UserDisplayNameResponsePacket
 extends ZeusTrackedPacket<UserDisplayNamePacket> {
-    private long G;
-    private String V;
+    private long userIdOrCooldownEnd;
+    private String displayName;
     private static String y;
-    private UserDisplayNameStatus t;
+    private UserDisplayNameStatus status;
 
 
     @Override
     public void T(ZeusPacketBuffer zeusPacketBuffer) {
-        zeusPacketBuffer.U(this.t);
-        if (this.t == UserDisplayNameStatus.SUCCESSFUL) {
-            zeusPacketBuffer.y(this.V);
-            zeusPacketBuffer.v(this.G);
-        } else if (this.t == UserDisplayNameStatus.COOLDOWN) {
-            zeusPacketBuffer.v(this.G);
+        zeusPacketBuffer.writeEnum(this.status);
+        if (this.status == UserDisplayNameStatus.SUCCESSFUL) {
+            zeusPacketBuffer.writeString(this.displayName);
+            zeusPacketBuffer.writeLong(this.userIdOrCooldownEnd);
+        } else if (this.status == UserDisplayNameStatus.COOLDOWN) {
+            zeusPacketBuffer.writeLong(this.userIdOrCooldownEnd);
         }
     }
 
@@ -34,25 +34,25 @@ extends ZeusTrackedPacket<UserDisplayNamePacket> {
     public UserDisplayNameResponsePacket() {
     }
 
-    public long f() {
-        return this.G;
+    public long getUserIdOrCooldownEnd() {
+        return this.userIdOrCooldownEnd;
     }
 
-    public UserDisplayNameResponsePacket(@Nullable UserDisplayNamePacket userDisplayNamePacket, UserDisplayNameStatus userDisplayNameStatus) {
+    public UserDisplayNameResponsePacket(@Nullable UserDisplayNamePacket userDisplayNamePacket, UserDisplayNameStatus status) {
         super(userDisplayNamePacket);
-        this.t = userDisplayNameStatus;
+        this.status = status;
     }
 
-    public UserDisplayNameStatus S() {
-        return this.t;
+    public UserDisplayNameStatus getStatus() {
+        return this.status;
     }
 
     public static void x(String string) {
         y = string;
     }
 
-    public String A() {
-        return this.V;
+    public String getDisplayName() {
+        return this.displayName;
     }
 
     public static String q$src$Ljava_lang_String_$12vxeoi() {
@@ -61,24 +61,23 @@ extends ZeusTrackedPacket<UserDisplayNamePacket> {
 
     @Override
     public void x(ZeusPacketBuffer zeusPacketBuffer) {
-        this.t = zeusPacketBuffer.Y(UserDisplayNameStatus.class);
-        if (this.t == UserDisplayNameStatus.SUCCESSFUL) {
-            this.V = zeusPacketBuffer.v(16);
-            this.G = zeusPacketBuffer.a();
-        } else if (this.t == UserDisplayNameStatus.COOLDOWN) {
-            this.G = zeusPacketBuffer.a();
+        this.status = zeusPacketBuffer.readEnum(UserDisplayNameStatus.class);
+        if (this.status == UserDisplayNameStatus.SUCCESSFUL) {
+            this.displayName = zeusPacketBuffer.readString(16);
+            this.userIdOrCooldownEnd = zeusPacketBuffer.readLong();
+        } else if (this.status == UserDisplayNameStatus.COOLDOWN) {
+            this.userIdOrCooldownEnd = zeusPacketBuffer.readLong();
         }
     }
 
-    public UserDisplayNameResponsePacket(@Nullable UserDisplayNamePacket userDisplayNamePacket, long l) {
+    public UserDisplayNameResponsePacket(@Nullable UserDisplayNamePacket userDisplayNamePacket, long cooldownEnd) {
         this(userDisplayNamePacket, UserDisplayNameStatus.COOLDOWN);
-        this.G = l;
+        this.userIdOrCooldownEnd = cooldownEnd;
     }
 
-    public UserDisplayNameResponsePacket(@Nullable UserDisplayNamePacket userDisplayNamePacket, String string, long l) {
+    public UserDisplayNameResponsePacket(@Nullable UserDisplayNamePacket userDisplayNamePacket, String displayName, long userId) {
         this(userDisplayNamePacket, UserDisplayNameStatus.SUCCESSFUL);
-        this.V = string;
-        this.G = l;
+        this.displayName = displayName;
+        this.userIdOrCooldownEnd = userId;
     }
 }
-

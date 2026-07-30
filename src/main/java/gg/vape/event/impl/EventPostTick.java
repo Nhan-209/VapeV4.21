@@ -6,8 +6,7 @@ public class EventPostTick
 extends EventTickBase {
     @Override
     public boolean fire() {
-        p.runPending();
+        POST_TICK_EXECUTOR.runPending();
         return super.fire();
     }
 }
-

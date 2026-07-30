@@ -6,43 +6,43 @@ import gg.vape.event.IEvent;
 
 public class PublicProfileDeletedEvent
 implements IEvent {
-    private static final EventListeners b = new EventListeners();
-    private static int c;
-    private final PublicProfile W;
+    private static final EventListeners EVENT_LISTENERS = new EventListeners();
+    private static int obfuscationState;
+    private final PublicProfile profile;
 
 
-    public static void D(int n) {
-        c = n;
+    public static void setObfuscationState(int state) {
+        obfuscationState = state;
     }
 
     public static EventListeners getEventListeners() {
-        return b;
+        return EVENT_LISTENERS;
     }
 
-    public PublicProfileDeletedEvent(PublicProfile nU) {
-        this.W = nU;
+    public PublicProfileDeletedEvent(PublicProfile profile) {
+        this.profile = profile;
     }
 
-    public static int i() {
-        return c;
+    public static int getObfuscationState() {
+        return obfuscationState;
     }
 
-    public static int x() {
-        int n = PublicProfileDeletedEvent.i();
+    public static int getObfuscationConstant() {
+        int state = PublicProfileDeletedEvent.getObfuscationState();
         return 68;
     }
 
     public PublicProfile getProfile() {
-        return this.W;
+        return this.profile;
     }
 
     @Override
     public EventListeners getListeners() {
-        return b;
+        return EVENT_LISTENERS;
     }
 
     static {
-        PublicProfileDeletedEvent.D(0);
+        PublicProfileDeletedEvent.setObfuscationState(0);
     }
 }
 

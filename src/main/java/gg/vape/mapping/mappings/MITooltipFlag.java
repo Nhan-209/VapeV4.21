@@ -24,19 +24,19 @@ extends Mapping {
             String string = "SEARCH";
             Class clazz2 = MappedClasses.qj;
             MITooltipFlag mITooltipFlag = this;
-            this.x = mITooltipFlag.s(clazz2, string, bl, clazz);
+            this.x = mITooltipFlag.registerStaticFieldForOwner(clazz2, string, bl, clazz);
         } else if (ForgeVersion.MC_1_12_2.d()) {
             Class clazz = MappedClasses.zX;
             boolean bl = true;
             String string = "SEARCH";
             MITooltipFlag mITooltipFlag = this;
-            this.x = mITooltipFlag.u(string, bl, clazz);
+            this.x = mITooltipFlag.registerStaticField(string, bl, clazz);
         } else {
             Class clazz = MappedClasses.zX;
             boolean bl = true;
             String string = "tabAllSearch";
             MITooltipFlag mITooltipFlag = this;
-            this.x = mITooltipFlag.u(string, bl, clazz); 
+            this.x = mITooltipFlag.registerStaticField(string, bl, clazz);
         }
     }
 

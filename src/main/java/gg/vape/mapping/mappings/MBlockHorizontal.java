@@ -22,7 +22,7 @@ extends Mapping {
             boolean bl = true;
             String string = "FACING";
             MBlockHorizontal mBlockHorizontal = this;
-            this.c = mBlockHorizontal.u(string, bl, clazz);
+            this.c = mBlockHorizontal.registerStaticField(string, bl, clazz);
             if (GuiComponent.getLegacyComponentState() == null) {
                 MBlock.Y(new GuiComponent[1]);
             }
@@ -33,13 +33,13 @@ extends Mapping {
             boolean bl = true;
             String string = "FACING";
             MBlockHorizontal mBlockHorizontal = this;
-            this.c = mBlockHorizontal.u(string, bl, clazz);
+            this.c = mBlockHorizontal.registerStaticField(string, bl, clazz);
         } else {
             Class clazz = MappedClasses.lo;
             boolean bl = true;
             String string = "FACING";
             MBlockHorizontal mBlockHorizontal = this;
-            this.c = mBlockHorizontal.u(string, bl, clazz); 
+            this.c = mBlockHorizontal.registerStaticField(string, bl, clazz);
         }
         if (GuiComponent.getLegacyComponentState() == null) {
             MBlock.Y(new GuiComponent[1]);

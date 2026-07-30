@@ -16,124 +16,124 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TutorialManager {
-    private final TutorialFrame L;
-    private List<TutorialPage> W = new ArrayList<TutorialPage>();
-    private static final String b = "all complete";
-    private TutorialState V = null;
-    private TutorialPage l;
+    private final TutorialFrame tutorialFrame;
+    private final List<TutorialPage> pages = new ArrayList<TutorialPage>();
+    private static final String allCompleteMessage = "all complete";
+    private TutorialState state = null;
+    private TutorialPage currentPage;
 
-    public void V() {
-        this.L.t$src$V$zbu1jn();
-        this.L.addChildren(new TutorialWelcomePanel());
-        this.L.l$src$V$1mibm4x();
+    public void showWelcomeScreen() {
+        this.tutorialFrame.t$src$V$zbu1jn();
+        this.tutorialFrame.addChildren(new TutorialWelcomePanel());
+        this.tutorialFrame.l$src$V$1mibm4x();
     }
 
-    public void I(TutorialState tutorialState) {
-        if (this.V != null && this.V.equals((Object)TutorialState.FINISHED) && !tutorialState.equals((Object)TutorialState.INDEX) && !tutorialState.equals((Object)TutorialState.WELCOME)) {
+    public void setState(TutorialState tutorialState) {
+        if (this.state != null && this.state.equals((Object)TutorialState.FINISHED) && !tutorialState.equals((Object)TutorialState.INDEX) && !tutorialState.equals((Object)TutorialState.WELCOME)) {
             return;
         }
-        this.V = tutorialState;
+        this.state = tutorialState;
         switch (tutorialState) {
             case WELCOME: {
-                this.V();
+                this.showWelcomeScreen();
                 break;
             }
             case COMPLETED_ALL: {
-                this.t();
+                this.showFinishedScreen();
                 break;
             }
             case COMPLETED_TUTORIAL: {
-                this.l();
+                this.showNextPagePrompt();
             }
         }
     }
 
-    public void P() {
-        if (this.o() != null && this.V == TutorialState.IN_TUTORIAL) {
-            this.o().v().w();
+    public void refreshCurrentAction() {
+        if (this.getCurrentPage() != null && this.state == TutorialState.IN_TUTORIAL) {
+            this.getCurrentPage().getCurrentAction().render();
         }
     }
 
-    public void B() {
-        this.O(this.W.get(0));
+    public void startTutorial() {
+        this.openPage(this.pages.get(0));
     }
 
-    public void X() {
-        this.O(this.G());
+    public void startNextPage() {
+        this.openPage(this.getNextPage());
     }
 
-    public void l() {
-        this.L.t$src$V$zbu1jn();
-        this.L.addChildren(new TutorialNextPromptPanel(this.l.Y(), this.G().Y()));
-        this.L.l$src$V$1mibm4x();
+    public void showNextPagePrompt() {
+        this.tutorialFrame.t$src$V$zbu1jn();
+        this.tutorialFrame.addChildren(new TutorialNextPromptPanel(this.currentPage.getTitle(), this.getNextPage().getTitle()));
+        this.tutorialFrame.l$src$V$1mibm4x();
     }
 
-    public void O(TutorialPage tutorialPage) {
-        this.I(TutorialState.IN_TUTORIAL);
-        this.l = tutorialPage;
-        this.L.t$src$V$zbu1jn();
-        this.L.l$src$V$1mibm4x();
-        tutorialPage.w();
+    public void openPage(TutorialPage tutorialPage) {
+        this.setState(TutorialState.IN_TUTORIAL);
+        this.currentPage = tutorialPage;
+        this.tutorialFrame.t$src$V$zbu1jn();
+        this.tutorialFrame.l$src$V$1mibm4x();
+        tutorialPage.resetAndStart();
     }
 
-    public TutorialPage G() {
+    public TutorialPage getNextPage() {
         int n = 0;
-        for (int i = 0; i < this.W.size(); ++i) {
-            TutorialPage tutorialPage = this.W.get(i);
-            if (!tutorialPage.equals(this.l)) continue;
+        for (int i = 0; i < this.pages.size(); ++i) {
+            TutorialPage tutorialPage = this.pages.get(i);
+            if (!tutorialPage.equals(this.currentPage)) continue;
             n = i;
         }
-        if (n + 1 >= this.W.size()) {
+        if (n + 1 >= this.pages.size()) {
             return null;
         }
-        return this.W.get(n + 1);
+        return this.pages.get(n + 1);
     }
 
-    public void g() {
-        boolean bl = this.x();
-        if (bl != this.L.V$src$Z$1xhop3l()) {
-            this.L.setVisible(bl);
+    public void updateVisibility() {
+        boolean shouldShow = this.shouldShowFrame();
+        if (shouldShow != this.tutorialFrame.V$src$Z$1xhop3l()) {
+            this.tutorialFrame.setVisible(shouldShow);
         }
     }
 
-    public TutorialPage o() {
-        return this.l;
+    public TutorialPage getCurrentPage() {
+        return this.currentPage;
     }
 
-    public void o$src$V$e4pt9h() {
-        if (this.G() == null) {
-            Vape.debugLog(b);
-            this.I(TutorialState.COMPLETED_ALL);
+    public void completeCurrentPage() {
+        if (this.getNextPage() == null) {
+            Vape.debugLog(allCompleteMessage);
+            this.setState(TutorialState.COMPLETED_ALL);
         } else {
-            this.I(TutorialState.COMPLETED_TUTORIAL);
+            this.setState(TutorialState.COMPLETED_TUTORIAL);
         }
     }
 
-    private boolean x() {
-        if (this.V == TutorialState.IN_TUTORIAL && this.l != null) {
-            return this.l.v() != null && this.l.v().X();
+    private boolean shouldShowFrame() {
+        if (this.state == TutorialState.IN_TUTORIAL && this.currentPage != null) {
+            return this.currentPage.getCurrentAction() != null && this.currentPage.getCurrentAction().isTargetReady();
         }
-        return this.V != TutorialState.FINISHED;
+        return this.state != TutorialState.FINISHED;
     }
 
-    public void t() {
-        this.L.t$src$V$zbu1jn();
-        this.L.addChildren(new TutorialFinishedPanel());
-        this.L.l$src$V$1mibm4x();
+    public void showFinishedScreen() {
+        this.tutorialFrame.t$src$V$zbu1jn();
+        this.tutorialFrame.addChildren(new TutorialFinishedPanel());
+        this.tutorialFrame.l$src$V$1mibm4x();
     }
 
 
-    private void v(TutorialPage tutorialPage) {
-        this.W.add(tutorialPage);
-        tutorialPage.a(this.L);
+    private void registerPage(TutorialPage tutorialPage) {
+        this.pages.add(tutorialPage);
+        tutorialPage.setFrame(this.tutorialFrame);
     }
 
     public TutorialManager() {
-        this.L = ClientSettings.getFrame(TutorialFrame.class);
-        this.v(new ModulesTutorialPage());
-        this.v(new ProfilesTutorialPage());
-        this.v(new TextGuiTutorialPage());
-        this.v(new HudTutorialPage());
+        this.tutorialFrame = ClientSettings.getFrame(TutorialFrame.class);
+        this.registerPage(new ModulesTutorialPage());
+        this.registerPage(new ProfilesTutorialPage());
+        this.registerPage(new TextGuiTutorialPage());
+        this.registerPage(new HudTutorialPage());
     }
 }
 

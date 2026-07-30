@@ -2,7 +2,6 @@ package gg.vape.wrapper.impl;
 
 import gg.vape.mapping.mappings.MGlyphProvider;
 import gg.vape.wrapper.Wrapper;
-import gg.vape.wrapper.impl.FontGlyph;
 
 public class GlyphProvider
 extends Wrapper {
@@ -11,7 +10,7 @@ extends Wrapper {
     }
 
     public FontGlyph o(int n) {
-        return new FontGlyph(MGlyphProvider.Q(GlyphProvider.c.getMappingsMapperCompat().E, this.I, n));
+        return new FontGlyph(MGlyphProvider.Q(GlyphProvider.vapeInstance.getMappingsMapperCompat().E, this.I, n));
     }
 }
 

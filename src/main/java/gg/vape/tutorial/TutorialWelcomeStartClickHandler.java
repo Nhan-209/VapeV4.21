@@ -14,6 +14,6 @@ implements GuiClickListener {
 
     @Override
     public void onPrimaryClick() {
-        Vape.INSTANCE.getTutorialManager().B();
+        Vape.INSTANCE.getTutorialManager().startTutorial();
     }
 }

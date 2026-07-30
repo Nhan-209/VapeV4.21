@@ -5,11 +5,7 @@ import gg.vape.mapping.mappings.MITextComponent;
 import gg.vape.ui.click.component.GuiComponent;
 import gg.vape.unmap.TextComponentBase;
 import gg.vape.wrapper.Wrapper;
-import gg.vape.wrapper.impl.ForgeVersion;
-import gg.vape.wrapper.impl.MutableTextComponent;
-import gg.vape.wrapper.impl.StringTextComponentBase;
-import gg.vape.wrapper.impl.TextComponent;
-import gg.vape.wrapper.impl.TextComponentBaseBridge;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,7 +19,7 @@ extends Wrapper {
     }
 
     public static MutableTextComponent P(String string) {
-        return new MutableTextComponent(MITextComponent.J(ITextComponent.c.getMappings().RL, string));
+        return new MutableTextComponent(MITextComponent.J(ITextComponent.vapeInstance.getMappings().RL, string));
     }
 
     static {
@@ -33,28 +29,28 @@ extends Wrapper {
 
     public TextComponent h() {
         if (ForgeVersion.MC_1_16_5.d()) {
-            return new TextComponent(MITextComponent.y(ITextComponent.c.getMappings().RL, this.getObject()));
+            return new TextComponent(MITextComponent.y(ITextComponent.vapeInstance.getMappings().RL, this.getObject()));
         }
         throw new UnsupportedOperationException(d);
     }
 
     public List<ITextComponent> G() {
         ArrayList<ITextComponent> arrayList = new ArrayList<ITextComponent>();
-        for (Object e : MITextComponent.V(ITextComponent.c.getMappings().RL, this.I)) {
+        for (Object e : MITextComponent.V(ITextComponent.vapeInstance.getMappings().RL, this.I)) {
             arrayList.add(new ITextComponent(e));
         }
         return arrayList;
     }
 
     public String getFormattedText() {
-        return MITextComponent.b(ITextComponent.c.getMappings().RL, this.I);
+        return MITextComponent.b(ITextComponent.vapeInstance.getMappings().RL, this.I);
     }
 
     public String a() {
         if (ForgeVersion.MC_1_20_6.d()) {
             Vape.notifyNativeStackTrace();
         }
-        return MITextComponent.A(ITextComponent.c.getMappings().RL, this.I);
+        return MITextComponent.A(ITextComponent.vapeInstance.getMappings().RL, this.I);
     }
 
     public ITextComponent(Object object) {
@@ -69,21 +65,21 @@ extends Wrapper {
         if (ForgeVersion.MC_1_20_6.v()) {
             Vape.notifyNativeStackTrace();
         }
-        return new StringTextComponentBase(MITextComponent.r(ITextComponent.c.getMappings().RL, this.getObject()));
+        return new StringTextComponentBase(MITextComponent.r(ITextComponent.vapeInstance.getMappings().RL, this.getObject()));
     }
 
     public static TextComponentBaseBridge a(String string) {
         if (ForgeVersion.MC_1_20_6.v()) {
             Vape.notifyNativeStackTrace();
         }
-        return new TextComponentBaseBridge(MITextComponent.f(ITextComponent.c.getMappings().RL, string));
+        return new TextComponentBaseBridge(MITextComponent.f(ITextComponent.vapeInstance.getMappings().RL, string));
     }
 
     public TextComponentBase J() {
         if (ForgeVersion.MC_1_20_6.v()) {
             Vape.notifyNativeStackTrace();
         }
-        return new TextComponentBase(MITextComponent.e(ITextComponent.c.getMappings().RL, this.getObject()));
+        return new TextComponentBase(MITextComponent.e(ITextComponent.vapeInstance.getMappings().RL, this.getObject()));
     }
 
     public static void z(GuiComponent[] guiComponentArray) {

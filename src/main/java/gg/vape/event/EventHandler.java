@@ -9,8 +9,7 @@ import java.lang.annotation.Target;
 @Target(value={ElementType.METHOD})
 @Retention(value=RetentionPolicy.RUNTIME)
 public @interface EventHandler {
-    public EventPriority A() default EventPriority.NORMAL;
+    public EventPriority priority() default EventPriority.NORMAL;
 
-    public boolean b() default false;
+    public boolean skipCanceled() default false;
 }
-

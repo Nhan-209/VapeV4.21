@@ -6,10 +6,10 @@ import gg.vape.unmap.Bendable;
 
 class OnlineSettingsPickPingBindAction
 extends Bendable {
-    final OnlineSettings P;
+    final OnlineSettings settings;
 
     OnlineSettingsPickPingBindAction(OnlineSettings onlineSettings) {
-        this.P = onlineSettings;
+        this.settings = onlineSettings;
     }
 
     @Override
@@ -19,7 +19,7 @@ extends Bendable {
 
     @Override
     public void onBindActivated() {
-        PingManager.B.onEnable();
+        PingManager.INSTANCE.onEnable();
     }
 
     @Override

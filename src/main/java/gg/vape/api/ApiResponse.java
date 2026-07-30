@@ -10,65 +10,65 @@ import org.jetbrains.annotations.Nullable;
 
 public class ApiResponse<T> {
     @SerializedName(value="successful")
-    private final boolean A;
-    private static GuiComponent[] C;
+    private final boolean successful;
+    private static GuiComponent[] legacyComponentState;
     @SerializedName(value="error")
     @Nullable
-    private final String f;
+    private final String error;
     @SerializedName(value="data")
     @Nullable
-    private final T J;
+    private final T data;
 
-    public static GuiComponent[] e() {
-        return C;
+    public static GuiComponent[] getLegacyComponentState() {
+        return legacyComponentState;
     }
 
-    public static <T> ApiResponse<T> m(JsonObject jsonObject, Function<JsonElement, T> function) {
-        JsonElement jsonElement = jsonObject.get("data");
-        if (jsonElement == null || jsonElement.isJsonNull()) {
-            return ApiResponse.w(jsonObject.get("error").getAsString());
+    public static <T> ApiResponse<T> fromJson(JsonObject responseJson, Function<JsonElement, T> dataParser) {
+        JsonElement dataElement = responseJson.get("data");
+        if (dataElement == null || dataElement.isJsonNull()) {
+            return ApiResponse.failure(responseJson.get("error").getAsString());
         }
-        return ApiResponse.G(function.apply(jsonElement));
+        return ApiResponse.success(dataParser.apply(dataElement));
     }
 
-    public static <T> ApiResponse<T> G(@NotNull T t) {
-        return new ApiResponse<T>(t, null, true);
+    public static <T> ApiResponse<T> success(@NotNull T data) {
+        return new ApiResponse<T>(data, null, true);
     }
 
     static {
-        ApiResponse.i(new GuiComponent[5]);
+        ApiResponse.setLegacyComponentState(new GuiComponent[5]);
     }
 
-    public static <T> ApiResponse<T> w(@Nullable String string) {
-        return new ApiResponse<T>(null, string, false);
+    public static <T> ApiResponse<T> failure(@Nullable String error) {
+        return new ApiResponse<T>(null, error, false);
     }
 
-    public boolean t() {
-        return this.A;
-    }
-
-    @Nullable
-    public String N() {
-        return this.f;
+    public boolean isSuccessful() {
+        return this.successful;
     }
 
     @Nullable
-    public T T() {
-        return this.J;
+    public String getError() {
+        return this.error;
     }
 
-    ApiResponse(@Nullable T t, @Nullable String string, boolean bl) {
-        this.J = t;
-        this.f = string;
-        this.A = bl;
+    @Nullable
+    public T getData() {
+        return this.data;
+    }
+
+    ApiResponse(@Nullable T data, @Nullable String error, boolean successful) {
+        this.data = data;
+        this.error = error;
+        this.successful = successful;
     }
 
 
-    public static void i(GuiComponent[] guiComponentArray) {
-        C = guiComponentArray;
+    public static void setLegacyComponentState(GuiComponent[] state) {
+        legacyComponentState = state;
     }
 
     public String toString() {
-        return "VapeResponse{data=" + this.J + ", error='" + this.f + '\'' + ", successful=" + this.A + '}';
+        return "VapeResponse{data=" + this.data + ", error='" + this.error + '\'' + ", successful=" + this.successful + '}';
     }
 }

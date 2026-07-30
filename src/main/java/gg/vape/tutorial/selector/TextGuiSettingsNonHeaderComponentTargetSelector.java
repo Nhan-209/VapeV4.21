@@ -7,15 +7,15 @@ import gg.vape.ui.click.frame.SettingsFrameHeaderComponent;
 
 public class TextGuiSettingsNonHeaderComponentTargetSelector
 extends TutorialTargetSelector<GuiComponent> {
-    final TextGuiTutorialPage M;
+    private final TextGuiTutorialPage tutorialPage;
 
     public TextGuiSettingsNonHeaderComponentTargetSelector(TextGuiTutorialPage textGuiTutorialPage, Class clazz) {
         super(clazz);
-        this.M = textGuiTutorialPage;
+        this.tutorialPage = textGuiTutorialPage;
     }
 
     @Override
-    public boolean X(GuiComponent guiComponent) {
+    public boolean matches(GuiComponent guiComponent) {
         boolean bl = !(guiComponent instanceof SettingsFrameHeaderComponent);
         return bl;
     }

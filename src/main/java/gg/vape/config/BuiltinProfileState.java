@@ -10,25 +10,25 @@ import gg.vape.wrapper.impl.ForgeVersion;
 
 public class BuiltinProfileState
 extends BuiltinProfile {
-    private static final String t = "Classic PVP";
+    private static final String PROFILE_NAME = "Classic PVP";
 
     @Override
-    protected void O() {
-        this.B(AimAssist.class);
-        this.B(LeftClicker.class);
-        this.B(VelocityPacketReceiveMode.class);
-        this.B(HitSelect.class);
-        this.B(Sprint.class);
-        this.B(Backtrack.class);
+    protected void configureModules() {
+        this.selectModule(AimAssist.class);
+        this.selectModule(LeftClicker.class);
+        this.selectModule(VelocityPacketReceiveMode.class);
+        this.selectModule(HitSelect.class);
+        this.selectModule(Sprint.class);
+        this.selectModule(Backtrack.class);
     }
 
     @Override
-    public boolean E() {
+    public boolean isApplicable() {
         return !ForgeVersion.MC_1_21_0.d();
     }
 
     public BuiltinProfileState() {
-        super(t);
+        super(PROFILE_NAME);
     }
 
 }

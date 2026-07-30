@@ -20,7 +20,7 @@ extends Mapping {
     }
 
     public void Z(Object object, Object object2, Object object3, Object object4) {
-        this.g.c(object, object2, object3, object4);
+        this.g.invokeVoid(object, object2, object3, object4);
     }
 
     public float Y(Object object) {
@@ -71,7 +71,7 @@ extends Mapping {
     }
 
     private void H(Object object, Object object2) {
-        this.e.c(object, object2);
+        this.e.invokeVoid(object, object2);
     }
 
     public Object v(Object object) {

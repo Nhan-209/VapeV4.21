@@ -20,7 +20,7 @@ implements GuiClickListener {
 
     @Override
     public void onPrimaryClick() {
-        Vape.INSTANCE.getModuleProfileMetadataCodec().v(this.module);
+        Vape.INSTANCE.getModuleProfileMetadataCodec().removeModule(this.module);
         this.categoryFrame.l$src$Z$193vdc5();
     }
 }

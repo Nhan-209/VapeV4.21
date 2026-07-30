@@ -15,7 +15,7 @@ extends Mapping {
         Class clazz = MappedClasses.zC;
         String string = "location";
         MResourceKey mResourceKey = this;
-        this.c = ((MappingFieldBuilder)this.T(string, clazz).A(ForgeVersion.MC_1_21_11.n(), "identifier")).z();
+        this.c = ((MappingFieldBuilder)this.fieldBuilder(string, clazz).setNameForVersion(ForgeVersion.MC_1_21_11.n(), "identifier")).buildField();
     }
 
     public static Object J(MResourceKey mResourceKey, Object object) {

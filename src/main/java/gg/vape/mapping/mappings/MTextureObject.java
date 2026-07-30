@@ -20,7 +20,7 @@ extends Mapping {
     }
 
     private void k(Object object, boolean bl, boolean bl2) {
-        this.X.c(object, bl, bl2);
+        this.X.invokeVoid(object, bl, bl2);
     }
 
     private Object i(Object object) {
@@ -39,7 +39,7 @@ extends Mapping {
         if (ForgeVersion.MC_1_20_6.d()) {
             return this.W.getInt(object);
         }
-        return this.v.Z(object, new Object[0]);
+        return this.v.invokeInt(object, new Object[0]);
     }
 
     public MTextureObject() {

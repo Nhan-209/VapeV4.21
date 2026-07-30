@@ -24,7 +24,7 @@ extends Mapping {
     }
 
     private Object P(Object object, Object object2) {
-        return this.d.L(object, object2);
+        return this.d.invokeObject(object, object2);
     }
 
     public static Object v(MEntityLiving mEntityLiving, Object object, int n) {
@@ -36,7 +36,7 @@ extends Mapping {
     }
 
     private Object K(Object object, int n) {
-        return this.d.L(object, n);
+        return this.d.invokeObject(object, n);
     }
 
     private void o(Object object, boolean bl) {
@@ -115,7 +115,7 @@ extends Mapping {
     }
 
     private Object w(Object object) {
-        return this.w.L(object, new Object[0]);
+        return this.w.invokeObject(object, new Object[0]);
     }
 
     public static void b(MEntityLiving mEntityLiving, Object object, boolean bl) {

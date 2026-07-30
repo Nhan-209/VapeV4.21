@@ -6,35 +6,34 @@ import gg.vape.protocol.packet.ZeusSerializablePacket;
 
 public class FriendVisibilityUpdatePacket
 implements ZeusSerializablePacket {
-    private boolean k;
-    private long O;
+    private boolean visible;
+    private long userId;
 
-    public long S() {
-        return this.O;
+    public long getUserId() {
+        return this.userId;
     }
 
     @Override
     public void o(ZeusPacketBuffer zeusPacketBuffer) {
-        zeusPacketBuffer.v(this.O);
-        zeusPacketBuffer.Y(this.k);
+        zeusPacketBuffer.writeLong(this.userId);
+        zeusPacketBuffer.writeBoolean(this.visible);
     }
 
     public FriendVisibilityUpdatePacket() {
     }
 
-    public FriendVisibilityUpdatePacket(UserModel userModel, boolean bl) {
-        this.O = userModel.g();
-        this.k = bl;
+    public FriendVisibilityUpdatePacket(UserModel userModel, boolean visible) {
+        this.userId = userModel.getId();
+        this.visible = visible;
     }
 
-    public boolean N() {
-        return this.k;
+    public boolean isVisible() {
+        return this.visible;
     }
 
     @Override
     public void S(ZeusPacketBuffer zeusPacketBuffer) {
-        this.O = zeusPacketBuffer.long_a();
-        this.k = zeusPacketBuffer.boolean_a();
+        this.userId = zeusPacketBuffer.readLong();
+        this.visible = zeusPacketBuffer.readBoolean();
     }
 }
-

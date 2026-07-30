@@ -5,7 +5,6 @@ import gg.vape.mapping.MappedClasses;
 import gg.vape.mapping.Mapping;
 import gg.vape.mapping.MappingField;
 import gg.vape.mapping.MappingMethod;
-import gg.vape.mapping.mappings.MSPacketEntityVelocity;
 import gg.vape.wrapper.Wrapper;
 import gg.vape.wrapper.impl.ForgeVersion;
 
@@ -48,7 +47,7 @@ extends Mapping {
         } else {
             Class[] classArray = new Class[]{MappedClasses.YU};
             Class clazz = MappedClasses.zc;
-            boolean bl = Wrapper.G;
+            boolean bl = Wrapper.isNativeAvailable;
             String string = "func_149065_a";
             MSEntityPacket mSEntityPacket = this;
             this.q = mSEntityPacket.Y(string, bl, clazz, classArray);
@@ -93,19 +92,19 @@ extends Mapping {
         } else {
             Class[] classArray = new Class[]{};
             Class<Byte> clazz = Byte.TYPE;
-            boolean bl = Wrapper.G;
+            boolean bl = Wrapper.isNativeAvailable;
             String string = "func_149062_c";
             MSEntityPacket mSEntityPacket = this;
             this.f = mSEntityPacket.Y(string, bl, clazz, classArray);
             Class[] classArray4 = new Class[]{};
             Class<Byte> clazz6 = Byte.TYPE;
-            boolean bl6 = Wrapper.G;
+            boolean bl6 = Wrapper.isNativeAvailable;
             String string6 = "func_149061_d";
             MSEntityPacket mSEntityPacket6 = this;
             this.Y = this.Y(string6, bl6, clazz6, classArray4);
             Class[] classArray5 = new Class[]{};
             Class<Byte> clazz7 = Byte.TYPE;
-            boolean bl7 = Wrapper.G;
+            boolean bl7 = Wrapper.isNativeAvailable;
             String string7 = "func_149064_e";
             MSEntityPacket mSEntityPacket7 = this;
             this.m = this.Y(string7, bl7, clazz7, classArray5);
@@ -122,7 +121,7 @@ extends Mapping {
 
 
     private int M(Object object) {
-        return this.f.w(object, new Object[0]);
+        return this.f.invokeByte(object, new Object[0]);
     }
 
     public static int O(MSEntityPacket mSEntityPacket, Object object) {
@@ -138,7 +137,7 @@ extends Mapping {
     }
 
     private Object l(Object object, Object object2) {
-        return this.q.L(object, object2);
+        return this.q.invokeObject(object, object2);
     }
 
     private int s(Object object) {
@@ -150,11 +149,11 @@ extends Mapping {
     }
 
     private int m(Object object) {
-        return this.m.w(object, new Object[0]);
+        return this.m.invokeByte(object, new Object[0]);
     }
 
     private int g(Object object) {
-        return this.Y.w(object, new Object[0]);
+        return this.Y.invokeByte(object, new Object[0]);
     }
 }
 

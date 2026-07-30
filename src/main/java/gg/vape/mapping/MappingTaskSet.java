@@ -13,17 +13,17 @@ public class MappingTaskSet {
         int n = 0;
         for (MappingTask mappingTask : this.D) {
             ++n;
-            if (mappingTask.Q()) continue;
+            if (mappingTask.isApplied()) continue;
             int n2 = 0;
             try {
-                mappingTask.K();
-                mappingTask.c();
-                mappingTask.j();
-                n2 = mappingTask.J();
+                mappingTask.prepare();
+                mappingTask.transform();
+                mappingTask.serialize();
+                n2 = mappingTask.commit();
             }
             catch (Throwable throwable) {
                 n2 = -1;
-                Vape.debugLog("Error transforming " + mappingTask.B().getName());
+                Vape.debugLog("Error transforming " + mappingTask.getTargetClass().getName());
                 Vape.logThrowable(throwable);
             }
             if (n2 == 0) continue;
@@ -39,7 +39,7 @@ public class MappingTaskSet {
 
     public void C() {
         for (MappingTask mappingTask : this.D) {
-            mappingTask.O();
+            mappingTask.rollback();
         }
     }
 }

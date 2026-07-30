@@ -6,35 +6,35 @@ import gg.vape.friend.OnlineFriend;
 import gg.vape.friend.UserModel;
 
 public class FriendRequest {
-    private final OnlineFriend X;
-    private static String[] k;
-    private final long G;
+    private final OnlineFriend friend;
+    private static String[] obfuscationState;
+    private final long id;
 
-    public FriendRequest(FriendRequestModel friendRequestModel, boolean bl) {
-        this.G = friendRequestModel.b();
-        UserModel userModel = bl ? friendRequestModel.J() : friendRequestModel.U();
-        this.X = Vape.INSTANCE.getOnlineManager().u().Q(userModel.g(), () -> new OnlineFriend(userModel));
+    public FriendRequest(FriendRequestModel model, boolean incoming) {
+        this.id = model.getId();
+        UserModel remoteUser = incoming ? model.getRequester() : model.getRecipient();
+        this.friend = Vape.INSTANCE.getOnlineManager().getFriendCache().getOrCreateFriend(remoteUser.getId(), () -> new OnlineFriend(remoteUser));
     }
 
     static {
-        if (FriendRequest.K() != null) {
-            FriendRequest.m(new String[4]);
+        if (FriendRequest.getObfuscationState() != null) {
+            FriendRequest.setObfuscationState(new String[4]);
         }
     }
 
-    public static void m(String[] stringArray) {
-        k = stringArray;
+    public static void setObfuscationState(String[] state) {
+        obfuscationState = state;
     }
 
-    public long C() {
-        return this.G;
+    public long getId() {
+        return this.id;
     }
 
-    public static String[] K() {
-        return k;
+    public static String[] getObfuscationState() {
+        return obfuscationState;
     }
 
-    public OnlineFriend x() {
-        return this.X;
+    public OnlineFriend getFriend() {
+        return this.friend;
     }
 }

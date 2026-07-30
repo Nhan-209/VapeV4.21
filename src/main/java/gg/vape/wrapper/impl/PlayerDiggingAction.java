@@ -5,7 +5,7 @@ import gg.vape.wrapper.Wrapper;
 public class PlayerDiggingAction
 extends Wrapper {
     public static PlayerDiggingAction s() {
-        return new PlayerDiggingAction(PlayerDiggingAction.c.getMappingsMapperCompat().Ci.l());
+        return new PlayerDiggingAction(PlayerDiggingAction.vapeInstance.getMappingsMapperCompat().Ci.l());
     }
 
     public PlayerDiggingAction(Object object) {

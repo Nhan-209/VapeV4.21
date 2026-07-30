@@ -2,9 +2,6 @@ package gg.vape.wrapper.impl;
 
 import gg.vape.mapping.mappings.MDamageSource;
 import gg.vape.wrapper.Wrapper;
-import gg.vape.wrapper.impl.ForgeVersion;
-import gg.vape.wrapper.impl.Item;
-import gg.vape.wrapper.impl.ItemSplashPotion;
 
 public class ItemsRegistryHolder
 extends Wrapper {
@@ -13,18 +10,18 @@ extends Wrapper {
     }
 
     public static Item e() {
-        return new Item(MDamageSource.I(ItemsRegistryHolder.c.getMappings().RK));
+        return new Item(MDamageSource.I(ItemsRegistryHolder.vapeInstance.getMappings().RK));
     }
 
     public static Item w() {
         if (ForgeVersion.MC_1_12_2.d()) {
-            return new Item(MDamageSource.s(ItemsRegistryHolder.c.getMappings().RK));
+            return new Item(MDamageSource.s(ItemsRegistryHolder.vapeInstance.getMappings().RK));
         }
         throw new UnsupportedOperationException("Totem of Undying is not available in this version.");
     }
 
     public static ItemSplashPotion O() {
-        return new ItemSplashPotion(MDamageSource.D(ItemsRegistryHolder.c.getMappings().RK));
+        return new ItemSplashPotion(MDamageSource.D(ItemsRegistryHolder.vapeInstance.getMappings().RK));
     }
 
     public ItemsRegistryHolder(Object object) {
@@ -33,7 +30,7 @@ extends Wrapper {
 
     public static Item h() {
         if (ForgeVersion.MC_1_12_2.d()) {
-            return new Item(MDamageSource.T(ItemsRegistryHolder.c.getMappings().RK));
+            return new Item(MDamageSource.T(ItemsRegistryHolder.vapeInstance.getMappings().RK));
         }
         throw new UnsupportedOperationException("End Crystal is not available in this version.");
     }

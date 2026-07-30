@@ -28,15 +28,15 @@ implements Cloneable {
         if (name == null) {
             return false;
         }
-        InventoryItemMatcher inventoryItemMatcher = this.getMatcher();
-        if (inventoryItemMatcher != null && inventoryItemMatcher.matches(itemStack, itemStack.getItem())) {
+        InventoryItemMatcher resolvedMatcher = this.getMatcher();
+        if (resolvedMatcher != null && resolvedMatcher.matches(itemStack, itemStack.getItem())) {
             return true;
         }
         if (itemStack.isNull()) {
             return false;
         }
-        ItemMappingEntry itemMappingEntry = Vape.INSTANCE.getItemStackResolver().resolve(itemStack);
-        return itemMappingEntry != null && name.equals(itemMappingEntry.M());
+        ItemMappingEntry mappingEntry = Vape.INSTANCE.getItemStackResolver().resolve(itemStack);
+        return mappingEntry != null && name.equals(mappingEntry.getResourceKey());
     }
 
     @Nullable
@@ -46,10 +46,9 @@ implements Cloneable {
     }
 
     private void resolve() {
-        String normalized;
         this.matcher = null;
         this.resolvedStack = null;
-        String normalized2 = normalized = this.itemName != null ? this.itemName.trim().toLowerCase() : null;
+        String normalized = this.itemName != null ? this.itemName.trim().toLowerCase() : null;
         if (normalized == null || normalized.isEmpty()) {
             return;
         }
@@ -58,9 +57,9 @@ implements Cloneable {
             this.resolvedStack = null;
             return;
         }
-        ItemMappingEntry itemMappingEntry = Vape.INSTANCE.getItemStackResolver().findByName(normalized);
-        if (itemMappingEntry != null) {
-            this.resolvedStack = itemMappingEntry.Q();
+        ItemMappingEntry mappingEntry = Vape.INSTANCE.getItemStackResolver().findByName(normalized);
+        if (mappingEntry != null) {
+            this.resolvedStack = mappingEntry.resolveItemStack();
             if (this.resolvedStack == null || this.resolvedStack.isNull()) {
                 // empty if block
             }
@@ -82,9 +81,9 @@ implements Cloneable {
     }
 
     public ItemFilterSelection copy() {
-        ItemFilterSelection itemFilterSelection = new ItemFilterSelection();
-        itemFilterSelection.setItemName(this.itemName);
-        return itemFilterSelection;
+        ItemFilterSelection copy = new ItemFilterSelection();
+        copy.setItemName(this.itemName);
+        return copy;
     }
 
     public boolean isUnresolved() {
@@ -95,8 +94,8 @@ implements Cloneable {
         return (itemStack == null || itemStack.isNull()) && this.itemName != null;
     }
 
-    private void setItemName(@Nullable String string) {
-        this.assign(string, true);
+    private void setItemName(@Nullable String itemName) {
+        this.assign(itemName, true);
     }
 
     @Nullable
@@ -111,12 +110,12 @@ implements Cloneable {
         } else if (itemPickerSelection.getLeft() != null) {
             this.setItemName(itemPickerSelection.getLeft());
         } else if (itemPickerSelection.getRight() != null) {
-            this.setItemName(itemPickerSelection.getRight().M());
+            this.setItemName(itemPickerSelection.getRight().getResourceKey());
         }
     }
 
-    private void assign(@Nullable String string, boolean resolveNow) {
-        this.itemName = string;
+    private void assign(@Nullable String itemName, boolean resolveNow) {
+        this.itemName = itemName;
         this.matcher = null;
         this.resolvedStack = null;
         this.dirty = true;

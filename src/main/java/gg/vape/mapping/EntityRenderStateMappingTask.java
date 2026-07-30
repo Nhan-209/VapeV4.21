@@ -12,7 +12,7 @@ public class EntityRenderStateMappingTask
 extends JavassistMappingTask {
 
     @Override
-    public void c() {
+    public void transform() {
         if (!ForgeVersion.MC_1_7_10.L()) {
             MappingMethod mappingMethod = Vape.INSTANCE.getMappings().qe.p;
             if (ForgeVersion.MC_1_21_10.d()) {
@@ -27,7 +27,7 @@ extends JavassistMappingTask {
                 this.c(mappingMethod, EventPreRenderEntityCallback.class, "$1, $4");
                 return;
             }
-            if (!mappingMethod.h()) {
+            if (!mappingMethod.hasResolutionFailed()) {
                 this.c(mappingMethod, EventPreRenderEntityCallback.class, "$1, $2, $3, $4");
             }
         }

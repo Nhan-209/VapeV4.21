@@ -11,40 +11,40 @@ import gg.vape.wrapper.impl.Minecraft;
 
 public class EventRender2D
 extends Event {
-    private static final EventListeners Y = new EventListeners();
-    private static int q;
-    private static int A;
+    private static final EventListeners EVENT_LISTENERS = new EventListeners();
+    private static int displayHeight;
+    private static int displayWidth;
 
     public static EventListeners getEventListeners() {
-        return Y;
+        return EVENT_LISTENERS;
     }
 
     public static void create() {
         if (ForgeVersion.MC_1_17.d() && Minecraft.thePlayer().isNull()) {
             return;
         }
-        A = Minecraft.J();
-        q = Minecraft.h();
+        displayWidth = Minecraft.J();
+        displayHeight = Minecraft.h();
         GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
-        GuiRenderPrimitives.o(A, q);
+        GuiRenderPrimitives.o(displayWidth, displayHeight);
         Vape.INSTANCE.getModManager().getMod(ClientSettings.class).renderHudOverlay();
         EventRender2D eventRender2D = new EventRender2D();
         eventRender2D.fire();
-        GuiRenderPrimitives.L(A, q);
+        GuiRenderPrimitives.L(displayWidth, displayHeight);
     }
 
 
     @Override
     public EventListeners getListeners() {
-        return Y;
+        return EVENT_LISTENERS;
     }
 
     public int getDisplayWidth() {
-        return A;
+        return displayWidth;
     }
 
     public int getDisplayHeight() {
-        return q;
+        return displayHeight;
     }
 }
 

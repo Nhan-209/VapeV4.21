@@ -14,11 +14,10 @@ extends JavassistMappingTask {
     }
 
     @Override
-    public void c() {
+    public void transform() {
         MappingMethod mappingMethod = Vape.INSTANCE.getMappings().N.Z;
         EventInjectionSpec eventInjectionSpec = new EventInjectionSpec(mappingMethod, EventBlockLayerOverrideFallback.class);
-        eventInjectionSpec.Z(true);
-        this.O(eventInjectionSpec);
+        eventInjectionSpec.setInsertBefore(true);
+        this.registerEventInjection(eventInjectionSpec);
     }
 }
-

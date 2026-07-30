@@ -1,13 +1,9 @@
 package gg.vape.wrapper.impl;
 
-import gg.vape.wrapper.impl.CPacketEntityActionAction;
-import gg.vape.wrapper.impl.Entity;
-import gg.vape.wrapper.impl.Packet;
-
 public class CPacketEntityAction
 extends Packet {
     public static CPacketEntityAction create(Entity entity, CPacketEntityActionAction jT) {
-        return new CPacketEntityAction(CPacketEntityAction.c.getMappingsMapperCompat().Y.k(entity.getObject(), jT.getObject()));
+        return new CPacketEntityAction(CPacketEntityAction.vapeInstance.getMappingsMapperCompat().Y.k(entity.getObject(), jT.getObject()));
     }
 
     public CPacketEntityAction(Object object) {
@@ -15,7 +11,7 @@ extends Packet {
     }
 
     public static CPacketEntityAction create(Entity entity, int n) {
-        return new CPacketEntityAction(CPacketEntityAction.c.getMappingsMapperCompat().Y.u(entity.getObject(), n));
+        return new CPacketEntityAction(CPacketEntityAction.vapeInstance.getMappingsMapperCompat().Y.u(entity.getObject(), n));
     }
 }
 

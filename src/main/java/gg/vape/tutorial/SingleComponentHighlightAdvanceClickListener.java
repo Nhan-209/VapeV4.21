@@ -25,9 +25,9 @@ implements GuiMouseListener {
         if (mouseClickButton != MouseClickButton.LEFT_CLICK) {
             return;
         }
-        TutorialPage tutorialPage = this.H.T();
-        if (tutorialPage.v() != null && tutorialPage.v().equals(this.H)) {
-            Vape.INSTANCE.getTutorialManager().o().r();
+        TutorialPage tutorialPage = this.H.getPage();
+        if (tutorialPage.getCurrentAction() != null && tutorialPage.getCurrentAction().equals(this.H)) {
+            Vape.INSTANCE.getTutorialManager().getCurrentPage().advanceToNextAction();
         }
     }
 }

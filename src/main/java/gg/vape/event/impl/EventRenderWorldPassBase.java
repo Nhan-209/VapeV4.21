@@ -7,7 +7,7 @@ import gg.vape.wrapper.impl.Minecraft;
 
 public class EventRenderWorldPassBase
 extends Event {
-    private static final EventListeners K = new EventListeners();
+    private static final EventListeners EVENT_LISTENERS = new EventListeners();
 
     @Override
     public boolean fire() {
@@ -19,12 +19,11 @@ extends Event {
     }
 
     public static EventListeners getEventListeners() {
-        return K;
+        return EVENT_LISTENERS;
     }
 
     @Override
     public EventListeners getListeners() {
-        return K;
+        return EVENT_LISTENERS;
     }
 }
-

@@ -7,15 +7,14 @@ import java.awt.Point;
 
 public class PartyOverviewPanelPopupClickListener
 implements GuiMouseListener {
-    final PartyDetailsPanel p;
+    private final PartyDetailsPanel detailsPanel;
 
-    public PartyOverviewPanelPopupClickListener(PartyDetailsPanel kq_02) {
-        this.p = kq_02;
+    public PartyOverviewPanelPopupClickListener(PartyDetailsPanel detailsPanel) {
+        this.detailsPanel = detailsPanel;
     }
 
     @Override
-    public void g(Point point, MouseClickButton uA) {
-        PartyDetailsPanel.B(this.p);
+    public void g(Point point, MouseClickButton mouseClickButton) {
+        PartyDetailsPanel.openMembersPopup(this.detailsPanel);
     }
 }
-

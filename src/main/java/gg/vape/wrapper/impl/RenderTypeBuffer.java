@@ -10,7 +10,6 @@ extends Wrapper {
     }
 
     public void q() {
-        MRenderTypeBufferBridge.d(RenderTypeBuffer.c.getMappingsMapperCompat().CU).F(this.getObject());
+        MRenderTypeBufferBridge.d(RenderTypeBuffer.vapeInstance.getMappingsMapperCompat().CU).invokeVoidNoArgs(this.getObject());
     }
 }
-

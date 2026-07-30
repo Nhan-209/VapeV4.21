@@ -10,11 +10,11 @@ extends Wrapper {
     }
 
     public String P() {
-        return MScore.n(Score.c.getMappingsMapperCompat().Cm, this.I);
+        return MScore.n(Score.vapeInstance.getMappingsMapperCompat().Cm, this.I);
     }
 
     public int j() {
-        return MScore.t(Score.c.getMappingsMapperCompat().Cm, this.I);
+        return MScore.t(Score.vapeInstance.getMappingsMapperCompat().Cm, this.I);
     }
 }
 

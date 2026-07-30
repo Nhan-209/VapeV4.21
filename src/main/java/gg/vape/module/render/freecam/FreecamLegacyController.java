@@ -51,7 +51,7 @@ extends FreecamController<Freecam> {
         return CPacketPlayerPosition.newInstance(this.module.fakePlayer.z(), this.module.fakePlayer.N(), this.module.fakePlayer.h(), this.module.fakePlayer.b$src$Z$fqlxe4());
     }
 
-    @EventHandler(A=EventPriority.LOWEST)
+    @EventHandler(priority=EventPriority.LOWEST)
     public void onPacketSend(EventPacketSend event) {
         if (this.module.fakePlayer == null) {
             return;
@@ -165,8 +165,8 @@ extends FreecamController<Freecam> {
     @EventHandler
     public void onPreLivingTravel(EventPreLivingTravel event) {
         EntityPlayerSP player = Minecraft.thePlayer();
-        double horizontalSpeed = (Double)this.module.horizontalSpeed.getValue() / 5.0 * (ClientSettings.B(Minecraft.gameSettings().r()) ? 2.0 : 1.0);
-        double verticalSpeed = (Double)this.module.verticalSpeed.getValue() / 5.0 * (ClientSettings.B(Minecraft.gameSettings().r()) ? 2.0 : 1.0);
+        double horizontalSpeed = (Double)this.module.horizontalSpeed.getValue() / 5.0 * (ClientSettings.isPhysicalKeyDown(Minecraft.gameSettings().r()) ? 2.0 : 1.0);
+        double verticalSpeed = (Double)this.module.verticalSpeed.getValue() / 5.0 * (ClientSettings.isPhysicalKeyDown(Minecraft.gameSettings().r()) ? 2.0 : 1.0);
         player.z(true);
         float verticalDirection = player.movementInput().G() ? 1.0f : (player.movementInput().D$src$Z$v5d6e8() ? -1.0f : 0.0f);
         double verticalMotion = (double)(verticalDirection * 0.42f) * verticalSpeed;
@@ -201,7 +201,7 @@ extends FreecamController<Freecam> {
     private C03PacketPlayer buildMovementPacket() {
         EntityOtherPlayerMP fakePlayer = this.module.fakePlayer;
         double deltaX = fakePlayer.z() - this.module.lastReportedX;
-        double reportedY = ClientSettings.H ? fakePlayer.u$src$Lgg_vape_wrapper_impl_AxisAlignedBB_$kogbsu().getMinY() : fakePlayer.R$src$Lgg_vape_wrapper_impl_AxisAlignedBB_$r19dfl().getMinY();
+        double reportedY = ClientSettings.IS_LEGACY_1_7 ? fakePlayer.u$src$Lgg_vape_wrapper_impl_AxisAlignedBB_$kogbsu().getMinY() : fakePlayer.R$src$Lgg_vape_wrapper_impl_AxisAlignedBB_$r19dfl().getMinY();
         double deltaY = reportedY - this.module.lastReportedY;
         double deltaZ = fakePlayer.h() - this.module.lastReportedZ;
         double deltaYaw = fakePlayer.J() - this.module.lastReportedYaw;
@@ -220,7 +220,7 @@ extends FreecamController<Freecam> {
         ++this.module.positionUpdateTicks;
         if (positionChanged) {
             this.module.lastReportedX = fakePlayer.z();
-            this.module.lastReportedY = ClientSettings.H ? fakePlayer.N() : fakePlayer.R$src$Lgg_vape_wrapper_impl_AxisAlignedBB_$r19dfl().getMinY();
+            this.module.lastReportedY = ClientSettings.IS_LEGACY_1_7 ? fakePlayer.N() : fakePlayer.R$src$Lgg_vape_wrapper_impl_AxisAlignedBB_$r19dfl().getMinY();
             this.module.lastReportedZ = fakePlayer.h();
             this.module.positionUpdateTicks = 0;
         }

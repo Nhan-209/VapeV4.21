@@ -12,11 +12,11 @@ public class SearchManager {
     private final Set<SearchBlock> searchBlocks = new HashSet<SearchBlock>();
 
     public JsonArray toJson() {
-        JsonArray jsonArray = new JsonArray();
+        JsonArray result = new JsonArray();
         for (SearchBlock searchBlock : this.searchBlocks) {
-            jsonArray.add((JsonElement)searchBlock.com_google_gson_JsonObject_I());
+            result.add((JsonElement)searchBlock.com_google_gson_JsonObject_I());
         }
-        return jsonArray;
+        return result;
     }
 
     public void removeSearchBlock(SearchBlock searchBlock) {
@@ -44,12 +44,12 @@ public class SearchManager {
         search.addSearchBlock(searchBlock);
     }
 
-    public void loadJson(JsonArray jsonArray) {
+    public void loadJson(JsonArray serializedSearchBlocks) {
         this.clearSearchBlocks();
-        for (int i = 0; i < jsonArray.size(); ++i) {
-            JsonElement jsonElement = jsonArray.get(i);
-            if (!jsonElement.isJsonObject() || jsonElement.isJsonNull()) continue;
-            SearchBlock searchBlock = new SearchBlock(jsonElement.getAsJsonObject());
+        for (int index = 0; index < serializedSearchBlocks.size(); ++index) {
+            JsonElement element = serializedSearchBlocks.get(index);
+            if (!element.isJsonObject() || element.isJsonNull()) continue;
+            SearchBlock searchBlock = new SearchBlock(element.getAsJsonObject());
             this.addSearchBlock(searchBlock);
         }
     }

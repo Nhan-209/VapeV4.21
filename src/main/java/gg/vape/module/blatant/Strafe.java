@@ -45,7 +45,7 @@ extends Mod {
         EntityPlayerSP player = Minecraft.a_xH_J();
         GameSettings settings = Minecraft.a_w3_0_S();
         KeyBinding sprintKey = settings.s();
-        boolean physicallyDown = ClientSettings.B(sprintKey);
+        boolean physicallyDown = ClientSettings.isPhysicalKeyDown(sprintKey);
         KeyBindingHelper.setPressedAndTick(Minecraft.a_w3_0_S().s(), physicallyDown);
         double distanceValue = (Double)this.distance.java_lang_Object_K();
         double speedValue = (Double)this.speed.java_lang_Object_K() / 5.0;

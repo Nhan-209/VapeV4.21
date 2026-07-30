@@ -5,51 +5,50 @@ import gg.vape.protocol.packet.ZeusSerializablePacket;
 
 public class ClientBlockLocationPacket
 implements ZeusSerializablePacket {
-    private int m;
-    private int q;
-    private int r;
-    private long W;
+    private int x;
+    private int y;
+    private int z;
+    private long userId;
 
-    public int q() {
-        return this.r;
+    public int getZ() {
+        return this.z;
     }
 
     @Override
     public void S(ZeusPacketBuffer zeusPacketBuffer) {
-        this.W = zeusPacketBuffer.long_a();
-        this.q = zeusPacketBuffer.k();
-        this.m = zeusPacketBuffer.k();
-        this.r = zeusPacketBuffer.k();
+        this.userId = zeusPacketBuffer.readLong();
+        this.x = zeusPacketBuffer.readInt();
+        this.y = zeusPacketBuffer.readInt();
+        this.z = zeusPacketBuffer.readInt();
     }
 
     @Override
     public void o(ZeusPacketBuffer zeusPacketBuffer) {
-        zeusPacketBuffer.v(this.W);
-        zeusPacketBuffer.K(this.q);
-        zeusPacketBuffer.K(this.m);
-        zeusPacketBuffer.K(this.r);
+        zeusPacketBuffer.writeLong(this.userId);
+        zeusPacketBuffer.writeInt(this.x);
+        zeusPacketBuffer.writeInt(this.y);
+        zeusPacketBuffer.writeInt(this.z);
     }
 
-    public int n() {
-        return this.q;
+    public int getX() {
+        return this.x;
     }
 
-    public int K() {
-        return this.m;
+    public int getY() {
+        return this.y;
     }
 
-    public ClientBlockLocationPacket(long l, int n, int n2, int n3) {
-        this.W = l;
-        this.q = n;
-        this.m = n2;
-        this.r = n3;
+    public ClientBlockLocationPacket(long userId, int x, int y, int z) {
+        this.userId = userId;
+        this.x = x;
+        this.y = y;
+        this.z = z;
     }
 
     public ClientBlockLocationPacket() {
     }
 
-    public long V() {
-        return this.W;
+    public long getUserId() {
+        return this.userId;
     }
 }
-

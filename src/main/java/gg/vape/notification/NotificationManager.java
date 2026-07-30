@@ -35,7 +35,7 @@ implements EventListener {
 
 
     private boolean isAllowedByFriendSettings(INotification notification) {
-        FriendNotificationSettings friendNotificationSettings = OnlineConnectionManager.T.S().m();
+        FriendNotificationSettings friendNotificationSettings = OnlineConnectionManager.INSTANCE.getSettings().getFriendNotificationSettings();
         if (notification.getType() == NotificationType.FRIENDS_GENERAL && !friendNotificationSettings.general.getEffectiveValue().booleanValue()) {
             return false;
         }
@@ -168,7 +168,7 @@ implements EventListener {
         if (!this.isAllowedByFriendSettings(notification)) {
             return;
         }
-        if (!Vape.INSTANCE.getPublicProfileSettings().R.getEffectiveValue().booleanValue() && !force) {
+        if (!Vape.INSTANCE.getPublicProfileSettings().notifications.getEffectiveValue().booleanValue() && !force) {
             return;
         }
         if (!this.isGroupEnabled(notification.getType().getGroup())) {
@@ -196,7 +196,7 @@ implements EventListener {
         this.groupSettings = new HashMap<NotificationGroup, BooleanValue>();
         this.notificationSounds.put(NotificationType.FRIENDS_NEW_CHAT, NotificationSounds.MESSAGE_RECEIVED);
         this.notificationSounds.put(NotificationType.FRIENDS_PARTY_INVITE, NotificationSounds.PARTY_INVITE);
-        this.groupSettings.put(NotificationGroup.FRIENDS, Vape.INSTANCE.getPublicProfileSettings().H);
+        this.groupSettings.put(NotificationGroup.FRIENDS, Vape.INSTANCE.getPublicProfileSettings().friendNotifications);
     }
 }
 

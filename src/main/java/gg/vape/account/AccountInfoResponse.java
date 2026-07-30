@@ -11,70 +11,73 @@ import org.jetbrains.annotations.Nullable;
 
 public class AccountInfoResponse {
     @Nullable
-    private final String p;
-    private final boolean r;
-    private final long J;
-    private final Date x;
-    private final boolean C;
-    private final boolean O;
-    private final boolean I;
+    private final String username;
+    private final boolean banned;
+    private final long userId;
+    private final Date accountCreationDate;
+    private final boolean registered;
+    private final boolean licensed;
+    private final boolean profilesEnabled;
 
-    public boolean e() {
-        return this.O;
+    public boolean isLicensed() {
+        return this.licensed;
     }
 
-    public boolean W() {
-        return this.I;
+    public boolean hasProfilesEnabled() {
+        return this.profilesEnabled;
     }
 
-    AccountInfoResponse(long l, @Nullable String string, @Nullable Date date, boolean bl, boolean bl2, boolean bl3, boolean bl4) {
-        this.J = l;
-        this.p = string;
-        this.x = date;
-        this.O = bl;
-        this.C = bl2;
-        this.I = bl3;
-        this.r = bl4;
+    AccountInfoResponse(long userId, @Nullable String username, @Nullable Date accountCreationDate,
+                        boolean licensed, boolean registered, boolean profilesEnabled, boolean banned) {
+        this.userId = userId;
+        this.username = username;
+        this.accountCreationDate = accountCreationDate;
+        this.licensed = licensed;
+        this.registered = registered;
+        this.profilesEnabled = profilesEnabled;
+        this.banned = banned;
     }
 
     @Nullable
-    public String S() {
-        return this.p;
+    public String getUsername() {
+        return this.username;
     }
 
-    private static ParseException a(ParseException parseException) {
+    private static ParseException preserveParseException(ParseException parseException) {
         return parseException;
     }
 
-    public boolean Y() {
-        return this.C;
+    public boolean isRegistered() {
+        return this.registered;
     }
 
     @Nullable
     @Contract(value="!null -> !null; null -> null")
-    public static AccountInfoResponse B(@Nullable JsonElement jsonElement) {
+    public static AccountInfoResponse fromJson(@Nullable JsonElement jsonElement) {
         if (jsonElement == null || jsonElement.isJsonNull()) {
             return null;
         }
-        JsonObject jsonObject = jsonElement.getAsJsonObject();
+        JsonObject responseJson = jsonElement.getAsJsonObject();
         try {
-            return new AccountInfoResponse(jsonObject.get("userId").getAsLong(), ConfigJsonUtils.P(jsonObject, "username"), ApiHttpClient.U(ConfigJsonUtils.P(jsonObject, "accountCreation")), jsonObject.get("licensed").getAsBoolean(), jsonObject.get("registered").getAsBoolean(), jsonObject.get("profiles").getAsBoolean(), jsonObject.get("banned").getAsBoolean());
+            return new AccountInfoResponse(responseJson.get("userId").getAsLong(), ConfigJsonUtils.getString(responseJson, "username"),
+                    ApiHttpClient.parseApiDate(ConfigJsonUtils.getString(responseJson, "accountCreation")),
+                    responseJson.get("licensed").getAsBoolean(), responseJson.get("registered").getAsBoolean(),
+                    responseJson.get("profiles").getAsBoolean(), responseJson.get("banned").getAsBoolean());
         }
         catch (ParseException parseException) {
             throw new RuntimeException(parseException);
         }
     }
 
-    public Date M() {
-        return this.x;
+    public Date getAccountCreationDate() {
+        return this.accountCreationDate;
     }
 
-    public boolean f() {
-        return this.r;
+    public boolean isBanned() {
+        return this.banned;
     }
 
-    public long z() {
-        return this.J;
+    public long getUserId() {
+        return this.userId;
     }
 }
-

@@ -48,7 +48,7 @@ extends Mapping {
     }
 
     private boolean d(Object object) {
-        return this.s.e(object, new Object[0]);
+        return this.s.invokeBoolean(object, new Object[0]);
     }
 
     public static boolean g(MCaughtEntityActionBridge mCaughtEntityActionBridge, Object object) {
@@ -78,7 +78,7 @@ extends Mapping {
     }
 
     private void f(Object object, Runnable runnable) {
-        this.I.c(object, runnable);
+        this.I.invokeVoid(object, runnable);
     }
 }
 

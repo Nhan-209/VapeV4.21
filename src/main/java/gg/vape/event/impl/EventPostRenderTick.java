@@ -8,7 +8,7 @@ import gg.vape.utils.render.RenderBatchManager;
 
 public class EventPostRenderTick
 extends EventRenderTickBase {
-    private static final String b;
+    private static final String RENDER_PHASE_NAME;
 
     public EventPostRenderTick() {
         super(-1.0f);
@@ -26,14 +26,14 @@ extends EventRenderTickBase {
             RenderThreadTaskQueue.runPendingTasks();
             RenderBatchManager.getInstance().flushGuiBatches(this.getTicks());
         }
-        boolean bl = super.fire();
-        GuiRenderPrimitives.l(b);
-        return bl;
+        boolean fired = super.fire();
+        GuiRenderPrimitives.l(RENDER_PHASE_NAME);
+        return fired;
     }
 
     static {
         try {
-            b = "Post render";
+            RENDER_PHASE_NAME = "Post render";
         }
         catch (Exception exception) {
             throw new ExceptionInInitializerError(exception);

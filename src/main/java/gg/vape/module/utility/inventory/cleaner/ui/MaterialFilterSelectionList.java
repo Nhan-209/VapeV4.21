@@ -25,25 +25,25 @@ extends ScrollableFrameComponent {
     private final MaterialFilterCondition materialCondition;
     private static final String ADD_ICON = "newadd";
 
-    private void addPickerSelection(ItemPickerSelection itemPickerSelection) {
-        if (itemPickerSelection != null) {
-            ItemFilterSelection itemFilterSelection = new ItemFilterSelection();
-            itemFilterSelection.setSelection(itemPickerSelection);
-            this.materialCondition.addSelection(itemFilterSelection);
-            this.addSelectionRow(itemFilterSelection);
+    private void addPickerSelection(ItemPickerSelection pickerSelection) {
+        if (pickerSelection != null) {
+            ItemFilterSelection selection = new ItemFilterSelection();
+            selection.setSelection(pickerSelection);
+            this.materialCondition.addSelection(selection);
+            this.addSelectionRow(selection);
         }
     }
 
-    private void removePickerSelection(ItemPickerSelection itemPickerSelection) {
-        ItemFilterSelection itemFilterSelection = this.materialCondition.findSelectionById(itemPickerSelection.getLeft() != null ? (String)itemPickerSelection.getLeft() : ((ItemMappingEntry)itemPickerSelection.getRight()).M());
-        if (itemFilterSelection == null) {
+    private void removePickerSelection(ItemPickerSelection pickerSelection) {
+        ItemFilterSelection selection = this.materialCondition.findSelectionById(pickerSelection.getLeft() != null ? (String)pickerSelection.getLeft() : ((ItemMappingEntry)pickerSelection.getRight()).getResourceKey());
+        if (selection == null) {
             return;
         }
-        MaterialFilterSelectionRow materialFilterSelectionRow = this.findSelectionRow(itemFilterSelection);
-        if (materialFilterSelectionRow == null) {
+        MaterialFilterSelectionRow selectionRow = this.findSelectionRow(selection);
+        if (selectionRow == null) {
             return;
         }
-        this.removeSelectionRow(materialFilterSelectionRow);
+        this.removeSelectionRow(selectionRow);
     }
 
     @Override
@@ -52,35 +52,35 @@ extends ScrollableFrameComponent {
         GuiRenderPrimitives.P(this.G$src$D$1b2f02a(), this.n(), this.A(), this.L() + 2.0, MaterialFilterSelectionList.J.y, 2.0f, 0.75f, 1.0f);
     }
 
-    private void openItemPicker(GlyphIconComponent glyphIconComponent) {
-        ArrayList<String> arrayList = new ArrayList<String>();
+    private void openItemPicker(GlyphIconComponent addButton) {
+        ArrayList<String> selectedItemIds = new ArrayList<String>();
         for (ItemFilterSelection selection : this.materialCondition.getSelections()) {
-            arrayList.add(selection.getItemName());
+            selectedItemIds.add(selection.getItemName());
         }
-        InventoryItemPickerPanel inventoryItemPickerPanel = new InventoryItemPickerPanel(this.filterRule, true, this.filterRule.getItemSelection().getMatcher(), arrayList, this::addPickerSelection);
-        inventoryItemPickerPanel.setOnExistingSelection(this::removePickerSelection);
-        AnchoredPopupFrame anchoredPopupFrame = ClientSettings.createPopup(glyphIconComponent, inventoryItemPickerPanel, AnchoredPopupFrame.class);
-        anchoredPopupFrame.O(false);
-        anchoredPopupFrame.C$src$V$nadrmg();
-        anchoredPopupFrame.q(this.L$src$Lgg_vape_ui_click_frame_Frame_$1djx6sa(), anchoredPopupFrame);
-        anchoredPopupFrame.addGlobalMouseListener(new MaterialFilterSelectionListClosePopupMouseListener(this, anchoredPopupFrame));
+        InventoryItemPickerPanel pickerPanel = new InventoryItemPickerPanel(this.filterRule, true, this.filterRule.getItemSelection().getMatcher(), selectedItemIds, this::addPickerSelection);
+        pickerPanel.setOnExistingSelection(this::removePickerSelection);
+        AnchoredPopupFrame popup = ClientSettings.createPopup(addButton, pickerPanel, AnchoredPopupFrame.class);
+        popup.O(false);
+        popup.C$src$V$nadrmg();
+        popup.q(this.L$src$Lgg_vape_ui_click_frame_Frame_$1djx6sa(), popup);
+        popup.addGlobalMouseListener(new MaterialFilterSelectionListClosePopupMouseListener(this, popup));
     }
 
     @Nullable
-    public MaterialFilterSelectionRow findSelectionRow(ItemFilterSelection itemFilterSelection) {
-        for (GuiComponent guiComponent : this.f()) {
-            PaddedComponent paddedComponent;
-            MaterialFilterSelectionRow materialFilterSelectionRow;
-            if (!(guiComponent instanceof PaddedComponent) || (materialFilterSelectionRow = (paddedComponent = (PaddedComponent)guiComponent).t(MaterialFilterSelectionRow.class)) == null || !itemFilterSelection.equals(materialFilterSelectionRow.getSelection())) continue;
-            return materialFilterSelectionRow;
+    public MaterialFilterSelectionRow findSelectionRow(ItemFilterSelection selection) {
+        for (GuiComponent child : this.f()) {
+            PaddedComponent paddedChild;
+            MaterialFilterSelectionRow selectionRow;
+            if (!(child instanceof PaddedComponent) || (selectionRow = (paddedChild = (PaddedComponent)child).t(MaterialFilterSelectionRow.class)) == null || !selection.equals(selectionRow.getSelection())) continue;
+            return selectionRow;
         }
         return null;
     }
 
-    public MaterialFilterSelectionList(InventoryFilterRule inventoryFilterRule, MaterialFilterCondition materialFilterCondition, double d) {
-        super(d, 14.0);
-        this.filterRule = inventoryFilterRule;
-        this.materialCondition = materialFilterCondition;
+    public MaterialFilterSelectionList(InventoryFilterRule filterRule, MaterialFilterCondition materialCondition, double width) {
+        super(width, 14.0);
+        this.filterRule = filterRule;
+        this.materialCondition = materialCondition;
         this.setShowDisabledOverlay(false);
         GlyphIconComponent glyphIconComponent = new GlyphIconComponent(ADD_ICON, 7.0, 7.0, 14.0, 14.0, MaterialFilterSelectionList.J.B, MaterialFilterSelectionList.J.O, null);
         glyphIconComponent.setBackgroundAnimationColors(MaterialFilterSelectionList.J.z, MaterialFilterSelectionList.J.M);
@@ -91,23 +91,23 @@ extends ScrollableFrameComponent {
     }
 
 
-    public void addSelectionRow(ItemFilterSelection itemFilterSelection) {
-        MaterialFilterSelectionRow materialFilterSelectionRow = new MaterialFilterSelectionRow(itemFilterSelection);
-        materialFilterSelectionRow.addMouseListener(new MaterialFilterSelectionRemoveClickHandler(this, materialFilterSelectionRow));
-        this.addChildren(new PaddedComponent(0.0, 0.0, 0.0, 0.0, materialFilterSelectionRow));
+    public void addSelectionRow(ItemFilterSelection selection) {
+        MaterialFilterSelectionRow selectionRow = new MaterialFilterSelectionRow(selection);
+        selectionRow.addMouseListener(new MaterialFilterSelectionRemoveClickHandler(this, selectionRow));
+        this.addChildren(new PaddedComponent(0.0, 0.0, 0.0, 0.0, selectionRow));
     }
 
-    public void removeSelectionRow(MaterialFilterSelectionRow materialFilterSelectionRow) {
-        ArrayList<PaddedComponent> arrayList = new ArrayList<PaddedComponent>();
-        this.materialCondition.removeSelection(materialFilterSelectionRow.getSelection());
-        for (GuiComponent guiComponent : this.f()) {
-            PaddedComponent paddedComponent;
-            MaterialFilterSelectionRow materialFilterSelectionRow2;
-            if (!(guiComponent instanceof PaddedComponent) || !materialFilterSelectionRow.equals(materialFilterSelectionRow2 = (paddedComponent = (PaddedComponent)guiComponent).t(MaterialFilterSelectionRow.class))) continue;
-            arrayList.add(paddedComponent);
+    public void removeSelectionRow(MaterialFilterSelectionRow selectionRow) {
+        ArrayList<PaddedComponent> rowsToRemove = new ArrayList<PaddedComponent>();
+        this.materialCondition.removeSelection(selectionRow.getSelection());
+        for (GuiComponent child : this.f()) {
+            PaddedComponent paddedChild;
+            MaterialFilterSelectionRow childRow;
+            if (!(child instanceof PaddedComponent) || !selectionRow.equals(childRow = (paddedChild = (PaddedComponent)child).t(MaterialFilterSelectionRow.class))) continue;
+            rowsToRemove.add(paddedChild);
         }
-        for (GuiComponent guiComponent : arrayList) {
-            this.removeChild(guiComponent);
+        for (GuiComponent child : rowsToRemove) {
+            this.removeChild(child);
         }
     }
 }

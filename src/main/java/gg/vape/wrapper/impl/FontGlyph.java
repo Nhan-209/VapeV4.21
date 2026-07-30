@@ -2,8 +2,6 @@ package gg.vape.wrapper.impl;
 
 import gg.vape.mapping.MappedClasses;
 import gg.vape.wrapper.Wrapper;
-import gg.vape.wrapper.impl.FontGlyphInfo;
-import gg.vape.wrapper.impl.GlyphInfo;
 
 public class FontGlyph
 extends Wrapper {
@@ -20,7 +18,7 @@ extends Wrapper {
     }
 
     public FontGlyphInfo D() {
-        Object object = FontGlyph.c.getMappingsMapperCompat().De.M(this.I);
+        Object object = FontGlyph.vapeInstance.getMappingsMapperCompat().De.M(this.I);
         FontGlyphInfo fontGlyphInfo = object != null ? new FontGlyphInfo(object) : null;
         return fontGlyphInfo;
     }

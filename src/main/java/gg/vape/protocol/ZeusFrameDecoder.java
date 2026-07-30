@@ -11,10 +11,10 @@ import java.util.List;
 
 public class ZeusFrameDecoder
 extends ByteToMessageDecoder {
-    private static final String b = "length wider than 21-bit";
-    private final byte[] r = new byte[3];
+    private static final String LENGTH_ERROR_MESSAGE = "length wider than 21-bit";
+    private final byte[] lengthPrefixBytes = new byte[3];
 
-    private static CorruptedFrameException a(CorruptedFrameException corruptedFrameException) {
+    private static CorruptedFrameException propagateCorruptedFrame(CorruptedFrameException corruptedFrameException) {
         return corruptedFrameException;
     }
 
@@ -27,7 +27,7 @@ extends ByteToMessageDecoder {
             return;
         }
         byteBuf.markReaderIndex();
-        byte[] byArray = this.r;
+        byte[] byArray = this.lengthPrefixBytes;
         Arrays.fill(byArray, (byte)0);
         byte[] byArray2 = new byte[3];
         for (int i = 0; i < byArray2.length; ++i) {
@@ -39,7 +39,7 @@ extends ByteToMessageDecoder {
             if (byArray2[i] < 0) continue;
             ZeusPacketBuffer zeusPacketBuffer = new ZeusPacketBuffer(Unpooled.wrappedBuffer((byte[])byArray2));
             try {
-                int n = zeusPacketBuffer.Y();
+                int n = zeusPacketBuffer.readVarInt();
                 if (byteBuf.readableBytes() >= n) {
                     list.add(byteBuf.readBytes(n));
                     return;
@@ -47,11 +47,10 @@ extends ByteToMessageDecoder {
                 byteBuf.resetReaderIndex();
             }
             finally {
-                zeusPacketBuffer.A();
+                zeusPacketBuffer.releaseBuffer();
             }
             return;
         }
-        throw new CorruptedFrameException(b);
+        throw new CorruptedFrameException(LENGTH_ERROR_MESSAGE);
     }
 }
-

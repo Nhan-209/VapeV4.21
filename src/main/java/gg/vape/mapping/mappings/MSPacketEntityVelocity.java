@@ -49,7 +49,7 @@ extends Mapping {
             this.a = this.J(string4, bl4, clazz4);
         } else {
             Class<Integer> clazz = Integer.TYPE;
-            boolean bl = Wrapper.G;
+            boolean bl = Wrapper.isNativeAvailable;
             String string = "field_149417_a";
             MSPacketEntityVelocity mSPacketEntityVelocity = this;
             this.c = mSPacketEntityVelocity.J(string, bl, clazz);
@@ -61,20 +61,20 @@ extends Mapping {
                 this.F = this.J(string5, bl5, clazz5);
                 Class[] classArray = new Class[]{Integer.TYPE, MappedClasses.qP};
                 MSPacketEntityVelocity mSPacketEntityVelocity6 = this;
-                this.q = this.g(classArray);
+                this.q = this.registerConstructor(classArray);
             } else {
                 Class<Integer> clazz6 = Integer.TYPE;
-                boolean bl6 = Wrapper.G;
+                boolean bl6 = Wrapper.isNativeAvailable;
                 String string6 = "field_149415_b";
                 MSPacketEntityVelocity mSPacketEntityVelocity7 = this;
                 this.j = this.J(string6, bl6, clazz6);
                 Class<Integer> clazz7 = Integer.TYPE;
-                boolean bl7 = Wrapper.G;
+                boolean bl7 = Wrapper.isNativeAvailable;
                 String string7 = "field_149416_c";
                 MSPacketEntityVelocity mSPacketEntityVelocity8 = this;
                 this.Y = this.J(string7, bl7, clazz7);
                 Class<Integer> clazz8 = Integer.TYPE;
-                boolean bl8 = Wrapper.G;
+                boolean bl8 = Wrapper.isNativeAvailable;
                 String string8 = "field_149414_d";
                 MSPacketEntityVelocity mSPacketEntityVelocity9 = this;
                 this.a = this.J(string8, bl8, clazz8);
@@ -108,7 +108,7 @@ extends Mapping {
 
     public Object Y(int n, double d, double d2, double d3) {
         Vec3 vec3 = Vec3.create(d, d2, d3);
-        return this.q.O(n, vec3.getObject());
+        return this.q.newInstance(n, vec3.getObject());
     }
 
     public static int X(MSPacketEntityVelocity mSPacketEntityVelocity, Object object) {

@@ -103,11 +103,11 @@ public abstract class Bendable {
             return false;
         }
         if (this.getBoundInputs().size() == 1) {
-            return ClientSettings.l(this.getBoundInputs().get(0));
+            return ClientSettings.isInputDown(this.getBoundInputs().get(0));
         }
         int pressedInputCount = 0;
         for (int boundInput : this.getBoundInputs()) {
-            if (!ClientSettings.l(boundInput)) continue;
+            if (!ClientSettings.isInputDown(boundInput)) continue;
             ++pressedInputCount;
         }
         return pressedInputCount == this.getBoundInputs().size();
@@ -124,7 +124,7 @@ public abstract class Bendable {
     public abstract String getDisplayText();
 
     public void loadBoundInputs(JsonArray jsonArray, boolean convertLegacyCodes) {
-        List<Integer> loadedInputs = ConfigJsonUtils.o(jsonArray, convertLegacyCodes);
+        List<Integer> loadedInputs = ConfigJsonUtils.parseInputCodes(jsonArray, convertLegacyCodes);
         if (!loadedInputs.isEmpty()) {
             this.getBoundInputs().clear();
             for (int inputCode : loadedInputs) {

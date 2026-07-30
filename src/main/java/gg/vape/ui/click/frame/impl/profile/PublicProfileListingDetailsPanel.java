@@ -57,7 +57,7 @@ extends PublicProfileSnapshotPanelBase {
     private PagedResultListComponent reviewsList;
 
     private void deleteOwnReview() {
-        this.publicProfile.z().B(this.publicProfile, this::rebuildReviews);
+        this.publicProfile.getViewerReview().delete(this.publicProfile, this::rebuildReviews);
     }
 
     @Override
@@ -71,7 +71,7 @@ extends PublicProfileSnapshotPanelBase {
     }
 
     private void changeOwnReview(boolean positive) {
-        this.publicProfile.z().B(this.publicProfile, () -> this.refreshAfterReview(positive));
+        this.publicProfile.getViewerReview().delete(this.publicProfile, () -> this.refreshAfterReview(positive));
     }
 
     private static ApiResponse ignoreDownloadFailure(Throwable throwable) {
@@ -97,8 +97,8 @@ extends PublicProfileSnapshotPanelBase {
         simpleTextLabelComponent.o(panelComponent2.A());
         FlowLayoutComponent flowLayoutComponent = new FlowLayoutComponent(d2);
         flowLayoutComponent.setShowDisabledOverlay(false);
-        CollapsiblePanelComponent collapsiblePanelComponent = new CollapsiblePanelComponent(this.publicProfile.h(), d2);
-        SimpleTextLabelComponent simpleTextLabelComponent2 = new SimpleTextLabelComponent("Created: " + PublicProfileDateFormatUtil.H(this.publicProfile.s$src$Ljava_util_Date_$tehmu9()), 0.8);
+        CollapsiblePanelComponent collapsiblePanelComponent = new CollapsiblePanelComponent(this.publicProfile.getDescription(), d2);
+        SimpleTextLabelComponent simpleTextLabelComponent2 = new SimpleTextLabelComponent("Created: " + PublicProfileDateFormatUtil.H(this.publicProfile.getCreationDate()), 0.8);
         simpleTextLabelComponent2.Y(8.0);
         simpleTextLabelComponent2.o(d2);
         simpleTextLabelComponent2.setOffsetX(0.0f);
@@ -107,7 +107,7 @@ extends PublicProfileSnapshotPanelBase {
         PanelComponent panelComponent3 = new PanelComponent(d2, 10.0);
         panelComponent3.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().Q(true);
         panelComponent3.setShowDisabledOverlay(false);
-        SimpleTextLabelComponent simpleTextLabelComponent3 = new SimpleTextLabelComponent("Share code: " + this.publicProfile.s(), 0.8);
+        SimpleTextLabelComponent simpleTextLabelComponent3 = new SimpleTextLabelComponent("Share code: " + this.publicProfile.getUppercaseShareCode(), 0.8);
         simpleTextLabelComponent3.Y(8.0);
         simpleTextLabelComponent3.setOffsetX(0.0f);
         panelComponent3.h(simpleTextLabelComponent3, new Object[0]);
@@ -122,12 +122,12 @@ extends PublicProfileSnapshotPanelBase {
         flowLayoutComponent.h(collapsiblePanelComponent, new Object[0]);
         flowLayoutComponent.h(new SpacerComponent(0.0, 8.0), new Object[0]);
         this.gg.h(flowLayoutComponent, new Object[0]);
-        if (!this.publicProfile.X().isEmpty()) {
+        if (!this.publicProfile.getTags().isEmpty()) {
             panelComponent = new PanelComponent(d2, 12.0);
             panelComponent.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M("widthwrap");
             panelComponent.setShowDisabledOverlay(false);
             this.gg.h(panelComponent, new Object[0]);
-            for (String stringArray2 : this.publicProfile.X()) {
+            for (String stringArray2 : this.publicProfile.getTags()) {
                 panelComponent.h(new PublicProfileFilterTokenComponent(stringArray2), new Object[0]);
                 panelComponent.h(new SpacerComponent(2.0, 0.0), new Object[0]);
             }
@@ -138,7 +138,7 @@ extends PublicProfileSnapshotPanelBase {
         panelComponent.setShowDisabledOverlay(false);
         this.gg.h(panelComponent, new Object[0]);
         String[] stringArray3 = new String[]{"Positive reviews", "Last updated", "Downloads"};
-        String[] stringArray = new String[]{String.valueOf(this.publicProfile.J()), PublicProfileDateFormatUtil.i(this.publicProfile.C()), String.valueOf(this.publicProfile.K())};
+        String[] stringArray = new String[]{String.valueOf(this.publicProfile.getLikes()), PublicProfileDateFormatUtil.i(this.publicProfile.getLatestDate()), String.valueOf(this.publicProfile.getDownloads())};
         panelComponent.h(new SpacerComponent(0.0, 5.0), "wrap");
         for (int function = 0; function < stringArray3.length; ++function) {
             String string = stringArray3[function];
@@ -159,7 +159,7 @@ extends PublicProfileSnapshotPanelBase {
         Function<PublicProfileReview, PublicProfileReviewComponent> reviewFactory = this::createReviewComponent;
         this.reviewsList.setPlaceholderSupplier(() -> PublicProfileListingDetailsPanel.createEmptyReviewComponent(reviewFactory));
         this.reviewsList.setPageLoader(() -> this.loadReviewsPage(reviewFactory));
-        this.reviewsList.setPageMetadata(this.publicProfile.m());
+        this.reviewsList.setPageMetadata(this.publicProfile.getReviews());
         this.gg.h(this.reviewsList, new Object[0]);
         this.rebuildReviews();
     }
@@ -167,23 +167,23 @@ extends PublicProfileSnapshotPanelBase {
     private void handleDownloadComplete(ApiResponse apiResponse, Throwable throwable) {
         if (throwable != null) {
             Vape.logThrowable(throwable);
-            PublicProfileManager.b("Failed to download profile.");
+            PublicProfileManager.showWarning("Failed to download profile.");
             return;
         }
-        if (!apiResponse.t()) {
-            Vape.debugLog("Failed to download public profile: " + apiResponse.N());
-            PublicProfileManager.b("Failed to view public profile: " + apiResponse.N());
+        if (!apiResponse.isSuccessful()) {
+            Vape.debugLog("Failed to download public profile: " + apiResponse.getError());
+            PublicProfileManager.showWarning("Failed to view public profile: " + apiResponse.getError());
             return;
         }
-        RemoteProfileData remoteProfileData = (RemoteProfileData)apiResponse.T();
+        RemoteProfileData remoteProfileData = (RemoteProfileData)apiResponse.getData();
         assert remoteProfileData != null;
         JsonObject jsonObject = this.sanitizeRemoteProfileData(remoteProfileData);
         Profile profile = new Profile(remoteProfileData.getName(), remoteProfileData.getVapeVersion());
-        profile.e(jsonObject);
-        profile.A(jsonObject);
-        Vape.INSTANCE.getProfilesManager().T(profile);
+        profile.loadJson(jsonObject);
+        profile.setPublishedData(jsonObject);
+        Vape.INSTANCE.getProfilesManager().addProfile(profile);
         this.setupFooter();
-        PublicProfileManager.M("Successfully downloaded " + remoteProfileData.getName());
+        PublicProfileManager.showInfo("Successfully downloaded " + remoteProfileData.getName());
     }
 
     private PublicProfileReviewComponent createReviewComponent(PublicProfileReview review) {
@@ -195,7 +195,7 @@ extends PublicProfileSnapshotPanelBase {
     }
 
     private CompletableFuture updateDownloadedProfile(Profile profile) {
-        return ApiServices.d().R().A(this.publicProfile.w()).whenCompleteAsync((response, error) -> this.handleProfileUpdate(profile, response, error), (Executor)ClientSettings.UI_EXECUTOR).exceptionally(PublicProfileListingDetailsPanel::ignoreUpdateFailure);
+        return ApiServices.getInstance().getPublicProfileApi().downloadProfileUpdate(this.publicProfile.getProfileId()).whenCompleteAsync((response, error) -> this.handleProfileUpdate(profile, response, error), (Executor)ClientSettings.UI_EXECUTOR).exceptionally(PublicProfileListingDetailsPanel::ignoreUpdateFailure);
     }
 
     private void showLoadingState() {
@@ -239,7 +239,7 @@ extends PublicProfileSnapshotPanelBase {
         this.gb.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M("widthwrap");
         this.gb.h(new SpacerComponent(0.0, 8.0), "wrap");
         this.gb.h(new SpacerComponent(5.0, 0.0), new Object[0]);
-        if (OnlineConnectionManager.T.Q(this.publicProfile.S())) {
+        if (OnlineConnectionManager.INSTANCE.isCurrentUser(this.publicProfile.getOwner())) {
             this.gb.h(new SpacerComponent(45.0, 0.0), new Object[0]);
         } else {
             this.likeButton.setHoverColor(PublicProfileListingDetailsPanel.J.O);
@@ -252,7 +252,7 @@ extends PublicProfileSnapshotPanelBase {
             ((GuiComponent)object).Y(15.0);
             this.gb.h((GuiComponent)object, new Object[0]);
         }
-        object = Vape.INSTANCE.getProfilesManager().X(this.publicProfile.w());
+        object = Vape.INSTANCE.getProfilesManager().getProfileByPublicProfileId(this.publicProfile.getProfileId());
         if (object == null) {
             this.gb.h(new SpacerComponent(15.0, 0.0), new Object[0]);
             TextButton textButton = new TextButton("Download", 0.8, PublicProfileListingDetailsPanel.J.B, PublicProfileListingDetailsPanel.J.O);
@@ -264,8 +264,8 @@ extends PublicProfileSnapshotPanelBase {
             this.gb.h(textButton, new Object[0]);
         } else {
             Profile downloadedProfile = (Profile)object;
-            assert ((Profile)object).j$src$Lgg_vape_config_ProfileRemoteMetadata_$1dp9fd0() != null;
-            if (this.publicProfile.H() == ((Profile)object).j$src$Lgg_vape_config_ProfileRemoteMetadata_$1dp9fd0().V()) {
+            assert ((Profile)object).getRemoteMetadata() != null;
+            if (this.publicProfile.getVersion() == ((Profile)object).getRemoteMetadata().getVersion()) {
                 this.gb.h(new SpacerComponent(68.0, 0.0), new Object[0]);
                 GlyphIconComponent glyphIconComponent = new GlyphIconComponent("info", 8.0, 8.0, 8.0, 8.0, PublicProfileListingDetailsPanel.J.W, PublicProfileListingDetailsPanel.J.W, null);
                 this.gb.h(new PaddedComponent(4.0, 0.0, 0.0, 0.0, glyphIconComponent), new Object[0]);
@@ -296,8 +296,8 @@ extends PublicProfileSnapshotPanelBase {
     }
 
     private void updateVoteButtonColors() {
-        if (this.publicProfile.z() != null) {
-            if (this.publicProfile.z().X()) {
+        if (this.publicProfile.getViewerReview() != null) {
+            if (this.publicProfile.getViewerReview().isLiked()) {
                 this.likeButton.setNormalColor(PublicProfileListingDetailsPanel.J.B);
                 this.dislikeButton.setNormalColor(PublicProfileListingDetailsPanel.J.W);
             } else {
@@ -311,7 +311,7 @@ extends PublicProfileSnapshotPanelBase {
     }
 
     private CompletableFuture loadReviewsPage(Function function) {
-        return ApiServices.d().R().F(this.publicProfile, this.reviewsList.getNextPageIndex()).thenApplyAsync(response -> this.mapReviewsResponse(function, response), (Executor)ClientSettings.UI_EXECUTOR);
+        return ApiServices.getInstance().getPublicProfileApi().getDelayedReviewPage(this.publicProfile, this.reviewsList.getNextPageIndex()).thenApplyAsync(response -> this.mapReviewsResponse(function, response), (Executor)ClientSettings.UI_EXECUTOR);
     }
 
     private void handleProfileUpdate(Profile profile, ApiResponse apiResponse, Throwable throwable) {
@@ -319,33 +319,33 @@ extends PublicProfileSnapshotPanelBase {
             Vape.logThrowable(throwable);
             return;
         }
-        if (!apiResponse.t()) {
-            Vape.debugLog("Failed to down profile update: " + apiResponse.N());
-            PublicProfileManager.b("Failed to download profile update: " + apiResponse.N());
+        if (!apiResponse.isSuccessful()) {
+            Vape.debugLog("Failed to down profile update: " + apiResponse.getError());
+            PublicProfileManager.showWarning("Failed to download profile update: " + apiResponse.getError());
             return;
         }
-        RemoteProfileData remoteProfileData = (RemoteProfileData)apiResponse.T();
+        RemoteProfileData remoteProfileData = (RemoteProfileData)apiResponse.getData();
         assert remoteProfileData != null;
         JsonObject jsonObject = this.sanitizeRemoteProfileData(remoteProfileData);
-        profile.e(jsonObject);
+        profile.loadJson(jsonObject);
         this.setupFooter();
-        PublicProfileManager.M("Successfully updated " + remoteProfileData.getName());
+        PublicProfileManager.showInfo("Successfully updated " + remoteProfileData.getName());
     }
 
     private void copyShareCode() {
-        ClipboardUtil.setText(this.publicProfile.s());
-        PublicProfileManager.M("Copied share code to clipboard");
+        ClipboardUtil.setText(this.publicProfile.getUppercaseShareCode());
+        PublicProfileManager.showInfo("Copied share code to clipboard");
     }
 
     private List mapReviewsResponse(Function function, ApiResponse apiResponse) {
-        if (!apiResponse.t()) {
+        if (!apiResponse.isSuccessful()) {
             return null;
         }
-        assert apiResponse.T() != null;
-        PagedResult<PublicProfileReview> reviews = (PagedResult<PublicProfileReview>)apiResponse.T();
+        assert apiResponse.getData() != null;
+        PagedResult<PublicProfileReview> reviews = (PagedResult<PublicProfileReview>)apiResponse.getData();
         this.reviewsList.setPageMetadata(reviews);
         ArrayList arrayList = new ArrayList();
-        for (PublicProfileReview publicProfileReview : reviews.E()) {
+        for (PublicProfileReview publicProfileReview : reviews.getContent()) {
             arrayList.add(function.apply(publicProfileReview));
         }
         return arrayList;
@@ -360,7 +360,7 @@ extends PublicProfileSnapshotPanelBase {
     }
 
     private CompletableFuture downloadProfile() {
-        return ApiServices.d().R().q(this.publicProfile.w()).whenCompleteAsync(this::handleDownloadComplete, (Executor)ClientSettings.UI_EXECUTOR).exceptionally(PublicProfileListingDetailsPanel::ignoreDownloadFailure);
+        return ApiServices.getInstance().getPublicProfileApi().downloadProfile(this.publicProfile.getProfileId()).whenCompleteAsync(this::handleDownloadComplete, (Executor)ClientSettings.UI_EXECUTOR).exceptionally(PublicProfileListingDetailsPanel::ignoreDownloadFailure);
     }
 
     private void refreshAfterReview(boolean positive) {
@@ -384,9 +384,9 @@ extends PublicProfileSnapshotPanelBase {
         PanelComponent panelComponent2 = new PanelComponent(this.getLeftPanel().A(), 10.0);
         panelComponent2.setShowDisabledOverlay(false);
         panelComponent2.h(new SpacerComponent(5.0, 0.0), new Object[0]);
-        PublicProfileUserAvatarComponent publicProfileUserAvatarComponent = new PublicProfileUserAvatarComponent(this.publicProfile.S(), 10.0, 10.0);
+        PublicProfileUserAvatarComponent publicProfileUserAvatarComponent = new PublicProfileUserAvatarComponent(this.publicProfile.getOwner(), 10.0, 10.0);
         panelComponent2.h(publicProfileUserAvatarComponent, new Object[0]);
-        SimpleTextLabelComponent simpleTextLabelComponent = new SimpleTextLabelComponent("By " + (this.publicProfile.S() != null ? this.publicProfile.S().o() : "Anonymous"));
+        SimpleTextLabelComponent simpleTextLabelComponent = new SimpleTextLabelComponent("By " + (this.publicProfile.getOwner() != null ? this.publicProfile.getOwner().getUsername() : "Anonymous"));
         simpleTextLabelComponent.setBold(true);
         simpleTextLabelComponent.Y(10.0);
         panelComponent2.h(simpleTextLabelComponent, new Object[0]);
@@ -394,11 +394,11 @@ extends PublicProfileSnapshotPanelBase {
     }
 
     private void chooseReview(boolean positive) {
-        if (OnlineConnectionManager.T.Q(this.publicProfile.S())) {
+        if (OnlineConnectionManager.INSTANCE.isCurrentUser(this.publicProfile.getOwner())) {
             return;
         }
-        if (this.publicProfile.z() != null) {
-            if (this.publicProfile.z().X() == positive) {
+        if (this.publicProfile.getViewerReview() != null) {
+            if (this.publicProfile.getViewerReview().isLiked() == positive) {
                 ConfirmationDialogComponent.showStandard(this.L$src$Lgg_vape_ui_click_frame_Frame_$1djx6sa(), "Are you sure you want to delete your review?", "Delete", "newtrash", this::deleteOwnReview);
             } else {
                 ConfirmationDialogComponent.showStandard(this.L$src$Lgg_vape_ui_click_frame_Frame_$1djx6sa(), "Are you sure you want to change your review?", "Confirm", "reset_circle", () -> this.changeOwnReview(positive));
@@ -409,7 +409,7 @@ extends PublicProfileSnapshotPanelBase {
         this.gb.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M("widthwrap");
         this.gb.h(new SpacerComponent(0.0, 8.0), "wrap");
         this.gb.h(new SpacerComponent(5.0, 0.0), new Object[0]);
-        PublicProfileReviewComposerComponent publicProfileReviewComposerComponent = new PublicProfileReviewComposerComponent(this.publicProfile, positive, this.publicProfile.z() != null, this::setupFooter, this::rebuildReviews);
+        PublicProfileReviewComposerComponent publicProfileReviewComposerComponent = new PublicProfileReviewComposerComponent(this.publicProfile, positive, this.publicProfile.getViewerReview() != null, this::setupFooter, this::rebuildReviews);
         publicProfileReviewComposerComponent.o(this.gb.A() - 5.0);
         publicProfileReviewComposerComponent.Y(this.gb.L() - 8.0);
         this.gb.h(publicProfileReviewComposerComponent, new Object[0]);
@@ -438,21 +438,21 @@ extends PublicProfileSnapshotPanelBase {
         panelComponent.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M("widthwrap");
         panelComponent.setShowDisabledOverlay(false);
         this.reviewsList.h(panelComponent, new Object[0]);
-        panelComponent.h(new DualTextLabelRowComponent("Reviews", String.valueOf(this.publicProfile.e()), 8.0, 0.8), new Object[0]);
+        panelComponent.h(new DualTextLabelRowComponent("Reviews", String.valueOf(this.publicProfile.getReviewCount()), 8.0, 0.8), new Object[0]);
         PanelComponent panelComponent2 = new PanelComponent(65.0, panelComponent.L());
         panelComponent2.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M("widthwrap");
         panelComponent2.setShowDisabledOverlay(false);
         panelComponent.h(panelComponent2, "alignright");
-        SimpleTextLabelComponent simpleTextLabelComponent = new SimpleTextLabelComponent(this.publicProfile.R() + "% positive reviews", 0.8, PublicProfileListingDetailsPanel.J.B);
+        SimpleTextLabelComponent simpleTextLabelComponent = new SimpleTextLabelComponent(this.publicProfile.getApprovalPercentage() + "% positive reviews", 0.8, PublicProfileListingDetailsPanel.J.B);
         panelComponent2.h(simpleTextLabelComponent, new Object[0]);
         this.reviewsList.h(new SpacerComponent(0.0, 5.0), "wrap");
-        PublicProfileReview publicProfileReview = this.publicProfile.z();
+        PublicProfileReview publicProfileReview = this.publicProfile.getViewerReview();
         if (publicProfileReview != null) {
             PublicProfileReviewComponent publicProfileReviewComponent = new PublicProfileReviewComponent(this.publicProfile, publicProfileReview, this.reviewsList.A(), PublicProfileReviewDisplayType.SELF).setDeleteCallback(this::rebuildReviews);
             this.reviewsList.h(publicProfileReviewComponent, new Object[0]);
             this.reviewsList.h(new SpacerComponent(0.0, 2.0), new Object[0]);
         }
-        for (PublicProfileReview publicProfileReview2 : this.publicProfile.m().E()) {
+        for (PublicProfileReview publicProfileReview2 : this.publicProfile.getReviews().getContent()) {
             this.reviewsList.h(new PublicProfileReviewComponent(this.publicProfile, publicProfileReview2, this.reviewsList.A(), PublicProfileReviewDisplayType.OTHER), new Object[0]);
             this.reviewsList.h(new SpacerComponent(0.0, 2.0), new Object[0]);
         }

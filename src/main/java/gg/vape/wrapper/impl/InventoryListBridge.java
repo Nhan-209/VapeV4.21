@@ -7,7 +7,7 @@ import java.util.List;
 public class InventoryListBridge
 extends Wrapper {
     public List p() {
-        return MInventoryListBridge.Y(InventoryListBridge.c.getMappingsMapperCompat().DL, this.I);
+        return MInventoryListBridge.Y(InventoryListBridge.vapeInstance.getMappingsMapperCompat().DL, this.I);
     }
 
     public InventoryListBridge(Object object) {
@@ -15,7 +15,7 @@ extends Wrapper {
     }
 
     public static InventoryListBridge u() {
-        return new InventoryListBridge(MInventoryListBridge.j(InventoryListBridge.c.getMappingsMapperCompat().DL));
+        return new InventoryListBridge(MInventoryListBridge.j(InventoryListBridge.vapeInstance.getMappingsMapperCompat().DL));
     }
 }
 

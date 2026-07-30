@@ -9,15 +9,14 @@ import gg.vape.mapping.MappedClasses;
 public class WorldTimeEventMappingTask
 extends JavassistMappingTask {
     @Override
-    public void c() {
+    public void transform() {
         EventInjectionSpec eventInjectionSpec = new EventInjectionSpec(Vape.INSTANCE.getMappings().Dw.m, EventWorldTime.class);
-        eventInjectionSpec.d("$0");
-        eventInjectionSpec.H("$event.getWorldTime()");
-        this.O(eventInjectionSpec);
+        eventInjectionSpec.setConstructorArguments("$0");
+        eventInjectionSpec.setReturnExpression("$event.getWorldTime()");
+        this.registerEventInjection(eventInjectionSpec);
     }
 
     public WorldTimeEventMappingTask() {
         super(MappedClasses.FP);
     }
 }
-

@@ -6,24 +6,23 @@ import gg.vape.module.Mod;
 
 public class SyntheticAttackRequestEvent
 extends Event {
-    private static final EventListeners m = new EventListeners();
-    private final Mod H;
+    private static final EventListeners EVENT_LISTENERS = new EventListeners();
+    private final Mod source;
 
     public Mod getSource() {
-        return this.H;
+        return this.source;
     }
 
     @Override
     public EventListeners getListeners() {
-        return m;
+        return EVENT_LISTENERS;
     }
 
     public SyntheticAttackRequestEvent(Mod mod) {
-        this.H = mod;
+        this.source = mod;
     }
 
     public static EventListeners getEventListeners() {
-        return m;
+        return EVENT_LISTENERS;
     }
 }
-

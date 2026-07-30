@@ -2,21 +2,20 @@ package gg.vape.asm.helper;
 
 
 public class MethodInfo {
-    private String k = null;
-    private String i = null;
+    private String methodName = null;
+    private String descriptor = null;
 
-    public MethodInfo(String string) {
-        this.k = string;
+    public MethodInfo(String methodName) {
+        this.methodName = methodName;
     }
 
-    public MethodInfo(String string, String string2) {
-        this.k = string;
-        this.i = string2;
+    public MethodInfo(String methodName, String descriptor) {
+        this.methodName = methodName;
+        this.descriptor = descriptor;
     }
 
-    public boolean O(String string, String string2) {
-        boolean bl = this.k.equals(string) && (this.i == null || this.i.equals(string2));
-        return bl;
+    public boolean matches(String methodName, String descriptor) {
+        return this.methodName.equals(methodName) && (this.descriptor == null || this.descriptor.equals(descriptor));
     }
 
 }

@@ -9,9 +9,9 @@ public class TextSuggestionRow
 extends GuiComponent {
     private final WrappingTextLabelComponent label;
 
-    public TextSuggestionRow(String string) {
+    public TextSuggestionRow(String text) {
         this.setPropagateMouseEvents(true);
-        this.label = new WrappingTextLabelComponent(string, 0.7);
+        this.label = new WrappingTextLabelComponent(text, 0.7);
         this.label.setTextColor(TextSuggestionRow.J.Z);
         this.addChildren(this.label);
     }
@@ -39,9 +39,9 @@ extends GuiComponent {
 
     @Override
     public double x() {
-        double d = this.label.getTextWidth();
+        double textWidth = this.label.getTextWidth();
         this.getClass();
-        return d + 5.0 + 4.0;
+        return textWidth + 5.0 + 4.0;
     }
 
     public String getText() {

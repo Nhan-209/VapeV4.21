@@ -10,7 +10,7 @@ import gg.vape.wrapper.impl.ItemStack;
 
 public class EmptySlotInventoryItemMatcher
 extends AbstractInventoryItemMatcher {
-    public static final EmptySlotInventoryItemMatcher a = new EmptySlotInventoryItemMatcher();
+    public static final EmptySlotInventoryItemMatcher EMPTY_SLOT = new EmptySlotInventoryItemMatcher();
 
 
     EmptySlotInventoryItemMatcher() {

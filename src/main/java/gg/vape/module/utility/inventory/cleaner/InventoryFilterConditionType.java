@@ -34,11 +34,11 @@ DescribedOption {
     private final String description;
     private final Function<JsonObject, ? extends InventoryFilterCondition> jsonFactory;
 
-    private InventoryFilterConditionType(String string2, String string3, Supplier<? extends InventoryFilterCondition> supplier, Function<JsonObject, ? extends InventoryFilterCondition> function) {
-        this.name = string2;
-        this.description = string3;
-        this.factory = supplier;
-        this.jsonFactory = function;
+    private InventoryFilterConditionType(String name, String description, Supplier<? extends InventoryFilterCondition> factory, Function<JsonObject, ? extends InventoryFilterCondition> jsonFactory) {
+        this.name = name;
+        this.description = description;
+        this.factory = factory;
+        this.jsonFactory = jsonFactory;
     }
 
     @Override

@@ -19,11 +19,11 @@ extends Mapping {
     private final MappingMethod Q;
 
     public Object N(Object object, int n) {
-        return this.Q.L(object, n);
+        return this.Q.invokeObject(object, n);
     }
 
     private Object G(Object object) {
-        return this.E.L(object, new Object[0]);
+        return this.E.invokeObject(object, new Object[0]);
     }
 
     public void A(Object object, int n) {
@@ -71,7 +71,7 @@ extends Mapping {
         Class clazz6 = MappedClasses.VK;
         String string8 = "getStackInSlot";
         MInventoryPlayer mInventoryPlayer6 = this;
-        this.Q = ((MappingMethodBuilder)((MappingMethodBuilder)this.u(string8, clazz6, classArray).A(ForgeVersion.MC_1_16_5.n(), "getItem")).Q(ForgeVersion.MC_1_21_4.n(), MappedClasses.l0)).s();
+        this.Q = ((MappingMethodBuilder)((MappingMethodBuilder)this.methodBuilder(string8, clazz6, classArray).setNameForVersion(ForgeVersion.MC_1_16_5.n(), "getItem")).setOwnerClassForVersion(ForgeVersion.MC_1_21_4.n(), MappedClasses.l0)).buildMethod();
         if (ForgeVersion.MC_1_20_6.v()) {
             Class[] classArray2 = new Class[]{};
             Class clazz7 = MappedClasses.VK;

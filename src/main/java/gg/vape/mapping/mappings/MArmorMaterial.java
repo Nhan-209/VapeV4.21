@@ -3,7 +3,6 @@ package gg.vape.mapping.mappings;
 import gg.vape.mapping.MappedClasses;
 import gg.vape.mapping.Mapping;
 import gg.vape.mapping.MappingField;
-import gg.vape.mapping.mappings.MItemStack;
 import gg.vape.wrapper.Wrapper;
 import gg.vape.wrapper.impl.ForgeVersion;
 
@@ -56,65 +55,65 @@ extends Mapping {
         super(MappedClasses.ZM);
         if (n != 0) {
             Class clazz = MappedClasses.ZM;
-            boolean bl = Wrapper.G;
+            boolean bl = Wrapper.isNativeAvailable;
             String string = "LEATHER";
             MArmorMaterial mArmorMaterial = this;
-            this.L = mArmorMaterial.u(string, bl, clazz);
+            this.L = mArmorMaterial.registerStaticField(string, bl, clazz);
             Class clazz2 = MappedClasses.ZM;
-            boolean bl2 = Wrapper.G;
+            boolean bl2 = Wrapper.isNativeAvailable;
             String string2 = "CHAIN";
             MArmorMaterial mArmorMaterial2 = this;
-            this.F = this.u(string2, bl2, clazz2);
+            this.F = this.registerStaticField(string2, bl2, clazz2);
             Class clazz3 = MappedClasses.ZM;
-            boolean bl3 = Wrapper.G;
+            boolean bl3 = Wrapper.isNativeAvailable;
             String string3 = "IRON";
             MArmorMaterial mArmorMaterial3 = this;
-            this.z = this.u(string3, bl3, clazz3);
+            this.z = this.registerStaticField(string3, bl3, clazz3);
             Class clazz4 = MappedClasses.ZM;
-            boolean bl4 = Wrapper.G;
+            boolean bl4 = Wrapper.isNativeAvailable;
             String string4 = "GOLD";
             MArmorMaterial mArmorMaterial4 = this;
-            this.A = this.u(string4, bl4, clazz4);
+            this.A = this.registerStaticField(string4, bl4, clazz4);
             Class clazz5 = MappedClasses.ZM;
-            boolean bl5 = Wrapper.G;
+            boolean bl5 = Wrapper.isNativeAvailable;
             String string5 = "DIAMOND";
             MArmorMaterial mArmorMaterial5 = this;
-            this.g = this.u(string5, bl5, clazz5);
+            this.g = this.registerStaticField(string5, bl5, clazz5);
             return;
         }
         if (ForgeVersion.MC_1_7_10.L()) {
             Class clazz = MappedClasses.ZM;
-            boolean bl = Wrapper.G;
+            boolean bl = Wrapper.isNativeAvailable;
             String string = "CLOTH";
             MArmorMaterial mArmorMaterial = this;
-            this.L = mArmorMaterial.u(string, bl, clazz);
+            this.L = mArmorMaterial.registerStaticField(string, bl, clazz);
         } else {
             Class clazz = MappedClasses.ZM;
-            boolean bl = Wrapper.G;
+            boolean bl = Wrapper.isNativeAvailable;
             String string = "LEATHER";
             MArmorMaterial mArmorMaterial = this;
-            this.L = mArmorMaterial.u(string, bl, clazz);
+            this.L = mArmorMaterial.registerStaticField(string, bl, clazz);
         }
         Class clazz = MappedClasses.ZM;
-        boolean bl = Wrapper.G;
+        boolean bl = Wrapper.isNativeAvailable;
         String string = "CHAIN";
         MArmorMaterial mArmorMaterial = this;
-        this.F = mArmorMaterial.u(string, bl, clazz); 
+        this.F = mArmorMaterial.registerStaticField(string, bl, clazz);
         Class clazz6 = MappedClasses.ZM;
-        boolean bl6 = Wrapper.G;
+        boolean bl6 = Wrapper.isNativeAvailable;
         String string6 = "IRON";
         MArmorMaterial mArmorMaterial6 = this;
-        this.z = this.u(string6, bl6, clazz6);
+        this.z = this.registerStaticField(string6, bl6, clazz6);
         Class clazz7 = MappedClasses.ZM;
-        boolean bl7 = Wrapper.G;
+        boolean bl7 = Wrapper.isNativeAvailable;
         String string7 = "GOLD";
         MArmorMaterial mArmorMaterial7 = this;
-        this.A = this.u(string7, bl7, clazz7);
+        this.A = this.registerStaticField(string7, bl7, clazz7);
         Class clazz8 = MappedClasses.ZM;
-        boolean bl8 = Wrapper.G;
+        boolean bl8 = Wrapper.isNativeAvailable;
         String string8 = "DIAMOND";
         MArmorMaterial mArmorMaterial8 = this;
-        this.g = this.u(string8, bl8, clazz8);
+        this.g = this.registerStaticField(string8, bl8, clazz8);
     }
 
     public static Object v(MArmorMaterial mArmorMaterial) {

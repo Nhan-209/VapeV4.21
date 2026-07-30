@@ -73,11 +73,11 @@ extends FlowLayoutComponent {
             if (resetAction) {
                 ConfirmationDialogComponent.showStandard(this.L$src$Lgg_vape_ui_click_frame_Frame_$1djx6sa(), "Are you sure you want to reset all settings?", "Reset", "reset_circle", () -> this.handleResetConfirmed(profileSnapshotFrame));
             } else {
-                Profile profile = Vape.INSTANCE.getProfilesManager().o();
+                Profile profile = Vape.INSTANCE.getProfilesManager().getActiveProfileOrNull();
                 Profile snapshotProfile = this.getSnapshot().getProfile();
-                profile.a();
+                profile.captureCurrentState();
                 if (snapshotProfile != null && snapshotProfile.equals(profile)) {
-                    this.setSnapshot(snapshotProfile.n(false));
+                    this.setSnapshot(snapshotProfile.createSnapshot(false));
                 }
                 profileSnapshotFrame.setSnapshot(this.getSnapshot());
                 if (ClientSettings.INSTANCE.getActiveStack() instanceof ClickGuiFrameManager) {

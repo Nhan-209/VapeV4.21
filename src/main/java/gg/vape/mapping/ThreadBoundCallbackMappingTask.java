@@ -13,7 +13,7 @@ extends JavassistMappingTask {
     private static final String c = "#call();}";
 
     @Override
-    public void c() {
+    public void transform() {
         MappingMethod mappingMethod = Vape.INSTANCE.getMappings().hX.i;
         CtBehavior ctBehavior = this.F(mappingMethod);
         try {
@@ -28,4 +28,3 @@ extends JavassistMappingTask {
         super(MappedClasses.zg);
     }
 }
-

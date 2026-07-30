@@ -6,35 +6,34 @@ import gg.vape.protocol.packet.ZeusSerializablePacket;
 
 public class ServerUserDisplayNamePacket
 implements ZeusSerializablePacket {
-    private long S;
-    private String v;
+    private long userId;
+    private String displayName;
 
     public ServerUserDisplayNamePacket() {
     }
 
     @Override
     public void S(ZeusPacketBuffer zeusPacketBuffer) {
-        this.S = zeusPacketBuffer.long_a();
-        this.v = zeusPacketBuffer.v(16);
+        this.userId = zeusPacketBuffer.readLong();
+        this.displayName = zeusPacketBuffer.readString(16);
     }
 
-    public String N() {
-        return this.v;
+    public String getDisplayName() {
+        return this.displayName;
     }
 
-    public long y() {
-        return this.S;
+    public long getUserId() {
+        return this.userId;
     }
 
     @Override
     public void o(ZeusPacketBuffer zeusPacketBuffer) {
-        zeusPacketBuffer.v(this.S);
-        zeusPacketBuffer.y(this.v);
+        zeusPacketBuffer.writeLong(this.userId);
+        zeusPacketBuffer.writeString(this.displayName);
     }
 
-    public ServerUserDisplayNamePacket(UserModel userModel, String string) {
-        this.S = userModel.g();
-        this.v = string;
+    public ServerUserDisplayNamePacket(UserModel userModel, String displayName) {
+        this.userId = userModel.getId();
+        this.displayName = displayName;
     }
 }
-

@@ -34,21 +34,21 @@ public class InventoryCleanerProfile {
     public JsonObject toJson(boolean embedSharedPresets) {
         JsonObject jsonObject = new JsonObject();
         jsonObject.addProperty("name", this.name);
-        JsonArray jsonArray = new JsonArray();
+        JsonArray slotRulesJson = new JsonArray();
         for (SlotInventoryFilterRule rule : this.slotRules.values()) {
-            JsonObject jsonObject2 = rule.toJson(embedSharedPresets);
-            if (jsonObject2.entrySet().size() <= 1) continue;
-            jsonArray.add((JsonElement)jsonObject2);
+            JsonObject ruleJson = rule.toJson(embedSharedPresets);
+            if (ruleJson.entrySet().size() <= 1) continue;
+            slotRulesJson.add((JsonElement)ruleJson);
         }
-        if (jsonArray.size() > 0) {
-            jsonObject.add("slots", (JsonElement)jsonArray);
+        if (slotRulesJson.size() > 0) {
+            jsonObject.add("slots", (JsonElement)slotRulesJson);
         }
-        JsonArray jsonArray2 = new JsonArray();
+        JsonArray itemRulesJson = new JsonArray();
         for (ItemInventoryFilterRule itemRule : this.itemRules) {
-            jsonArray2.add((JsonElement)itemRule.toJson(embedSharedPresets));
+            itemRulesJson.add((JsonElement)itemRule.toJson(embedSharedPresets));
         }
-        if (jsonArray2.size() > 0) {
-            jsonObject.add("inventoryFilters", (JsonElement)jsonArray2);
+        if (itemRulesJson.size() > 0) {
+            jsonObject.add("inventoryFilters", (JsonElement)itemRulesJson);
         }
         jsonObject.addProperty("armor_mode", ((ModeSelection)this.armorMode.getValue()).getName());
         return jsonObject;
@@ -95,16 +95,16 @@ public class InventoryCleanerProfile {
         if (this.name.trim().isEmpty()) {
             this.assignDefaultName();
         }
-        JsonArray jsonArray = jsonObject.getAsJsonArray("slots");
-        for (int i = 0; i < jsonArray.size(); ++i) {
-            JsonObject jsonObject2 = jsonArray.get(i).getAsJsonObject();
-            slotInventoryFilterRule = new SlotInventoryFilterRule(jsonObject2);
+        JsonArray slotRulesJson = jsonObject.getAsJsonArray("slots");
+        for (int i = 0; i < slotRulesJson.size(); ++i) {
+            JsonObject ruleJson = slotRulesJson.get(i).getAsJsonObject();
+            slotInventoryFilterRule = new SlotInventoryFilterRule(ruleJson);
             this.slotRules.put(slotInventoryFilterRule.getSlot(), slotInventoryFilterRule);
         }
-        JsonArray jsonArray2 = jsonObject.getAsJsonArray("inventoryFilters");
-        if (jsonArray2 != null) {
-            for (int i = 0; i < jsonArray2.size(); ++i) {
-                JsonObject filterJson = jsonArray2.get(i).getAsJsonObject();
+        JsonArray itemRulesJson = jsonObject.getAsJsonArray("inventoryFilters");
+        if (itemRulesJson != null) {
+            for (int i = 0; i < itemRulesJson.size(); ++i) {
+                JsonObject filterJson = itemRulesJson.get(i).getAsJsonObject();
                 ItemInventoryFilterRule itemInventoryFilterRule = new ItemInventoryFilterRule(filterJson);
                 this.itemRules.add(itemInventoryFilterRule);
             }

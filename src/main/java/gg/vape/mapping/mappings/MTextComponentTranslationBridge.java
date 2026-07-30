@@ -27,7 +27,7 @@ extends Mapping {
     }
 
     public Object J(Object object) {
-        return this.K.L(object, new Object[0]);
+        return this.K.invokeObject(object, new Object[0]);
     }
 
     public static boolean C() {

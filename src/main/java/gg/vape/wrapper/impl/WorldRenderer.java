@@ -3,7 +3,7 @@ package gg.vape.wrapper.impl;
 import gg.vape.Vape;
 import gg.vape.mapping.mappings.MWorldRenderer;
 import gg.vape.wrapper.Wrapper;
-import gg.vape.wrapper.impl.ForgeVersion;
+
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 
@@ -14,7 +14,7 @@ extends Wrapper {
     }
 
     public void Q(boolean bl) {
-        MWorldRenderer.X(WorldRenderer.c.getMappings().qZ, this.I, bl);
+        MWorldRenderer.X(WorldRenderer.vapeInstance.getMappings().qZ, this.I, bl);
     }
 
 
@@ -24,10 +24,10 @@ extends Wrapper {
             return null;
         }
         if (ForgeVersion.MC_1_16_5.d()) {
-            ByteBuffer byteBuffer = (ByteBuffer)MWorldRenderer.t(WorldRenderer.c.getMappings().qZ, this.I);
+            ByteBuffer byteBuffer = (ByteBuffer)MWorldRenderer.t(WorldRenderer.vapeInstance.getMappings().qZ, this.I);
             return byteBuffer.asIntBuffer();
         }
-        return (IntBuffer)MWorldRenderer.v(WorldRenderer.c.getMappings().qZ, this.I);
+        return (IntBuffer)MWorldRenderer.v(WorldRenderer.vapeInstance.getMappings().qZ, this.I);
     }
 
     public int o(int n) {
@@ -35,7 +35,7 @@ extends Wrapper {
             Vape.notifyNativeStackTrace();
             return -1;
         }
-        return MWorldRenderer.G(WorldRenderer.c.getMappings().qZ, this.I, n);
+        return MWorldRenderer.G(WorldRenderer.vapeInstance.getMappings().qZ, this.I, n);
     }
 }
 

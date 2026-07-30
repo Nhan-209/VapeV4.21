@@ -22,7 +22,7 @@ extends Mapping {
     }
 
     public void K(Object object, int n, int n2, int n3, Object object2) {
-        this.Q.c(object, n, n2, n3, object2);
+        this.Q.invokeVoid(object, n, n2, n3, object2);
     }
 
     public static void G(String string) {
@@ -48,11 +48,11 @@ extends Mapping {
         if (ForgeVersion.MC_1_20_6.v()) {
             Class[] classArray = new Class[]{Integer.TYPE, Boolean.TYPE};
             MChunkSection mChunkSection = this;
-            this.y = mChunkSection.M(classArray).v(ForgeVersion.MC_1_16_5.n(), Integer.TYPE).s();
+            this.y = mChunkSection.constructorBuilder(classArray).setParameterTypesForVersion(ForgeVersion.MC_1_16_5.n(), Integer.TYPE).buildMethod();
             Class<Integer> clazz = Integer.TYPE;
             String string3 = "yBase";
             MChunkSection mChunkSection2 = this;
-            this.r = ((MappingFieldBuilder)((MappingFieldBuilder)this.T(string3, clazz).A(ForgeVersion.MC_1_16_5.n(), "field_76684_a")).i(ForgeVersion.MC_1_16_5.n(), Wrapper.G)).z();
+            this.r = ((MappingFieldBuilder)((MappingFieldBuilder)this.fieldBuilder(string3, clazz).setNameForVersion(ForgeVersion.MC_1_16_5.n(), "field_76684_a")).setMappedMemberForVersion(ForgeVersion.MC_1_16_5.n(), Wrapper.isNativeAvailable)).buildField();
         }
         if (ForgeVersion.MC_1_12_2.v()) {
             Class<char[]> clazz = char[].class;
@@ -65,11 +65,11 @@ extends Mapping {
         Class<Void> clazz = Void.TYPE;
         String string5 = "set";
         MChunkSection mChunkSection = this;
-        this.Q = ((MappingMethodBuilder)((MappingMethodBuilder)mChunkSection.u(string5, clazz, classArray).X(ForgeVersion.MC_1_16_5.n(), MappedClasses.Zl)).A(ForgeVersion.MC_1_16_5.n(), "setBlockState")).v(ForgeVersion.MC_1_16_5.n(), Integer.TYPE, Integer.TYPE, Integer.TYPE, MappedClasses.Zl, Boolean.TYPE).s(); 
+        this.Q = ((MappingMethodBuilder)((MappingMethodBuilder)mChunkSection.methodBuilder(string5, clazz, classArray).setTypeForVersion(ForgeVersion.MC_1_16_5.n(), MappedClasses.Zl)).setNameForVersion(ForgeVersion.MC_1_16_5.n(), "setBlockState")).setParameterTypesForVersion(ForgeVersion.MC_1_16_5.n(), Integer.TYPE, Integer.TYPE, Integer.TYPE, MappedClasses.Zl, Boolean.TYPE).buildMethod();
     }
 
     public Object J(Object object, int n, int n2, int n3, Object object2, boolean bl) {
-        return this.Q.L(object, n, n2, n3, object2, bl);
+        return this.Q.invokeObject(object, n, n2, n3, object2, bl);
     }
 
     static {
@@ -77,11 +77,11 @@ extends Mapping {
     }
 
     public Object i(int n) {
-        return this.y.O(n);
+        return this.y.newInstance(n);
     }
 
     public Object U(int n, boolean bl) {
-        return this.y.O(n, bl);
+        return this.y.newInstance(n, bl);
     }
 }
 

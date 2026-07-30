@@ -6,49 +6,48 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class PotionEntryBuilder {
-    private Short T;
-    private final Map<ForgeVersion, Integer> h = new LinkedHashMap<ForgeVersion, Integer>();
-    private ForgeVersion C;
-    private String r;
+    private Short legacyId;
+    private final Map<ForgeVersion, Integer> idsByVersion = new LinkedHashMap<ForgeVersion, Integer>();
+    private ForgeVersion supportedVersion;
+    private String name;
 
-    public PotionEntry H() {
+    public PotionEntry build() {
         return new PotionEntry(this);
     }
 
-    public static Map X(PotionEntryBuilder cw_12) {
-        return cw_12.h;
+    public static Map<ForgeVersion, Integer> getIdsByVersion(PotionEntryBuilder builder) {
+        return builder.idsByVersion;
     }
 
-    public PotionEntryBuilder s(short s) {
-        this.T = s;
+    public PotionEntryBuilder setLegacyId(short legacyId) {
+        this.legacyId = legacyId;
         return this;
     }
 
-    public static ForgeVersion l(PotionEntryBuilder cw_12) {
-        return cw_12.C;
+    public static ForgeVersion getSupportedVersion(PotionEntryBuilder builder) {
+        return builder.supportedVersion;
     }
 
-    public PotionEntryBuilder w(String string) {
-        this.r = string;
+    public PotionEntryBuilder setName(String name) {
+        this.name = name;
         return this;
     }
 
-    public PotionEntryBuilder X(ForgeVersion y7) {
-        this.C = y7;
+    public PotionEntryBuilder setSupportedVersion(ForgeVersion supportedVersion) {
+        this.supportedVersion = supportedVersion;
         return this;
     }
 
-    public PotionEntryBuilder J(ForgeVersion y7, int n) {
-        this.h.put(y7, n);
+    public PotionEntryBuilder addId(ForgeVersion version, int id) {
+        this.idsByVersion.put(version, id);
         return this;
     }
 
-    public static String y(PotionEntryBuilder cw_12) {
-        return cw_12.r;
+    public static String getName(PotionEntryBuilder builder) {
+        return builder.name;
     }
 
-    public static Short g(PotionEntryBuilder cw_12) {
-        return cw_12.T;
+    public static Short getLegacyId(PotionEntryBuilder builder) {
+        return builder.legacyId;
     }
 }
-

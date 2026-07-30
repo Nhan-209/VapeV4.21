@@ -42,10 +42,10 @@ extends SubModule<ESP> {
         if (OffscreenRenderContext.isRenderingOffscreen()) {
             return;
         }
-        if (Vape.INSTANCE.getClientSettings().J(event.getEntity()) && this.parentEsp.hideBots.getEffectiveValue().booleanValue()) {
+        if (Vape.INSTANCE.getClientSettings().isBot(event.getEntity()) && this.parentEsp.hideBots.getEffectiveValue().booleanValue()) {
             return;
         }
-        if (this.parentEsp.enemyOnly.getEffectiveValue().booleanValue() && (this.parentEsp.enemyListOnly.getEffectiveValue() != false ? !Vape.INSTANCE.getEnemyManager().q(event.getEntity().getName()) : !Vape.INSTANCE.getClientSettings().g(event.getEntity(), false))) {
+        if (this.parentEsp.enemyOnly.getEffectiveValue().booleanValue() && (this.parentEsp.enemyListOnly.getEffectiveValue() != false ? !Vape.INSTANCE.getEnemyManager().isEnemy(event.getEntity().getName()) : !Vape.INSTANCE.getClientSettings().isValidTarget(event.getEntity(), false))) {
             return;
         }
         if (event.getWorld().isNull()) {
@@ -79,10 +79,10 @@ extends SubModule<ESP> {
         if (OffscreenRenderContext.isRenderingOffscreen()) {
             return;
         }
-        if (Vape.INSTANCE.getClientSettings().J(event.getEntity()) && this.parentEsp.hideBots.getEffectiveValue().booleanValue()) {
+        if (Vape.INSTANCE.getClientSettings().isBot(event.getEntity()) && this.parentEsp.hideBots.getEffectiveValue().booleanValue()) {
             return;
         }
-        if (this.parentEsp.enemyOnly.getEffectiveValue().booleanValue() && (this.parentEsp.enemyListOnly.getEffectiveValue() != false ? !Vape.INSTANCE.getEnemyManager().q(event.getEntity().getName()) : !Vape.INSTANCE.getClientSettings().g(event.getEntity(), false))) {
+        if (this.parentEsp.enemyOnly.getEffectiveValue().booleanValue() && (this.parentEsp.enemyListOnly.getEffectiveValue() != false ? !Vape.INSTANCE.getEnemyManager().isEnemy(event.getEntity().getName()) : !Vape.INSTANCE.getClientSettings().isValidTarget(event.getEntity(), false))) {
             return;
         }
         if (event.getWorld().isNull()) {
@@ -123,10 +123,10 @@ extends SubModule<ESP> {
         if (OffscreenRenderContext.isRenderingOffscreen()) {
             return;
         }
-        if (Vape.INSTANCE.getClientSettings().J(event.getClientPlayer()) && this.parentEsp.hideBots.getEffectiveValue().booleanValue()) {
+        if (Vape.INSTANCE.getClientSettings().isBot(event.getClientPlayer()) && this.parentEsp.hideBots.getEffectiveValue().booleanValue()) {
             return;
         }
-        if (this.parentEsp.enemyOnly.getEffectiveValue().booleanValue() && (this.parentEsp.enemyListOnly.getEffectiveValue() != false ? !Vape.INSTANCE.getEnemyManager().q(event.getClientPlayer().getName()) : !Vape.INSTANCE.getClientSettings().g(event.getClientPlayer(), false))) {
+        if (this.parentEsp.enemyOnly.getEffectiveValue().booleanValue() && (this.parentEsp.enemyListOnly.getEffectiveValue() != false ? !Vape.INSTANCE.getEnemyManager().isEnemy(event.getClientPlayer().getName()) : !Vape.INSTANCE.getClientSettings().isValidTarget(event.getClientPlayer(), false))) {
             return;
         }
         if (event.getWorld().isNull()) {
@@ -164,7 +164,7 @@ extends SubModule<ESP> {
         for (Object entityHandle : world.z()) {
             Entity entity = new Entity(entityHandle);
             MutableColor color = this.parentEsp.resolveEntityColor(event.getThePlayer(), entity);
-            if (color == null || this.parentEsp.enemyOnly.getEffectiveValue().booleanValue() && (this.parentEsp.enemyListOnly.getEffectiveValue() == false ? !Vape.INSTANCE.getClientSettings().g(entity, false) : !Vape.INSTANCE.getEnemyManager().q(entity.getName()))) continue;
+            if (color == null || this.parentEsp.enemyOnly.getEffectiveValue().booleanValue() && (this.parentEsp.enemyListOnly.getEffectiveValue() == false ? !Vape.INSTANCE.getClientSettings().isValidTarget(entity, false) : !Vape.INSTANCE.getEnemyManager().isEnemy(entity.getName()))) continue;
             if (entity.equals(viewer) || !entity.isInstance(MappedClasses.Yl)) continue;
             double previousX = entity.M();
             double previousY = entity.W();

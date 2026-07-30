@@ -3,18 +3,16 @@ package gg.vape.wrapper.impl;
 import gg.vape.mapping.mappings.MMovementInput;
 import gg.vape.module.render.freecam.FreecamMovementInputBridge;
 import gg.vape.wrapper.Wrapper;
-import gg.vape.wrapper.impl.ForgeVersion;
-import gg.vape.wrapper.impl.PlayerInput;
 
 public class MovementInput
 extends Wrapper {
     public void B(float f) {
         if (ForgeVersion.MC_1_21_6.d()) {
-            PlayerInput playerInput = new PlayerInput(MMovementInput.W(MovementInput.c.getMappings().h7, this.I));
+            PlayerInput playerInput = new PlayerInput(MMovementInput.W(MovementInput.vapeInstance.getMappings().h7, this.I));
             playerInput.A(f);
             return;
         }
-        MMovementInput.p(MovementInput.c.getMappings().h7, this.I, f);
+        MMovementInput.p(MovementInput.vapeInstance.getMappings().h7, this.I, f);
     }
 
     public MovementInput(Object object) {
@@ -22,28 +20,28 @@ extends Wrapper {
     }
 
     public void setFreecamInput(FreecamMovementInputBridge freecamMovementInputBridge) {
-        MMovementInput.x(MovementInput.c.getMappings().h7, this.I, freecamMovementInputBridge.getObject());
+        MMovementInput.x(MovementInput.vapeInstance.getMappings().h7, this.I, freecamMovementInputBridge.getObject());
     }
 
     public void M(float f) {
         if (ForgeVersion.MC_1_21_6.d()) {
-            PlayerInput playerInput = new PlayerInput(MMovementInput.W(MovementInput.c.getMappings().h7, this.I));
+            PlayerInput playerInput = new PlayerInput(MMovementInput.W(MovementInput.vapeInstance.getMappings().h7, this.I));
             playerInput.N(f);
             return;
         }
-        MMovementInput.j(MovementInput.c.getMappings().h7, this.I, f);
+        MMovementInput.j(MovementInput.vapeInstance.getMappings().h7, this.I, f);
     }
 
     public FreecamMovementInputBridge getFreecamInput() {
-        return new FreecamMovementInputBridge(MMovementInput.x(MovementInput.c.getMappings().h7, this.I));
+        return new FreecamMovementInputBridge(MMovementInput.x(MovementInput.vapeInstance.getMappings().h7, this.I));
     }
 
     public float T() {
         if (ForgeVersion.MC_1_21_6.d()) {
-            PlayerInput playerInput = new PlayerInput(MMovementInput.W(MovementInput.c.getMappings().h7, this.I));
+            PlayerInput playerInput = new PlayerInput(MMovementInput.W(MovementInput.vapeInstance.getMappings().h7, this.I));
             return playerInput.P();
         }
-        return MMovementInput.b(MovementInput.c.getMappings().h7, this.I);
+        return MMovementInput.b(MovementInput.vapeInstance.getMappings().h7, this.I);
     }
 
     public void V(boolean bl) {
@@ -51,15 +49,15 @@ extends Wrapper {
             this.getFreecamInput().setJumping(bl);
             return;
         }
-        MMovementInput.H(MovementInput.c.getMappings().h7, this.I, bl);
+        MMovementInput.H(MovementInput.vapeInstance.getMappings().h7, this.I, bl);
     }
 
     public float D() {
         if (ForgeVersion.MC_1_21_6.d()) {
-            PlayerInput playerInput = new PlayerInput(MMovementInput.W(MovementInput.c.getMappings().h7, this.I));
+            PlayerInput playerInput = new PlayerInput(MMovementInput.W(MovementInput.vapeInstance.getMappings().h7, this.I));
             return playerInput.Z();
         }
-        return MMovementInput.f(MovementInput.c.getMappings().h7, this.I);
+        return MMovementInput.f(MovementInput.vapeInstance.getMappings().h7, this.I);
     }
 
 
@@ -67,7 +65,7 @@ extends Wrapper {
         if (ForgeVersion.MC_1_21_4.d()) {
             return this.getFreecamInput().isJumping();
         }
-        return MMovementInput.j(MovementInput.c.getMappings().h7, this.I);
+        return MMovementInput.j(MovementInput.vapeInstance.getMappings().h7, this.I);
     }
 
     public void setCancelled(boolean bl) {
@@ -75,14 +73,14 @@ extends Wrapper {
             this.getFreecamInput().setSneaking(bl);
             return;
         }
-        MMovementInput.V(MovementInput.c.getMappings().h7, this.I, bl);
+        MMovementInput.V(MovementInput.vapeInstance.getMappings().h7, this.I, bl);
     }
 
     public boolean D$src$Z$v5d6e8() {
         if (ForgeVersion.MC_1_21_4.d()) {
             return this.getFreecamInput().isSneaking();
         }
-        return MMovementInput.R(MovementInput.c.getMappings().h7, this.I);
+        return MMovementInput.R(MovementInput.vapeInstance.getMappings().h7, this.I);
     }
 }
 

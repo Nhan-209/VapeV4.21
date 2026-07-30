@@ -14,7 +14,7 @@ extends Mapping {
     private static final String b = "m_142232_";
 
     public void V(Object object, Object object2, Consumer consumer) {
-        this.d.c(object, object2, consumer);
+        this.d.invokeVoid(object, object2, consumer);
     }
 
     public MWorldCollisionConsumerBridge() {

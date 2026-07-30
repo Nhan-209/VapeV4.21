@@ -12,7 +12,7 @@ extends Mapping {
     private MappingMethod S;
 
     private Object L(double d, double d2, double d3, boolean bl) {
-        return this.S.O(d, d2, d3, bl);
+        return this.S.newInstance(d, d2, d3, bl);
     }
 
     public MCPacketPlayer_Position() {
@@ -71,7 +71,7 @@ extends Mapping {
     }
 
     public Object R(double d, double d2, double d3, boolean bl, boolean bl2) {
-        return this.S.O(d, d2, d3, bl, bl2);
+        return this.S.newInstance(d, d2, d3, bl, bl2);
     }
 
     public static Object T(MCPacketPlayer_Position mCPacketPlayer_Position, double d, double d2, double d3, boolean bl) {
@@ -80,7 +80,7 @@ extends Mapping {
 
 
     public Object U(double d, double d2, double d3, double d4, boolean bl) {
-        return this.S.O(d, d2, d3, d4, bl);
+        return this.S.newInstance(d, d2, d3, d4, bl);
     }
 }
 

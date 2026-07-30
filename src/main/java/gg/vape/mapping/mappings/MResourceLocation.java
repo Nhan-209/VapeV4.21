@@ -39,7 +39,7 @@ extends Mapping {
                 boolean bl = true;
                 String string = "parse";
                 MResourceLocation mResourceLocation = this;
-                this.O = mResourceLocation.x(string, bl, clazz, classArray);
+                this.O = mResourceLocation.registerStaticMethod(string, bl, clazz, classArray);
             } else {
                 Class[] classArray = new Class[]{String.class};
                 Class<Void> clazz = Void.TYPE;
@@ -62,7 +62,7 @@ extends Mapping {
             boolean bl2 = true;
             String string2 = "parse";
             MResourceLocation mResourceLocation2 = this;
-            mResourceLocation2.x(string2, bl2, clazz2, classArray2);
+            mResourceLocation2.registerStaticMethod(string2, bl2, clazz2, classArray2);
         }
         Class[] classArray3 = new Class[]{String.class};
         Class<Void> clazz3 = Void.TYPE;
@@ -74,14 +74,14 @@ extends Mapping {
 
 
     public String s(Object object) {
-        return (String)this.A.L(object, new Object[0]);
+        return (String)this.A.invokeObject(object, new Object[0]);
     }
 
     public Object o(String string) {
         if (ForgeVersion.MC_1_21_0.d()) {
-            return this.O.L(null, string);
+            return this.O.invokeObject(null, string);
         }
-        return this.O.O(string);
+        return this.O.newInstance(string);
     }
 }
 

@@ -6,7 +6,7 @@ import gg.vape.wrapper.Wrapper;
 public class EnumHandValueBridge
 extends Wrapper {
     public static EnumHandValueBridge v() {
-        return new EnumHandValueBridge(MEnumHandBridge.c(EnumHandValueBridge.c.getMappingsMapperCompat().hR));
+        return new EnumHandValueBridge(MEnumHandBridge.c(EnumHandValueBridge.vapeInstance.getMappingsMapperCompat().hR));
     }
 
     public EnumHandValueBridge(Object object) {

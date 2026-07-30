@@ -13,21 +13,21 @@ import gg.vape.utils.render.GuiRenderPrimitives;
 
 public class PartyDetailsAndChatPanel
 extends PanelComponent {
-    private final PartyDetailsPanel V1;
-    private final PartyState Vu;
-    private static int VI;
-    private final PanelComponent VH = new PanelComponent(100.0, 24.0);
-    private static final String db;
-    private OnlineChatPanel VK = new OnlineChatPanel(new PartyChatSender());
+    private final PartyDetailsPanel detailsPanel;
+    private final PartyState partyState;
+    private static int obfuscationSeed;
+    private final PanelComponent reservedHeaderPanel = new PanelComponent(100.0, 24.0);
+    private static final String WRAP_LAYOUT;
+    private final OnlineChatPanel chatPanel = new OnlineChatPanel(new PartyChatSender());
 
-    public static int W() {
-        int n = PartyDetailsAndChatPanel.H$src$I$1japgko();
+    public static int getReservedZero() {
+        int reserved = PartyDetailsAndChatPanel.getObfuscationSeed();
         return 0;
     }
 
     @Override
     public double C() {
-        return this.VH.L() + this.VK.L() - 5.0;
+        return this.reservedHeaderPanel.L() + this.chatPanel.L() - 5.0;
     }
 
     @Override
@@ -40,43 +40,43 @@ extends PanelComponent {
 
     public PartyDetailsAndChatPanel(PartyState partyState) {
         super(99.0, 24.0);
-        this.Vu = partyState;
-        this.VH.setShowDisabledOverlay(false);
-        this.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M(db);
+        this.partyState = partyState;
+        this.reservedHeaderPanel.setShowDisabledOverlay(false);
+        this.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M(WRAP_LAYOUT);
         this.setShowDisabledOverlay(false);
         GuiComponent[] guiComponentArray = new GuiComponent[2];
-        this.V1 = new PartyDetailsPanel(this.Vu);
-        guiComponentArray[0] = new PaddedComponent(4.0, this.V1);
-        guiComponentArray[1] = this.VK;
+        this.detailsPanel = new PartyDetailsPanel(this.partyState);
+        guiComponentArray[0] = new PaddedComponent(4.0, this.detailsPanel);
+        guiComponentArray[1] = this.chatPanel;
         this.addChildren(guiComponentArray);
-        for (PartyMemberRow partyMemberRow : partyState.d()) {
-            this.VK.z().b(partyMemberRow);
+        for (PartyMemberRow partyMemberRow : partyState.getChatRows()) {
+            this.chatPanel.getMessageListPanel().addMessageRow(partyMemberRow);
         }
     }
 
-    public static int H$src$I$1japgko() {
-        return VI;
+    public static int getObfuscationSeed() {
+        return obfuscationSeed;
     }
 
     static {
-        PartyDetailsAndChatPanel.J(26);
-        db = "wrap";
+        PartyDetailsAndChatPanel.setObfuscationSeed(26);
+        WRAP_LAYOUT = "wrap";
     }
 
     @Override
     public void z(boolean bl) {
     }
 
-    public static void J(int n) {
-        VI = n;
+    public static void setObfuscationSeed(int seed) {
+        obfuscationSeed = seed;
     }
 
-    public IconButtonComponent e$src$Lgg_vape_ui_click_component_IconButtonComponent_$pbqe5z() {
-        return this.V1.Y$src$Lgg_vape_ui_click_component_IconButtonComponent_$16i1alc();
+    public IconButtonComponent getCloseButton() {
+        return this.detailsPanel.getCloseButton();
     }
 
-    public OnlineChatPanel e$src$Lgg_vape_friend_ui_OnlineChatPanel_$1fym7va() {
-        return this.VK;
+    public OnlineChatPanel getChatPanel() {
+        return this.chatPanel;
     }
 
 

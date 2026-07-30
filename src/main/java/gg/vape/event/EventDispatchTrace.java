@@ -6,38 +6,37 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class EventDispatchTrace {
-    private final List<EventListenerTiming> t = new ArrayList<EventListenerTiming>();
-    private final Class<? extends IEvent> o;
-    private final long y;
-    private long U;
+    private final List<EventListenerTiming> listenerTimings = new ArrayList<EventListenerTiming>();
+    private final Class<? extends IEvent> eventType;
+    private final long startNanos;
+    private long endNanos;
 
-    public EventDispatchTrace(Class<? extends IEvent> clazz) {
-        this.o = clazz;
-        this.y = System.nanoTime();
+    public EventDispatchTrace(Class<? extends IEvent> eventType) {
+        this.eventType = eventType;
+        this.startNanos = System.nanoTime();
     }
 
     public long getDurationNanos() {
-        return this.U - this.y;
+        return this.endNanos - this.startNanos;
     }
 
     public List<EventListenerTiming> getListenerTimings() {
-        return this.t;
+        return this.listenerTimings;
     }
 
     public long getStartNanos() {
-        return this.y;
+        return this.startNanos;
     }
 
     public void finish() {
-        this.U = System.nanoTime();
+        this.endNanos = System.nanoTime();
     }
 
     public void addListenerTiming(EventListenerTiming eventListenerTiming) {
-        this.t.add(eventListenerTiming);
+        this.listenerTimings.add(eventListenerTiming);
     }
 
     public Class<? extends IEvent> getEventType() {
-        return this.o;
+        return this.eventType;
     }
 }
-

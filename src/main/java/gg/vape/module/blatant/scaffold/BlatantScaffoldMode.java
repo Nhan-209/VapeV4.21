@@ -304,7 +304,7 @@ extends SubModule<Scaffold> {
             MovementInputHelper.releaseMovementKeys();
             return true;
         }
-        if (!ClientSettings.B(this.backwardKey)) {
+        if (!ClientSettings.isPhysicalKeyDown(this.backwardKey)) {
             if (!player.C$src$Lgg_vape_wrapper_impl_ModelPlayer_$19uhx86().isFlying() && !this.isNextBlockEmpty(player)) {
                 return false;
             }
@@ -424,7 +424,7 @@ extends SubModule<Scaffold> {
                 this.reversed = this.shouldReverse(this.direction);
                 this.targetPos = this.computePlacementPoint(new double[]{this.placePos[0], this.placePos[2]}, this.direction, this.reversed);
                 this.heldBlock = player.B$src$Lgg_vape_wrapper_impl_ItemStack_$impdvt();
-                if (!ClientSettings.B(Minecraft.gameSettings().O()) && !player.C$src$Lgg_vape_wrapper_impl_ModelPlayer_$19uhx86().isFlying()) {
+                if (!ClientSettings.isPhysicalKeyDown(Minecraft.gameSettings().O()) && !player.C$src$Lgg_vape_wrapper_impl_ModelPlayer_$19uhx86().isFlying()) {
                     this.startMoveTaskNoTurn(this.targetPos, true, false, 40);
                     this.targetRotation = this.computeDiagonalRotation(player, this.reversed);
                     this.scaffold.applyFixedRotation(this.targetRotation, this.computeRotationSpeed(this.targetRotation, 15));
@@ -477,8 +477,8 @@ extends SubModule<Scaffold> {
             return true;
         }
 
-        boolean leftPressed = ClientSettings.B(Minecraft.gameSettings().x$src$Lgg_vape_wrapper_impl_KeyBinding_$1cf7isg());
-        boolean rightPressed = ClientSettings.B(Minecraft.gameSettings().g$src$Lgg_vape_wrapper_impl_KeyBinding_$qqn5n3());
+        boolean leftPressed = ClientSettings.isPhysicalKeyDown(Minecraft.gameSettings().x$src$Lgg_vape_wrapper_impl_KeyBinding_$1cf7isg());
+        boolean rightPressed = ClientSettings.isPhysicalKeyDown(Minecraft.gameSettings().g$src$Lgg_vape_wrapper_impl_KeyBinding_$qqn5n3());
         if (!this.switching) {
             boolean leftTransition;
             boolean rightTransition;

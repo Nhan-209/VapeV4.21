@@ -13,23 +13,23 @@ extends Wrapper {
                     this.isSneaking(), sprinting);
             return;
         }
-        FreecamMovementInputBridge.c.getMappingsMapperCompat().Cc.K(this.I, sprinting);
+        FreecamMovementInputBridge.vapeInstance.getMappingsMapperCompat().Cc.K(this.I, sprinting);
     }
 
     public boolean isSneaking() {
-        return FreecamMovementInputBridge.c.getMappingsMapperCompat().Cc.r(this.I);
+        return FreecamMovementInputBridge.vapeInstance.getMappingsMapperCompat().Cc.r(this.I);
     }
 
     public boolean isMovingForward() {
-        return FreecamMovementInputBridge.c.getMappingsMapperCompat().Cc.H(this.I);
+        return FreecamMovementInputBridge.vapeInstance.getMappingsMapperCompat().Cc.H(this.I);
     }
 
     public boolean isMovingBackward() {
-        return FreecamMovementInputBridge.c.getMappingsMapperCompat().Cc.W(this.I);
+        return FreecamMovementInputBridge.vapeInstance.getMappingsMapperCompat().Cc.W(this.I);
     }
 
     public boolean isMovingLeft() {
-        return FreecamMovementInputBridge.c.getMappingsMapperCompat().Cc.K(this.I);
+        return FreecamMovementInputBridge.vapeInstance.getMappingsMapperCompat().Cc.K(this.I);
     }
 
     public FreecamMovementInputBridge(Object object) {
@@ -40,14 +40,14 @@ extends Wrapper {
     private void applyMovementInput(boolean forward, boolean backward, boolean left,
             boolean right, boolean jump, boolean sneak, boolean sprint) {
         FreecamMovementInputBridge input = new FreecamMovementInputBridge(
-                FreecamMovementInputBridge.c.getMappingsMapperCompat().Cc.z(
+                FreecamMovementInputBridge.vapeInstance.getMappingsMapperCompat().Cc.z(
                         forward, backward, left, right, jump, sneak, sprint));
         this.I = input.getObject();
         Minecraft.a_xH_J().a_jw_2_I().setFreecamInput(input);
     }
 
     public boolean isSprinting() {
-        return FreecamMovementInputBridge.c.getMappingsMapperCompat().Cc.Y(this.I);
+        return FreecamMovementInputBridge.vapeInstance.getMappingsMapperCompat().Cc.Y(this.I);
     }
 
     public void setSneaking(boolean sneaking) {
@@ -57,11 +57,11 @@ extends Wrapper {
                     sneaking, this.isSprinting());
             return;
         }
-        FreecamMovementInputBridge.c.getMappingsMapperCompat().Cc.V(this.I, sneaking);
+        FreecamMovementInputBridge.vapeInstance.getMappingsMapperCompat().Cc.V(this.I, sneaking);
     }
 
     public boolean isMovingRight() {
-        return FreecamMovementInputBridge.c.getMappingsMapperCompat().Cc.A(this.I);
+        return FreecamMovementInputBridge.vapeInstance.getMappingsMapperCompat().Cc.A(this.I);
     }
 
     public void setJumping(boolean jumping) {
@@ -71,11 +71,11 @@ extends Wrapper {
                     this.isSneaking(), this.isSprinting());
             return;
         }
-        FreecamMovementInputBridge.c.getMappingsMapperCompat().Cc.A(this.I, jumping);
+        FreecamMovementInputBridge.vapeInstance.getMappingsMapperCompat().Cc.A(this.I, jumping);
     }
 
     public boolean isJumping() {
-        return FreecamMovementInputBridge.c.getMappingsMapperCompat().Cc.p(this.I);
+        return FreecamMovementInputBridge.vapeInstance.getMappingsMapperCompat().Cc.p(this.I);
     }
 }
 

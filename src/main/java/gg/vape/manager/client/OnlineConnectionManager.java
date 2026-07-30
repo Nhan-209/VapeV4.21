@@ -62,337 +62,338 @@ import java.util.function.Consumer;
 import org.jetbrains.annotations.Nullable;
 
 public class OnlineConnectionManager {
-    private long x = -1L;
-    private boolean z = false;
-    public static final OnlineConnectionManager T;
-    private OnlineAccountState y;
-    private final TimerUtil p;
-    private static final String b;
-    private boolean m = false;
-    private boolean i = false;
-    private boolean Z = false;
-    private OnlineConnectionState v = OnlineConnectionState.OFFLINE;
+    private long nextReconnectAt = -1L;
+    private boolean hasConnectedSuccessfully = false;
+    public static final OnlineConnectionManager INSTANCE;
+    private OnlineAccountState accountState;
+    private final TimerUtil friendRequestNotificationTimer;
+    private static final String JOINED_PARTY_SUFFIX;
+    private boolean initializationStarted = false;
+    private boolean manualDisconnectRequested = false;
+    private boolean listenersRegistered = false;
+    private OnlineConnectionState connectionState = OnlineConnectionState.OFFLINE;
     @Nullable
-    private Thread u;
-    private final OnlineSettings Y;
-    private final GlobalSettingsController w;
+    private Thread connectionThread;
+    private final OnlineSettings settings;
+    private final GlobalSettingsController globalSettingsController;
     @Nullable
-    private OnlineDisconnectReason B;
-    private int r;
+    private OnlineDisconnectReason disconnectReason;
+    private int reconnectAttemptCount;
 
-    private static void lambda$setState$5(OnlineConnectionState onlineConnectionState) {
+    private static void updateConnectionStateUi(OnlineConnectionState onlineConnectionState) {
         OnlineConnectionSettingsFrame.updateConnectionStateIfCreated(onlineConnectionState);
     }
 
-    private static void lambda$setupListeners$12(FriendRequestReceivedEvent friendRequestReceivedEvent) {
-        Vape.INSTANCE.getOnlineManager().D().O(new IncomingFriendRequest(friendRequestReceivedEvent.q()));
+    private static void handleFriendRequestReceived(FriendRequestReceivedEvent friendRequestReceivedEvent) {
+        Vape.INSTANCE.getOnlineManager().getFriendRequestManager().addRequest(new IncomingFriendRequest(friendRequestReceivedEvent.q()));
     }
 
-    public void k(boolean bl) {
-        this.i = bl;
+    public void setManualDisconnectRequested(boolean manualDisconnectRequested) {
+        this.manualDisconnectRequested = manualDisconnectRequested;
     }
 
-    public OnlineAccountState j() {
-        return this.y;
+    public OnlineAccountState getAccountState() {
+        return this.accountState;
     }
 
-    private static void lambda$setupListeners$30(PartyLeaderChangedEvent partyLeaderChangedEvent) {
-        PartyState partyState = Vape.INSTANCE.getOnlineManager().y().j();
+    private static void handlePartyLeaderChanged(PartyLeaderChangedEvent partyLeaderChangedEvent) {
+        PartyState partyState = Vape.INSTANCE.getOnlineManager().getPartyManager().getCurrentParty();
         if (partyState == null) {
             return;
         }
-        OnlineFriend onlineFriend = partyState.X(partyLeaderChangedEvent.z());
+        OnlineFriend onlineFriend = partyState.findMember(partyLeaderChangedEvent.z());
         if (onlineFriend == null) {
             return;
         }
-        partyState.H(onlineFriend);
+        partyState.setLeader(onlineFriend);
     }
 
-    private void lambda$null$2(AtomicReference atomicReference) {
-        OnlineDisconnectReason onlineDisconnectReason = this.B;
-        OnlineConnectionState onlineConnectionState = this.v;
+    private void handleDisconnected(AtomicReference<Thread> connectionThreadReference) {
+        OnlineDisconnectReason onlineDisconnectReason = this.disconnectReason;
+        OnlineConnectionState onlineConnectionState = this.connectionState;
         if (onlineConnectionState == OnlineConnectionState.OUTDATED_CLIENT) {
             return;
         }
         if (onlineConnectionState != OnlineConnectionState.OUTDATED_SERVER) {
-            this.l(OnlineConnectionState.OFFLINE);
+            this.setConnectionState(OnlineConnectionState.OFFLINE);
         }
         if (onlineDisconnectReason == OnlineDisconnectReason.LOGGED_IN_FROM_ANOTHER_LOCATION) {
-            ClientSettings.getFrame(OnlineFriendsFrame.class).e();
+            ClientSettings.getFrame(OnlineFriendsFrame.class).closeRegistrationIfOpen();
             return;
         }
         if (onlineDisconnectReason == OnlineDisconnectReason.BANNED) {
-            this.o(OnlineAccountState.BANNED);
+            this.setAccountState(OnlineAccountState.BANNED);
             return;
         }
-        if (!this.i && (onlineDisconnectReason == null || onlineDisconnectReason.Z())) {
-            int n;
-            if ((n = 5 * ++this.r) > 30 || onlineConnectionState == OnlineConnectionState.OUTDATED_SERVER) {
-                n = 30;
+        if (!this.manualDisconnectRequested && (onlineDisconnectReason == null || onlineDisconnectReason.allowsAutomaticReconnect())) {
+            int reconnectDelaySeconds;
+            if ((reconnectDelaySeconds = 5 * ++this.reconnectAttemptCount) > 30 || onlineConnectionState == OnlineConnectionState.OUTDATED_SERVER) {
+                reconnectDelaySeconds = 30;
             }
             try {
-                this.x = System.currentTimeMillis() + (long)(n *= 1000);
-                Thread.sleep(n);
+                int reconnectDelayMillis = reconnectDelaySeconds * 1000;
+                this.nextReconnectAt = System.currentTimeMillis() + reconnectDelayMillis;
+                Thread.sleep(reconnectDelayMillis);
             }
             catch (InterruptedException interruptedException) {
-                this.x = -1L;
+                this.nextReconnectAt = -1L;
                 return;
             }
-            if (this.u == atomicReference.get()) {
-                this.I();
+            if (this.connectionThread == connectionThreadReference.get()) {
+                this.connect();
             }
-            this.x = -1L;
+            this.nextReconnectAt = -1L;
         }
     }
 
-    private static void lambda$setAccountState$6(OnlineAccountState onlineAccountState, OnlineConnectionState onlineConnectionState) {
+    private static void updateAccountStateUi(OnlineAccountState onlineAccountState, OnlineConnectionState onlineConnectionState) {
         OnlineConnectionSettingsFrame.updateAccountStateIfCreated(onlineAccountState, onlineConnectionState);
     }
 
-    private static OnlineFriend lambda$null$24(FriendRequestEvent friendRequestEvent) {
+    private static OnlineFriend createFriendFromRequestEvent(FriendRequestEvent friendRequestEvent) {
         return new OnlineFriend(friendRequestEvent.f());
     }
 
-    public OnlineConnectionState n() {
-        return this.v;
+    public OnlineConnectionState getConnectionState() {
+        return this.connectionState;
     }
 
-    private static void lambda$setupListeners$18(Consumer consumer, GroupInviteAcceptedEvent groupInviteAcceptedEvent) {
-        consumer.accept(groupInviteAcceptedEvent.P());
+    private static void forwardAcceptedParty(Consumer<PartyState> partyConsumer, GroupInviteAcceptedEvent groupInviteAcceptedEvent) {
+        partyConsumer.accept(groupInviteAcceptedEvent.P());
     }
 
-    private static void lambda$setupListeners$36(FriendServerAddressEvent friendServerAddressEvent) {
-        OnlineFriend onlineFriend = Vape.INSTANCE.getOnlineManager().u().m(friendServerAddressEvent.a());
+    private static void handleFriendServerAddress(FriendServerAddressEvent friendServerAddressEvent) {
+        OnlineFriend onlineFriend = Vape.INSTANCE.getOnlineManager().getFriendCache().getFriend(friendServerAddressEvent.a());
         if (onlineFriend != null) {
-            onlineFriend.V(friendServerAddressEvent.Z());
+            onlineFriend.setMinecraftServer(friendServerAddressEvent.Z());
         }
     }
 
-    public void a() {
-        this.Q();
-        this.x = -1L;
-        if (this.u != null) {
+    public void cancelConnectionAttempt() {
+        this.disconnect();
+        this.nextReconnectAt = -1L;
+        if (this.connectionThread != null) {
             try {
-                this.u.interrupt();
-                this.u = null;
+                this.connectionThread.interrupt();
+                this.connectionThread = null;
             }
             catch (Throwable throwable) {
                 Vape.logThrowable(throwable);
             }
         }
-        this.l(OnlineConnectionState.OFFLINE);
+        this.setConnectionState(OnlineConnectionState.OFFLINE);
     }
 
-    private static void lambda$setupListeners$20(Runnable runnable, GroupDeletedEvent groupDeletedEvent) {
-        runnable.run();
+    private static void handleGroupDeleted(Runnable clearPartyState, GroupDeletedEvent groupDeletedEvent) {
+        clearPartyState.run();
     }
 
-    private static void lambda$setupListeners$26(GroupInviteSentEvent groupInviteSentEvent) {
-        PartyState partyState = Vape.INSTANCE.getOnlineManager().y().j();
+    private static void handleGroupInviteSent(GroupInviteSentEvent groupInviteSentEvent) {
+        PartyState partyState = Vape.INSTANCE.getOnlineManager().getPartyManager().getCurrentParty();
         if (partyState == null) {
             return;
         }
-        partyState.o(groupInviteSentEvent.n());
+        partyState.addInvitedUser(groupInviteSentEvent.n());
     }
 
-    private void x() {
-        String string = ApiAccessTokenProvider.i();
-        ZeusConnectionManager.T().u().J(string, this::lambda$startup$4);
+    private void authenticate() {
+        String accessToken = ApiAccessTokenProvider.getAccessToken();
+        ZeusConnectionManager.T().u().J(accessToken, this::handleAuthenticationSuccess);
     }
 
     @Nullable
-    public OnlineDisconnectReason T() {
-        return this.B;
+    public OnlineDisconnectReason getDisconnectReason() {
+        return this.disconnectReason;
     }
 
-    private static void lambda$setupListeners$23(PartyInviteReceivedEvent partyInviteReceivedEvent) {
-        PartyInvite partyInvite = new PartyInvite(Vape.INSTANCE.getOnlineManager().u().Q(partyInviteReceivedEvent.R().g(), () -> OnlineConnectionManager.lambda$null$22(partyInviteReceivedEvent)));
-        Vape.INSTANCE.getOnlineManager().y().C(partyInvite);
+    private static void handlePartyInviteReceived(PartyInviteReceivedEvent partyInviteReceivedEvent) {
+        PartyInvite partyInvite = new PartyInvite(Vape.INSTANCE.getOnlineManager().getFriendCache().getOrCreateFriend(partyInviteReceivedEvent.R().getId(), () -> OnlineConnectionManager.createFriendFromPartyInvite(partyInviteReceivedEvent)));
+        Vape.INSTANCE.getOnlineManager().getPartyManager().addInvite(partyInvite);
     }
 
-    private static void lambda$setupListeners$32(GroupOptionUpdatedEvent groupOptionUpdatedEvent) {
-        PartyState partyState = Vape.INSTANCE.getOnlineManager().y().j();
+    private static void handleGroupOptionUpdated(GroupOptionUpdatedEvent groupOptionUpdatedEvent) {
+        PartyState partyState = Vape.INSTANCE.getOnlineManager().getPartyManager().getCurrentParty();
         if (partyState == null) {
             return;
         }
-        Value<?, ?> value = partyState.L().get((Object)groupOptionUpdatedEvent.j());
+        Value<?, ?> value = partyState.getOptions().get((Object)groupOptionUpdatedEvent.j());
         if (value != null) {
             ((Value)value).setValue(groupOptionUpdatedEvent.U());
         }
     }
 
-    private static OnlineFriend lambda$null$8(FriendModelUpdateEvent friendModelUpdateEvent) {
+    private static OnlineFriend createFriendFromModelUpdate(FriendModelUpdateEvent friendModelUpdateEvent) {
         return new OnlineFriend(friendModelUpdateEvent.q());
     }
 
-    public boolean k(long l) {
-        long l2 = Vape.INSTANCE.getAccountInfo().i();
-        return l2 != -1L && l2 == l;
+    public boolean isCurrentAccountUser(long userId) {
+        long currentUserId = Vape.INSTANCE.getAccountInfo().getUserId();
+        return currentUserId != -1L && currentUserId == userId;
     }
 
-    private static OnlineFriend lambda$null$22(PartyInviteReceivedEvent partyInviteReceivedEvent) {
+    private static OnlineFriend createFriendFromPartyInvite(PartyInviteReceivedEvent partyInviteReceivedEvent) {
         return new OnlineFriend(partyInviteReceivedEvent.R());
     }
 
-    public void o(OnlineAccountState onlineAccountState) {
-        this.y = onlineAccountState;
-        OnlineConnectionState onlineConnectionState = this.v;
-        ClientSettings.UI_EXECUTOR.execute(() -> OnlineConnectionManager.lambda$setAccountState$6(onlineAccountState, onlineConnectionState));
+    public void setAccountState(OnlineAccountState onlineAccountState) {
+        this.accountState = onlineAccountState;
+        OnlineConnectionState onlineConnectionState = this.connectionState;
+        ClientSettings.UI_EXECUTOR.execute(() -> OnlineConnectionManager.updateAccountStateUi(onlineAccountState, onlineConnectionState));
     }
 
-    private static void lambda$setupListeners$15(GroupChatMessageEvent groupChatMessageEvent) {
-        OnlineFriend onlineFriend = Vape.INSTANCE.getOnlineFriendManager().Q(groupChatMessageEvent.V());
+    private static void handleGroupChatMessage(GroupChatMessageEvent groupChatMessageEvent) {
+        OnlineFriend onlineFriend = Vape.INSTANCE.getOnlineFriendManager().getByUser(groupChatMessageEvent.V());
         if (onlineFriend == null) {
             return;
         }
-        OnlineFriendUiHelper.l(onlineFriend, onlineFriend, groupChatMessageEvent.K());
+        OnlineFriendUiHelper.addFriendChatMessage(onlineFriend, onlineFriend, groupChatMessageEvent.K());
     }
 
-    public long b() {
-        return this.x;
+    public long getNextReconnectAt() {
+        return this.nextReconnectAt;
     }
 
-    private void lambda$connect$3(AtomicReference atomicReference) {
+    private void runConnectionAttempt(AtomicReference<Thread> connectionThreadReference) {
         try {
-            this.i = false;
-            ZeusConnectionManager.T().V(this::lambda$null$1, () -> this.lambda$null$2(atomicReference));
+            this.manualDisconnectRequested = false;
+            ZeusConnectionManager.T().V(this::handleTransportConnected, () -> this.handleDisconnected(connectionThreadReference));
         }
         catch (Exception exception) {
             exception.printStackTrace();
         }
     }
 
-    private static void lambda$setupListeners$27(PartyInviteRemovedEvent partyInviteRemovedEvent) {
-        PartyState partyState = Vape.INSTANCE.getOnlineManager().y().j();
+    private static void handlePartyInviteRemoved(PartyInviteRemovedEvent partyInviteRemovedEvent) {
+        PartyState partyState = Vape.INSTANCE.getOnlineManager().getPartyManager().getCurrentParty();
         if (partyState == null) {
             return;
         }
-        partyState.q(partyInviteRemovedEvent.D());
+        partyState.removeInvitedUser(partyInviteRemovedEvent.D());
     }
 
-    private static void lambda$setupListeners$25(FriendRequestEvent friendRequestEvent) {
-        PartyInvite partyInvite = Vape.INSTANCE.getOnlineManager().y().k(Vape.INSTANCE.getOnlineManager().u().Q(friendRequestEvent.f().g(), () -> OnlineConnectionManager.lambda$null$24(friendRequestEvent)));
+    private static void handleFriendRequestEvent(FriendRequestEvent friendRequestEvent) {
+        PartyInvite partyInvite = Vape.INSTANCE.getOnlineManager().getPartyManager().getInvite(Vape.INSTANCE.getOnlineManager().getFriendCache().getOrCreateFriend(friendRequestEvent.f().getId(), () -> OnlineConnectionManager.createFriendFromRequestEvent(friendRequestEvent)));
         if (partyInvite == null) {
             return;
         }
-        Vape.INSTANCE.getOnlineManager().y().y(partyInvite);
+        Vape.INSTANCE.getOnlineManager().getPartyManager().removeInvite(partyInvite);
     }
 
-    private static void lambda$setupListeners$17(Consumer consumer, GroupCreatedEvent groupCreatedEvent) {
-        consumer.accept(groupCreatedEvent.V());
+    private static void forwardCreatedParty(Consumer<PartyState> partyConsumer, GroupCreatedEvent groupCreatedEvent) {
+        partyConsumer.accept(groupCreatedEvent.V());
     }
 
-    public GlobalSettingsController g() {
-        return this.w;
+    public GlobalSettingsController getGlobalSettingsController() {
+        return this.globalSettingsController;
     }
 
-    public void Q() {
+    public void disconnect() {
         Channel channel = ZeusConnectionManager.T().u().D();
         if (channel == null) {
             return;
         }
-        T.k(true);
+        INSTANCE.setManualDisconnectRequested(true);
         channel.close();
-        T.l(OnlineConnectionState.OFFLINE);
+        INSTANCE.setConnectionState(OnlineConnectionState.OFFLINE);
     }
 
-    public OnlineSettings S() {
-        return this.Y;
+    public OnlineSettings getSettings() {
+        return this.settings;
     }
 
-    private void lambda$initialize$0() {
-        this.o(OnlineAccountState.REGISTRATION_OFFLINE);
-        ClientSettings.getFrame(OnlineFriendsFrame.class).Z$src$V$vdheo7();
-        this.m = false;
+    private void handleInitializationFailure() {
+        this.setAccountState(OnlineAccountState.REGISTRATION_OFFLINE);
+        ClientSettings.getFrame(OnlineFriendsFrame.class).showRegistration();
+        this.initializationStarted = false;
     }
 
-    private void c() {
-        if (this.Z) {
+    private void setupListeners() {
+        if (this.listenersRegistered) {
             return;
         }
-        this.Z = true;
-        OnlineEventDispatcher.O.M(InitialOnlineFriendStateEvent.class, OnlineConnectionManager::lambda$setupListeners$7);
-        OnlineEventDispatcher.O.M(FriendModelUpdateEvent.class, this::lambda$setupListeners$9);
-        OnlineEventDispatcher.O.M(FriendPresenceStateEvent.class, OnlineConnectionManager::lambda$setupListeners$10);
-        OnlineEventDispatcher.O.M(FriendRemovedEvent.class, OnlineConnectionManager::lambda$setupListeners$11);
-        OnlineEventDispatcher.O.M(FriendRequestReceivedEvent.class, OnlineConnectionManager::lambda$setupListeners$12);
-        OnlineEventDispatcher.O.M(FriendRequestRemovedEvent.class, OnlineConnectionManager::lambda$setupListeners$13);
-        OnlineEventDispatcher.O.M(FriendRequestSentEvent.class, OnlineConnectionManager::lambda$setupListeners$14);
-        OnlineEventDispatcher.O.M(GroupChatMessageEvent.class, OnlineConnectionManager::lambda$setupListeners$15);
-        Consumer<PartyState> consumer = OnlineConnectionManager::lambda$setupListeners$16;
-        OnlineEventDispatcher.O.M(GroupCreatedEvent.class, arg_0 -> OnlineConnectionManager.lambda$setupListeners$17(consumer, arg_0));
-        OnlineEventDispatcher.O.M(GroupInviteAcceptedEvent.class, arg_0 -> OnlineConnectionManager.lambda$setupListeners$18(consumer, arg_0));
-        Runnable runnable = OnlineConnectionManager::lambda$setupListeners$19;
-        OnlineEventDispatcher.O.M(GroupDeletedEvent.class, arg_0 -> OnlineConnectionManager.lambda$setupListeners$20(runnable, arg_0));
-        OnlineEventDispatcher.O.M(GroupLeftEvent.class, arg_0 -> OnlineConnectionManager.lambda$setupListeners$21(runnable, arg_0));
-        OnlineEventDispatcher.O.M(PartyInviteReceivedEvent.class, OnlineConnectionManager::lambda$setupListeners$23);
-        OnlineEventDispatcher.O.M(FriendRequestEvent.class, OnlineConnectionManager::lambda$setupListeners$25);
-        OnlineEventDispatcher.O.M(GroupInviteSentEvent.class, OnlineConnectionManager::lambda$setupListeners$26);
-        OnlineEventDispatcher.O.M(PartyInviteRemovedEvent.class, OnlineConnectionManager::lambda$setupListeners$27);
-        OnlineEventDispatcher.O.M(PartyMemberUpdateEvent.class, arg_0 -> OnlineConnectionManager.lambda$setupListeners$29(runnable, arg_0));
-        OnlineEventDispatcher.O.M(PartyLeaderChangedEvent.class, OnlineConnectionManager::lambda$setupListeners$30);
-        OnlineEventDispatcher.O.M(FriendChatMessageEvent.class, OnlineConnectionManager::lambda$setupListeners$31);
-        OnlineEventDispatcher.O.M(GroupOptionUpdatedEvent.class, OnlineConnectionManager::lambda$setupListeners$32);
-        OnlineEventDispatcher.O.M(FriendMinecraftProfileUpdateEvent.class, OnlineConnectionManager::lambda$setupListeners$33);
-        OnlineEventDispatcher.O.M(FriendVisibilityUpdateEvent.class, OnlineConnectionManager::lambda$setupListeners$34);
-        OnlineEventDispatcher.O.M(UserDisplayNameChangedEvent.class, OnlineConnectionManager::lambda$setupListeners$35);
-        OnlineEventDispatcher.O.M(FriendServerAddressEvent.class, OnlineConnectionManager::lambda$setupListeners$36);
+        this.listenersRegistered = true;
+        OnlineEventDispatcher.O.M(InitialOnlineFriendStateEvent.class, OnlineConnectionManager::handleInitialOnlineFriendState);
+        OnlineEventDispatcher.O.M(FriendModelUpdateEvent.class, this::handleFriendModelUpdate);
+        OnlineEventDispatcher.O.M(FriendPresenceStateEvent.class, OnlineConnectionManager::handleFriendPresenceState);
+        OnlineEventDispatcher.O.M(FriendRemovedEvent.class, OnlineConnectionManager::handleFriendRemoved);
+        OnlineEventDispatcher.O.M(FriendRequestReceivedEvent.class, OnlineConnectionManager::handleFriendRequestReceived);
+        OnlineEventDispatcher.O.M(FriendRequestRemovedEvent.class, OnlineConnectionManager::handleFriendRequestRemoved);
+        OnlineEventDispatcher.O.M(FriendRequestSentEvent.class, OnlineConnectionManager::handleFriendRequestSent);
+        OnlineEventDispatcher.O.M(GroupChatMessageEvent.class, OnlineConnectionManager::handleGroupChatMessage);
+        Consumer<PartyState> partyConsumer = OnlineConnectionManager::setCurrentPartyIfAbsent;
+        OnlineEventDispatcher.O.M(GroupCreatedEvent.class, event -> OnlineConnectionManager.forwardCreatedParty(partyConsumer, event));
+        OnlineEventDispatcher.O.M(GroupInviteAcceptedEvent.class, event -> OnlineConnectionManager.forwardAcceptedParty(partyConsumer, event));
+        Runnable clearPartyState = OnlineConnectionManager::clearPartyState;
+        OnlineEventDispatcher.O.M(GroupDeletedEvent.class, event -> OnlineConnectionManager.handleGroupDeleted(clearPartyState, event));
+        OnlineEventDispatcher.O.M(GroupLeftEvent.class, event -> OnlineConnectionManager.handleGroupLeft(clearPartyState, event));
+        OnlineEventDispatcher.O.M(PartyInviteReceivedEvent.class, OnlineConnectionManager::handlePartyInviteReceived);
+        OnlineEventDispatcher.O.M(FriendRequestEvent.class, OnlineConnectionManager::handleFriendRequestEvent);
+        OnlineEventDispatcher.O.M(GroupInviteSentEvent.class, OnlineConnectionManager::handleGroupInviteSent);
+        OnlineEventDispatcher.O.M(PartyInviteRemovedEvent.class, OnlineConnectionManager::handlePartyInviteRemoved);
+        OnlineEventDispatcher.O.M(PartyMemberUpdateEvent.class, event -> OnlineConnectionManager.handlePartyMemberUpdate(clearPartyState, event));
+        OnlineEventDispatcher.O.M(PartyLeaderChangedEvent.class, OnlineConnectionManager::handlePartyLeaderChanged);
+        OnlineEventDispatcher.O.M(FriendChatMessageEvent.class, OnlineConnectionManager::handleFriendChatMessage);
+        OnlineEventDispatcher.O.M(GroupOptionUpdatedEvent.class, OnlineConnectionManager::handleGroupOptionUpdated);
+        OnlineEventDispatcher.O.M(FriendMinecraftProfileUpdateEvent.class, OnlineConnectionManager::handleFriendMinecraftProfileUpdate);
+        OnlineEventDispatcher.O.M(FriendVisibilityUpdateEvent.class, OnlineConnectionManager::handleFriendVisibilityUpdate);
+        OnlineEventDispatcher.O.M(UserDisplayNameChangedEvent.class, OnlineConnectionManager::handleUserDisplayNameChanged);
+        OnlineEventDispatcher.O.M(FriendServerAddressEvent.class, OnlineConnectionManager::handleFriendServerAddress);
     }
 
-    private void lambda$startup$4(AuthenticationResponsePacket authenticationResponsePacket) {
-        this.r = 0;
-        ClientSettings.getFrame(OnlineFriendsFrame.class).Q$src$V$v8j9by();
-        this.l(OnlineConnectionState.ONLINE);
-        this.z = true;
+    private void handleAuthenticationSuccess(AuthenticationResponsePacket authenticationResponsePacket) {
+        this.reconnectAttemptCount = 0;
+        ClientSettings.getFrame(OnlineFriendsFrame.class).closeRegistrationPopup();
+        this.setConnectionState(OnlineConnectionState.ONLINE);
+        this.hasConnectedSuccessfully = true;
     }
 
-    private void lambda$setupListeners$9(FriendModelUpdateEvent friendModelUpdateEvent) {
-        OnlineFriend onlineFriend = Vape.INSTANCE.getOnlineManager().u().Q(friendModelUpdateEvent.q().M(), () -> OnlineConnectionManager.lambda$null$8(friendModelUpdateEvent));
-        onlineFriend.f(friendModelUpdateEvent.q());
-        Vape.INSTANCE.getOnlineFriendManager().D(onlineFriend);
-        Vape.INSTANCE.getOnlineManager().D().y(onlineFriend);
-        Boolean bl = this.S().X().O().get(onlineFriend.S().g());
-        if (bl != null) {
-            onlineFriend.O(bl);
+    private void handleFriendModelUpdate(FriendModelUpdateEvent friendModelUpdateEvent) {
+        OnlineFriend onlineFriend = Vape.INSTANCE.getOnlineManager().getFriendCache().getOrCreateFriend(friendModelUpdateEvent.q().getUserId(), () -> OnlineConnectionManager.createFriendFromModelUpdate(friendModelUpdateEvent));
+        onlineFriend.updateFrom(friendModelUpdateEvent.q());
+        Vape.INSTANCE.getOnlineFriendManager().addFriend(onlineFriend);
+        Vape.INSTANCE.getOnlineManager().getFriendRequestManager().removeRequestsForFriend(onlineFriend);
+        Boolean syncWithFriends = this.getSettings().getPayload().getFriendStates().get(onlineFriend.getUser().getId());
+        if (syncWithFriends != null) {
+            onlineFriend.setSyncWithFriends(syncWithFriends);
         }
-        OnlineFriendUiHelper.n$src$V$uh9sir();
+        OnlineFriendUiHelper.refreshFriendLists();
     }
 
     public OnlineConnectionManager() {
-        this.y = OnlineAccountState.CONNECTING;
-        this.p = new TimerUtil();
-        this.Y = new OnlineSettings();
-        this.w = new GlobalSettingsController();
+        this.accountState = OnlineAccountState.CONNECTING;
+        this.friendRequestNotificationTimer = new TimerUtil();
+        this.settings = new OnlineSettings();
+        this.globalSettingsController = new GlobalSettingsController();
     }
 
-    private static void lambda$setupListeners$10(FriendPresenceStateEvent friendPresenceStateEvent) {
-        OnlineFriend onlineFriend = Vape.INSTANCE.getOnlineFriendManager().Q(friendPresenceStateEvent.f());
+    private static void handleFriendPresenceState(FriendPresenceStateEvent friendPresenceStateEvent) {
+        OnlineFriend onlineFriend = Vape.INSTANCE.getOnlineFriendManager().getByUser(friendPresenceStateEvent.f());
         if (onlineFriend == null) {
             return;
         }
-        onlineFriend.g(OnlineStatus.f(friendPresenceStateEvent.O()));
-        OnlineFriendUiHelper.n$src$V$uh9sir();
+        onlineFriend.setStatus(OnlineStatus.fromPresenceState(friendPresenceStateEvent.O()));
+        OnlineFriendUiHelper.refreshFriendLists();
     }
 
-    private static OnlineFriend lambda$null$28(PartyMemberUpdateEvent partyMemberUpdateEvent) {
+    private static OnlineFriend createFriendFromPartyMemberUpdate(PartyMemberUpdateEvent partyMemberUpdateEvent) {
         return new OnlineFriend(partyMemberUpdateEvent.S());
     }
 
     static {
-        b = " joined the party";
-        T = new OnlineConnectionManager();
+        JOINED_PARTY_SUFFIX = " joined the party";
+        INSTANCE = new OnlineConnectionManager();
     }
 
-    private static void lambda$setupListeners$13(FriendRequestRemovedEvent friendRequestRemovedEvent) {
-        Vape.INSTANCE.getOnlineManager().D().w(friendRequestRemovedEvent.v());
+    private static void handleFriendRequestRemoved(FriendRequestRemovedEvent friendRequestRemovedEvent) {
+        Vape.INSTANCE.getOnlineManager().getFriendRequestManager().removeRequestById(friendRequestRemovedEvent.v());
     }
 
-    private static void lambda$setupListeners$7(InitialOnlineFriendStateEvent initialOnlineFriendStateEvent) {
-        Vape.INSTANCE.getOnlineManager().t();
+    private static void handleInitialOnlineFriendState(InitialOnlineFriendStateEvent initialOnlineFriendStateEvent) {
+        Vape.INSTANCE.getOnlineManager().clearOnlineState();
         ZeusClient zeusClient = ZeusConnectionManager.T().u();
-        Vape.INSTANCE.getOnlineManager().r().i(zeusClient.i().T());
-        for (FriendModel object : initialOnlineFriendStateEvent.q()) {
-            new FriendModelUpdateEvent(zeusClient, object).u();
+        Vape.INSTANCE.getOnlineManager().getLocalFriend().setDisplayName(zeusClient.i().getDisplayName());
+        for (FriendModel friendModel : initialOnlineFriendStateEvent.q()) {
+            new FriendModelUpdateEvent(zeusClient, friendModel).u();
         }
         for (FriendRequestModel friendRequestModel : initialOnlineFriendStateEvent.z()) {
             new FriendRequestReceivedEvent(zeusClient, friendRequestModel).u();
@@ -402,205 +403,205 @@ public class OnlineConnectionManager {
         }
     }
 
-    private static void lambda$setupListeners$19() {
-        PartyState partyState = Vape.INSTANCE.getOnlineManager().y().j();
+    private static void clearPartyState() {
+        PartyState partyState = Vape.INSTANCE.getOnlineManager().getPartyManager().getCurrentParty();
         if (partyState == null) {
             return;
         }
-        Vape.INSTANCE.getOnlineManager().y().n(null);
-        Vape.INSTANCE.getOnlineManager().r().K(-1);
-        for (OnlineFriend onlineFriend : Vape.INSTANCE.getOnlineManager().u().r()) {
-            onlineFriend.K(-1);
+        Vape.INSTANCE.getOnlineManager().getPartyManager().setCurrentParty(null);
+        Vape.INSTANCE.getOnlineManager().getLocalFriend().setGroupRole(-1);
+        for (OnlineFriend onlineFriend : Vape.INSTANCE.getOnlineManager().getFriendCache().getFriends()) {
+            onlineFriend.setGroupRole(-1);
         }
     }
 
-    private static void lambda$setupListeners$34(FriendVisibilityUpdateEvent friendVisibilityUpdateEvent) {
-        OnlineFriend onlineFriend = Vape.INSTANCE.getOnlineManager().u().m(friendVisibilityUpdateEvent.N());
+    private static void handleFriendVisibilityUpdate(FriendVisibilityUpdateEvent friendVisibilityUpdateEvent) {
+        OnlineFriend onlineFriend = Vape.INSTANCE.getOnlineManager().getFriendCache().getFriend(friendVisibilityUpdateEvent.N());
         if (onlineFriend != null) {
-            onlineFriend.X(friendVisibilityUpdateEvent.q());
+            onlineFriend.setVisible(friendVisibilityUpdateEvent.q());
         }
     }
 
-    private static void lambda$setupListeners$31(FriendChatMessageEvent friendChatMessageEvent) {
-        PartyState partyState = Vape.INSTANCE.getOnlineManager().y().j();
+    private static void handleFriendChatMessage(FriendChatMessageEvent friendChatMessageEvent) {
+        PartyState partyState = Vape.INSTANCE.getOnlineManager().getPartyManager().getCurrentParty();
         if (partyState == null) {
             return;
         }
-        OnlineFriend onlineFriend = partyState.X(friendChatMessageEvent.U());
+        OnlineFriend onlineFriend = partyState.findMember(friendChatMessageEvent.U());
         if (onlineFriend == null) {
             return;
         }
         PartyMemberTextStatusComponent partyMemberTextStatusComponent = new PartyMemberTextStatusComponent(friendChatMessageEvent.g());
-        if (friendChatMessageEvent.U().equals(Vape.INSTANCE.getOnlineManager().r().S())) {
-            partyState.n(new PartyMemberRow(Vape.INSTANCE.getOnlineManager().r(), partyMemberTextStatusComponent));
+        if (friendChatMessageEvent.U().equals(Vape.INSTANCE.getOnlineManager().getLocalFriend().getUser())) {
+            partyState.addChatRow(new PartyMemberRow(Vape.INSTANCE.getOnlineManager().getLocalFriend(), partyMemberTextStatusComponent));
         } else {
-            partyState.n(new PartyMemberRow(onlineFriend, partyMemberTextStatusComponent));
+            partyState.addChatRow(new PartyMemberRow(onlineFriend, partyMemberTextStatusComponent));
         }
     }
 
-    private static void lambda$setupListeners$11(FriendRemovedEvent friendRemovedEvent) {
-        OnlineFriend onlineFriend = Vape.INSTANCE.getOnlineFriendManager().Q(friendRemovedEvent.f());
+    private static void handleFriendRemoved(FriendRemovedEvent friendRemovedEvent) {
+        OnlineFriend onlineFriend = Vape.INSTANCE.getOnlineFriendManager().getByUser(friendRemovedEvent.f());
         if (onlineFriend == null) {
             return;
         }
-        Vape.INSTANCE.getFriendManager().E(onlineFriend.q());
-        Vape.INSTANCE.getOnlineFriendManager().g(onlineFriend);
+        Vape.INSTANCE.getFriendManager().removeFriend(onlineFriend.getExternalFriend());
+        Vape.INSTANCE.getOnlineFriendManager().removeFriend(onlineFriend);
     }
 
-    private static void lambda$setupListeners$21(Runnable runnable, GroupLeftEvent groupLeftEvent) {
-        runnable.run();
+    private static void handleGroupLeft(Runnable clearPartyState, GroupLeftEvent groupLeftEvent) {
+        clearPartyState.run();
     }
 
-    private static void lambda$setupListeners$14(FriendRequestSentEvent friendRequestSentEvent) {
-        Vape.INSTANCE.getOnlineManager().D().O(new OutgoingFriendRequest(friendRequestSentEvent.q()));
+    private static void handleFriendRequestSent(FriendRequestSentEvent friendRequestSentEvent) {
+        Vape.INSTANCE.getOnlineManager().getFriendRequestManager().addRequest(new OutgoingFriendRequest(friendRequestSentEvent.q()));
     }
 
-    public boolean Q$src$Z$x2tw73() {
-        return this.i;
+    public boolean isManualDisconnectRequested() {
+        return this.manualDisconnectRequested;
     }
 
-    private static void lambda$setupListeners$35(UserDisplayNameChangedEvent userDisplayNameChangedEvent) {
+    private static void handleUserDisplayNameChanged(UserDisplayNameChangedEvent userDisplayNameChangedEvent) {
         OnlineFriend onlineFriend;
-        if (userDisplayNameChangedEvent.R() == Vape.INSTANCE.getOnlineManager().r().S().g()) {
-            Vape.INSTANCE.getOnlineManager().r().i(userDisplayNameChangedEvent.v());
+        if (userDisplayNameChangedEvent.R() == Vape.INSTANCE.getOnlineManager().getLocalFriend().getUser().getId()) {
+            Vape.INSTANCE.getOnlineManager().getLocalFriend().setDisplayName(userDisplayNameChangedEvent.v());
         }
-        if ((onlineFriend = Vape.INSTANCE.getOnlineManager().u().m(userDisplayNameChangedEvent.R())) != null) {
-            onlineFriend.i(userDisplayNameChangedEvent.v());
+        if ((onlineFriend = Vape.INSTANCE.getOnlineManager().getFriendCache().getFriend(userDisplayNameChangedEvent.R())) != null) {
+            onlineFriend.setDisplayName(userDisplayNameChangedEvent.v());
         }
     }
 
-    public void f(@Nullable OnlineDisconnectReason onlineDisconnectReason) {
-        this.B = onlineDisconnectReason;
+    public void setDisconnectReason(@Nullable OnlineDisconnectReason onlineDisconnectReason) {
+        this.disconnectReason = onlineDisconnectReason;
     }
 
-    private static void lambda$setupListeners$33(FriendMinecraftProfileUpdateEvent friendMinecraftProfileUpdateEvent) {
-        OnlineFriend onlineFriend = Vape.INSTANCE.getOnlineManager().u().m(friendMinecraftProfileUpdateEvent.b());
+    private static void handleFriendMinecraftProfileUpdate(FriendMinecraftProfileUpdateEvent friendMinecraftProfileUpdateEvent) {
+        OnlineFriend onlineFriend = Vape.INSTANCE.getOnlineManager().getFriendCache().getFriend(friendMinecraftProfileUpdateEvent.b());
         if (onlineFriend != null) {
-            onlineFriend.d(friendMinecraftProfileUpdateEvent.h(), friendMinecraftProfileUpdateEvent.b$src$Ljava_lang_String_$171yzxt());
+            onlineFriend.updateMinecraftProfile(friendMinecraftProfileUpdateEvent.h(), friendMinecraftProfileUpdateEvent.b$src$Ljava_lang_String_$171yzxt());
         }
     }
 
-    private void lambda$null$1() {
-        if (!this.z) {
-            this.p.reset();
+    private void handleTransportConnected() {
+        if (!this.hasConnectedSuccessfully) {
+            this.friendRequestNotificationTimer.reset();
         }
-        this.x();
+        this.authenticate();
     }
 
-    public boolean u() {
-        return this.z;
+    public boolean hasConnectedSuccessfully() {
+        return this.hasConnectedSuccessfully;
     }
 
-    public TimerUtil V() {
-        return this.p;
+    public TimerUtil getFriendRequestNotificationTimer() {
+        return this.friendRequestNotificationTimer;
     }
 
-    private static void lambda$setupListeners$16(PartyState partyState) {
-        PartyState partyState2 = Vape.INSTANCE.getOnlineManager().y().j();
-        if (partyState2 != null) {
+    private static void setCurrentPartyIfAbsent(PartyState partyState) {
+        PartyState currentParty = Vape.INSTANCE.getOnlineManager().getPartyManager().getCurrentParty();
+        if (currentParty != null) {
             return;
         }
-        LocalOnlineFriend localOnlineFriend = Vape.INSTANCE.getOnlineManager().r();
-        OnlineFriend onlineFriend = partyState.X(localOnlineFriend.S());
+        LocalOnlineFriend localOnlineFriend = Vape.INSTANCE.getOnlineManager().getLocalFriend();
+        OnlineFriend onlineFriend = partyState.findMember(localOnlineFriend.getUser());
         if (onlineFriend != null) {
-            localOnlineFriend.K(onlineFriend.d());
+            localOnlineFriend.setGroupRole(onlineFriend.getGroupRole());
         }
-        Vape.INSTANCE.getOnlineManager().y().n(partyState);
+        Vape.INSTANCE.getOnlineManager().getPartyManager().setCurrentParty(partyState);
     }
 
-    public void I() {
-        if (!this.v.G()) {
+    public void connect() {
+        if (!this.connectionState.isOfflineState()) {
             return;
         }
-        this.f(null);
-        this.l(OnlineConnectionState.CONNECTING);
-        if (this.u != null) {
+        this.setDisconnectReason(null);
+        this.setConnectionState(OnlineConnectionState.CONNECTING);
+        if (this.connectionThread != null) {
             try {
-                this.u.interrupt();
-                this.u = null;
+                this.connectionThread.interrupt();
+                this.connectionThread = null;
             }
             catch (Throwable throwable) {
                 Vape.logThrowable(throwable);
             }
         }
-        AtomicReference<Thread> atomicReference = new AtomicReference<Thread>();
-        Thread thread = new Thread(() -> this.lambda$connect$3(atomicReference));
-        atomicReference.set(thread);
+        AtomicReference<Thread> connectionThreadReference = new AtomicReference<Thread>();
+        Thread thread = new Thread(() -> this.runConnectionAttempt(connectionThreadReference));
+        connectionThreadReference.set(thread);
         thread.start();
-        this.u = thread;
+        this.connectionThread = thread;
     }
 
-    private static void lambda$setupListeners$29(Runnable runnable, PartyMemberUpdateEvent partyMemberUpdateEvent) {
-        PartyState partyState = Vape.INSTANCE.getOnlineManager().y().j();
+    private static void handlePartyMemberUpdate(Runnable clearPartyState, PartyMemberUpdateEvent partyMemberUpdateEvent) {
+        PartyState partyState = Vape.INSTANCE.getOnlineManager().getPartyManager().getCurrentParty();
         if (partyState == null) {
             return;
         }
-        OnlineFriend onlineFriend = Vape.INSTANCE.getOnlineManager().u().Q(partyMemberUpdateEvent.S().V(), () -> OnlineConnectionManager.lambda$null$28(partyMemberUpdateEvent));
+        OnlineFriend onlineFriend = Vape.INSTANCE.getOnlineManager().getFriendCache().getOrCreateFriend(partyMemberUpdateEvent.S().getUserId(), () -> OnlineConnectionManager.createFriendFromPartyMemberUpdate(partyMemberUpdateEvent));
         if (partyMemberUpdateEvent.q() == PartyMemberAction.ADD) {
-            partyState.q(onlineFriend);
-            partyState.Q(onlineFriend);
-            onlineFriend.K(partyMemberUpdateEvent.S().e());
-            Vape.INSTANCE.getNotificationManager().show(onlineFriend.C() + b, "", NotificationType.FRIENDS_PARTY_GENERAL, 3000L);
+            partyState.removeInvitedUser(onlineFriend);
+            partyState.addMember(onlineFriend);
+            onlineFriend.setGroupRole(partyMemberUpdateEvent.S().getGroupRole());
+            Vape.INSTANCE.getNotificationManager().show(onlineFriend.getDisplayName() + JOINED_PARTY_SUFFIX, "", NotificationType.FRIENDS_PARTY_GENERAL, 3000L);
         } else {
-            if (onlineFriend.equals(Vape.INSTANCE.getOnlineManager().r())) {
-                runnable.run();
+            if (onlineFriend.equals(Vape.INSTANCE.getOnlineManager().getLocalFriend())) {
+                clearPartyState.run();
             } else {
-                partyState.Y(onlineFriend);
+                partyState.removeMember(onlineFriend);
             }
-            onlineFriend.K(-1);
+            onlineFriend.setGroupRole(-1);
         }
     }
 
-    public void l(OnlineConnectionState onlineConnectionState) {
-        if (onlineConnectionState == OnlineConnectionState.OFFLINE && this.v != onlineConnectionState) {
-            Vape.INSTANCE.getOnlineManager().t();
-            ClientSettings.getFrame(OnlineFriendsFrame.class).N$src$V$v6vvjv();
+    public void setConnectionState(OnlineConnectionState onlineConnectionState) {
+        if (onlineConnectionState == OnlineConnectionState.OFFLINE && this.connectionState != onlineConnectionState) {
+            Vape.INSTANCE.getOnlineManager().clearOnlineState();
+            ClientSettings.getFrame(OnlineFriendsFrame.class).refreshOnlineData();
         }
-        this.v = onlineConnectionState;
-        ClientSettings.UI_EXECUTOR.execute(() -> OnlineConnectionManager.lambda$setState$5(onlineConnectionState));
+        this.connectionState = onlineConnectionState;
+        ClientSettings.UI_EXECUTOR.execute(() -> OnlineConnectionManager.updateConnectionStateUi(onlineConnectionState));
     }
 
-    public void E() throws Exception {
-        if (this.m) {
+    public void initialize() throws Exception {
+        if (this.initializationStarted) {
             return;
         }
-        this.m = true;
-        this.c();
-        this.o(OnlineAccountState.CONNECTING);
-        Runnable runnable = this::lambda$initialize$0;
-        this.w.K();
+        this.initializationStarted = true;
+        this.setupListeners();
+        this.setAccountState(OnlineAccountState.CONNECTING);
+        Runnable initializationFailureHandler = this::handleInitializationFailure;
+        this.globalSettingsController.load();
         try {
-            AccountEntitlements accountEntitlements = Vape.INSTANCE.getAccountInfo().f();
-            boolean bl = accountEntitlements.q();
-            boolean bl2 = accountEntitlements.M();
-            boolean bl3 = accountEntitlements.O();
-            if (bl3) {
-                this.o(OnlineAccountState.BANNED);
-            } else if (bl2) {
-                this.o(OnlineAccountState.REGISTERED);
-                this.Y.B();
-                if (this.Y.X$src$Lgg_vape_value_BooleanValue_$7rygmo().getEffectiveValue().booleanValue()) {
-                    this.I();
+            AccountEntitlements accountEntitlements = Vape.INSTANCE.getAccountInfo().getEntitlements();
+            boolean licensed = accountEntitlements.isLicensed();
+            boolean registered = accountEntitlements.isRegistered();
+            boolean banned = accountEntitlements.isBanned();
+            if (banned) {
+                this.setAccountState(OnlineAccountState.BANNED);
+            } else if (registered) {
+                this.setAccountState(OnlineAccountState.REGISTERED);
+                this.settings.initialize();
+                if (this.settings.getAutoLogin().getEffectiveValue().booleanValue()) {
+                    this.connect();
                 } else {
-                    ClientSettings.getFrame(OnlineFriendsFrame.class).p$src$Lgg_vape_friend_ui_OnlineModeToggleComponent_$u0bbsl().u(false);
+                    ClientSettings.getFrame(OnlineFriendsFrame.class).getModeToggle().setLeftSelected(false);
                 }
             } else {
-                this.o(OnlineAccountState.UNREGISTERED);
-                ClientSettings.getFrame(OnlineFriendsFrame.class).e();
-                ClientSettings.getFrame(OnlineFriendsFrame.class).o$src$V$vp134s();
+                this.setAccountState(OnlineAccountState.UNREGISTERED);
+                ClientSettings.getFrame(OnlineFriendsFrame.class).closeRegistrationIfOpen();
+                ClientSettings.getFrame(OnlineFriendsFrame.class).switchToMinecraftFriends();
             }
         }
         catch (Throwable throwable) {
-            runnable.run();
+            initializationFailureHandler.run();
         }
     }
 
-    private static Throwable a(Throwable throwable) {
+    private static Throwable passthroughThrowable(Throwable throwable) {
         return throwable;
     }
 
-    public boolean Q(@Nullable PublicProfileUser publicProfileUser) {
-        long l = Vape.INSTANCE.getAccountInfo().i();
-        return publicProfileUser != null && l != -1L && l == publicProfileUser.j();
+    public boolean isCurrentUser(@Nullable PublicProfileUser publicProfileUser) {
+        long currentUserId = Vape.INSTANCE.getAccountInfo().getUserId();
+        return publicProfileUser != null && currentUserId != -1L && currentUserId == publicProfileUser.getUserId();
     }
 }

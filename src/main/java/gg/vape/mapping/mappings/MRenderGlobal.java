@@ -3,7 +3,6 @@ package gg.vape.mapping.mappings;
 import gg.vape.mapping.MappedClasses;
 import gg.vape.mapping.Mapping;
 import gg.vape.mapping.MappingMethod;
-import gg.vape.mapping.mappings.MEntityRenderer;
 import gg.vape.wrapper.Wrapper;
 import gg.vape.wrapper.impl.ForgeVersion;
 import java.util.List;
@@ -82,7 +81,7 @@ extends Mapping {
         } else if (ForgeVersion.MC_1_16_5.d()) {
             Class[] classArray9 = new Class[]{MappedClasses.DQ, Float.TYPE, Long.TYPE, Boolean.TYPE, MappedClasses.lt, MappedClasses.FW, MappedClasses.zH, MappedClasses.qr};
             Class<Void> clazz9 = Void.TYPE;
-            boolean bl9 = Wrapper.G;
+            boolean bl9 = Wrapper.isNativeAvailable;
             String string9 = "func_228426_a_";
             MRenderGlobal mRenderGlobal9 = this;
             this.T = this.Y(string9, bl9, clazz9, classArray9);
@@ -90,7 +89,7 @@ extends Mapping {
     }
 
     private void H(Object object) {
-        this.v.F(object);
+        this.v.invokeVoidNoArgs(object);
     }
 
 

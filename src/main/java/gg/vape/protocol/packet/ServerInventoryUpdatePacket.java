@@ -10,32 +10,32 @@ import org.jetbrains.annotations.Nullable;
 
 public class ServerInventoryUpdatePacket
 implements ZeusSerializablePacket {
-    private Map<Integer, @Nullable ActivityItemStackPayload> y;
-    private long W;
+    private Map<Integer, @Nullable ActivityItemStackPayload> inventoryItems;
+    private long userId;
     private static int[] J;
     private static final String b;
 
     @Override
     public void S(ZeusPacketBuffer zeusPacketBuffer) {
-        this.W = zeusPacketBuffer.a();
-        int n = zeusPacketBuffer.Y();
+        this.userId = zeusPacketBuffer.readLong();
+        int n = zeusPacketBuffer.readVarInt();
         if (n > 40) {
             throw new RuntimeException(b);
         }
-        this.y = new HashMap<Integer, ActivityItemStackPayload>();
+        this.inventoryItems = new HashMap<Integer, ActivityItemStackPayload>();
         for (int i = 0; i < n; ++i) {
-            int n2 = zeusPacketBuffer.Y();
-            boolean bl = zeusPacketBuffer.a$src$Z$1c50x8d();
-            this.y.put(n2, bl ? new ActivityItemStackPayload(zeusPacketBuffer) : null);
+            int n2 = zeusPacketBuffer.readVarInt();
+            boolean bl = zeusPacketBuffer.readBoolean();
+            this.inventoryItems.put(n2, bl ? new ActivityItemStackPayload(zeusPacketBuffer) : null);
         }
     }
 
-    public Map<Integer, @Nullable ActivityItemStackPayload> h() {
-        return this.y;
+    public Map<Integer, @Nullable ActivityItemStackPayload> getInventoryItems() {
+        return this.inventoryItems;
     }
 
-    public long S() {
-        return this.W;
+    public long getUserId() {
+        return this.userId;
     }
 
     static {
@@ -43,20 +43,20 @@ implements ZeusSerializablePacket {
         b = "Too many items in inventory";
     }
 
-    public ServerInventoryUpdatePacket(UserModel userModel, Map<Integer, @Nullable ActivityItemStackPayload> map) {
-        this.W = userModel.g();
-        this.y = map;
+    public ServerInventoryUpdatePacket(UserModel userModel, Map<Integer, @Nullable ActivityItemStackPayload> inventoryItems) {
+        this.userId = userModel.getId();
+        this.inventoryItems = inventoryItems;
     }
 
     @Override
     public void o(ZeusPacketBuffer zeusPacketBuffer) {
-        zeusPacketBuffer.v(this.W);
-        zeusPacketBuffer.i(this.y.size());
-        for (Map.Entry<Integer, ActivityItemStackPayload> entry : this.y.entrySet()) {
-            zeusPacketBuffer.i(entry.getKey());
-            zeusPacketBuffer.Y(entry.getValue() != null);
+        zeusPacketBuffer.writeLong(this.userId);
+        zeusPacketBuffer.writeVarInt(this.inventoryItems.size());
+        for (Map.Entry<Integer, ActivityItemStackPayload> entry : this.inventoryItems.entrySet()) {
+            zeusPacketBuffer.writeVarInt(entry.getKey());
+            zeusPacketBuffer.writeBoolean(entry.getValue() != null);
             if (entry.getValue() == null) continue;
-            entry.getValue().Q(zeusPacketBuffer);
+            entry.getValue().writeTo(zeusPacketBuffer);
         }
     }
 
@@ -75,4 +75,3 @@ implements ZeusSerializablePacket {
         return runtimeException;
     }
 }
-

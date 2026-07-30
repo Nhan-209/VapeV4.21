@@ -45,67 +45,67 @@ import java.util.Map;
 
 public class OnlineFriendsFrame
 extends SettingsSubpageFrame {
-    private final PanelComponent On = new PanelComponent(104.0, 150.0);
-    private BooleanToggleComponent Oa;
-    private PopupFrame Of;
-    private OnlineRegistrationPanel OU;
-    private BooleanToggleComponent Op;
-    private BooleanToggleComponent OV;
-    private FriendRequestsPanel Oz;
-    private PopupFrame Od;
-    private final OnlineFriendsEmptyStatePanel Or;
-    private BooleanToggleComponent OC;
-    private static String[] O4;
-    private BooleanToggleComponent OX;
-    private BooleanToggleComponent Os;
-    private IconButtonComponent Oh;
-    private BooleanToggleComponent Om;
-    private ColorValueEditorComponent Oe;
-    private NotificationToastOverlay Oy;
-    private BooleanToggleComponent O3;
-    private final OnlineConnectionStatusPanel Og;
-    private GuiMouseListener OJ;
-    private SimpleTextLabelComponent OG;
-    private BooleanToggleComponent O7;
-    private final OnlineFriendsListPanel O9;
-    private PopupFrame OL;
-    private PopupFrame Ok;
-    private BooleanToggleComponent OY;
-    private final PanelComponent OQ;
-    private ColorDividerComponent O6;
-    private DropdownSelectComponent<ModeOption> Oj;
-    private BooleanToggleComponent Ol;
-    private final FriendManagementPanel Ot;
-    private PanelComponent OI;
-    private BooleanToggleComponent OT;
-    private final PanelComponent Ou = new PanelComponent(104.0, 150.0);
-    private OnlineModeToggleComponent OP;
-    private BooleanToggleComponent O1;
+    private final PanelComponent popupAnchorPanel = new PanelComponent(104.0, 150.0);
+    private BooleanToggleComponent reservedToggle01;
+    private PopupFrame friendManagementPopup;
+    private OnlineRegistrationPanel registrationPanel;
+    private BooleanToggleComponent reservedToggle02;
+    private BooleanToggleComponent reservedToggle03;
+    private FriendRequestsPanel friendRequestsPanel;
+    private PopupFrame registrationPopup;
+    private final OnlineFriendsEmptyStatePanel emptyStatePanel;
+    private BooleanToggleComponent reservedToggle04;
+    private static String[] obfuscationStrings;
+    private BooleanToggleComponent reservedToggle05;
+    private BooleanToggleComponent reservedToggle06;
+    private IconButtonComponent addFriendsButton;
+    private BooleanToggleComponent reservedToggle07;
+    private ColorValueEditorComponent reservedColorEditor;
+    private NotificationToastOverlay notificationOverlay;
+    private BooleanToggleComponent reservedToggle08;
+    private final OnlineConnectionStatusPanel connectionStatusPanel;
+    private GuiMouseListener popupOutsideClickListener;
+    private SimpleTextLabelComponent reservedLabel;
+    private BooleanToggleComponent reservedToggle09;
+    private final OnlineFriendsListPanel onlineFriendsListPanel;
+    private PopupFrame notificationPopup;
+    private PopupFrame friendRequestsPopup;
+    private BooleanToggleComponent reservedToggle10;
+    private final PanelComponent contentPanel;
+    private ColorDividerComponent toolbarDivider;
+    private DropdownSelectComponent<ModeOption> reservedModeDropdown;
+    private BooleanToggleComponent reservedToggle11;
+    private final FriendManagementPanel friendManagementPanel;
+    private PanelComponent activeContentPanel;
+    private BooleanToggleComponent reservedToggle12;
+    private final PanelComponent pagePanel = new PanelComponent(104.0, 150.0);
+    private OnlineModeToggleComponent modeToggle;
+    private BooleanToggleComponent reservedToggle13;
 
     public OnlineFriendsFrame() {
         super("newfriends", "Friends");
-        this.OQ = new PanelComponent(104.0, 130.0);
-        this.OP = new OnlineFriendsFrameModeToggleComponent(this, "VAPE FRIENDS", "MINECRAFT FRIENDS", true);
-        this.Ot = new FriendManagementPanel();
-        this.Oz = new FriendRequestsPanel();
-        this.Oh = new IconButtonComponent("add friends@2x", 1.0, new Color(180, 180, 180), Color.WHITE, 13.0, 13.0);
-        this.O6 = new ColorDividerComponent(OnlineFriendsFrame.J.l);
-        this.O9 = new OnlineFriendsListPanel();
-        this.Or = new OnlineFriendsEmptyStatePanel();
-        this.Og = new OnlineConnectionStatusPanel();
-        this.OJ = new OnlineFriendsFramePopupOutsideClickListener(this);
+        this.contentPanel = new PanelComponent(104.0, 130.0);
+        this.modeToggle = new OnlineFriendsFrameModeToggleComponent(this, "VAPE FRIENDS", "MINECRAFT FRIENDS", true);
+        this.friendManagementPanel = new FriendManagementPanel();
+        this.friendRequestsPanel = new FriendRequestsPanel();
+        this.addFriendsButton = new IconButtonComponent("add friends@2x", 1.0, new Color(180, 180, 180), Color.WHITE, 13.0, 13.0);
+        this.toolbarDivider = new ColorDividerComponent(OnlineFriendsFrame.J.l);
+        this.onlineFriendsListPanel = new OnlineFriendsListPanel();
+        this.emptyStatePanel = new OnlineFriendsEmptyStatePanel();
+        this.connectionStatusPanel = new OnlineConnectionStatusPanel();
+        this.popupOutsideClickListener = new OnlineFriendsFramePopupOutsideClickListener(this);
         this.setVisible(false);
         this.o(103.0);
         this.N(false);
         this.D(true);
-        this.C6();
-        this.s$src$V$vr89i8();
-        this.d$src$V$vizclt();
-        this.w(this.Or);
-        this.Oh.w("Add Vape friends");
-        this.OP.u("", "");
-        this.Oy = new NotificationToastOverlay(this);
-        this.addMouseListener(this.OJ);
+        this.configureToolbar();
+        this.addThemeSettings();
+        this.buildLayout();
+        this.showContent(this.emptyStatePanel);
+        this.addFriendsButton.w("Add Vape friends");
+        this.modeToggle.setTooltips("", "");
+        this.notificationOverlay = new NotificationToastOverlay(this);
+        this.addMouseListener(this.popupOutsideClickListener);
         this.i$src$Lgg_vape_ui_click_frame_FrameToolbarComponent_$gnpgc6().setDefaultIconScale(0.8f);
     }
 
@@ -115,48 +115,48 @@ extends SettingsSubpageFrame {
         if (Vape.INSTANCE.getOnlineManager() == null) {
             return;
         }
-        int n = Vape.INSTANCE.getOnlineManager().D().I().size();
+        int n = Vape.INSTANCE.getOnlineManager().getFriendRequestManager().getIncomingRequests().size();
         if (n > 0) {
-            this.Oh.setIconResource("add friends notification@2x");
+            this.addFriendsButton.setIconResource("add friends notification@2x");
         } else {
-            this.Oh.setIconResource("add friends@2x");
+            this.addFriendsButton.setIconResource("add friends@2x");
         }
-        this.Oh.setVisible(false);
-        if (this.OP.r$src$Ljava_lang_Boolean_$180i77a().booleanValue()) {
-            if (OnlineConnectionManager.T.n().equals((Object)OnlineConnectionState.ONLINE)) {
-                if (Vape.INSTANCE.getOnlineFriendManager().g().size() > 0 || Vape.INSTANCE.getOnlineManager().y().j() != null) {
-                    this.w(this.O9);
+        this.addFriendsButton.setVisible(false);
+        if (this.modeToggle.isLeftSelected().booleanValue()) {
+            if (OnlineConnectionManager.INSTANCE.getConnectionState().equals((Object)OnlineConnectionState.ONLINE)) {
+                if (Vape.INSTANCE.getOnlineFriendManager().getFriends().size() > 0 || Vape.INSTANCE.getOnlineManager().getPartyManager().getCurrentParty() != null) {
+                    this.showContent(this.onlineFriendsListPanel);
                 } else {
-                    this.w(this.Or);
+                    this.showContent(this.emptyStatePanel);
                 }
-                this.Oh.setVisible(true);
+                this.addFriendsButton.setVisible(true);
             } else {
-                this.w(this.Og);
+                this.showContent(this.connectionStatusPanel);
             }
-            if (this.Od != null) {
-                this.OI.setVisible(false);
-            } else if (this.OI != null) {
-                this.OI.setVisible(true);
+            if (this.registrationPopup != null) {
+                this.activeContentPanel.setVisible(false);
+            } else if (this.activeContentPanel != null) {
+                this.activeContentPanel.setVisible(true);
             }
         } else {
-            if (this.OI != null) {
-                this.OI.setVisible(false);
+            if (this.activeContentPanel != null) {
+                this.activeContentPanel.setVisible(false);
             }
             if (!this.q$src$Lgg_vape_ui_click_component_IconButtonComponent_$1bvowkh().V$src$Z$1xhop3l()) {
                 this.q$src$Lgg_vape_ui_click_component_IconButtonComponent_$1bvowkh().setVisible(true);
             }
-            if (OnlineConnectionManager.T.n().equals((Object)OnlineConnectionState.ONLINE)) {
-                this.Oh.setVisible(true);
+            if (OnlineConnectionManager.INSTANCE.getConnectionState().equals((Object)OnlineConnectionState.ONLINE)) {
+                this.addFriendsButton.setVisible(true);
             }
         }
     }
 
-    public void N$src$V$v6vvjv() {
+    public void refreshOnlineData() {
         try {
-            this.k$src$V$vmtwrc();
-            OnlineFriendUiHelper.U();
-            if (!this.OP.r$src$Ljava_lang_Boolean_$180i77a().booleanValue()) {
-                this.OP.u(false);
+            this.closeAllPopups();
+            OnlineFriendUiHelper.refreshMinecraftFriends();
+            if (!this.modeToggle.isLeftSelected().booleanValue()) {
+                this.modeToggle.setLeftSelected(false);
             }
         }
         catch (Exception exception) {
@@ -164,144 +164,144 @@ extends SettingsSubpageFrame {
         }
     }
 
-    public OnlineFriendEntriesPanel d$src$Lgg_vape_friend_ui_OnlineFriendEntriesPanel_$86qf3j() {
-        return this.O9.l$src$Lgg_vape_friend_ui_OnlineFriendEntriesPanel_$257n8u();
+    public OnlineFriendEntriesPanel getOnlineFriendEntriesPanel() {
+        return this.onlineFriendsListPanel.getFriendEntriesPanel();
     }
 
-    public void p(boolean bl) {
-        this.k$src$V$vmtwrc();
-        if (!bl) {
-            if (this.Of == null) {
-                this.Of = this.A(this.OQ, this.Ot, CenteredPopupFrame.class);
+    public void updateFriendManagementPopup(boolean vapeFriendsSelected) {
+        this.closeAllPopups();
+        if (!vapeFriendsSelected) {
+            if (this.friendManagementPopup == null) {
+                this.friendManagementPopup = this.createPopup(this.contentPanel, this.friendManagementPanel, CenteredPopupFrame.class);
             }
-        } else if (this.Of != null) {
-            ClientSettings.removePopup(this.Of);
-            this.Of = null;
+        } else if (this.friendManagementPopup != null) {
+            ClientSettings.removePopup(this.friendManagementPopup);
+            this.friendManagementPopup = null;
         }
     }
 
-    public void e() {
-        if (this.Od != null) {
-            this.Q$src$V$v8j9by();
+    public void closeRegistrationIfOpen() {
+        if (this.registrationPopup != null) {
+            this.closeRegistrationPopup();
         }
     }
 
-    private void C6() {
-        this.i$src$Lgg_vape_ui_click_frame_FrameToolbarComponent_$gnpgc6().addAction(this.Oh);
-        this.Oh.addClickListener(new OnlineFriendsFramePopupCloseClickHandler(this));
+    private void configureToolbar() {
+        this.i$src$Lgg_vape_ui_click_frame_FrameToolbarComponent_$gnpgc6().addAction(this.addFriendsButton);
+        this.addFriendsButton.addClickListener(new OnlineFriendsFramePopupCloseClickHandler(this));
         this.i$src$Lgg_vape_ui_click_frame_FrameToolbarComponent_$gnpgc6().getNavigationButton().addClickListener(new OnlineFriendsFrameConditionalPopupCloseClickHandler(this));
     }
 
-    public static NotificationToastOverlay e(OnlineFriendsFrame onlineFriendsFrame) {
-        return onlineFriendsFrame.Oy;
+    public static NotificationToastOverlay getNotificationOverlay(OnlineFriendsFrame frame) {
+        return frame.notificationOverlay;
     }
 
-    public static void c$src$V$11veyie(OnlineFriendsFrame onlineFriendsFrame) {
-        onlineFriendsFrame.CM();
+    public static void toggleFriendRequestsPopup(OnlineFriendsFrame frame) {
+        frame.toggleFriendRequestsPopup();
     }
 
-    private void CM() {
-        if (this.Ok == null) {
-            this.Ok = this.A(this.On, this.Oz, CenteredPopupFrame.class);
+    private void toggleFriendRequestsPopup() {
+        if (this.friendRequestsPopup == null) {
+            this.friendRequestsPopup = this.createPopup(this.popupAnchorPanel, this.friendRequestsPanel, CenteredPopupFrame.class);
             this.i$src$Lgg_vape_ui_click_frame_FrameToolbarComponent_$gnpgc6().showBackNavigation("Friend requests", false);
         } else {
-            ClientSettings.removePopup(this.Ok);
-            this.Ok = null;
+            ClientSettings.removePopup(this.friendRequestsPopup);
+            this.friendRequestsPopup = null;
             this.i$src$Lgg_vape_ui_click_frame_FrameToolbarComponent_$gnpgc6().restoreDefaultNavigation();
         }
     }
 
-    private void Ci() {
-        if (this.OL == null) {
-            this.OL = this.A(this, this.Oy, PopupFrame.class);
+    private void updateNotificationPopup() {
+        if (this.notificationPopup == null) {
+            this.notificationPopup = this.createPopup(this, this.notificationOverlay, PopupFrame.class);
         }
-        this.c(this.OL);
-        this.OL.K(this.G$src$D$1b2f02a());
-        this.OL.S(this.n());
+        this.c(this.notificationPopup);
+        this.notificationPopup.K(this.G$src$D$1b2f02a());
+        this.notificationPopup.S(this.n());
     }
 
-    public PartyInvitesPanel Y$src$Lgg_vape_friend_ui_PartyInvitesPanel_$1o49ve3() {
-        return this.O9.P();
+    public PartyInvitesPanel getPartyInvitesPanel() {
+        return this.onlineFriendsListPanel.getInvitesPanel();
     }
 
 
-    public static void G(String[] stringArray) {
-        O4 = stringArray;
+    public static void setObfuscationStrings(String[] values) {
+        obfuscationStrings = values;
     }
 
-    public void Z$src$V$vdheo7() {
-        if (this.Od != null) {
-            this.Q$src$V$v8j9by();
+    public void showRegistration() {
+        if (this.registrationPopup != null) {
+            this.closeRegistrationPopup();
         }
-        if (this.OU == null) {
-            this.OU = new OnlineRegistrationPanel();
+        if (this.registrationPanel == null) {
+            this.registrationPanel = new OnlineRegistrationPanel();
         }
-        this.Od = this.A(this.On, this.OU, CenteredPopupFrame.class);
+        this.registrationPopup = this.createPopup(this.popupAnchorPanel, this.registrationPanel, CenteredPopupFrame.class);
         this.q$src$Lgg_vape_ui_click_component_IconButtonComponent_$1bvowkh().setVisible(false);
-        this.Oh.setVisible(false);
+        this.addFriendsButton.setVisible(false);
     }
 
-    public PanelComponent L$src$Lgg_vape_ui_click_component_PanelComponent_$1c87g2d() {
-        return this.Ou;
+    public PanelComponent getPagePanel() {
+        return this.pagePanel;
     }
 
-    public OnlineModeToggleComponent p$src$Lgg_vape_friend_ui_OnlineModeToggleComponent_$u0bbsl() {
-        return this.OP;
+    public OnlineModeToggleComponent getModeToggle() {
+        return this.modeToggle;
     }
 
     static {
-        OnlineFriendsFrame.G(new String[4]);
+        OnlineFriendsFrame.setObfuscationStrings(new String[4]);
     }
 
-    public PopupFrame A(GuiComponent guiComponent, GuiComponent guiComponent2, Class<? extends PopupFrame> clazz) {
-        PopupFrame popupFrame = ClientSettings.createPopup(guiComponent, guiComponent2, clazz);
-        popupFrame.addMouseListener(this.OJ);
+    public PopupFrame createPopup(GuiComponent anchor, GuiComponent content, Class<? extends PopupFrame> popupClass) {
+        PopupFrame popupFrame = ClientSettings.createPopup(anchor, content, popupClass);
+        popupFrame.addMouseListener(this.popupOutsideClickListener);
         return popupFrame;
     }
 
-    private void d$src$V$vizclt() {
-        this.Ou.t(150.0);
-        this.Ou.N(false);
-        this.Ou.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M("wrap");
-        this.Ou.h(new SpacerComponent(0.0, 2.0), new Object[0]);
-        this.Ou.h(this.OP, new Object[0]);
-        this.Ou.h(new SpacerComponent(1.0, 4.0), new Object[0]);
-        this.Ou.h(this.OQ, new Object[0]);
-        this.On.t(150.0);
-        this.On.N(false);
-        this.On.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M("spanWidth, offsetX 6");
-        this.On.h(this.Ou, new Object[0]);
-        this.h(this.On, new Object[0]);
+    private void buildLayout() {
+        this.pagePanel.t(150.0);
+        this.pagePanel.N(false);
+        this.pagePanel.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M("wrap");
+        this.pagePanel.h(new SpacerComponent(0.0, 2.0), new Object[0]);
+        this.pagePanel.h(this.modeToggle, new Object[0]);
+        this.pagePanel.h(new SpacerComponent(1.0, 4.0), new Object[0]);
+        this.pagePanel.h(this.contentPanel, new Object[0]);
+        this.popupAnchorPanel.t(150.0);
+        this.popupAnchorPanel.N(false);
+        this.popupAnchorPanel.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M("spanWidth, offsetX 6");
+        this.popupAnchorPanel.h(this.pagePanel, new Object[0]);
+        this.h(this.popupAnchorPanel, new Object[0]);
     }
 
-    public FriendRequestsPanel o$src$Lgg_vape_friend_ui_FriendRequestsPanel_$8g38ub() {
-        return this.Oz;
+    public FriendRequestsPanel getFriendRequestsPanel() {
+        return this.friendRequestsPanel;
     }
 
-    public void Q$src$V$v8j9by() {
-        if (this.Od == null) {
+    public void closeRegistrationPopup() {
+        if (this.registrationPopup == null) {
             return;
         }
         this.i$src$Lgg_vape_ui_click_frame_FrameToolbarComponent_$gnpgc6().restoreDefaultNavigation();
-        ClientSettings.removePopup(this.Od);
-        this.Od = null;
+        ClientSettings.removePopup(this.registrationPopup);
+        this.registrationPopup = null;
         this.q$src$Lgg_vape_ui_click_component_IconButtonComponent_$1bvowkh().setVisible(true);
-        this.Oh.setVisible(true);
+        this.addFriendsButton.setVisible(true);
     }
 
-    public FriendEntriesPanel R$src$Lgg_vape_friend_ui_FriendEntriesPanel_$19ux45q() {
-        return this.Ot.w$src$Lgg_vape_friend_ui_FriendEntriesPanel_$r03ijp();
+    public FriendEntriesPanel getMinecraftFriendEntriesPanel() {
+        return this.friendManagementPanel.getEntriesPanel();
     }
 
-    public static String[] w$src$ALjava_lang_String_$1ugxiph() {
-        return O4;
+    public static String[] getObfuscationStrings() {
+        return obfuscationStrings;
     }
 
-    public OnlineFriendsListPanel x$src$Lgg_vape_friend_ui_OnlineFriendsListPanel_$lt2vne() {
-        return this.O9;
+    public OnlineFriendsListPanel getOnlineFriendsListPanel() {
+        return this.onlineFriendsListPanel;
     }
 
-    private void s$src$V$vr89i8() {
+    private void addThemeSettings() {
         LinkedHashMap<ThemeComponentGroupKey, GuiComponent[]> linkedHashMap = ThemeComponentGroupFactory.R(J);
         for (Map.Entry<ThemeComponentGroupKey, GuiComponent[]> entry : linkedHashMap.entrySet()) {
             String string = entry.getKey().h();
@@ -317,36 +317,36 @@ extends SettingsSubpageFrame {
     @Override
     public void w() {
         super.w();
-        this.p(this.OP.r$src$Ljava_lang_Boolean_$180i77a());
+        this.updateFriendManagementPopup(this.modeToggle.isLeftSelected());
     }
 
-    public OnlineFriendsEmptyStatePanel k$src$Lgg_vape_friend_ui_OnlineFriendsEmptyStatePanel_$xjl6dd() {
-        return this.Or;
+    public OnlineFriendsEmptyStatePanel getEmptyStatePanel() {
+        return this.emptyStatePanel;
     }
 
-    public NotificationToastOverlay V$src$Lgg_vape_ui_notification_NotificationToastOverla$1025be3() {
-        return this.Oy;
+    public NotificationToastOverlay getNotificationOverlay() {
+        return this.notificationOverlay;
     }
 
-    public void o$src$V$vp134s() {
-        ClientSettings.getFrame(OnlineFriendsFrame.class).p$src$Lgg_vape_friend_ui_OnlineModeToggleComponent_$u0bbsl().u(false);
+    public void switchToMinecraftFriends() {
+        ClientSettings.getFrame(OnlineFriendsFrame.class).getModeToggle().setLeftSelected(false);
         this.q$src$Lgg_vape_ui_click_component_IconButtonComponent_$1bvowkh().setVisible(true);
     }
 
-    private void w(PanelComponent panelComponent) {
-        if (this.OI != panelComponent) {
-            this.OQ.t$src$V$zbu1jn();
-            this.OQ.h(panelComponent, new Object[0]);
-            this.OI = panelComponent;
-            this.Q$src$V$v8j9by();
-            this.k$src$V$vmtwrc();
+    private void showContent(PanelComponent panel) {
+        if (this.activeContentPanel != panel) {
+            this.contentPanel.t$src$V$zbu1jn();
+            this.contentPanel.h(panel, new Object[0]);
+            this.activeContentPanel = panel;
+            this.closeRegistrationPopup();
+            this.closeAllPopups();
         }
     }
 
     @Override
     public void p() {
         if (this.H$src$Lgg_vape_ui_click_frame_CenteredPopupFrame_$1qmombx() == null) {
-            boolean bl = OnlineConnectionManager.T.n().equals((Object)OnlineConnectionState.ONLINE);
+            boolean bl = OnlineConnectionManager.INSTANCE.getConnectionState().equals((Object)OnlineConnectionState.ONLINE);
             List<GuiComponent> list = this.h();
             for (GuiComponent guiComponent : list) {
                 if (guiComponent instanceof SettingsSectionComponent) {
@@ -363,23 +363,23 @@ extends SettingsSubpageFrame {
         super.p();
     }
 
-    public static PopupFrame c(OnlineFriendsFrame onlineFriendsFrame) {
-        return onlineFriendsFrame.Ok;
+    public static PopupFrame getFriendRequestsPopup(OnlineFriendsFrame frame) {
+        return frame.friendRequestsPopup;
     }
 
     @Override
     public void c() {
-        this.Ci();
+        this.updateNotificationPopup();
         this.l$src$V$1mibm4x();
         super.c();
     }
 
-    public void k$src$V$vmtwrc() {
+    public void closeAllPopups() {
         ClientSettings.removeFramePopups(this);
-        this.Od = null;
-        this.Of = null;
-        this.Ok = null;
-        this.OL = null;
+        this.registrationPopup = null;
+        this.friendManagementPopup = null;
+        this.friendRequestsPopup = null;
+        this.notificationPopup = null;
         this.i$src$Lgg_vape_ui_click_frame_FrameToolbarComponent_$gnpgc6().restoreDefaultNavigation();
     }
 }

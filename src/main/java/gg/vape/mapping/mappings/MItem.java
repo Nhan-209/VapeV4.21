@@ -5,7 +5,6 @@ import gg.vape.mapping.Mapping;
 import gg.vape.mapping.MappingField;
 import gg.vape.mapping.MappingMethod;
 import gg.vape.mapping.MappingMethodBuilder;
-import gg.vape.mapping.mappings.MItemStack;
 import gg.vape.ui.click.component.GuiComponent;
 import gg.vape.wrapper.Wrapper;
 import gg.vape.wrapper.impl.ForgeVersion;
@@ -39,11 +38,11 @@ extends Mapping {
     }
 
     private Object D(Object object, Object object2) {
-        return this.h.L(object, object2);
+        return this.h.invokeObject(object, object2);
     }
 
     private Object W(Object object) {
-        return this.c.L(object, new Object[0]);
+        return this.c.invokeObject(object, new Object[0]);
     }
 
     private int M(Object object) {
@@ -75,7 +74,7 @@ extends Mapping {
     }
 
     private String T(Object object, Object object2) {
-        Object object3 = this.d.L(object, object2);
+        Object object3 = this.d.invokeObject(object, object2);
         if (ForgeVersion.MC_1_16_5.d()) {
             ITextComponent iTextComponent = new ITextComponent(object3);
             return iTextComponent.getFormattedText();
@@ -92,7 +91,7 @@ extends Mapping {
     }
 
     private int R(Object object) {
-        return this.F.Z(null, object);
+        return this.F.invokeInt(null, object);
     }
 
     public static int Q(MItem mItem, Object object, Object object2) {
@@ -116,15 +115,15 @@ extends Mapping {
     }
 
     private Object q(Object object) {
-        return this.Z.L(object, new Object[0]);
+        return this.Z.invokeObject(object, new Object[0]);
     }
 
     private String w(Object object) {
-        return (String)this.N.L(object, new Object[0]);
+        return (String)this.N.invokeObject(object, new Object[0]);
     }
 
     private int A(Object object, Object object2) {
-        return this.e.Z(object, object2);
+        return this.e.invokeInt(object, object2);
     }
 
 
@@ -133,7 +132,7 @@ extends Mapping {
     }
 
     public int c(Object object, Object object2, Object object3) {
-        return this.e.Z(object, object2, object3);
+        return this.e.invokeInt(object, object2, object3);
     }
 
     public static Object W(MItem mItem, int n) {
@@ -141,7 +140,7 @@ extends Mapping {
     }
 
     private Object J(int n) {
-        return this.f.L(null, n);
+        return this.f.invokeObject(null, n);
     }
 
     private Object D() {
@@ -153,7 +152,7 @@ extends Mapping {
     }
 
     private Object t(Object object) {
-        return this.w.L(object, new Object[0]);
+        return this.w.invokeObject(object, new Object[0]);
     }
 
     public MItem() {
@@ -182,27 +181,27 @@ extends Mapping {
             boolean bl2 = true;
             String string2 = "getIdFromItem";
             MItem mItem2 = this;
-            this.F = this.x(string2, bl2, clazz2, classArray2);
+            this.F = this.registerStaticMethod(string2, bl2, clazz2, classArray2);
             Class[] classArray3 = new Class[]{Integer.TYPE};
             Class clazz3 = MappedClasses.lb;
             boolean bl3 = true;
             String string3 = "getItemById";
             MItem mItem3 = this;
-            this.f = this.x(string3, bl3, clazz3, classArray3);
+            this.f = this.registerStaticMethod(string3, bl3, clazz3, classArray3);
             if (ForgeVersion.MC_1_7_10.L()) {
                 Class clazz4 = MappedClasses.lz;
                 boolean bl4 = true;
                 String string4 = "ITEM";
                 Class clazz5 = MappedClasses.R;
                 MItem mItem4 = this;
-                mItem4.s(clazz5, string4, bl4, clazz4);
+                mItem4.registerStaticFieldForOwner(clazz5, string4, bl4, clazz4);
             }
             Class clazz6 = MappedClasses.lz;
             boolean bl5 = true;
             String string5 = "ITEM";
             Class clazz7 = MappedClasses.Fk;
             MItem mItem5 = this;
-            this.r = this.s(clazz7, string5, bl5, clazz6);
+            this.r = this.registerStaticFieldForOwner(clazz7, string5, bl5, clazz6);
             Class[] classArray4 = new Class[]{MappedClasses.zX, MappedClasses.Vd};
             Class<Void> clazz8 = Void.TYPE;
             boolean bl6 = true;
@@ -253,7 +252,7 @@ extends Mapping {
             Class<Integer> clazz15 = Integer.TYPE;
             String string13 = "getMaxItemUseDuration";
             MItem mItem13 = this;
-            this.e = ((MappingMethodBuilder)this.u(string13, clazz15, classArray11).A(ForgeVersion.MC_1_16_5.n(), "getUseDuration")).v(ForgeVersion.MC_1_21_4.n(), MappedClasses.VK, MappedClasses.zm).s();
+            this.e = ((MappingMethodBuilder)this.methodBuilder(string13, clazz15, classArray11).setNameForVersion(ForgeVersion.MC_1_16_5.n(), "getUseDuration")).setParameterTypesForVersion(ForgeVersion.MC_1_21_4.n(), MappedClasses.VK, MappedClasses.zm).buildMethod();
             if (GuiComponent.getLegacyComponentState() == null) {
                 MItemStack.E(++n2);
             }
@@ -267,7 +266,7 @@ extends Mapping {
             MItem mItem = this;
             this.N = mItem.Y(string, bl, clazz, classArray);
         }
-        if (ForgeVersion.MC_1_7_10.L() && Wrapper.c.isVanillaMinecraftPresent()) {
+        if (ForgeVersion.MC_1_7_10.L() && Wrapper.vapeInstance.isVanillaMinecraftPresent()) {
             Class<Integer> clazz = Integer.TYPE;
             boolean bl = true;
             String string = "maxDurability";
@@ -292,13 +291,13 @@ extends Mapping {
         boolean bl = true;
         String string = "getIdFromItem";
         MItem mItem = this;
-        this.F = mItem.x(string, bl, clazz, classArray); 
+        this.F = mItem.registerStaticMethod(string, bl, clazz, classArray);
         Class[] classArray12 = new Class[]{Integer.TYPE};
         Class clazz16 = MappedClasses.lb;
         boolean bl13 = true;
         String string14 = "getItemById";
         MItem mItem14 = this;
-        this.f = this.x(string14, bl13, clazz16, classArray12);
+        this.f = this.registerStaticMethod(string14, bl13, clazz16, classArray12);
         if (ForgeVersion.MC_1_7_10.L()) {
             Class[] classArray13 = new Class[]{};
             Class<String> clazz17 = String.class;
@@ -312,7 +311,7 @@ extends Mapping {
             boolean bl15 = true;
             String string16 = "getByNameOrId";
             MItem mItem16 = this;
-            this.W = this.x(string16, bl15, clazz18, classArray14);
+            this.W = this.registerStaticMethod(string16, bl15, clazz18, classArray14);
         }
         if (ForgeVersion.MC_1_12_2.d()) {
             if (ForgeVersion.MC_1_16_5.d()) {
@@ -322,14 +321,14 @@ extends Mapping {
                     String string17 = "ITEM";
                     Class clazz20 = MappedClasses.R;
                     MItem mItem17 = this;
-                    this.r = this.s(clazz20, string17, bl16, clazz19);
+                    this.r = this.registerStaticFieldForOwner(clazz20, string17, bl16, clazz19);
                 } else {
                     Class clazz21 = MappedClasses.lz;
                     boolean bl17 = true;
                     String string18 = "ITEM";
                     Class clazz22 = MappedClasses.Fk;
                     MItem mItem18 = this;
-                    this.r = this.s(clazz22, string18, bl17, clazz21);
+                    this.r = this.registerStaticFieldForOwner(clazz22, string18, bl17, clazz21);
                     Class[] classArray15 = new Class[]{MappedClasses.zX, MappedClasses.Vd};
                     Class<Void> clazz23 = Void.TYPE;
                     boolean bl18 = true;
@@ -350,7 +349,7 @@ extends Mapping {
                 boolean bl20 = true;
                 String string21 = "REGISTRY";
                 MItem mItem21 = this;
-                this.r = this.u(string21, bl20, clazz25);
+                this.r = this.registerStaticField(string21, bl20, clazz25);
                 Class[] classArray17 = new Class[]{MappedClasses.zX, MappedClasses.Vd};
                 Class<Void> clazz26 = Void.TYPE;
                 boolean bl21 = true;
@@ -363,7 +362,7 @@ extends Mapping {
             boolean bl22 = true;
             String string23 = "itemRegistry";
             MItem mItem23 = this;
-            this.r = this.u(string23, bl22, clazz27);
+            this.r = this.registerStaticField(string23, bl22, clazz27);
             Class[] classArray18 = new Class[]{MappedClasses.lb, MappedClasses.zX, List.class};
             Class<Void> clazz28 = Void.TYPE;
             boolean bl23 = true;
@@ -403,7 +402,7 @@ extends Mapping {
             boolean bl28 = true;
             String string29 = "BLOCK_TO_ITEM";
             MItem mItem29 = this;
-            this.v = this.u(string29, bl28, clazz33);
+            this.v = this.registerStaticField(string29, bl28, clazz33);
         }
         if (ForgeVersion.MC_1_16_5.v()) {
             Class<Boolean> clazz34 = Boolean.TYPE;
@@ -434,14 +433,14 @@ extends Mapping {
             boolean bl32 = true;
             String string33 = "getPlayerPOVHitResult";
             MItem mItem33 = this;
-            this.p = this.x(string33, bl32, clazz37, classArray25);
+            this.p = this.registerStaticMethod(string33, bl32, clazz37, classArray25);
         } else if (ForgeVersion.MC_1_16_5.d()) {
             Class[] classArray26 = new Class[]{MappedClasses.YU, MappedClasses.Yl, MappedClasses.Dm};
             Class clazz38 = MappedClasses.qF;
             boolean bl33 = true;
             String string34 = "getPlayerPOVHitResult";
             MItem mItem34 = this;
-            this.p = this.x(string34, bl33, clazz38, classArray26);
+            this.p = this.registerStaticMethod(string34, bl33, clazz38, classArray26);
         } else if (ForgeVersion.MC_1_12_2.d()) {
             Class[] classArray27 = new Class[]{MappedClasses.YU, MappedClasses.Yl, Boolean.TYPE};
             Class clazz39 = MappedClasses.DT;
@@ -461,7 +460,7 @@ extends Mapping {
         Class<Integer> clazz41 = Integer.TYPE;
         String string37 = "getMaxItemUseDuration";
         MItem mItem37 = this;
-        this.e = ((MappingMethodBuilder)this.u(string37, clazz41, classArray29).A(ForgeVersion.MC_1_16_5.n(), "getUseDuration")).v(ForgeVersion.MC_1_21_4.n(), MappedClasses.VK, MappedClasses.zm).s();
+        this.e = ((MappingMethodBuilder)this.methodBuilder(string37, clazz41, classArray29).setNameForVersion(ForgeVersion.MC_1_16_5.n(), "getUseDuration")).setParameterTypesForVersion(ForgeVersion.MC_1_21_4.n(), MappedClasses.VK, MappedClasses.zm).buildMethod();
         if (GuiComponent.getLegacyComponentState() == null) {
             MItemStack.E(++n2);
         }
@@ -472,11 +471,11 @@ extends Mapping {
     }
 
     private String W$src$Ljava_lang_String_$1nf3kj0(Object object) {
-        return this.S.L(object, new Object[0]).toString();
+        return this.S.invokeObject(object, new Object[0]).toString();
     }
 
     private Object O(String string) {
-        return this.W.L(null, string);
+        return this.W.invokeObject(null, string);
     }
 
     public static void V(MItem mItem, Object object, Object object2, Object object3, List list) {
@@ -485,14 +484,14 @@ extends Mapping {
 
     private void h(Object object, Object object2, Object object3, List list) {
         if (ForgeVersion.MC_1_12_2.d()) {
-            this.Q.c(object, object3, list);
+            this.Q.invokeVoid(object, object3, list);
         } else {
-            this.Q.c(object, object2, object3, list);
+            this.Q.invokeVoid(object, object2, object3, list);
         }
     }
 
     private Object B(Object object) {
-        return this.G.L(object, new Object[0]);
+        return this.G.invokeObject(object, new Object[0]);
     }
 }
 

@@ -12,9 +12,9 @@ extends Mapping {
 
     private Object F() {
         if (ForgeVersion.MC_1_17.d()) {
-            return this.g.L(null, new Object[0]);
+            return this.g.invokeObject(null, new Object[0]);
         }
-        return this.g.O(new Object[0]);
+        return this.g.newInstance(new Object[0]);
     }
 
     public MNonNullList() {
@@ -30,7 +30,7 @@ extends Mapping {
                 boolean bl = true;
                 String string = "create";
                 MNonNullList mNonNullList = this;
-                this.g = mNonNullList.x(string, bl, clazz, classArray);
+                this.g = mNonNullList.registerStaticMethod(string, bl, clazz, classArray);
             } else {
                 Class[] classArray = new Class[]{};
                 Class<Void> clazz = Void.TYPE;

@@ -14,16 +14,16 @@ implements INamed {
     private final String label;
     public static final @UnmodifiableView List<MembershipMode> VALUES;
 
-    public boolean matchesAny(String string, List<String> list) {
-        for (String string2 : list) {
-            if (!this.matches(string, string2)) continue;
+    public boolean matchesAny(String value, List<String> candidates) {
+        for (String candidate : candidates) {
+            if (!this.matches(value, candidate)) continue;
             return true;
         }
         return false;
     }
 
-    public static MembershipMode fromName(String string) {
-        return MembershipMode.fromNameOrDefault(string, IS_IN);
+    public static MembershipMode fromName(String name) {
+        return MembershipMode.fromNameOrDefault(name, IS_IN);
     }
 
     @Override
@@ -31,28 +31,28 @@ implements INamed {
         return this.label;
     }
 
-    private MembershipMode(String string2) {
-        this.label = string2;
+    private MembershipMode(String label) {
+        this.label = label;
     }
 
 
-    public boolean matches(String string, String string2) {
-        string = string.toLowerCase();
-        string2 = string2.toLowerCase();
+    public boolean matches(String value, String candidate) {
+        value = value.toLowerCase();
+        candidate = candidate.toLowerCase();
         switch (this) {
             case IS_IN: {
-                return string.contains(string2);
+                return value.contains(candidate);
             }
             case IS_NOT_IN: {
-                return !string.contains(string2);
+                return !value.contains(candidate);
             }
         }
         return false;
     }
 
-    public static MembershipMode fromNameOrDefault(String string, MembershipMode membershipMode) {
-        MembershipMode membershipMode2 = MembershipMode.findByName(string);
-        return membershipMode2 == null ? membershipMode : membershipMode2;
+    public static MembershipMode fromNameOrDefault(String name, MembershipMode fallback) {
+        MembershipMode mode = MembershipMode.findByName(name);
+        return mode == null ? fallback : mode;
     }
 
     static {
@@ -60,10 +60,10 @@ implements INamed {
     }
 
     @Nullable
-    public static MembershipMode findByName(String string) {
-        for (MembershipMode membershipMode : VALUES) {
-            if (!membershipMode.getName().equalsIgnoreCase(string)) continue;
-            return membershipMode;
+    public static MembershipMode findByName(String name) {
+        for (MembershipMode mode : VALUES) {
+            if (!mode.getName().equalsIgnoreCase(name)) continue;
+            return mode;
         }
         return null;
     }

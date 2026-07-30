@@ -6,28 +6,28 @@ import gg.vape.protocol.packet.ZeusTrackedPacket;
 
 public class FriendRequestUpdatePacket
 extends ZeusTrackedPacket<FriendRequestUpdateResponsePacket> {
-    private boolean w;
-    private long h;
+    private boolean accepted;
+    private long userId;
     private static int R;
 
     public FriendRequestUpdatePacket() {
     }
 
-    public long M() {
-        return this.h;
+    public long getUserId() {
+        return this.userId;
     }
 
 
     @Override
     public void T(ZeusPacketBuffer zeusPacketBuffer) {
-        zeusPacketBuffer.v(this.h);
-        zeusPacketBuffer.Y(this.w);
+        zeusPacketBuffer.writeLong(this.userId);
+        zeusPacketBuffer.writeBoolean(this.accepted);
     }
 
-    public FriendRequestUpdatePacket(long l, boolean bl) {
+    public FriendRequestUpdatePacket(long userId, boolean accepted) {
         this();
-        this.h = l;
-        this.w = bl;
+        this.userId = userId;
+        this.accepted = accepted;
     }
 
     public static int F() {
@@ -39,8 +39,8 @@ extends ZeusTrackedPacket<FriendRequestUpdateResponsePacket> {
         R = n;
     }
 
-    public boolean E() {
-        return this.w;
+    public boolean isAccepted() {
+        return this.accepted;
     }
 
     public static int Q() {
@@ -49,8 +49,8 @@ extends ZeusTrackedPacket<FriendRequestUpdateResponsePacket> {
 
     @Override
     public void x(ZeusPacketBuffer zeusPacketBuffer) {
-        this.h = zeusPacketBuffer.long_a();
-        this.w = zeusPacketBuffer.boolean_a();
+        this.userId = zeusPacketBuffer.readLong();
+        this.accepted = zeusPacketBuffer.readBoolean();
     }
 
     static {
@@ -59,4 +59,3 @@ extends ZeusTrackedPacket<FriendRequestUpdateResponsePacket> {
         }
     }
 }
-

@@ -30,7 +30,7 @@ extends Mapping {
                 String string = "endBatch";
                 Class clazz2 = MappedClasses.lp;
                 MRenderTypeBuffer mRenderTypeBuffer = this;
-                this.Z = mRenderTypeBuffer.W(clazz2, string, bl, clazz, classArray);
+                this.Z = mRenderTypeBuffer.registerInstanceMethodForOwner(clazz2, string, bl, clazz, classArray);
             }
             return;
         }
@@ -40,7 +40,7 @@ extends Mapping {
             boolean bl = true;
             String string = "getImpl";
             MRenderTypeBuffer mRenderTypeBuffer = this;
-            this.L = mRenderTypeBuffer.x(string, bl, clazz, classArray);
+            this.L = mRenderTypeBuffer.registerStaticMethod(string, bl, clazz, classArray);
         }
         Class[] classArray = new Class[]{};
         Class<Void> clazz = Void.TYPE;
@@ -48,7 +48,7 @@ extends Mapping {
         String string = "finish";
         Class clazz3 = MappedClasses.lp;
         MRenderTypeBuffer mRenderTypeBuffer = this;
-        this.l = mRenderTypeBuffer.W(clazz3, string, bl, clazz, classArray);
+        this.l = mRenderTypeBuffer.registerInstanceMethodForOwner(clazz3, string, bl, clazz, classArray);
         if (ForgeVersion.MC_1_17.d()) {
             Class[] classArray2 = new Class[]{};
             Class<Void> clazz4 = Void.TYPE;
@@ -56,12 +56,12 @@ extends Mapping {
             String string2 = "endBatch";
             Class clazz5 = MappedClasses.lp;
             MRenderTypeBuffer mRenderTypeBuffer2 = this;
-            this.Z = this.W(clazz5, string2, bl2, clazz4, classArray2);
+            this.Z = this.registerInstanceMethodForOwner(clazz5, string2, bl2, clazz4, classArray2);
         }
     }
 
     private void z(Object object) {
-        this.Z.F(object);
+        this.Z.invokeVoidNoArgs(object);
     }
 
 
@@ -74,11 +74,11 @@ extends Mapping {
     }
 
     private Object c(Object object) {
-        return this.L.L(null, object);
+        return this.L.invokeObject(null, object);
     }
 
     private void Z(Object object) {
-        this.l.F(object);
+        this.l.invokeVoidNoArgs(object);
     }
 }
 

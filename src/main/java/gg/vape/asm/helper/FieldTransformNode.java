@@ -10,10 +10,10 @@ import org.objectweb.asm.tree.VarInsnNode;
 
 public class FieldTransformNode
 implements ITramsformNode {
-    private FieldNode d;
-    private InsnList y;
-    private String X;
-    private InsnList u = new InsnList();
+    private FieldNode matchedField;
+    private InsnList storeInstructions;
+    private String fieldName;
+    private InsnList loadInstructions = new InsnList();
 
     @Override
     public boolean hasOwner() {
@@ -21,45 +21,45 @@ implements ITramsformNode {
     }
 
     @Override
-    public InsnList R() {
-        return this.u;
+    public InsnList getLoadInstructions() {
+        return this.loadInstructions;
     }
 
 
-    public FieldTransformNode(String string) {
-        this.y = new InsnList();
-        this.X = string;
+    public FieldTransformNode(String fieldName) {
+        this.storeInstructions = new InsnList();
+        this.fieldName = fieldName;
     }
 
     @Override
-    public String F() {
+    public String getOwnerInternalName() {
         return null;
     }
 
     @Override
-    public String p() {
-        return this.d.desc;
+    public String getDescriptor() {
+        return this.matchedField.desc;
     }
 
     @Override
-    public void onTransform(ClassNode classNode, MethodNode methodNode) {
-        for (FieldNode fieldNode : classNode.fields) {
-            if (!fieldNode.name.equals(this.X)) continue;
-            this.d = fieldNode;
-            this.u.add(new VarInsnNode(25, 0));
-            this.u.add(new FieldInsnNode(180, classNode.name, fieldNode.name, fieldNode.desc));
-            this.y.add(new VarInsnNode(25, 0));
-            this.y.add(new FieldInsnNode(181, classNode.name, fieldNode.name, fieldNode.desc));
+    public void prepare(ClassNode classNode, MethodNode methodNode) {
+        for (FieldNode candidate : classNode.fields) {
+            if (!candidate.name.equals(this.fieldName)) continue;
+            this.matchedField = candidate;
+            this.loadInstructions.add(new VarInsnNode(25, 0));
+            this.loadInstructions.add(new FieldInsnNode(180, classNode.name, candidate.name, candidate.desc));
+            this.storeInstructions.add(new VarInsnNode(25, 0));
+            this.storeInstructions.add(new FieldInsnNode(181, classNode.name, candidate.name, candidate.desc));
         }
     }
 
     @Override
-    public ITramsformNode setOwner(Class clazz) {
+    public ITramsformNode setOwner(Class ownerClass) {
         return this;
     }
 
     @Override
-    public InsnList h() {
-        return this.y;
+    public InsnList getStoreInstructions() {
+        return this.storeInstructions;
     }
 }

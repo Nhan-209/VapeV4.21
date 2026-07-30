@@ -35,7 +35,7 @@ extends Mapping {
     }
 
     private Object j(Object object, double d, double d2, double d3) {
-        return this.f.L(object, d, d2, d3);
+        return this.f.invokeObject(object, d, d2, d3);
     }
 
 
@@ -48,7 +48,7 @@ extends Mapping {
     }
 
     public Object init(double d, double d2, double d3, double d4, double d5, double d6) {
-        return this.B.O(d, d2, d3, d4, d5, d6);
+        return this.B.newInstance(d, d2, d3, d4, d5, d6);
     }
 
     public static boolean e(MAxisAlignedBB mAxisAlignedBB, Object object, Object object2) {
@@ -68,15 +68,15 @@ extends Mapping {
     }
 
     public Object B(Object object, double d, double d2, double d3) {
-        return this.N.L(object, d, d2, d3);
+        return this.N.invokeObject(object, d, d2, d3);
     }
 
     private Object k(Object object, double d, double d2, double d3) {
-        return this.W.L(object, d, d2, d3);
+        return this.W.invokeObject(object, d, d2, d3);
     }
 
     private boolean V(Object object, Object object2) {
-        return this.e.e(object, object2);
+        return this.e.invokeBoolean(object, object2);
     }
 
     public MAxisAlignedBB() {
@@ -119,7 +119,7 @@ extends Mapping {
         if (ForgeVersion.MC_1_12_2.d()) {
             Class[] classArray = new Class[]{Double.TYPE, Double.TYPE, Double.TYPE};
             Class clazz7 = MappedClasses.uk;
-            boolean bl7 = Wrapper.G;
+            boolean bl7 = Wrapper.isNativeAvailable;
             String string7 = "func_72317_d";
             MAxisAlignedBB mAxisAlignedBB7 = this;
             this.N = this.Y(string7, bl7, clazz7, classArray);
@@ -154,19 +154,19 @@ extends Mapping {
             } else {
                 Class[] classArray = new Class[]{MappedClasses.qP, MappedClasses.qP};
                 Class<Optional> clazz12 = Optional.class;
-                boolean bl12 = Wrapper.G;
+                boolean bl12 = Wrapper.isNativeAvailable;
                 String string12 = "func_216365_b";
                 MAxisAlignedBB mAxisAlignedBB12 = this;
                 this.l = this.Y(string12, bl12, clazz12, classArray);
                 Class[] classArray4 = new Class[]{Double.TYPE, Double.TYPE, Double.TYPE};
                 Class clazz13 = MappedClasses.uk;
-                boolean bl13 = Wrapper.G;
+                boolean bl13 = Wrapper.isNativeAvailable;
                 String string13 = "func_72314_b";
                 MAxisAlignedBB mAxisAlignedBB13 = this;
                 this.f = this.Y(string13, bl13, clazz13, classArray4);
                 Class[] classArray5 = new Class[]{MappedClasses.qP};
                 Class<Boolean> clazz14 = Boolean.TYPE;
-                boolean bl14 = Wrapper.G;
+                boolean bl14 = Wrapper.isNativeAvailable;
                 String string14 = "func_72318_a";
                 MAxisAlignedBB mAxisAlignedBB14 = this;
                 this.Y = this.Y(string14, bl14, clazz14, classArray5);
@@ -176,16 +176,16 @@ extends Mapping {
             boolean bl15 = true;
             String string15 = "calcSideHit";
             MAxisAlignedBB mAxisAlignedBB15 = this;
-            this.b = this.x(string15, bl15, clazz15, classArray);
+            this.b = this.registerStaticMethod(string15, bl15, clazz15, classArray);
             Class[] classArray6 = new Class[]{Double.TYPE};
             Class clazz16 = MappedClasses.uk;
-            boolean bl16 = Wrapper.G;
+            boolean bl16 = Wrapper.isNativeAvailable;
             String string16 = "func_186662_g";
             MAxisAlignedBB mAxisAlignedBB16 = this;
             this.x = this.Y(string16, bl16, clazz16, classArray6);
             Class[] classArray7 = new Class[]{MappedClasses.qP};
             Class clazz17 = MappedClasses.uk;
-            boolean bl17 = Wrapper.G;
+            boolean bl17 = Wrapper.isNativeAvailable;
             String string17 = "func_216361_a";
             MAxisAlignedBB mAxisAlignedBB17 = this;
             this.S = this.Y(string17, bl17, clazz17, classArray7);
@@ -199,7 +199,7 @@ extends Mapping {
             } else {
                 Class[] classArray9 = new Class[]{MappedClasses.uk};
                 Class<Boolean> clazz19 = Boolean.TYPE;
-                boolean bl19 = Wrapper.G;
+                boolean bl19 = Wrapper.isNativeAvailable;
                 String string19 = "func_72326_a";
                 MAxisAlignedBB mAxisAlignedBB19 = this;
                 this.e = this.Y(string19, bl19, clazz19, classArray9);
@@ -241,7 +241,7 @@ extends Mapping {
     }
 
     private Object copy(Object object) {
-        return this.h.L(object, new Object[0]);
+        return this.h.invokeObject(object, new Object[0]);
     }
 
     public static Object c(MAxisAlignedBB mAxisAlignedBB, Object object, double d, double d2, double d3) {
@@ -265,7 +265,7 @@ extends Mapping {
     }
 
     private Object p(Object object, Object object2, Object object3) {
-        return this.l.L(object, object2, object3);
+        return this.l.invokeObject(object, object2, object3);
     }
 
     public static Object a(MAxisAlignedBB mAxisAlignedBB, Object object, Object object2, Object object3) {
@@ -281,23 +281,23 @@ extends Mapping {
     }
 
     private boolean n(Object object, Object object2) {
-        return this.Y.e(object, object2);
+        return this.Y.invokeBoolean(object, object2);
     }
 
     public Object x(Object object, Object object2, Object object3) {
-        return this.A.L(object, object2, object3);
+        return this.A.invokeObject(object, object2, object3);
     }
 
     private Object k(Object object, double d) {
-        return this.x.L(object, d);
+        return this.x.invokeObject(object, d);
     }
 
     private Object t(Object object, Object object2, double[] dArray, Object object3, double d, double d2, double d3) {
-        return this.b.L(null, object, object2, dArray, object3, d, d2, d3);
+        return this.b.invokeObject(null, object, object2, dArray, object3, d, d2, d3);
     }
 
     private Object i(Object object, Object object2) {
-        return this.S.L(object, object2);
+        return this.S.invokeObject(object, object2);
     }
 }
 

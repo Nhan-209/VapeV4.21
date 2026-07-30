@@ -24,17 +24,17 @@ extends Mapping {
         boolean bl = true;
         String string = "SUCCESS";
         MEnumActionResult mEnumActionResult = this;
-        this.i = this.u(string, bl, clazz);
+        this.i = this.registerStaticField(string, bl, clazz);
         Class clazz2 = MappedClasses.zr;
         boolean bl2 = true;
         String string2 = "PASS";
         MEnumActionResult mEnumActionResult2 = this;
-        this.B = this.u(string2, bl2, clazz2);
+        this.B = this.registerStaticField(string2, bl2, clazz2);
         Class clazz3 = MappedClasses.zr;
         boolean bl3 = true;
         String string3 = "FAIL";
         MEnumActionResult mEnumActionResult3 = this;
-        this.m = this.u(string3, bl3, clazz3);
+        this.m = this.registerStaticField(string3, bl3, clazz3);
     }
 
     private Object getFail() {

@@ -13,11 +13,10 @@ extends JavassistMappingTask {
     }
 
     @Override
-    public void c() {
+    public void transform() {
         EventInjectionSpec eventInjectionSpec = new EventInjectionSpec(Vape.INSTANCE.getMappings().hP.O, EventPlayerTabOverlayDisplayNameLegacy.class);
-        eventInjectionSpec.d("$0, $1");
-        eventInjectionSpec.H("$event.getDisplayName()");
-        this.O(eventInjectionSpec);
+        eventInjectionSpec.setConstructorArguments("$0, $1");
+        eventInjectionSpec.setReturnExpression("$event.getDisplayName()");
+        this.registerEventInjection(eventInjectionSpec);
     }
 }
-

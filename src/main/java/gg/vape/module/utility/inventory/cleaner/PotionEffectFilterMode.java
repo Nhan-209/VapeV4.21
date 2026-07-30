@@ -23,10 +23,10 @@ DescribedOption {
     }
 
     @Nullable
-    public static PotionEffectFilterMode findByName(String string) {
-        for (PotionEffectFilterMode potionEffectFilterMode : VALUES) {
-            if (!potionEffectFilterMode.getName().equalsIgnoreCase(string)) continue;
-            return potionEffectFilterMode;
+    public static PotionEffectFilterMode findByName(String name) {
+        for (PotionEffectFilterMode mode : VALUES) {
+            if (!mode.getName().equalsIgnoreCase(name)) continue;
+            return mode;
         }
         return null;
     }
@@ -37,22 +37,22 @@ DescribedOption {
         return this.description;
     }
 
-    private PotionEffectFilterMode(String string2, String string3) {
-        this.name = string2;
-        this.description = string3;
+    private PotionEffectFilterMode(String name, String description) {
+        this.name = name;
+        this.description = description;
     }
 
     static {
         VALUES = Arrays.asList(PotionEffectFilterMode.values());
     }
 
-    public static PotionEffectFilterMode fromNameOrDefault(String string, PotionEffectFilterMode potionEffectFilterMode) {
-        PotionEffectFilterMode potionEffectFilterMode2 = PotionEffectFilterMode.findByName(string);
-        return potionEffectFilterMode2 == null ? potionEffectFilterMode : potionEffectFilterMode2;
+    public static PotionEffectFilterMode fromNameOrDefault(String name, PotionEffectFilterMode fallback) {
+        PotionEffectFilterMode mode = PotionEffectFilterMode.findByName(name);
+        return mode == null ? fallback : mode;
     }
 
-    public static PotionEffectFilterMode fromName(String string) {
-        return PotionEffectFilterMode.fromNameOrDefault(string, HAS);
+    public static PotionEffectFilterMode fromName(String name) {
+        return PotionEffectFilterMode.fromNameOrDefault(name, HAS);
     }
 }
 

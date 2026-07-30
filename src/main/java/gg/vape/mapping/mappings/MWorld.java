@@ -62,15 +62,15 @@ extends Mapping {
     private MappingMethod H;
 
     public boolean r(Object object, Object object2) {
-        return this.j.e(object, object2);
+        return this.j.invokeBoolean(object, object2);
     }
 
     private void W(Object object, int n, int n2, int n3, int n4, int n5, int n6) {
-        this.L.c(object, n, n2, n3, n4, n5, n6);
+        this.L.invokeVoid(object, n, n2, n3, n4, n5, n6);
     }
 
     private void A(Object object, Object object2) {
-        this.g.c(object, object2);
+        this.g.invokeVoid(object, object2);
     }
 
     public static Object b(MWorld mWorld, Object object, int n) {
@@ -86,7 +86,7 @@ extends Mapping {
     }
 
     public Object j(Object object, Object object2) {
-        return this.a.L(object, object2);
+        return this.a.invokeObject(object, object2);
     }
 
     public static Object V(MWorld mWorld, Object object, int n, int n2) {
@@ -151,7 +151,7 @@ extends Mapping {
             String string10 = "getBlock";
             MWorld mWorld10 = this;
             this.V = this.Y(string10, bl11, clazz10, classArray4);
-            if (Wrapper.c.isVanillaMinecraftPresent()) {
+            if (Wrapper.vapeInstance.isVanillaMinecraftPresent()) {
                 Class[] classArray5 = new Class[]{MappedClasses.qP, MappedClasses.qP, Boolean.TYPE, Boolean.TYPE, Boolean.TYPE};
                 Class clazz11 = MappedClasses.DT;
                 boolean bl12 = true;
@@ -161,7 +161,7 @@ extends Mapping {
             } else {
                 Class[] classArray6 = new Class[]{MappedClasses.qP, MappedClasses.qP, Boolean.TYPE, Boolean.TYPE, Boolean.TYPE};
                 Class clazz12 = MappedClasses.DT;
-                boolean bl13 = Wrapper.G;
+                boolean bl13 = Wrapper.isNativeAvailable;
                 String string12 = "func_147447_a";
                 MWorld mWorld12 = this;
                 this.o = this.Y(string12, bl13, clazz12, classArray6);
@@ -190,7 +190,7 @@ extends Mapping {
                 Class clazz16 = MappedClasses.ZI;
                 String string16 = "getBlockEntity";
                 MWorld mWorld16 = this;
-                this.a = ((MappingMethodBuilder)this.u(string16, clazz16, classArray10).Q(ForgeVersion.MC_1_21_4.n(), MappedClasses.zJ)).s();
+                this.a = ((MappingMethodBuilder)this.methodBuilder(string16, clazz16, classArray10).setOwnerClassForVersion(ForgeVersion.MC_1_21_4.n(), MappedClasses.zJ)).buildMethod();
             }
             if (ForgeVersion.MC_1_16_5.d()) {
                 if (ForgeVersion.MC_1_17.d()) {
@@ -200,7 +200,7 @@ extends Mapping {
                     String string17 = "hasChunk";
                     Class clazz18 = MappedClasses.F7;
                     MWorld mWorld17 = this;
-                    this.P = this.W(clazz18, string17, bl17, clazz17, classArray11);
+                    this.P = this.registerInstanceMethodForOwner(clazz18, string17, bl17, clazz17, classArray11);
                 } else {
                     Class[] classArray12 = new Class[]{MappedClasses.lf};
                     Class<Boolean> clazz19 = Boolean.TYPE;
@@ -208,7 +208,7 @@ extends Mapping {
                     String string18 = "isBlockLoaded";
                     Class clazz20 = MappedClasses.F7;
                     MWorld mWorld18 = this;
-                    this.j = this.W(clazz20, string18, bl18, clazz19, classArray12);
+                    this.j = this.registerInstanceMethodForOwner(clazz20, string18, bl18, clazz19, classArray12);
                 }
                 Class[] classArray13 = new Class[]{MappedClasses.lf};
                 Class clazz21 = MappedClasses.VJ;
@@ -220,33 +220,33 @@ extends Mapping {
                 Class clazz22 = MappedClasses.Zl;
                 String string20 = "getBlockState";
                 MWorld mWorld20 = this;
-                this.p = ((MappingMethodBuilder)this.u(string20, clazz22, classArray14).Q(ForgeVersion.MC_1_21_4.n(), MappedClasses.zJ)).s();
+                this.p = ((MappingMethodBuilder)this.methodBuilder(string20, clazz22, classArray14).setOwnerClassForVersion(ForgeVersion.MC_1_21_4.n(), MappedClasses.zJ)).buildMethod();
                 Class[] classArray15 = new Class[]{MappedClasses.Fc};
                 Class clazz23 = MappedClasses.qF;
-                boolean bl20 = Wrapper.G;
+                boolean bl20 = Wrapper.isNativeAvailable;
                 String string21 = "func_217299_a";
                 Class clazz24 = MappedClasses.zJ;
                 MWorld mWorld21 = this;
-                this.o = this.W(clazz24, string21, bl20, clazz23, classArray15);
+                this.o = this.registerInstanceMethodForOwner(clazz24, string21, bl20, clazz23, classArray15);
                 Class[] classArray16 = new Class[]{MappedClasses.lf};
                 Class<Boolean> clazz25 = Boolean.TYPE;
                 boolean bl21 = true;
                 String string22 = "isValid";
                 MWorld mWorld22 = this;
-                this.D = this.x(string22, bl21, clazz25, classArray16);
+                this.D = this.registerStaticMethod(string22, bl21, clazz25, classArray16);
                 Class[] classArray17 = new Class[]{MappedClasses.lf};
                 Class clazz26 = MappedClasses.uK;
                 boolean bl22 = true;
                 String string23 = "getBiome";
                 Class clazz27 = MappedClasses.F7;
                 MWorld mWorld23 = this;
-                this.e = this.W(clazz27, string23, bl22, clazz26, classArray17);
+                this.e = this.registerInstanceMethodForOwner(clazz27, string23, bl22, clazz26, classArray17);
                 if (ForgeVersion.MC_1_21_4.d()) {
                     Class[] classArray18 = new Class[]{};
                     Class<Integer> clazz28 = Integer.TYPE;
                     String string24 = "getMinY";
                     MWorld mWorld24 = this;
-                    this.B = ((MappingMethodBuilder)this.u(string24, clazz28, classArray18).y(MappedClasses.VS)).s();
+                    this.B = ((MappingMethodBuilder)this.methodBuilder(string24, clazz28, classArray18).setOwnerClass(MappedClasses.VS)).buildMethod();
                 }
             } else {
                 Class[] classArray19 = new Class[]{MappedClasses.lf};
@@ -289,7 +289,7 @@ extends Mapping {
                 } else {
                     Class[] classArray25 = new Class[]{MappedClasses.lf, MappedClasses.lf};
                     Class<Boolean> clazz35 = Boolean.TYPE;
-                    boolean bl29 = Wrapper.G;
+                    boolean bl29 = Wrapper.isNativeAvailable;
                     String string31 = "func_175707_a";
                     MWorld mWorld31 = this;
                     this.h = this.Y(string31, bl29, clazz35, classArray25);
@@ -304,7 +304,7 @@ extends Mapping {
                 String string32 = "getCollisionShapes";
                 Class clazz37 = MappedClasses.YL;
                 MWorld mWorld32 = this;
-                this.y = this.W(clazz37, string32, bl30, clazz36, classArray26);
+                this.y = this.registerInstanceMethodForOwner(clazz37, string32, bl30, clazz36, classArray26);
             } else {
                 Class[] classArray27 = new Class[]{MappedClasses.zc, MappedClasses.uk};
                 Class<List> clazz38 = List.class;
@@ -330,7 +330,7 @@ extends Mapping {
             } else {
                 Class[] classArray30 = new Class[]{MappedClasses.uk};
                 Class<Boolean> clazz41 = Boolean.TYPE;
-                boolean bl34 = Wrapper.G;
+                boolean bl34 = Wrapper.isNativeAvailable;
                 String string36 = "func_147470_e";
                 MWorld mWorld36 = this;
                 this.W = this.Y(string36, bl34, clazz41, classArray30);
@@ -355,7 +355,7 @@ extends Mapping {
             String string39 = "getAllEntities";
             Class clazz45 = MappedClasses.Z;
             MWorld mWorld39 = this;
-            this.H = this.W(clazz45, string39, bl37, clazz44, classArray33);
+            this.H = this.registerInstanceMethodForOwner(clazz45, string39, bl37, clazz44, classArray33);
             if (ForgeVersion.MC_1_20_6.d()) {
                 Class[] classArray34 = new Class[]{MappedClasses.zc, MappedClasses.uk, Predicate.class};
                 Class<List> clazz46 = List.class;
@@ -363,7 +363,7 @@ extends Mapping {
                 String string40 = "getEntities";
                 Class<?> clazz47 = MappedClasses.z7;
                 MWorld mWorld40 = this;
-                this.T = this.W(clazz47, string40, bl38, clazz46, classArray34);
+                this.T = this.registerInstanceMethodForOwner(clazz47, string40, bl38, clazz46, classArray34);
             } else {
                 Class[] classArray35 = new Class[]{MappedClasses.zc, MappedClasses.uk, Predicate.class};
                 Class<List> clazz48 = List.class;
@@ -379,7 +379,7 @@ extends Mapping {
                 String string42 = "removeEntity";
                 Class clazz50 = MappedClasses.Z;
                 MWorld mWorld42 = this;
-                this.g = this.W(clazz50, string42, bl40, clazz49, classArray36);
+                this.g = this.registerInstanceMethodForOwner(clazz50, string42, bl40, clazz49, classArray36);
             } else {
                 Class[] classArray37 = new Class[]{MappedClasses.zc};
                 Class<Void> clazz51 = Void.TYPE;
@@ -387,13 +387,13 @@ extends Mapping {
                 String string43 = "removeEntity";
                 Class clazz52 = MappedClasses.Z;
                 MWorld mWorld43 = this;
-                this.g = this.W(clazz52, string43, bl41, clazz51, classArray37);
+                this.g = this.registerInstanceMethodForOwner(clazz52, string43, bl41, clazz51, classArray37);
             }
             Class[] classArray38 = new Class[]{MappedClasses.lf};
             Class clazz53 = MappedClasses.Dw;
             String string44 = "getFluidState";
             MWorld mWorld44 = this;
-            this.v = ((MappingMethodBuilder)this.u(string44, clazz53, classArray38).Q(ForgeVersion.MC_1_21_4.n(), MappedClasses.zJ)).s();
+            this.v = ((MappingMethodBuilder)this.methodBuilder(string44, clazz53, classArray38).setOwnerClassForVersion(ForgeVersion.MC_1_21_4.n(), MappedClasses.zJ)).buildMethod();
             Class[] classArray39 = new Class[]{Integer.TYPE, Integer.TYPE};
             Class clazz54 = MappedClasses.VJ;
             boolean bl42 = true;
@@ -406,42 +406,42 @@ extends Mapping {
             String string46 = "getChunkProvider";
             Class clazz56 = MappedClasses.uE;
             MWorld mWorld46 = this;
-            this.Q = this.W(clazz56, string46, bl43, clazz55, classArray40);
+            this.Q = this.registerInstanceMethodForOwner(clazz56, string46, bl43, clazz55, classArray40);
             Class[] classArray41 = new Class[]{Integer.TYPE, MappedClasses.zc};
             Class<Void> clazz57 = Void.TYPE;
             boolean bl44 = true;
             String string47 = "addEntityImpl";
             Class clazz58 = MappedClasses.Z;
             MWorld mWorld47 = this;
-            this.q = this.W(clazz58, string47, bl44, clazz57, classArray41);
+            this.q = this.registerInstanceMethodForOwner(clazz58, string47, bl44, clazz57, classArray41);
             Class[] classArray42 = new Class[]{Integer.TYPE, Integer.TYPE, Integer.TYPE, Integer.TYPE, Integer.TYPE, Integer.TYPE};
             Class<Void> clazz59 = Void.TYPE;
             boolean bl45 = true;
             String string48 = "markBlockRangeForRenderUpdate";
             Class clazz60 = MappedClasses.zs;
             MWorld mWorld48 = this;
-            this.L = this.W(clazz60, string48, bl45, clazz59, classArray42);
+            this.L = this.registerInstanceMethodForOwner(clazz60, string48, bl45, clazz59, classArray42);
             if (ForgeVersion.MC_1_20_6.v()) {
                 Class[] classArray43 = new Class[]{MappedClasses.zc, MappedClasses.uk, BiPredicate.class};
                 Class<Boolean> clazz61 = Boolean.TYPE;
-                boolean bl46 = Wrapper.G;
+                boolean bl46 = Wrapper.isNativeAvailable;
                 String string49 = "func_242405_a";
                 Class clazz62 = MappedClasses.YL;
                 MWorld mWorld49 = this;
-                this.Y = this.W(clazz62, string49, bl46, clazz61, classArray43);
+                this.Y = this.registerInstanceMethodForOwner(clazz62, string49, bl46, clazz61, classArray43);
             } else {
                 Class[] classArray44 = new Class[]{MappedClasses.zc, MappedClasses.uk};
                 Class<Boolean> clazz63 = Boolean.TYPE;
                 String string50 = "collidesWithSuffocatingBlock";
                 MWorld mWorld50 = this;
-                this.i = ((MappingMethodBuilder)this.u(string50, clazz63, classArray44).y(MappedClasses.YL)).s();
+                this.i = ((MappingMethodBuilder)this.methodBuilder(string50, clazz63, classArray44).setOwnerClass(MappedClasses.YL)).buildMethod();
             }
             if (ForgeVersion.MC_1_21_4.d()) {
                 Class[] classArray45 = new Class[]{MappedClasses.ZS};
                 Class clazz64 = MappedClasses.qF;
                 String string51 = "clip";
                 MWorld mWorld51 = this;
-                this.s = ((MappingMethodBuilder)this.u(string51, clazz64, classArray45).y(MappedClasses.zJ)).s();
+                this.s = ((MappingMethodBuilder)this.methodBuilder(string51, clazz64, classArray45).setOwnerClass(MappedClasses.zJ)).buildMethod();
             }
         } else {
             Class<List> clazz65 = List.class;
@@ -518,7 +518,7 @@ extends Mapping {
             String string63 = "getChunkSource";
             Class clazz77 = MappedClasses.uE;
             MWorld mWorld63 = this;
-            this.F = this.W(clazz77, string63, bl58, clazz76, classArray54);
+            this.F = this.registerInstanceMethodForOwner(clazz77, string63, bl58, clazz76, classArray54);
         }
         if (ForgeVersion.MC_1_20_6.d()) {
             Class clazz78 = MappedClasses.ZZ;
@@ -545,11 +545,11 @@ extends Mapping {
     }
 
     private boolean M(Object object, Object object2, Object object3) {
-        return this.h.e(object, object2, object3);
+        return this.h.invokeBoolean(object, object2, object3);
     }
 
     private boolean k(Object object, Object object2, Object object3) {
-        return this.i.e(object, object2, object3);
+        return this.i.invokeBoolean(object, object2, object3);
     }
 
     private boolean V(Object object) {
@@ -566,15 +566,15 @@ extends Mapping {
     }
 
     public boolean d(Object object, int n, int n2) {
-        return this.P.e(object, n, n2);
+        return this.P.invokeBoolean(object, n, n2);
     }
 
     public Object u(Object object, Object object2) {
-        return this.p.L(object, object2);
+        return this.p.invokeObject(object, object2);
     }
 
     public List K(Object object, Object object2, Object object3) {
-        return (List)this.T.L(object, object2, object3);
+        return (List)this.T.invokeObject(object, object2, object3);
     }
 
     public List j$src$Ljava_util_List_$jm6ihn(Object object) {
@@ -582,11 +582,11 @@ extends Mapping {
     }
 
     public List X(Object object, Object object2, Object object3, Object object4) {
-        return (List)this.T.L(object, object2, object3, object4);
+        return (List)this.T.invokeObject(object, object2, object3, object4);
     }
 
     public Iterable m(Object object) {
-        return (Iterable)this.H.L(object, new Object[0]);
+        return (Iterable)this.H.invokeObject(object, new Object[0]);
     }
 
     public static void c(MWorld mWorld, Object object, Object object2) {
@@ -598,11 +598,11 @@ extends Mapping {
     }
 
     public Object E(Object object) {
-        return this.Q.L(object, new Object[0]);
+        return this.Q.invokeObject(object, new Object[0]);
     }
 
     public Object H(Object object, int n, int n2) {
-        return this.w.L(object, n, n2);
+        return this.w.invokeObject(object, n, n2);
     }
 
     public static boolean x(MWorld mWorld, Object object, Object object2, Object object3) {
@@ -610,14 +610,14 @@ extends Mapping {
     }
 
     private int b(Object object) {
-        return this.B.Z(object, new Object[0]);
+        return this.B.invokeInt(object, new Object[0]);
     }
 
     private boolean S(Object object, int n, int n2, int n3) {
         if (ForgeVersion.MC_1_7_10.L()) {
-            return this.D.e(object, n, n2, n3);
+            return this.D.invokeBoolean(object, n, n2, n3);
         }
-        return this.D.e(object, BlockPos.create(n, n2, n3).getObject());
+        return this.D.invokeBoolean(object, BlockPos.create(n, n2, n3).getObject());
     }
 
     public void D(Object object, float f) {
@@ -625,7 +625,7 @@ extends Mapping {
     }
 
     public Object g(Object object) {
-        return this.J.L(object, new Object[0]);
+        return this.J.invokeObject(object, new Object[0]);
     }
 
     public static void a(MWorld mWorld, Object object, int n, Object object2) {
@@ -633,7 +633,7 @@ extends Mapping {
     }
 
     public Object a(Object object, Object object2) {
-        return this.e.L(object, object2);
+        return this.e.invokeObject(object, object2);
     }
 
     public static boolean K(MWorld mWorld, Object object, Object object2, Object object3) {
@@ -661,7 +661,7 @@ extends Mapping {
     }
 
     private void r(Object object, int n, Object object2) {
-        this.g.c(object, n, object2);
+        this.g.invokeVoid(object, n, object2);
     }
 
     public static boolean Q() {
@@ -669,31 +669,31 @@ extends Mapping {
     }
 
     public Object y(Object object, Object object2, Object object3) {
-        return this.y.L(object, object2, object3);
+        return this.y.invokeObject(object, object2, object3);
     }
 
     public Object F(Object object) {
-        return this.x.L(object, new Object[0]);
+        return this.x.invokeObject(object, new Object[0]);
     }
 
     public boolean H(Object object, Object object2, Object object3) {
-        return this.l.e(object, object2, object3);
+        return this.l.invokeBoolean(object, object2, object3);
     }
 
     private int g(Object object, int n, int n2, int n3) {
-        return this.M.Z(object, n, n2, n3);
+        return this.M.invokeInt(object, n, n2, n3);
     }
 
     private boolean y(Object object, int n, int n2, int n3, int n4, int n5, int n6) {
-        return this.h.e(object, n, n2, n3, n4, n5, n6);
+        return this.h.invokeBoolean(object, n, n2, n3, n4, n5, n6);
     }
 
     public boolean u(Object object, Object object2, Object object3, BiPredicate biPredicate) {
-        return this.Y.e(object, object2, object3, biPredicate);
+        return this.Y.invokeBoolean(object, object2, object3, biPredicate);
     }
 
     public Object j(Object object) {
-        return this.F.L(object, new Object[0]);
+        return this.F.invokeObject(object, new Object[0]);
     }
 
     public float Z(Object object) {
@@ -718,11 +718,11 @@ extends Mapping {
     }
 
     public Object l(Object object, Object object2, Object object3, boolean bl, boolean bl2, boolean bl3) {
-        return this.o.L(object, object2, object3, bl, bl2, bl3);
+        return this.o.invokeObject(object, object2, object3, bl, bl2, bl3);
     }
 
     public List T(Object object, Object object2, Object object3, Object object4) {
-        return (List)this.T.L(object, object2, object3, object4);
+        return (List)this.T.invokeObject(object, object2, object3, object4);
     }
 
     public void R(Object object, float f) {
@@ -730,15 +730,15 @@ extends Mapping {
     }
 
     public void V(Object object, long l) {
-        this.N.c(object, l);
+        this.N.invokeVoid(object, l);
     }
 
     public Object t(Object object, Object object2) {
-        return this.s.L(object, object2);
+        return this.s.invokeObject(object, object2);
     }
 
     public Object U(Object object, int n, int n2, int n3) {
-        return this.V.L(object, n, n2, n3);
+        return this.V.invokeObject(object, n, n2, n3);
     }
 
     public void M(Object object, float f) {
@@ -750,7 +750,7 @@ extends Mapping {
     }
 
     private Object t(Object object, int n, int n2) {
-        return this.z.L(object, n, n2);
+        return this.z.invokeObject(object, n, n2);
     }
 
     public static boolean v(MWorld mWorld, Object object, int n, int n2, int n3) {
@@ -762,11 +762,11 @@ extends Mapping {
     }
 
     public Object v(Object object, Object object2) {
-        return this.v.L(object, object2);
+        return this.v.invokeObject(object, object2);
     }
 
     public Object Z(Object object, Object object2) {
-        return this.w.L(object, object2);
+        return this.w.invokeObject(object, object2);
     }
 
     public float X(Object object) {
@@ -774,7 +774,7 @@ extends Mapping {
     }
 
     public Object i(Object object, Object object2) {
-        return this.o.L(object, object2);
+        return this.o.invokeObject(object, object2);
     }
 
     public static Object f(MWorld mWorld, Object object) {
@@ -782,7 +782,7 @@ extends Mapping {
     }
 
     private Object b(Object object, int n) {
-        return this.O.L(object, n);
+        return this.O.invokeObject(object, n);
     }
 }
 

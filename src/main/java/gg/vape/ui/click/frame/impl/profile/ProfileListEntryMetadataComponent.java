@@ -21,27 +21,27 @@ extends TextButton {
         stringBuilder.append("Alternatively, right click the profile to do this\n\n");
         StringBuilder stringBuilder2 = new StringBuilder();
         String string = "";
-        for (Mod mod : this.profile.N$src$Ljava_util_List_$tynky5()) {
+        for (Mod mod : this.profile.getEnabledModules()) {
             string = string + mod.getName() + ", ";
             if (!(this.getDefaultFontRenderer().N(string) > 150.0)) continue;
-            stringBuilder2.append(ClientSettings.F).append("f").append(string).append("\n");
+            stringBuilder2.append(ClientSettings.FORMAT_CODE).append("f").append(string).append("\n");
             string = "";
         }
         if (!string.isEmpty()) {
-            stringBuilder2.append(ClientSettings.F).append("f").append(string);
+            stringBuilder2.append(ClientSettings.FORMAT_CODE).append("f").append(string);
         }
         if (stringBuilder2.length() > 0) {
             stringBuilder.append("This will re-enable these modules:\n");
             stringBuilder.append(StringUtils.b(stringBuilder2.toString(), ", ", ""));
         } else {
-            stringBuilder.append(ClientSettings.F).append("f").append("This profile has no modules saved");
+            stringBuilder.append(ClientSettings.FORMAT_CODE).append("f").append("This profile has no modules saved");
         }
         return stringBuilder.toString();
     }
 
     private void enableSavedModules() {
         if (this.profile != null) {
-            this.profile.r$src$V$1goqkjq();
+            this.profile.applyEnabledModuleStates();
         }
     }
 

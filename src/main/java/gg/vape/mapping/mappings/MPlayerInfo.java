@@ -22,11 +22,11 @@ extends Mapping {
     }
 
     private Object I(Object object) {
-        return this.K.L(object, new Object[0]);
+        return this.K.invokeObject(object, new Object[0]);
     }
 
     private int L(Object object) {
-        return this.D.Z(object, new Object[0]);
+        return this.D.invokeInt(object, new Object[0]);
     }
 
     public static String[] K() {
@@ -59,11 +59,11 @@ extends Mapping {
     }
 
     private Object e(Object object) {
-        return this.f.L(object, new Object[0]);
+        return this.f.invokeObject(object, new Object[0]);
     }
 
     private Object A(Object object) {
-        return this.I.L(object, new Object[0]);
+        return this.I.invokeObject(object, new Object[0]);
     }
 
     static {
@@ -88,17 +88,17 @@ extends Mapping {
         Class clazz3 = MappedClasses.u6;
         String string3 = "getPlayerTeam";
         MPlayerInfo mPlayerInfo3 = this;
-        this.K = ((MappingMethodBuilder)this.u(string3, clazz3, classArray3).A(ForgeVersion.MC_1_16_5.n(), "getTeam")).s();
+        this.K = ((MappingMethodBuilder)this.methodBuilder(string3, clazz3, classArray3).setNameForVersion(ForgeVersion.MC_1_16_5.n(), "getTeam")).buildMethod();
         String[] stringArray = MPlayerInfo.K();
         Class clazz4 = MappedClasses.Yr;
         String string4 = "displayName";
         MPlayerInfo mPlayerInfo4 = this;
-        this.q = ((MappingFieldBuilder)this.T(string4, clazz4).A(ForgeVersion.MC_1_16_5.n(), "tabListDisplayName")).z();
+        this.q = ((MappingFieldBuilder)this.fieldBuilder(string4, clazz4).setNameForVersion(ForgeVersion.MC_1_16_5.n(), "tabListDisplayName")).buildField();
         Class[] classArray4 = new Class[]{};
         Class clazz5 = MappedClasses.zC;
         String string5 = "getLocationSkin";
         MPlayerInfo mPlayerInfo5 = this;
-        this.I = ((MappingMethodBuilder)((MappingMethodBuilder)((MappingMethodBuilder)this.u(string5, clazz5, classArray4).A(ForgeVersion.MC_1_20_6.n(), "getSkin")).A(ForgeVersion.MC_1_16_5.n(), "getSkinTextureLocation")).X(ForgeVersion.MC_1_20_6.n(), MappedClasses.uZ)).s();
+        this.I = ((MappingMethodBuilder)((MappingMethodBuilder)((MappingMethodBuilder)this.methodBuilder(string5, clazz5, classArray4).setNameForVersion(ForgeVersion.MC_1_20_6.n(), "getSkin")).setNameForVersion(ForgeVersion.MC_1_16_5.n(), "getSkinTextureLocation")).setTypeForVersion(ForgeVersion.MC_1_20_6.n(), MappedClasses.uZ)).buildMethod();
     }
 }
 

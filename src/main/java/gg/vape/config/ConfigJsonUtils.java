@@ -14,168 +14,168 @@ import java.util.function.Function;
 import org.jetbrains.annotations.Nullable;
 
 public class ConfigJsonUtils {
-    private static GuiComponent[] I;
-    private static final String b;
+    private static GuiComponent[] sharedGuiComponents;
+    private static final String BASE64_PREFIX;
 
     @Nullable
-    public static Boolean t(JsonObject jsonObject, String string) {
-        return ConfigJsonUtils.P(jsonObject, string, JsonPrimitive::getAsBoolean);
+    public static Boolean getBoolean(JsonObject object, String key) {
+        return ConfigJsonUtils.getPrimitiveValue(object, key, JsonPrimitive::getAsBoolean);
     }
 
-    public static void S(GuiComponent[] guiComponentArray) {
-        I = guiComponentArray;
+    public static void setSharedGuiComponents(GuiComponent[] components) {
+        sharedGuiComponents = components;
     }
 
-    public static GuiComponent[] g() {
-        return I;
+    public static GuiComponent[] getSharedGuiComponents() {
+        return sharedGuiComponents;
     }
 
     @Nullable
-    public static String P(JsonObject jsonObject, String string) {
-        return ConfigJsonUtils.t(jsonObject, string, ConfigJsonUtils::lambda$getString$2);
+    public static String getString(JsonObject object, String key) {
+        return ConfigJsonUtils.getElementValue(object, key, ConfigJsonUtils::getStringValue);
     }
 
-    public static boolean C(JsonObject jsonObject, String string) {
-        Boolean bl = ConfigJsonUtils.t(jsonObject, string);
-        return bl != null ? bl : false;
+    public static boolean getBooleanOrFalse(JsonObject object, String key) {
+        Boolean value = ConfigJsonUtils.getBoolean(object, key);
+        return value != null ? value : false;
     }
 
     static {
-        ConfigJsonUtils.S(new GuiComponent[5]);
-        b = "b64:";
+        ConfigJsonUtils.setSharedGuiComponents(new GuiComponent[5]);
+        BASE64_PREFIX = "b64:";
     }
 
-    public static String c(JsonObject jsonObject, String string) {
-        if (jsonObject.get(string) != null && !jsonObject.get(string).isJsonNull()) {
-            String string2 = jsonObject.get(string).getAsString();
-            if (string2.startsWith(b)) {
-                string2 = Base64Util.decodeUtf8Base64(string2.split(":")[1]);
+    public static String getDecodedStringOrEmpty(JsonObject object, String key) {
+        if (object.get(key) != null && !object.get(key).isJsonNull()) {
+            String value = object.get(key).getAsString();
+            if (value.startsWith(BASE64_PREFIX)) {
+                value = Base64Util.decodeUtf8Base64(value.split(":")[1]);
             }
-            return string2;
+            return value;
         }
         return "";
     }
 
     @Nullable
-    public static Long R(JsonObject jsonObject, String string) {
-        return ConfigJsonUtils.P(jsonObject, string, JsonPrimitive::getAsLong);
+    public static Long getLong(JsonObject object, String key) {
+        return ConfigJsonUtils.getPrimitiveValue(object, key, JsonPrimitive::getAsLong);
     }
 
     @Nullable
-    public static JsonArray q(JsonObject jsonObject, String string) {
-        return ConfigJsonUtils.t(jsonObject, string, ConfigJsonUtils::lambda$getJsonArray$1);
+    public static JsonArray getJsonArray(JsonObject object, String key) {
+        return ConfigJsonUtils.getElementValue(object, key, ConfigJsonUtils::getJsonArrayValue);
     }
 
-    private static Object lambda$getByPrimitive$3(Function function, JsonElement jsonElement) {
-        if (!jsonElement.isJsonPrimitive()) {
+    private static Object applyPrimitiveConverter(Function converter, JsonElement element) {
+        if (!element.isJsonPrimitive()) {
             return null;
         }
-        return function.apply(jsonElement.getAsJsonPrimitive());
+        return converter.apply(element.getAsJsonPrimitive());
     }
 
-    private static JsonArray lambda$getJsonArray$1(JsonElement jsonElement) {
-        if (!jsonElement.isJsonArray()) {
+    private static JsonArray getJsonArrayValue(JsonElement element) {
+        if (!element.isJsonArray()) {
             return null;
         }
-        return jsonElement.getAsJsonArray();
+        return element.getAsJsonArray();
     }
 
     @Nullable
-    private static <T> T P(JsonObject jsonObject, String string, Function<JsonPrimitive, T> function) {
-        return (T)ConfigJsonUtils.t(jsonObject, string, arg_0 -> ConfigJsonUtils.lambda$getByPrimitive$3(function, arg_0));
+    private static <T> T getPrimitiveValue(JsonObject object, String key, Function<JsonPrimitive, T> converter) {
+        return (T)ConfigJsonUtils.getElementValue(object, key, element -> ConfigJsonUtils.applyPrimitiveConverter(converter, element));
     }
 
     @Nullable
-    public static String B(JsonObject jsonObject, String string) {
-        String string2 = ConfigJsonUtils.P(jsonObject, string);
-        if (string2 == null) {
+    public static String getDecodedBase64String(JsonObject object, String key) {
+        String encodedValue = ConfigJsonUtils.getString(object, key);
+        if (encodedValue == null) {
             return null;
         }
-        return Base64Util.decodeUtf8Base64(string2);
+        return Base64Util.decodeUtf8Base64(encodedValue);
     }
 
-    private static IllegalArgumentException a(IllegalArgumentException illegalArgumentException) {
-        return illegalArgumentException;
+    private static IllegalArgumentException preserveIllegalArgumentException(IllegalArgumentException error) {
+        return error;
     }
 
     @Nullable
-    public static UUID u(JsonObject jsonObject, String string) {
-        String string2 = ConfigJsonUtils.P(jsonObject, string);
-        if (string2 == null) {
+    public static UUID getUuid(JsonObject object, String key) {
+        String value = ConfigJsonUtils.getString(object, key);
+        if (value == null) {
             return null;
         }
         try {
-            return UUID.fromString(string2);
+            return UUID.fromString(value);
         }
-        catch (IllegalArgumentException illegalArgumentException) {
+        catch (IllegalArgumentException ignored) {
             return null;
         }
     }
 
     @Nullable
-    public static Double p(JsonObject jsonObject, String string) {
-        return ConfigJsonUtils.P(jsonObject, string, JsonPrimitive::getAsDouble);
+    public static Double getDouble(JsonObject object, String key) {
+        return ConfigJsonUtils.getPrimitiveValue(object, key, JsonPrimitive::getAsDouble);
     }
 
-    public static List<Integer> o(JsonArray jsonArray, boolean bl) {
-        List<Integer> list = ConfigJsonUtils.h(jsonArray);
-        ArrayList<Integer> arrayList = new ArrayList<Integer>();
-        for (Integer n : list) {
-            if (n == 0) continue;
-            if (bl && n > 0) {
-                n = KeyboardCodeUtil.convertLegacyKeyCode(n);
+    public static List<Integer> parseInputCodes(JsonArray array, boolean convertLegacyKeyCodes) {
+        List<Integer> serializedCodes = ConfigJsonUtils.getIntegerList(array);
+        ArrayList<Integer> inputCodes = new ArrayList<Integer>();
+        for (Integer inputCode : serializedCodes) {
+            if (inputCode == 0) continue;
+            if (convertLegacyKeyCodes && inputCode > 0) {
+                inputCode = KeyboardCodeUtil.convertLegacyKeyCode(inputCode);
             }
-            if (n == 0 || n == 27) continue;
-            arrayList.add(n);
+            if (inputCode == 0 || inputCode == 27) continue;
+            inputCodes.add(inputCode);
         }
-        return arrayList;
+        return inputCodes;
     }
 
     @Nullable
-    public static Short f(JsonObject jsonObject, String string) {
-        return ConfigJsonUtils.P(jsonObject, string, JsonPrimitive::getAsShort);
+    public static Short getShort(JsonObject object, String key) {
+        return ConfigJsonUtils.getPrimitiveValue(object, key, JsonPrimitive::getAsShort);
     }
 
-    private static JsonObject lambda$getJsonObject$0(JsonElement jsonElement) {
-        if (!jsonElement.isJsonObject()) {
+    private static JsonObject getJsonObjectValue(JsonElement element) {
+        if (!element.isJsonObject()) {
             return null;
         }
-        return jsonElement.getAsJsonObject();
+        return element.getAsJsonObject();
     }
 
     @Nullable
-    public static Integer r(JsonObject jsonObject, String string) {
-        return ConfigJsonUtils.P(jsonObject, string, JsonPrimitive::getAsInt);
+    public static Integer getInteger(JsonObject object, String key) {
+        return ConfigJsonUtils.getPrimitiveValue(object, key, JsonPrimitive::getAsInt);
     }
 
-    public static List<Integer> h(JsonArray jsonArray) {
-        ArrayList<Integer> arrayList = new ArrayList<Integer>();
-        for (JsonElement jsonElement : jsonArray) {
-            JsonPrimitive jsonPrimitive;
-            if (jsonElement.isJsonNull() || !jsonElement.isJsonPrimitive() || !(jsonPrimitive = jsonElement.getAsJsonPrimitive()).isNumber()) continue;
-            arrayList.add(jsonPrimitive.getAsInt());
+    public static List<Integer> getIntegerList(JsonArray array) {
+        ArrayList<Integer> values = new ArrayList<Integer>();
+        for (JsonElement element : array) {
+            JsonPrimitive primitive;
+            if (element.isJsonNull() || !element.isJsonPrimitive() || !(primitive = element.getAsJsonPrimitive()).isNumber()) continue;
+            values.add(primitive.getAsInt());
         }
-        return arrayList;
+        return values;
     }
 
     @Nullable
-    public static JsonObject E(JsonObject jsonObject, String string) {
-        return ConfigJsonUtils.t(jsonObject, string, ConfigJsonUtils::lambda$getJsonObject$0);
+    public static JsonObject getJsonObject(JsonObject object, String key) {
+        return ConfigJsonUtils.getElementValue(object, key, ConfigJsonUtils::getJsonObjectValue);
     }
 
     @Nullable
-    private static <T> T t(JsonObject jsonObject, String string, Function<JsonElement, T> function) {
-        JsonElement jsonElement = jsonObject.get(string);
-        if (jsonElement == null || jsonElement.isJsonNull()) {
+    private static <T> T getElementValue(JsonObject object, String key, Function<JsonElement, T> converter) {
+        JsonElement element = object.get(key);
+        if (element == null || element.isJsonNull()) {
             return null;
         }
-        return function.apply(jsonElement);
+        return converter.apply(element);
     }
 
-    private static String lambda$getString$2(JsonElement jsonElement) {
-        if (!jsonElement.isJsonPrimitive()) {
+    private static String getStringValue(JsonElement element) {
+        if (!element.isJsonPrimitive()) {
             return null;
         }
-        return jsonElement.getAsString();
+        return element.getAsString();
     }
 }

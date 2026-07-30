@@ -8,33 +8,33 @@ import gg.vape.friend.TargetType;
 
 public abstract class FriendEntry
 extends TargetEntry {
-    private boolean m = true;
-    private static int z;
+    private boolean targeted = true;
+    private static int obfuscationState;
 
-    public static void t(int n) {
-        z = n;
+    public static void setFriendEntryObfuscationState(int state) {
+        obfuscationState = state;
     }
 
-    public String E() {
-        return this.o();
+    public String getAlias() {
+        return this.getDisplayName();
     }
 
-    public String o() {
-        return this.s();
+    public String getDisplayName() {
+        return this.getName();
     }
 
-    public static int r() {
-        int n = FriendEntry.F();
+    public static int getObfuscationConstant() {
+        int state = FriendEntry.getFriendEntryObfuscationState();
         return 0;
     }
 
-    public static int F() {
-        return z;
+    public static int getFriendEntryObfuscationState() {
+        return obfuscationState;
     }
 
     static {
-        if (FriendEntry.F() == 0) {
-            FriendEntry.t(29);
+        if (FriendEntry.getFriendEntryObfuscationState() == 0) {
+            FriendEntry.setFriendEntryObfuscationState(29);
         }
     }
 
@@ -42,24 +42,24 @@ extends TargetEntry {
         super(TargetType.FRIEND);
     }
 
-    public boolean m() {
+    public boolean isPersistent() {
         return true;
     }
 
-    public void k(boolean bl) {
-        this.m = bl;
-        Vape.INSTANCE.getFriendManager().m();
+    public void setTargeted(boolean targeted) {
+        this.targeted = targeted;
+        Vape.INSTANCE.getFriendManager().refreshPlayerNames();
     }
 
-    public abstract Friend loadJson(JsonObject var1);
+    public abstract Friend loadJson(JsonObject json);
 
-    public boolean c() {
-        return this.m;
+    public boolean isTargeted() {
+        return this.targeted;
     }
 
     public abstract JsonObject toJson();
 
-    public abstract String s();
+    public abstract String getName();
 
 }
 

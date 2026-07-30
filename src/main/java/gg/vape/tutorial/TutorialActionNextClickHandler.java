@@ -9,7 +9,7 @@ implements GuiClickListener {
 
     @Override
     public void onPrimaryClick() {
-        this.o.r();
+        this.o.advanceToNextAction();
     }
 
     TutorialActionNextClickHandler(TutorialPage bF) {

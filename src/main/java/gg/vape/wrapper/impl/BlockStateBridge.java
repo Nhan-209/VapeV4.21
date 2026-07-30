@@ -1,7 +1,6 @@
 package gg.vape.wrapper.impl;
 
 import gg.vape.wrapper.Wrapper;
-import gg.vape.wrapper.impl.TextureObjectHandle;
 
 public class BlockStateBridge
 extends Wrapper {
@@ -16,11 +15,11 @@ extends Wrapper {
     }
 
     public int D() {
-        return BlockStateBridge.c.getMappingsMapperCompat().qj.E(this.I);
+        return BlockStateBridge.vapeInstance.getMappingsMapperCompat().qj.E(this.I);
     }
 
     public boolean n() {
-        return BlockStateBridge.c.getMappingsMapperCompat().qj.Z(this.I);
+        return BlockStateBridge.vapeInstance.getMappingsMapperCompat().qj.Z(this.I);
     }
 
     public BlockStateBridge(Object object) {
@@ -28,19 +27,19 @@ extends Wrapper {
     }
 
     public int Z() {
-        return BlockStateBridge.c.getMappingsMapperCompat().qj.a(this.I);
+        return BlockStateBridge.vapeInstance.getMappingsMapperCompat().qj.a(this.I);
     }
 
     public Object d() {
-        return BlockStateBridge.c.getMappingsMapperCompat().qj.p(this.I);
+        return BlockStateBridge.vapeInstance.getMappingsMapperCompat().qj.p(this.I);
     }
 
     public int h(int n) {
-        return BlockStateBridge.c.getMappingsMapperCompat().qj.H(this.I, n);
+        return BlockStateBridge.vapeInstance.getMappingsMapperCompat().qj.H(this.I, n);
     }
 
     public int s(int n) {
-        return BlockStateBridge.c.getMappingsMapperCompat().qj.v(this.I, n);
+        return BlockStateBridge.vapeInstance.getMappingsMapperCompat().qj.v(this.I, n);
     }
 }
 

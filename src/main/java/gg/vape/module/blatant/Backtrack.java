@@ -327,7 +327,7 @@ extends Mod {
     }
 
 
-    @EventHandler(A=EventPriority.LOW)
+    @EventHandler(priority=EventPriority.LOW)
     public void onPacketReceive(EventPacketReceive event) {
         if (!this.queuedPackets.isEmpty()) {
             NetHandlerPlayClientImpl networkHandler = Minecraft.N();

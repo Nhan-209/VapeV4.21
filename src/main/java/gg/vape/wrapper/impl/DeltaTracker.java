@@ -6,7 +6,7 @@ import gg.vape.wrapper.Wrapper;
 public class DeltaTracker
 extends Wrapper {
     public float b(boolean bl) {
-        return MDeltaTracker.d(DeltaTracker.c.getMappingsMapperCompat().RU, this.I, bl);
+        return MDeltaTracker.d(DeltaTracker.vapeInstance.getMappingsMapperCompat().RU, this.I, bl);
     }
 
     public DeltaTracker(Object object) {
@@ -14,7 +14,7 @@ extends Wrapper {
     }
 
     public float r() {
-        return MDeltaTracker.K(DeltaTracker.c.getMappingsMapperCompat().RU, this.I);
+        return MDeltaTracker.K(DeltaTracker.vapeInstance.getMappingsMapperCompat().RU, this.I);
     }
 }
 

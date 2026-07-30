@@ -13,19 +13,18 @@ extends JavassistMappingTask {
     private static final String c = "($r) $event.getVisibility()";
 
     @Override
-    public void c() {
+    public void transform() {
         MappingMethod mappingMethod = Vape.INSTANCE.getMappings().Cg.V;
         EventInjectionSpec eventInjectionSpec = new EventInjectionSpec(mappingMethod, EventVisGraphComputeVisibility.class);
-        eventInjectionSpec.H(c);
-        this.O(eventInjectionSpec);
+        eventInjectionSpec.setReturnExpression(c);
+        this.registerEventInjection(eventInjectionSpec);
         MappingMethod mappingMethod2 = Vape.INSTANCE.getMappings().Cg.o;
         EventInjectionSpec eventInjectionSpec2 = new EventInjectionSpec(mappingMethod2, EventVisGraphSetOpaqueCube.class);
-        eventInjectionSpec2.Z(true);
-        this.O(eventInjectionSpec2);
+        eventInjectionSpec2.setInsertBefore(true);
+        this.registerEventInjection(eventInjectionSpec2);
     }
 
     public VisGraphXRayVisibilityMappingTask() {
         super(MappedClasses.Y7);
     }
 }
-

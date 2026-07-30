@@ -9,20 +9,20 @@ import java.util.Arrays;
 
 public class ProfileCreateNameInputTargetSelector
 extends TutorialTargetSelector<ProfileCreatePanelComponent> {
-    final ProfilesTutorialPage x;
+    private final ProfilesTutorialPage tutorialPage;
 
-    public boolean e(ProfileCreatePanelComponent profileCreatePanelComponent) {
+    private boolean matchesPanel(ProfileCreatePanelComponent profileCreatePanelComponent) {
         return true;
     }
 
     @Override
-    public boolean X(ProfileCreatePanelComponent profileCreatePanelComponent) {
-        return this.e(profileCreatePanelComponent);
+    public boolean matches(ProfileCreatePanelComponent profileCreatePanelComponent) {
+        return this.matchesPanel(profileCreatePanelComponent);
     }
 
     @Override
-    public ArrayList<GuiComponent> v(GuiComponent guiComponent) {
-        if (this.o().isInstance(guiComponent)) {
+    public ArrayList<GuiComponent> findTargets(GuiComponent guiComponent) {
+        if (this.getTargetType().isInstance(guiComponent)) {
             ProfileCreatePanelComponent profileCreatePanelComponent = (ProfileCreatePanelComponent)guiComponent;
             return new ArrayList<GuiComponent>(Arrays.asList(profileCreatePanelComponent.getNameInput()));
         }
@@ -31,6 +31,6 @@ extends TutorialTargetSelector<ProfileCreatePanelComponent> {
 
     public ProfileCreateNameInputTargetSelector(ProfilesTutorialPage profilesTutorialPage, Class clazz) {
         super(clazz);
-        this.x = profilesTutorialPage;
+        this.tutorialPage = profilesTutorialPage;
     }
 }

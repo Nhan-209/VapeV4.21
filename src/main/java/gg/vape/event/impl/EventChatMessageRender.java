@@ -7,38 +7,38 @@ import gg.vape.wrapper.impl.ITextComponent;
 
 public class EventChatMessageRender
 extends Event {
-    private final Object H;
-    private ChatMessageRenderBridge s;
-    private Object G;
-    private static final EventListeners m = new EventListeners();
-    private final Object S;
-    private final Object e;
-    private final Object E;
-    private ITextComponent j;
+    private final Object messageSignature;
+    private ChatMessageRenderBridge chatComponent;
+    private Object outputContentComponent;
+    private static final EventListeners EVENT_LISTENERS = new EventListeners();
+    private final Object chatComponentHandle;
+    private final Object contentComponentHandle;
+    private final Object guiMessageTag;
+    private ITextComponent contentComponent;
 
     public Object getMessageSignature() {
-        return this.H;
+        return this.messageSignature;
     }
 
 
     public ITextComponent getContentComponent() {
-        if (this.j == null) {
-            this.j = new ITextComponent(this.e);
+        if (this.contentComponent == null) {
+            this.contentComponent = new ITextComponent(this.contentComponentHandle);
         }
-        return this.j;
+        return this.contentComponent;
     }
 
     public static EventListeners getEventListeners() {
-        return m;
+        return EVENT_LISTENERS;
     }
 
     public Object getOutputContentComponent() {
-        return this.G;
+        return this.outputContentComponent;
     }
 
     @Override
     public EventListeners getListeners() {
-        return m;
+        return EVENT_LISTENERS;
     }
 
     @Override
@@ -46,27 +46,27 @@ extends Event {
         return super.fire();
     }
 
-    public EventChatMessageRender(Object object, Object object2, Object object3, Object object4) {
-        this.S = object;
-        this.e = object2;
-        this.H = object3;
-        this.E = object4;
-        this.G = object2;
+    public EventChatMessageRender(Object chatComponentHandle, Object contentComponentHandle, Object messageSignature, Object guiMessageTag) {
+        this.chatComponentHandle = chatComponentHandle;
+        this.contentComponentHandle = contentComponentHandle;
+        this.messageSignature = messageSignature;
+        this.guiMessageTag = guiMessageTag;
+        this.outputContentComponent = contentComponentHandle;
     }
 
-    public void setOutputContentComponent(ITextComponent iTextComponent) {
-        this.G = iTextComponent.getObject();
+    public void setOutputContentComponent(ITextComponent contentComponent) {
+        this.outputContentComponent = contentComponent.getObject();
     }
 
     public Object getGuiMessageTag() {
-        return this.E;
+        return this.guiMessageTag;
     }
 
     public ChatMessageRenderBridge getChatComponent() {
-        if (this.s == null) {
-            this.s = new ChatMessageRenderBridge(this.S);
+        if (this.chatComponent == null) {
+            this.chatComponent = new ChatMessageRenderBridge(this.chatComponentHandle);
         }
-        return this.s;
+        return this.chatComponent;
     }
 }
 

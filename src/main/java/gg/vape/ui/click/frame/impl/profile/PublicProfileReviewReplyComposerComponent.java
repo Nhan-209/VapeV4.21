@@ -36,13 +36,13 @@ extends GuiComponent {
         this.contentPanel = new PanelComponent(d, d2);
         this.contentPanel.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M("widthwrap");
         this.contentPanel.setShowDisabledOverlay(false);
-        this.avatar = new PublicProfileUserAvatarComponent(Vape.INSTANCE.getAccountInfo().i(), 10.0, 10.0);
+        this.avatar = new PublicProfileUserAvatarComponent(Vape.INSTANCE.getAccountInfo().getUserId(), 10.0, 10.0);
         this.avatar.setInset(2.0f);
         this.submitOrCloseButton = new IconButtonComponent("newclose", 0.8);
         this.submitOrCloseButton.setNormalColor(PublicProfileReviewReplyComposerComponent.J.f);
         this.submitOrCloseButton.setHoverColor(Color.white);
         this.responseInput = new SmallTextInputComponent("Leave a response!");
-        this.responseInput.setText(publicProfileReview.H() != null ? publicProfileReview.H().m() : "");
+        this.responseInput.setText(publicProfileReview.getResponse() != null ? publicProfileReview.getResponse().getResponse() : "");
         this.responseInput.o(d - 20.0);
         this.responseInput.addKeyTypedListener(this::handleInputChanged);
         this.submitOrCloseButton.setSingleFutureClickListener(() -> this.submitOrClose(publicProfileReview));
@@ -73,21 +73,21 @@ extends GuiComponent {
 
     private void handleResponseSaved(PublicProfileReview publicProfileReview, ApiResponse apiResponse, Throwable throwable) {
         if (throwable != null) {
-            PublicProfileManager.b("Failed to leave response.");
+            PublicProfileManager.showWarning("Failed to leave response.");
             Vape.logThrowable(throwable);
             return;
         }
-        if (!apiResponse.t()) {
-            PublicProfileManager.b("Failed to leave response: " + apiResponse.N());
+        if (!apiResponse.isSuccessful()) {
+            PublicProfileManager.showWarning("Failed to leave response: " + apiResponse.getError());
             return;
         }
-        assert apiResponse.T() != null;
-        if (publicProfileReview.H() != null) {
-            PublicProfileManager.M("Response updated!");
+        assert apiResponse.getData() != null;
+        if (publicProfileReview.getResponse() != null) {
+            PublicProfileManager.showInfo("Response updated!");
         } else {
-            PublicProfileManager.M("Response posted!");
+            PublicProfileManager.showInfo("Response posted!");
         }
-        publicProfileReview.U((PublicProfileReviewResponse)apiResponse.T());
+        publicProfileReview.setResponse((PublicProfileReviewResponse)apiResponse.getData());
         new PublicProfileReviewEvent(publicProfileReview).fire();
         this.closeCallback.run();
     }
@@ -127,7 +127,7 @@ extends GuiComponent {
             return CompletableFuture.runAsync(this.closeCallback, ClientSettings.UI_EXECUTOR);
         }
         String responseText = this.responseInput.getText().trim();
-        return ApiServices.d().R().h(publicProfileReview, responseText).whenCompleteAsync((response, error) -> this.handleResponseSaved(publicProfileReview, response, error), (Executor)ClientSettings.UI_EXECUTOR).exceptionally(PublicProfileReviewReplyComposerComponent::ignoreSaveFailure);
+        return ApiServices.getInstance().getPublicProfileApi().respondToReview(publicProfileReview, responseText).whenCompleteAsync((response, error) -> this.handleResponseSaved(publicProfileReview, response, error), (Executor)ClientSettings.UI_EXECUTOR).exceptionally(PublicProfileReviewReplyComposerComponent::ignoreSaveFailure);
     }
 
     @Override

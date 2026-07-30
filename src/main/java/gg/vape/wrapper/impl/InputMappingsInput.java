@@ -10,7 +10,7 @@ extends Wrapper {
     }
 
     public int R() {
-        return MInputMappingsInput.B(InputMappingsInput.c.getMappingsMapperCompat().hm, this.I);
+        return MInputMappingsInput.B(InputMappingsInput.vapeInstance.getMappingsMapperCompat().hm, this.I);
     }
 }
 

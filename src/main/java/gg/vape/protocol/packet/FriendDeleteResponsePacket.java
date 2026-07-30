@@ -7,28 +7,27 @@ import org.jetbrains.annotations.Nullable;
 
 public class FriendDeleteResponsePacket
 extends ZeusTrackedPacket<FriendDeletePacket> {
-    private boolean J;
+    private boolean deleted;
 
     @Override
     public void x(ZeusPacketBuffer zeusPacketBuffer) {
-        this.J = zeusPacketBuffer.boolean_a();
+        this.deleted = zeusPacketBuffer.readBoolean();
     }
 
-    public FriendDeleteResponsePacket(@Nullable FriendDeletePacket friendDeletePacket, boolean bl) {
+    public FriendDeleteResponsePacket(@Nullable FriendDeletePacket friendDeletePacket, boolean deleted) {
         super(friendDeletePacket);
-        this.J = bl;
+        this.deleted = deleted;
     }
 
     @Override
     public void T(ZeusPacketBuffer zeusPacketBuffer) {
-        zeusPacketBuffer.Y(this.J);
+        zeusPacketBuffer.writeBoolean(this.deleted);
     }
 
-    public boolean I() {
-        return this.J;
+    public boolean isDeleted() {
+        return this.deleted;
     }
 
     public FriendDeleteResponsePacket() {
     }
 }
-

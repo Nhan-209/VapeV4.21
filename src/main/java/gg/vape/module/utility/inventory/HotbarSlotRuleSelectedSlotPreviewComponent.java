@@ -39,7 +39,7 @@ extends GuiComponent {
         SmoothFontRenderer smoothFontRenderer = this.getFontRenderer(0.8);
         double d = 55.0;
         double d2 = (this.A() - d) / 2.0;
-        ItemStack itemStack = this.pickerFrame.N$src$Lgg_vape_module_utility_inventory_HotbarSlotRule$xa58f().u$src$Ljava_util_List_$1u5n2i3().get(this.pickerFrame.X$src$I$7rbe5s()).createItemStack();
+        ItemStack itemStack = this.pickerFrame.getGroupComponent().getRules().get(this.pickerFrame.getSelectedSlot()).createItemStack();
         GuiRenderPrimitives.d(this.G$src$D$1b2f02a() + d2 - 0.5, this.n() + 20.0 - 5.0, d + 1.0, d + 1.0, HotbarSlotRuleSelectedSlotPreviewComponent.J.l);
         GuiRenderPrimitives.d(this.G$src$D$1b2f02a() + d2, this.n() + 20.0 - 5.0 + 0.5, d, d, HotbarSlotRuleSelectedSlotPreviewComponent.J.r);
         if (itemStack != null && itemStack.isNotNull()) {
@@ -47,7 +47,7 @@ extends GuiComponent {
             float f2 = (float)(this.n() + d / 2.0);
             ItemIconRenderer.renderItemStack(itemStack, f, f2, 32, 32, 1.0f);
         }
-        String string = SLOT_PREFIX + (this.pickerFrame.X$src$I$7rbe5s() + 1);
+        String string = SLOT_PREFIX + (this.pickerFrame.getSelectedSlot() + 1);
         smoothFontRenderer.W(string, this.G$src$D$1b2f02a() + 5.0 + d / 2.0, this.n() + 20.0 + d + smoothFontRenderer.d(string), HotbarSlotRuleSelectedSlotPreviewComponent.J.Z);
     }
 

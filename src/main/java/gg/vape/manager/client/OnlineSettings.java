@@ -20,134 +20,134 @@ import java.util.List;
 import java.util.stream.Stream;
 
 public class OnlineSettings {
-    private final ModeOption c;
-    private final BooleanValue w;
-    private final Bendable u;
-    private final BooleanValue S;
-    private final BooleanValue d;
-    private static boolean t;
-    private final ModeValue K;
-    private final List<Bendable> T;
-    private final Bendable V;
-    private boolean E = false;
-    private final ModeOption G;
-    private final ModeOption f;
-    private final FriendNotificationSettings Y = new FriendNotificationSettings();
-    private final ModeOption m;
-    private final BooleanValue r;
-    private final ModeValue x;
-    private final BooleanValue h;
-    private final ModeOption N;
-    private final BooleanValue g;
-    private final BooleanValue a;
-    private final BooleanValue j;
-    private OnlineSettingsPayload Q;
+    private final ModeOption toggleModeOption;
+    private final BooleanValue shareUsername;
+    private final Bendable inventoryDisplayBind;
+    private final BooleanValue autoLogin;
+    private final BooleanValue selfTargetIndicators;
+    private static boolean obfuscationState;
+    private final ModeValue indicatorColorMode;
+    private final List<Bendable> handledBindings;
+    private final Bendable pingBind;
+    private boolean loadFailed = false;
+    private final ModeOption friendColorOption;
+    private final ModeOption partyColorOption;
+    private final FriendNotificationSettings friendNotificationSettings = new FriendNotificationSettings();
+    private final ModeOption holdModeOption;
+    private final BooleanValue shareInventory;
+    private final ModeValue inventorySwitchMode;
+    private final BooleanValue showSelf;
+    private final ModeOption teamColorOption;
+    private final BooleanValue targetIndicators;
+    private final BooleanValue shareServer;
+    private final BooleanValue partyOverheadIndicator;
+    private OnlineSettingsPayload payload;
 
     public OnlineSettings() {
-        this.S = BooleanValue.create(null, "Auto login", true, "Automatically logs you into Vape online friend services when loading is complete");
-        this.a = BooleanValue.create(null, "Share server", true, "Display your current server in friends list\nYour server may be shown if you join a party");
-        this.w = BooleanValue.create(null, "Share username", true, "Display your Minecraft username in friends list\nYour username may be shown if you join a party\nFriend won't be able to sync you as a Minecraft friend with this disabled");
-        this.r = BooleanValue.create(null, "Share inventory", true, "Shares your inventory contents to party members.");
-        this.V = new OnlineSettingsPickPingBindAction(this);
-        this.c = new ModeOption("Toggle");
-        this.m = new ModeOption("Hold");
-        this.x = ModeValue.create(null, "Bind mode", this.m, this.m, this.c);
-        this.h = BooleanValue.create(null, "Show Self", true, "Shows your own overlay in the party overlay");
-        this.f = new ModeOption("Party");
-        this.N = new ModeOption("Team");
-        this.G = new ModeOption("Friend");
-        this.K = ModeValue.create(null, "Indicator color", this.f, this.f, this.N, this.G);
-        this.j = BooleanValue.create(null, "Party overhead indicator", true, "Draws a circle above party members");
-        this.g = BooleanValue.create(null, "Target indicators", true, "Shows who your party members are targeting");
-        this.d = BooleanValue.create(null, "Self target indicators", true, "Draws indicators on your own target");
-        this.u = new OnlineSettingsNoopBindAction(this);
-        this.T = Arrays.asList(this.V);
+        this.autoLogin = BooleanValue.create(null, "Auto login", true, "Automatically logs you into Vape online friend services when loading is complete");
+        this.shareServer = BooleanValue.create(null, "Share server", true, "Display your current server in friends list\nYour server may be shown if you join a party");
+        this.shareUsername = BooleanValue.create(null, "Share username", true, "Display your Minecraft username in friends list\nYour username may be shown if you join a party\nFriend won't be able to sync you as a Minecraft friend with this disabled");
+        this.shareInventory = BooleanValue.create(null, "Share inventory", true, "Shares your inventory contents to party members.");
+        this.pingBind = new OnlineSettingsPickPingBindAction(this);
+        this.toggleModeOption = new ModeOption("Toggle");
+        this.holdModeOption = new ModeOption("Hold");
+        this.inventorySwitchMode = ModeValue.create(null, "Bind mode", this.holdModeOption, this.holdModeOption, this.toggleModeOption);
+        this.showSelf = BooleanValue.create(null, "Show Self", true, "Shows your own overlay in the party overlay");
+        this.partyColorOption = new ModeOption("Party");
+        this.teamColorOption = new ModeOption("Team");
+        this.friendColorOption = new ModeOption("Friend");
+        this.indicatorColorMode = ModeValue.create(null, "Indicator color", this.partyColorOption, this.partyColorOption, this.teamColorOption, this.friendColorOption);
+        this.partyOverheadIndicator = BooleanValue.create(null, "Party overhead indicator", true, "Draws a circle above party members");
+        this.targetIndicators = BooleanValue.create(null, "Target indicators", true, "Shows who your party members are targeting");
+        this.selfTargetIndicators = BooleanValue.create(null, "Self target indicators", true, "Draws indicators on your own target");
+        this.inventoryDisplayBind = new OnlineSettingsNoopBindAction(this);
+        this.handledBindings = Arrays.asList(this.pingBind);
     }
 
-    public ModeOption v() {
-        return this.f;
+    public ModeOption getPartyColorOption() {
+        return this.partyColorOption;
     }
 
-    public void B() {
+    public void initialize() {
         try {
-            ApiResponse apiResponse = ApiServices.d().v().h(SettingsDataType.ONLINE);
-            this.E = false;
-            if (apiResponse == null || !apiResponse.t()) {
-                this.Q = OnlineSettingsPayload.j;
-                ApiServices.d().v().u(SettingsDataType.ONLINE, this.Q);
+            ApiResponse apiResponse = ApiServices.getInstance().getSettingsApi().loadSettings(SettingsDataType.ONLINE);
+            this.loadFailed = false;
+            if (apiResponse == null || !apiResponse.isSuccessful()) {
+                this.payload = OnlineSettingsPayload.DEFAULTS;
+                ApiServices.getInstance().getSettingsApi().saveSettings(SettingsDataType.ONLINE, this.payload);
             } else {
-                this.Q = (OnlineSettingsPayload)apiResponse.T();
+                this.payload = (OnlineSettingsPayload)apiResponse.getData();
             }
         }
         catch (Exception exception) {
-            this.Q.H();
-            this.E = true;
+            this.payload.initializeDefaults();
+            this.loadFailed = true;
         }
-        this.S.setValue(this.Q.k());
-        this.w.setValue(this.Q.a());
-        this.a.setValue(this.Q.m());
-        this.r.setValue(this.Q.A());
-        this.h.setValue(this.Q.T());
-        if (this.Q.x() != null) {
-            this.x.setSelectedIndex(this.Q.x());
+        this.autoLogin.setValue(this.payload.getAutoLogin());
+        this.shareUsername.setValue(this.payload.getShowUsername());
+        this.shareServer.setValue(this.payload.getShowServer());
+        this.shareInventory.setValue(this.payload.getShareInventory());
+        this.showSelf.setValue(this.payload.getShowSelf());
+        if (this.payload.getInventorySwitchMode() != null) {
+            this.inventorySwitchMode.setSelectedIndex(this.payload.getInventorySwitchMode());
         }
-        if (this.Q.K() != null) {
-            this.V.loadBoundInputs(this.Q.K(), false);
+        if (this.payload.getPingKeybind() != null) {
+            this.pingBind.loadBoundInputs(this.payload.getPingKeybind(), false);
         }
-        if (this.Q.b() != null) {
-            this.u.loadBoundInputs(this.Q.b(), false);
+        if (this.payload.getShowInventoryKeybind() != null) {
+            this.inventoryDisplayBind.loadBoundInputs(this.payload.getShowInventoryKeybind(), false);
         }
-        if (!this.E) {
-            Stream.of(this.w).forEach(OnlineSettings::lambda$initialize$1);
+        if (!this.loadFailed) {
+            Stream.of(this.shareUsername).forEach(OnlineSettings::attachShareUsernameSyncListener);
         }
     }
 
-    public ModeOption j() {
-        return this.c;
+    public ModeOption getToggleModeOption() {
+        return this.toggleModeOption;
     }
 
-    private static void lambda$initialize$1(BooleanValue booleanValue) {
-        booleanValue.addChangeListener(OnlineSettings::lambda$null$0);
+    private static void attachShareUsernameSyncListener(BooleanValue booleanValue) {
+        booleanValue.addChangeListener(OnlineSettings::syncShareUsername);
     }
 
-    public static void t(boolean bl) {
-        t = bl;
+    public static void setObfuscationState(boolean state) {
+        obfuscationState = state;
     }
 
-    public static boolean C() {
-        boolean bl = OnlineSettings.P();
+    public static boolean reservedCheck() {
+        boolean state = OnlineSettings.getObfuscationState();
         return false;
     }
 
-    public BooleanValue U() {
-        return this.d;
+    public BooleanValue getSelfTargetIndicators() {
+        return this.selfTargetIndicators;
     }
 
-    public BooleanValue X$src$Lgg_vape_value_BooleanValue_$7rygmo() {
-        return this.S;
+    public BooleanValue getAutoLogin() {
+        return this.autoLogin;
     }
 
-    public BooleanValue k$src$Lgg_vape_value_BooleanValue_$ffgfgd() {
-        return this.g;
+    public BooleanValue getTargetIndicators() {
+        return this.targetIndicators;
     }
 
     static {
-        OnlineSettings.t(true);
+        OnlineSettings.setObfuscationState(true);
     }
 
-    public BooleanValue O() {
-        return this.w;
+    public BooleanValue getShareUsername() {
+        return this.shareUsername;
     }
 
-    public Bendable k() {
-        return this.u;
+    public Bendable getInventoryDisplayBind() {
+        return this.inventoryDisplayBind;
     }
 
-    private static Exception a(Exception exception) {
+    private static Exception passthroughException(Exception exception) {
         return exception;
     }
 
-    public void y(EventKeyPress eventKeyPress) {
+    public void handleKeyPress(EventKeyPress eventKeyPress) {
         if (eventKeyPress.getKey() <= 0) {
             return;
         }
@@ -157,85 +157,85 @@ public class OnlineSettings {
         if (Minecraft.currentScreen().getObject() != null) {
             return;
         }
-        for (Bendable bendable : this.T) {
+        for (Bendable bendable : this.handledBindings) {
             if (!bendable.activateIfMatched(eventKeyPress.getKey())) continue;
             eventKeyPress.setCancelled(true);
         }
     }
 
-    public BooleanValue y() {
-        return this.j;
+    public BooleanValue getPartyOverheadIndicator() {
+        return this.partyOverheadIndicator;
     }
 
-    public ModeOption I() {
-        return this.G;
+    public ModeOption getFriendColorOption() {
+        return this.friendColorOption;
     }
 
-    public BooleanValue j$src$Lgg_vape_value_BooleanValue_$1co7xi6() {
-        return this.h;
+    public BooleanValue getShowSelf() {
+        return this.showSelf;
     }
 
-    public OnlineSettingsPayload X() {
-        if (this.Q == null) {
+    public OnlineSettingsPayload getPayload() {
+        if (this.payload == null) {
             OnlineSettingsPayload onlineSettingsPayload = new OnlineSettingsPayload();
-            onlineSettingsPayload.H();
-            this.Q = onlineSettingsPayload;
+            onlineSettingsPayload.initializeDefaults();
+            this.payload = onlineSettingsPayload;
         }
-        return this.Q;
+        return this.payload;
     }
 
-    public Bendable p() {
-        return this.V;
+    public Bendable getPingBind() {
+        return this.pingBind;
     }
 
-    private static void lambda$null$0(BooleanValue booleanValue) {
+    private static void syncShareUsername(BooleanValue booleanValue) {
         ZeusConnectionManager.T().u().Y();
     }
 
-    public boolean M() {
-        return this.E;
+    public boolean hasLoadFailed() {
+        return this.loadFailed;
     }
 
-    public static boolean P() {
-        return t;
+    public static boolean getObfuscationState() {
+        return obfuscationState;
     }
 
-    public FriendNotificationSettings m() {
-        return this.Y;
+    public FriendNotificationSettings getFriendNotificationSettings() {
+        return this.friendNotificationSettings;
     }
 
-    public ModeValue r$src$Lgg_vape_value_ModeValue_$lqfla9() {
-        return this.x;
+    public ModeValue getInventorySwitchMode() {
+        return this.inventorySwitchMode;
     }
 
-    public ModeOption r() {
-        return this.m;
+    public ModeOption getHoldModeOption() {
+        return this.holdModeOption;
     }
 
-    public BooleanValue z() {
-        return this.a;
+    public BooleanValue getShareServer() {
+        return this.shareServer;
     }
 
-    public ModeValue x() {
-        return this.K;
+    public ModeValue getIndicatorColorMode() {
+        return this.indicatorColorMode;
     }
 
-    public ModeOption o() {
-        return this.N;
+    public ModeOption getTeamColorOption() {
+        return this.teamColorOption;
     }
 
-    public void I(EventMouseButton eventMouseButton) {
+    public void handleMouseButton(EventMouseButton eventMouseButton) {
         if (!eventMouseButton.getButtonState()) {
             return;
         }
-        int n = -100 + eventMouseButton.getButton();
-        for (Bendable bendable : this.T) {
-            if (!bendable.activateIfMatched(n)) continue;
+        int inputCode = -100 + eventMouseButton.getButton();
+        for (Bendable bendable : this.handledBindings) {
+            if (!bendable.activateIfMatched(inputCode)) continue;
             eventMouseButton.setCancelled(true);
         }
     }
 
-    public BooleanValue l() {
-        return this.r;
+    public BooleanValue getShareInventory() {
+        return this.shareInventory;
     }
 }

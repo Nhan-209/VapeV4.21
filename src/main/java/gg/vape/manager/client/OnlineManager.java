@@ -12,77 +12,77 @@ import gg.vape.manager.client.OnlineInventoryTracker;
 import gg.vape.ui.click.component.GuiComponent;
 
 public class OnlineManager {
-    private static GuiComponent[] O;
-    private final OnlineFriendCache i;
-    private final OnlineInventoryTracker P;
-    private final FriendRequestManager C;
-    private final OnlineActivityManager p;
-    private final PartyManager n;
-    private final LocalOnlineFriend b = new LocalOnlineFriend();
+    private static GuiComponent[] obfuscationComponents;
+    private final OnlineFriendCache friendCache;
+    private final OnlineInventoryTracker inventoryTracker;
+    private final FriendRequestManager friendRequestManager;
+    private final OnlineActivityManager activityManager;
+    private final PartyManager partyManager;
+    private final LocalOnlineFriend localFriend = new LocalOnlineFriend();
 
-    public OnlineActivityManager V() {
-        return this.p;
+    public OnlineActivityManager getActivityManager() {
+        return this.activityManager;
     }
 
-    public LocalOnlineFriend r() {
-        return this.b;
+    public LocalOnlineFriend getLocalFriend() {
+        return this.localFriend;
     }
 
-    public OnlineInventoryTracker N() {
-        return this.P;
+    public OnlineInventoryTracker getInventoryTracker() {
+        return this.inventoryTracker;
     }
 
-    public OnlineFriendCache u() {
-        return this.i;
+    public OnlineFriendCache getFriendCache() {
+        return this.friendCache;
     }
 
     static {
-        if (OnlineManager.p() == null) {
-            OnlineManager.G(new GuiComponent[5]);
+        if (OnlineManager.getObfuscationComponents() == null) {
+            OnlineManager.setObfuscationComponents(new GuiComponent[5]);
         }
     }
 
-    public PartyManager y() {
-        return this.n;
+    public PartyManager getPartyManager() {
+        return this.partyManager;
     }
 
-    public static void G(GuiComponent[] guiComponentArray) {
-        O = guiComponentArray;
+    public static void setObfuscationComponents(GuiComponent[] components) {
+        obfuscationComponents = components;
     }
 
     public OnlineManager() {
-        this.i = new OnlineFriendCache();
-        this.C = new FriendRequestManager();
-        this.n = new PartyManager();
-        this.p = new OnlineActivityManager();
-        this.P = new OnlineInventoryTracker();
+        this.friendCache = new OnlineFriendCache();
+        this.friendRequestManager = new FriendRequestManager();
+        this.partyManager = new PartyManager();
+        this.activityManager = new OnlineActivityManager();
+        this.inventoryTracker = new OnlineInventoryTracker();
     }
 
-    public boolean B() {
-        return OnlineConnectionManager.T.n() == OnlineConnectionState.OFFLINE;
+    public boolean isOffline() {
+        return OnlineConnectionManager.INSTANCE.getConnectionState() == OnlineConnectionState.OFFLINE;
     }
 
-    public void t() {
-        if (!OnlineConnectionManager.T.u()) {
+    public void clearOnlineState() {
+        if (!OnlineConnectionManager.INSTANCE.hasConnectedSuccessfully()) {
             return;
         }
-        this.i.C();
-        this.C.g();
-        this.n.r();
-        this.b.W("");
-        this.b.V(null);
-        Vape.INSTANCE.getOnlineFriendManager().s();
-        this.p.T();
-        this.P.A();
+        this.friendCache.clear();
+        this.friendRequestManager.clear();
+        this.partyManager.clear();
+        this.localFriend.setMinecraftUsername("");
+        this.localFriend.setMinecraftServer(null);
+        Vape.INSTANCE.getOnlineFriendManager().clearFriends();
+        this.activityManager.resetForWorldChange();
+        this.inventoryTracker.reset();
     }
 
 
-    public FriendRequestManager D() {
-        return this.C;
+    public FriendRequestManager getFriendRequestManager() {
+        return this.friendRequestManager;
     }
 
-    public static GuiComponent[] p() {
-        return O;
+    public static GuiComponent[] getObfuscationComponents() {
+        return obfuscationComponents;
     }
 }
 

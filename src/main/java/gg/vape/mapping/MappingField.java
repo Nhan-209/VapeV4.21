@@ -15,88 +15,84 @@ import gg.vape.wrapper.impl.ForgeVersion;
 import java.lang.reflect.Field;
 
 public class MappingField {
-    private final String S;
-    private boolean c;
-    private final Class<?> m;
-    private final String U;
-    private final Class<?> f;
-    private final boolean V;
-    private static int[] M;
-    private final Mapping G;
-    private final String R;
-    private final Class<?> w;
-    private final String H;
-    private static int F;
-    private Field g;
-    private final String o;
-    private final int x;
-    private final boolean P;
-    private boolean n;
+    private final String originalName;
+    private boolean resolutionFailed;
+    private final Class<?> ownerClass;
+    private final String ownerInternalName;
+    private final Class<?> resolvedFieldType;
+    private final boolean staticField;
+    private static int[] controlFlowState;
+    private final Mapping mappingOwner;
+    private final String mappedDescriptor;
+    private final Class<?> declaredFieldType;
+    private final String descriptor;
+    private static int nextFieldId;
+    private Field reflectedField;
+    private final String runtimeName;
+    private final int fieldId;
+    private final boolean mappedMember;
+    private boolean secondaryMember;
 
     public void setBoolean(Object object, boolean bl) {
-        if (this.g != null) {
+        if (this.reflectedField != null) {
             try {
-                this.g.setBoolean(object, bl);
+                this.reflectedField.setBoolean(object, bl);
                 return;
             }
             catch (Exception exception) {
                 Vape.logThrowable(exception);
             }
         }
-        MappingField.unchecked(() -> NativeMappedMemberInvoker.ll(this.x, object, bl));
+        MappingField.unchecked(() -> NativeMappedMemberInvoker.setBooleanField(this.fieldId, object, bl));
     }
 
     public float getFloat(Object object) {
-        if (this.g != null) {
+        if (this.reflectedField != null) {
             try {
-                return this.g.getFloat(object);
+                return this.reflectedField.getFloat(object);
             }
             catch (Exception exception) {
                 Vape.logThrowable(exception);
             }
         }
-        return MappingField.unchecked(() -> NativeMappedMemberInvoker.aa(this.x, object));
+        return MappingField.unchecked(() -> NativeMappedMemberInvoker.getFloatField(this.fieldId, object));
     }
 
     public char[] getCharArray(Object object) {
-        if (this.g != null) {
+        if (this.reflectedField != null) {
             try {
-                return (char[])this.g.get(object);
+                return (char[])this.reflectedField.get(object);
             }
             catch (Exception exception) {
                 Vape.logThrowable(exception);
             }
         }
-        return NativeMappedMemberInvoker.ee(this.x, object);
+        return NativeMappedMemberInvoker.getCharArrayField(this.fieldId, object);
     }
 
     public double[] getDoubleArray(Object object) {
-        if (this.g != null) {
+        if (this.reflectedField != null) {
             try {
-                return (double[])this.g.get(object);
+                return (double[])this.reflectedField.get(object);
             }
             catch (Exception exception) {
                 Vape.logThrowable(exception);
             }
         }
-        return MappingField.unchecked(() -> NativeMappedMemberInvoker.jj(this.x, object));
+        return MappingField.unchecked(() -> NativeMappedMemberInvoker.getDoubleArrayField(this.fieldId, object));
     }
 
     public void setFloatArray(Object object, float[] fArray) {
-        if (this.g != null) {
+        if (this.reflectedField != null) {
             try {
-                this.g.set(object, fArray);
+                this.reflectedField.set(object, fArray);
                 return;
             }
             catch (Exception exception) {
                 Vape.logThrowable(exception);
             }
         }
-        MappingField.unchecked(() -> NativeMappedMemberInvoker.yy(this.x, object, fArray));
-    }
-
-    private static Throwable a(Throwable throwable) {
-        return throwable;
+        MappingField.unchecked(() -> NativeMappedMemberInvoker.setFloatArrayField(this.fieldId, object, fArray));
     }
 
     @FunctionalInterface
@@ -133,87 +129,87 @@ public class MappingField {
     }
 
     public void setInt(Object object, int n) {
-        if (this.g != null) {
+        if (this.reflectedField != null) {
             try {
-                this.g.setInt(object, n);
+                this.reflectedField.setInt(object, n);
                 return;
             }
             catch (Exception exception) {
                 Vape.logThrowable(exception);
             }
         }
-        MappingField.unchecked(() -> NativeMappedMemberInvoker.oo(this.x, object, n));
+        MappingField.unchecked(() -> NativeMappedMemberInvoker.setIntField(this.fieldId, object, n));
     }
 
-    public Mapping U() {
-        return this.G;
+    public Mapping getMappingOwner() {
+        return this.mappingOwner;
     }
 
-    public String w() {
-        return this.H;
+    public String getDescriptor() {
+        return this.descriptor;
     }
 
-    public byte[] u(Object object) {
-        if (this.g != null) {
+    public byte[] getByteArray(Object object) {
+        if (this.reflectedField != null) {
             try {
-                return (byte[])this.g.get(object);
+                return (byte[])this.reflectedField.get(object);
             }
             catch (Exception exception) {
                 Vape.logThrowable(exception);
             }
         }
-        return NativeMappedMemberInvoker.hhh(this.x, object);
+        return NativeMappedMemberInvoker.getByteArrayField(this.fieldId, object);
     }
 
     public void setChar(Object object, char c) {
-        if (this.g != null) {
+        if (this.reflectedField != null) {
             try {
-                this.g.setChar(object, c);
+                this.reflectedField.setChar(object, c);
                 return;
             }
             catch (Exception exception) {
                 Vape.logThrowable(exception);
             }
         }
-        MappingField.unchecked(() -> NativeMappedMemberInvoker.mm(this.x, object, c));
+        MappingField.unchecked(() -> NativeMappedMemberInvoker.setCharField(this.fieldId, object, c));
     }
 
-    public MappingField Y() {
-        if ((Vape.INSTANCE.isMappingsRemapped() || Vape.INSTANCE.isForgeRemapInactive()) && !this.c) {
-            this.g = this.H$src$Ljava_lang_reflect_Field_$1cv5a8g();
+    public MappingField resolveReflectedField() {
+        if ((Vape.INSTANCE.isMappingsRemapped() || Vape.INSTANCE.isForgeRemapInactive()) && !this.resolutionFailed) {
+            this.reflectedField = this.findReflectedField();
         }
         return this;
     }
 
     public boolean getBoolean(Object object) {
-        if (this.g != null) {
+        if (this.reflectedField != null) {
             try {
-                return this.g.getBoolean(object);
+                return this.reflectedField.getBoolean(object);
             }
             catch (Exception exception) {
                 Vape.logThrowable(exception);
             }
         }
-        return MappingField.unchecked(() -> NativeMappedMemberInvoker.v(this.x, object));
+        return MappingField.unchecked(() -> NativeMappedMemberInvoker.getBooleanField(this.fieldId, object));
     }
 
     public void setLong(Object object, long l) {
-        if (this.g != null) {
+        if (this.reflectedField != null) {
             try {
-                this.g.setLong(object, l);
+                this.reflectedField.setLong(object, l);
                 return;
             }
             catch (Exception exception) {
                 Vape.logThrowable(exception);
             }
         }
-        MappingField.unchecked(() -> NativeMappedMemberInvoker.pp(this.x, object, l));
+        MappingField.unchecked(() -> NativeMappedMemberInvoker.setLongField(this.fieldId, object, l));
     }
 
-    public Field H$src$Ljava_lang_reflect_Field_$1cv5a8g() {
+    public Field findReflectedField() {
         try {
-            String string = this.J();
-            for (Class<?> clazz = this.m; clazz != null; clazz = clazz.getSuperclass()) {
+            String string = this.getResolvedName();
+            for (Class<?> clazz = this.ownerClass; clazz != null; clazz = clazz.getSuperclass()) {
                 try {
                     Field field = clazz.getDeclaredField(string);
                     field.setAccessible(true);
@@ -230,436 +226,433 @@ public class MappingField {
         return null;
     }
 
-    public static void h(int[] nArray) {
-        M = nArray;
+    public static void setControlFlowState(int[] state) {
+        controlFlowState = state;
     }
 
     public void setShort(Object object, short s) {
-        if (this.g != null) {
+        if (this.reflectedField != null) {
             try {
-                this.g.setShort(object, s);
+                this.reflectedField.setShort(object, s);
                 return;
             }
             catch (Exception exception) {
                 Vape.logThrowable(exception);
             }
         }
-        MappingField.unchecked(() -> NativeMappedMemberInvoker.nn(this.x, object, s));
+        MappingField.unchecked(() -> NativeMappedMemberInvoker.setShortField(this.fieldId, object, s));
     }
 
     public void setDouble(Object object, double d) {
-        if (this.g != null) {
+        if (this.reflectedField != null) {
             try {
-                this.g.setDouble(object, d);
+                this.reflectedField.setDouble(object, d);
                 return;
             }
             catch (Exception exception) {
                 Vape.logThrowable(exception);
             }
         }
-        NativeMappedMemberInvoker.rr(this.x, object, d);
+        NativeMappedMemberInvoker.setDoubleField(this.fieldId, object, d);
     }
 
     public Object getObject(Object object) {
-        if (this.g != null) {
+        if (this.reflectedField != null) {
             try {
-                return this.g.get(object);
+                return this.reflectedField.get(object);
             }
             catch (Exception exception) {
                 Vape.logThrowable(exception);
             }
         }
-        return NativeMappedMemberInvoker.cc(this.x, object);
+        return NativeMappedMemberInvoker.getObjectField(this.fieldId, object);
     }
 
-    public boolean g() {
-        return this.V;
+    public boolean isStaticField() {
+        return this.staticField;
     }
 
     public void setFloat(Object object, float f) {
-        if (this.g != null) {
+        if (this.reflectedField != null) {
             try {
-                this.g.setFloat(object, f);
+                this.reflectedField.setFloat(object, f);
                 return;
             }
             catch (Exception exception) {
                 Vape.logThrowable(exception);
             }
         }
-        MappingField.unchecked(() -> NativeMappedMemberInvoker.qq(this.x, object, f));
+        MappingField.unchecked(() -> NativeMappedMemberInvoker.setFloatField(this.fieldId, object, f));
     }
 
     public short getShort(Object object) {
-        if (this.g != null) {
+        if (this.reflectedField != null) {
             try {
-                return this.g.getShort(object);
+                return this.reflectedField.getShort(object);
             }
             catch (Exception exception) {
                 Vape.logThrowable(exception);
             }
         }
-        return MappingField.unchecked(() -> NativeMappedMemberInvoker.x(this.x, object));
+        return MappingField.unchecked(() -> NativeMappedMemberInvoker.getShortField(this.fieldId, object));
     }
 
     public void setDoubleArray(Object object, double[] dArray) {
-        if (this.g != null) {
+        if (this.reflectedField != null) {
             try {
-                this.g.set(object, dArray);
+                this.reflectedField.set(object, dArray);
                 return;
             }
             catch (Exception exception) {
                 Vape.logThrowable(exception);
             }
         }
-        MappingField.unchecked(() -> NativeMappedMemberInvoker.zz(this.x, object, dArray));
+        MappingField.unchecked(() -> NativeMappedMemberInvoker.setDoubleArrayField(this.fieldId, object, dArray));
     }
 
-    public String M() {
-        return this.o;
+    public String getRuntimeName() {
+        return this.runtimeName;
     }
 
-    public MappingField O() {
-        String string = MappingMethod.A();
+    public MappingField register() {
         try {
             if (Vape.INSTANCE.isForgeRemapInactive()) {
-                this.Y();
-                if (this.g == null) {
-                    throw new NoSuchFieldException(this.m.getName() + "#" + this.o);
+                this.resolveReflectedField();
+                if (this.reflectedField == null) {
+                    throw new NoSuchFieldException(this.ownerClass.getName() + "#" + this.runtimeName);
                 }
-            } else if (this.P) {
-                NativeMappedMemberInvoker.t(this.x, this.m, this.U, this.o, this.H, this.R, this.V);
-                this.Y();
+            } else if (this.mappedMember) {
+                NativeMappedMemberInvoker.registerFieldWithMetadata(this.fieldId, this.ownerClass, this.ownerInternalName, this.runtimeName, this.descriptor, this.mappedDescriptor, this.staticField);
+                this.resolveReflectedField();
             } else {
-                NativeMappedMemberInvoker.u(this.x, this.m, this.o, this.H, this.V);
-                this.Y();
+                NativeMappedMemberInvoker.registerField(this.fieldId, this.ownerClass, this.runtimeName, this.descriptor, this.staticField);
+                this.resolveReflectedField();
             }
         }
         catch (Throwable throwable) {
-            if (this.n) {
+            if (this.secondaryMember) {
                 MappingProfileSnapshotRegistry.j();
             } else {
                 MappingProfileSnapshotRegistry.n(this);
             }
-            this.c = true;
+            this.resolutionFailed = true;
         }
         return this;
     }
 
-    public MappingField(Mapping mapping, Class clazz, String string, boolean bl, boolean bl2, boolean bl3, Class clazz2, int n) {
-        String string2 = MappingMethod.A();
-        if (string2 != null) {
+    public MappingField(Mapping mappingOwner, Class<?> ownerClass, String fieldName, boolean mappedMember, boolean staticField, boolean secondaryMember, Class<?> fieldType, int arrayDimensions) {
+        String currentControlFlowMarker = MappingMethod.getControlFlowMarker();
+        if (currentControlFlowMarker != null) {
             if (ForgeVersion.MC_26_1.d()) {
-                bl = false;
+                mappedMember = false;
             }
-            this.G = mapping;
-            this.S = string;
-            this.w = clazz2;
-            MemberLookupSignature memberLookupSignature = RuntimeNameMappingRegistry.lookupFieldMapping(clazz, string);
+            this.mappingOwner = mappingOwner;
+            this.originalName = fieldName;
+            this.declaredFieldType = fieldType;
+            MemberLookupSignature memberLookupSignature = RuntimeNameMappingRegistry.lookupFieldMapping(ownerClass, fieldName);
             if (memberLookupSignature != null) {
-                this.o = memberLookupSignature.M;
-                this.f = memberLookupSignature.a != null ? memberLookupSignature.a : clazz2;
+                this.runtimeName = memberLookupSignature.M;
+                this.resolvedFieldType = memberLookupSignature.a != null ? memberLookupSignature.a : fieldType;
             } else {
-                this.o = string;
-                this.f = clazz2;
+                this.runtimeName = fieldName;
+                this.resolvedFieldType = fieldType;
             }
-            this.H = MappingField.Y(this.f, false, n);
-            this.R = MappingField.Y(this.f, true, n);
-            this.P = bl;
-            this.m = clazz;
-            this.U = MappedClasses.b(clazz).replace(".", "/");
-            this.V = bl2;
-            this.x = ++F;
-            this.n = bl3;
+            this.descriptor = MappingField.buildFieldDescriptor(this.resolvedFieldType, false, arrayDimensions);
+            this.mappedDescriptor = MappingField.buildFieldDescriptor(this.resolvedFieldType, true, arrayDimensions);
+            this.mappedMember = mappedMember;
+            this.ownerClass = ownerClass;
+            this.ownerInternalName = MappedClasses.b(ownerClass).replace(".", "/");
+            this.staticField = staticField;
+            this.fieldId = ++nextFieldId;
+            this.secondaryMember = secondaryMember;
             if (GuiComponent.getLegacyComponentState() == null) {
-                MappingMethod.f("E1SOdc");
+                MappingMethod.setControlFlowMarker("E1SOdc");
             }
             return;
         }
-        MemberLookupSignature memberLookupSignature = RuntimeNameMappingRegistry.lookupFieldMapping(clazz, string);
-        this.G = null;
-        this.S = null;
-        this.o = null;
-        this.w = null;
-        this.f = clazz2;
-        this.H = MappingField.Y(this.f, false, n);
-        this.R = MappingField.Y(this.f, true, n);
-        this.P = bl;
-        this.m = clazz;
-        this.U = MappedClasses.b(clazz).replace(".", "/");
-        this.V = bl2;
-        this.x = ++F;
-        this.n = bl3;
+        this.mappingOwner = null;
+        this.originalName = null;
+        this.runtimeName = null;
+        this.declaredFieldType = null;
+        this.resolvedFieldType = fieldType;
+        this.descriptor = MappingField.buildFieldDescriptor(this.resolvedFieldType, false, arrayDimensions);
+        this.mappedDescriptor = MappingField.buildFieldDescriptor(this.resolvedFieldType, true, arrayDimensions);
+        this.mappedMember = mappedMember;
+        this.ownerClass = ownerClass;
+        this.ownerInternalName = MappedClasses.b(ownerClass).replace(".", "/");
+        this.staticField = staticField;
+        this.fieldId = ++nextFieldId;
+        this.secondaryMember = secondaryMember;
         if (GuiComponent.getLegacyComponentState() == null) {
-            MappingMethod.f("E1SOdc");
+            MappingMethod.setControlFlowMarker("E1SOdc");
         }
     }
 
-    public String J() {
+    public String getResolvedName() {
         if (Vape.INSTANCE.isForgeRemapInactive()) {
-            return this.o;
+            return this.runtimeName;
         }
-        return NativeMappedMemberInvoker.gfn(this.x);
+        return NativeMappedMemberInvoker.getFieldName(this.fieldId);
     }
 
     public void setIntArray(Object object, int[] nArray) {
-        if (this.g != null) {
+        if (this.reflectedField != null) {
             try {
-                this.g.set(object, nArray);
+                this.reflectedField.set(object, nArray);
                 return;
             }
             catch (Exception exception) {
                 Vape.logThrowable(exception);
             }
         }
-        MappingField.unchecked(() -> NativeMappedMemberInvoker.ww(this.x, object, nArray));
+        MappingField.unchecked(() -> NativeMappedMemberInvoker.setIntArrayField(this.fieldId, object, nArray));
     }
 
     public void setShortArray(Object object, short[] sArray) {
-        if (this.g != null) {
+        if (this.reflectedField != null) {
             try {
-                this.g.set(object, sArray);
+                this.reflectedField.set(object, sArray);
                 return;
             }
             catch (Exception exception) {
                 Vape.logThrowable(exception);
             }
         }
-        MappingField.unchecked(() -> NativeMappedMemberInvoker.vv(this.x, object, sArray));
+        MappingField.unchecked(() -> NativeMappedMemberInvoker.setShortArrayField(this.fieldId, object, sArray));
     }
 
     public char getChar(Object object) {
-        if (this.g != null) {
+        if (this.reflectedField != null) {
             try {
-                return this.g.getChar(object);
+                return this.reflectedField.getChar(object);
             }
             catch (Exception exception) {
                 Vape.logThrowable(exception);
             }
         }
-        return MappingField.unchecked(() -> NativeMappedMemberInvoker.w(this.x, object));
+        return MappingField.unchecked(() -> NativeMappedMemberInvoker.getCharField(this.fieldId, object));
     }
 
-    public Class<?> n() {
-        return this.w;
+    public Class<?> getDeclaredFieldType() {
+        return this.declaredFieldType;
     }
 
     public int getInt(Object object) {
-        if (this.g != null) {
+        if (this.reflectedField != null) {
             try {
-                return this.g.getInt(object);
+                return this.reflectedField.getInt(object);
             }
             catch (Exception exception) {
                 Vape.logThrowable(exception);
             }
         }
-        return NativeMappedMemberInvoker.y(this.x, object);
+        return NativeMappedMemberInvoker.getIntField(this.fieldId, object);
     }
 
     public short[] getShortArray(Object object) {
-        if (this.g != null) {
+        if (this.reflectedField != null) {
             try {
-                return (short[])this.g.get(object);
+                return (short[])this.reflectedField.get(object);
             }
             catch (Exception exception) {
                 Vape.logThrowable(exception);
             }
         }
-        return MappingField.unchecked(() -> NativeMappedMemberInvoker.ff(this.x, object));
+        return MappingField.unchecked(() -> NativeMappedMemberInvoker.getShortArrayField(this.fieldId, object));
     }
 
     public float[] getFloatArray(Object object) {
-        if (this.g != null) {
+        if (this.reflectedField != null) {
             try {
-                return (float[])this.g.get(object);
+                return (float[])this.reflectedField.get(object);
             }
             catch (Exception exception) {
                 Vape.logThrowable(exception);
             }
         }
-        return MappingField.unchecked(() -> NativeMappedMemberInvoker.ii(this.x, object));
+        return MappingField.unchecked(() -> NativeMappedMemberInvoker.getFloatArrayField(this.fieldId, object));
     }
 
     public void setObjectArray(Object object, Object[] objectArray) {
-        if (this.g != null) {
+        if (this.reflectedField != null) {
             try {
-                this.g.set(object, objectArray);
+                this.reflectedField.set(object, objectArray);
                 return;
             }
             catch (Exception exception) {
                 Vape.logThrowable(exception);
             }
         }
-        MappingField.unchecked(() -> NativeMappedMemberInvoker.aaa(this.x, object, objectArray));
+        MappingField.unchecked(() -> NativeMappedMemberInvoker.setObjectArrayField(this.fieldId, object, objectArray));
     }
 
-    public boolean x() {
-        return this.c;
+    public boolean hasResolutionFailed() {
+        return this.resolutionFailed;
     }
 
-    public boolean R() {
-        return this.P;
+    public boolean isMappedMember() {
+        return this.mappedMember;
     }
 
     public void setBooleanArray(Object object, boolean[] blArray) {
-        if (this.g != null) {
+        if (this.reflectedField != null) {
             try {
-                this.g.set(object, blArray);
+                this.reflectedField.set(object, blArray);
                 return;
             }
             catch (Exception exception) {
                 Vape.logThrowable(exception);
             }
         }
-        MappingField.unchecked(() -> NativeMappedMemberInvoker.tt(this.x, object, blArray));
+        MappingField.unchecked(() -> NativeMappedMemberInvoker.setBooleanArrayField(this.fieldId, object, blArray));
     }
 
     public int[] getIntArray(Object object) {
-        if (this.g != null) {
+        if (this.reflectedField != null) {
             try {
-                return (int[])this.g.get(object);
+                return (int[])this.reflectedField.get(object);
             }
             catch (Exception exception) {
                 Vape.logThrowable(exception);
             }
         }
-        return MappingField.unchecked(() -> NativeMappedMemberInvoker.gg(this.x, object));
+        return MappingField.unchecked(() -> NativeMappedMemberInvoker.getIntArrayField(this.fieldId, object));
     }
 
     public double getDouble(Object object) {
-        if (this.g != null) {
+        if (this.reflectedField != null) {
             try {
-                return this.g.getDouble(object);
+                return this.reflectedField.getDouble(object);
             }
             catch (Exception exception) {
                 Vape.logThrowable(exception);
             }
         }
-        return MappingField.unchecked(() -> NativeMappedMemberInvoker.bb(this.x, object));
+        return MappingField.unchecked(() -> NativeMappedMemberInvoker.getDoubleField(this.fieldId, object));
     }
 
     public long getLong(Object object) {
-        if (this.g != null) {
+        if (this.reflectedField != null) {
             try {
-                return this.g.getLong(object);
+                return this.reflectedField.getLong(object);
             }
             catch (Exception exception) {
                 Vape.logThrowable(exception);
             }
         }
-        return MappingField.unchecked(() -> NativeMappedMemberInvoker.z(this.x, object));
+        return MappingField.unchecked(() -> NativeMappedMemberInvoker.getLongField(this.fieldId, object));
     }
 
     public boolean[] getBooleanArray(Object object) {
-        if (this.g != null) {
+        if (this.reflectedField != null) {
             try {
-                return (boolean[])this.g.get(object);
+                return (boolean[])this.reflectedField.get(object);
             }
             catch (Exception exception) {
                 Vape.logThrowable(exception);
             }
         }
-        return MappingField.unchecked(() -> NativeMappedMemberInvoker.dd(this.x, object));
+        return MappingField.unchecked(() -> NativeMappedMemberInvoker.getBooleanArrayField(this.fieldId, object));
     }
 
     public long[] getLongArray(Object object) {
-        if (this.g != null) {
+        if (this.reflectedField != null) {
             try {
-                return (long[])this.g.get(object);
+                return (long[])this.reflectedField.get(object);
             }
             catch (Exception exception) {
                 Vape.logThrowable(exception);
             }
         }
-        return MappingField.unchecked(() -> NativeMappedMemberInvoker.hh(this.x, object));
+        return MappingField.unchecked(() -> NativeMappedMemberInvoker.getLongArrayField(this.fieldId, object));
     }
 
-    public static int[] P() {
-        return M;
+    public static int[] getControlFlowState() {
+        return controlFlowState;
     }
 
-    private static String Y(Class<?> clazz, boolean bl, int n) {
-        String string = DescUtils.g(clazz, bl);
-        if (n > 0) {
-            StringBuilder stringBuilder = new StringBuilder();
-            for (int i = 0; i < n; ++i) {
-                stringBuilder.append("[");
+    private static String buildFieldDescriptor(Class<?> fieldType, boolean mapped, int arrayDimensions) {
+        String descriptor = DescUtils.getDescriptor(fieldType, mapped);
+        if (arrayDimensions > 0) {
+            StringBuilder arrayPrefix = new StringBuilder();
+            for (int dimension = 0; dimension < arrayDimensions; ++dimension) {
+                arrayPrefix.append("[");
             }
-            string = stringBuilder + string;
+            descriptor = arrayPrefix + descriptor;
         }
-        return string;
+        return descriptor;
     }
 
     public void setObject(Object object, Object object2) {
-        if (this.g != null) {
+        if (this.reflectedField != null) {
             try {
-                this.g.set(object, object2);
+                this.reflectedField.set(object, object2);
                 return;
             }
             catch (Exception exception) {
                 Vape.logThrowable(exception);
             }
         }
-        MappingField.unchecked(() -> NativeMappedMemberInvoker.ss(this.x, object, object2));
+        MappingField.unchecked(() -> NativeMappedMemberInvoker.setObjectField(this.fieldId, object, object2));
     }
 
-    public static MappingField E(MappingFieldBuilder mappingFieldBuilder) {
-        MappingField mappingField;
-        MappingField mappingField2 = mappingField = new MappingField(mappingFieldBuilder.w(), mappingFieldBuilder.F$src$Ljava_lang_Class_$100ldxh(), mappingFieldBuilder.Y(), mappingFieldBuilder.z$src$Z$103hrpe(), mappingFieldBuilder.D(), mappingFieldBuilder.B(), mappingFieldBuilder.X(), mappingFieldBuilder.i());
-        return mappingField2.O();
+    public static MappingField fromBuilder(MappingFieldBuilder builder) {
+        MappingField mappingField = new MappingField(builder.getMappingOwner(), builder.getOwnerClass(), builder.getMemberName(), builder.isMappedMember(), builder.isStaticMember(), builder.isSecondaryMember(), builder.getType(), builder.getArrayDimensions());
+        return mappingField.register();
     }
 
     public void setCharArray(Object object, char[] cArray) {
-        if (this.g != null) {
+        if (this.reflectedField != null) {
             try {
-                this.g.set(object, cArray);
+                this.reflectedField.set(object, cArray);
                 return;
             }
             catch (Exception exception) {
                 Vape.logThrowable(exception);
             }
         }
-        MappingField.unchecked(() -> NativeMappedMemberInvoker.uu(this.x, object, cArray));
+        MappingField.unchecked(() -> NativeMappedMemberInvoker.setCharArrayField(this.fieldId, object, cArray));
     }
 
     public Object[] getObjectArray(Object object) {
-        if (this.g != null) {
+        if (this.reflectedField != null) {
             try {
-                return (Object[])this.g.get(object);
+                return (Object[])this.reflectedField.get(object);
             }
             catch (Exception exception) {
                 Vape.logThrowable(exception);
             }
         }
-        return NativeMappedMemberInvoker.kk(this.x, object);
+        return NativeMappedMemberInvoker.getObjectArrayField(this.fieldId, object);
     }
 
-    public String n$src$Ljava_lang_String_$19qhmir() {
-        return this.S;
+    public String getOriginalName() {
+        return this.originalName;
     }
 
     public void setLongArray(Object object, long[] lArray) {
-        if (this.g != null) {
+        if (this.reflectedField != null) {
             try {
-                this.g.set(object, lArray);
+                this.reflectedField.set(object, lArray);
                 return;
             }
             catch (Exception exception) {
                 Vape.logThrowable(exception);
             }
         }
-        MappingField.unchecked(() -> NativeMappedMemberInvoker.xx(this.x, object, lArray));
+        MappingField.unchecked(() -> NativeMappedMemberInvoker.setLongArrayField(this.fieldId, object, lArray));
     }
 
     static {
-        F = 0;
-        MappingField.h(new int[3]);
+        nextFieldId = 0;
+        MappingField.setControlFlowState(new int[3]);
     }
 
-    public Class<?> H() {
-        return this.f;
+    public Class<?> getResolvedFieldType() {
+        return this.resolvedFieldType;
     }
 
-    public Class L() {
-        return this.m;
+    public Class<?> getOwnerClass() {
+        return this.ownerClass;
     }
 }

@@ -12,7 +12,7 @@ extends Mapping {
     private MappingMethod n;
 
     private void processPacket(Object object, Object object2) {
-        this.z.c(object, object2);
+        this.z.invokeVoid(object, object2);
     }
 
     public static boolean hasPriority(MPacket mPacket, Object object) {
@@ -51,6 +51,6 @@ extends Mapping {
 
 
     private boolean hasPriority(Object object) {
-        return this.n.e(object, new Object[0]);
+        return this.n.invokeBoolean(object, new Object[0]);
     }
 }

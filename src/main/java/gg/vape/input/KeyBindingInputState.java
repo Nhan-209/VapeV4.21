@@ -40,10 +40,10 @@ public class KeyBindingInputState {
     }
 
     public static void pressKeyBinding(KeyBinding keyBinding, boolean usePostMessage) {
-        int keyCode = ClientSettings.H(keyBinding);
+        int keyCode = ClientSettings.getPlatformKeyCode(keyBinding);
         int mouseButtonThreshold = ForgeVersion.MC_1_21_4.d() ? 4 : 0;
         if (keyCode > mouseButtonThreshold) {
-            ClientSettings.b(keyBinding, true);
+            ClientSettings.setPhysicalKeyState(keyBinding, true);
         } else {
             if (ForgeVersion.MC_1_21_4.v()) {
                 keyCode += 100;
@@ -123,10 +123,10 @@ public class KeyBindingInputState {
     }
 
     public static void releaseKeyBinding(KeyBinding keyBinding, boolean usePostMessage) {
-        int keyCode = ClientSettings.H(keyBinding);
+        int keyCode = ClientSettings.getPlatformKeyCode(keyBinding);
         int mouseButtonThreshold = ForgeVersion.MC_1_21_4.d() ? 4 : 0;
         if (keyCode > mouseButtonThreshold) {
-            ClientSettings.b(keyBinding, false);
+            ClientSettings.setPhysicalKeyState(keyBinding, false);
         } else {
             if (ForgeVersion.MC_1_21_4.v()) {
                 keyCode += 100;

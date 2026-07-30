@@ -6,11 +6,11 @@ import java.awt.Color;
 
 public class FriendRequestNameTextComponent
 extends TruncatedTextComponent {
-    final FriendRequestRow i;
+    final FriendRequestRow owner;
 
-    public FriendRequestNameTextComponent(FriendRequestRow friendRequestRow, String string, String string2, double d, double d2, Color color, boolean bl) {
-        super(string, string2, d, d2, color, bl);
-        this.i = friendRequestRow;
+    public FriendRequestNameTextComponent(FriendRequestRow friendRequestRow, String text, String ellipsis, double maxWidth, double scale, Color color, boolean centered) {
+        super(text, ellipsis, maxWidth, scale, color, centered);
+        this.owner = friendRequestRow;
     }
 
     @Override

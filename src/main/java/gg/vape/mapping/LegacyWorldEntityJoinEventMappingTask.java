@@ -12,7 +12,7 @@ extends JavassistMappingTask {
     private static final String c;
 
     @Override
-    public void c() {
+    public void transform() {
         if (ForgeVersion.MC_1_16_5.d()) {
             return;
         }

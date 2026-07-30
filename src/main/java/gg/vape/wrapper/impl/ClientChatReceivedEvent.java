@@ -1,7 +1,6 @@
 package gg.vape.wrapper.impl;
 
 import gg.vape.wrapper.Wrapper;
-import gg.vape.wrapper.impl.ITextComponent;
 
 public class ClientChatReceivedEvent
 extends Wrapper {
@@ -10,11 +9,11 @@ extends Wrapper {
     }
 
     public ITextComponent P() {
-        return new ITextComponent(ClientChatReceivedEvent.c.getMappingsMapperCompat().qP.V(this.I));
+        return new ITextComponent(ClientChatReceivedEvent.vapeInstance.getMappingsMapperCompat().qP.V(this.I));
     }
 
     public void t(ITextComponent iTextComponent) {
-        ClientChatReceivedEvent.c.getMappingsMapperCompat().qP.i(this.I, iTextComponent.getObject());
+        ClientChatReceivedEvent.vapeInstance.getMappingsMapperCompat().qP.i(this.I, iTextComponent.getObject());
     }
 }
 

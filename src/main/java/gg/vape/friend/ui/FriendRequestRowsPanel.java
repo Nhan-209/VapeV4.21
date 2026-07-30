@@ -6,7 +6,7 @@ import gg.vape.ui.click.frame.FrameScrollbarPlacement;
 
 public class FriendRequestRowsPanel
 extends PanelComponent {
-    private static final String db = "wrap";
+    private static final String LAYOUT_MODE = "wrap";
 
     @Override
     public void v() {
@@ -26,7 +26,7 @@ extends PanelComponent {
         super.c();
     }
 
-    public int Z$src$I$1nljwqr() {
+    public int getRowCount() {
         return this.f().size();
     }
 
@@ -34,7 +34,7 @@ extends PanelComponent {
         super(100.0, 96.0);
         this.setShowDisabledOverlay(false);
         this.F(FrameScrollbarPlacement.OUTSIDE);
-        this.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M(db);
+        this.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M(LAYOUT_MODE);
         this.setVisible(true);
         this.t(96.0);
     }
@@ -47,4 +47,3 @@ extends PanelComponent {
     public void V() {
     }
 }
-

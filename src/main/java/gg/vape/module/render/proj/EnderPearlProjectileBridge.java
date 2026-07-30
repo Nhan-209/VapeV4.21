@@ -11,6 +11,6 @@ extends EntityEnderPearl {
     }
 
     public Entity getOwnerEntity() {
-        return new Entity(MEnderPearlProjectileBridge.w(EnderPearlProjectileBridge.c.getMappings().CH, this.getObject()));
+        return new Entity(MEnderPearlProjectileBridge.w(EnderPearlProjectileBridge.vapeInstance.getMappings().CH, this.getObject()));
     }
 }

@@ -20,7 +20,7 @@ extends Mapping {
     }
 
     public boolean t(Object object) {
-        return this.s.e(object, new Object[0]);
+        return this.s.invokeBoolean(object, new Object[0]);
     }
 }
 

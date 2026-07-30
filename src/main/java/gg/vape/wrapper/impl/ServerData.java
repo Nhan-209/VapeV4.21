@@ -10,7 +10,7 @@ extends Wrapper {
     }
 
     public String f() {
-        return MServerData.T(ServerData.c.getMappingsMapperCompat().ht, this.I);
+        return MServerData.T(ServerData.vapeInstance.getMappingsMapperCompat().ht, this.I);
     }
 }
 

@@ -22,8 +22,8 @@ extends AbstractInventoryFilterRule {
     }
 
 
-    public static void setSlotStateArray(int[] nArray) {
-        slotStateArray = nArray;
+    public static void setSlotStateArray(int[] states) {
+        slotStateArray = states;
     }
 
     @Override
@@ -47,8 +47,8 @@ extends AbstractInventoryFilterRule {
         return jsonObject;
     }
 
-    public SlotInventoryFilterRule(int n) {
-        this.slot = n;
+    public SlotInventoryFilterRule(int slot) {
+        this.slot = slot;
     }
 
     public static int[] getSlotStateArray() {

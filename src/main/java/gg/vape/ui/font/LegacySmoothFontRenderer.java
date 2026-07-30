@@ -150,7 +150,7 @@ extends SmoothFontRenderer {
                 ++n6;
             }
             string = string2;
-            double d3 = Vape.INSTANCE.getClientSettings().s();
+            double d3 = Vape.INSTANCE.getClientSettings().getGuiScaleFactor();
             float f = 0.6f;
             if (d3 != 1.0) {
                 f *= (float)(1.0 / d3);
@@ -406,7 +406,7 @@ extends SmoothFontRenderer {
     public double Y(String string, boolean bl) {
         String string2;
         string = Vape.INSTANCE.getFontSelector().W().s(string);
-        double d = Vape.INSTANCE.getClientSettings().s();
+        double d = Vape.INSTANCE.getClientSettings().getGuiScaleFactor();
         String string3 = (String)this.f.get(string);
         if (string3 == null) {
             string2 = "";
@@ -478,7 +478,7 @@ extends SmoothFontRenderer {
     public double R(String string, boolean bl) {
         if (!bl) {
             float f = 0.6f;
-            double d = Vape.INSTANCE.getClientSettings().s();
+            double d = Vape.INSTANCE.getClientSettings().getGuiScaleFactor();
             if (d != 1.0) {
                 f *= (float)(1.0 / d);
             }

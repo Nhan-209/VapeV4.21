@@ -13,69 +13,69 @@ import gg.vape.wrapper.impl.WorldClient;
 
 public abstract class Event
 implements ICancelableEvent {
-    private WorldClient o;
-    private boolean u;
-    private RenderManager D;
-    private GuiScreen X;
-    private EntityRenderer R;
-    private FontRenderer k;
-    private GameSettings J;
-    private static String I;
-    private EntityPlayerSP z;
+    private WorldClient world;
+    private boolean canceled;
+    private RenderManager renderManager;
+    private GuiScreen currentScreen;
+    private EntityRenderer entityRenderer;
+    private FontRenderer fontRenderer;
+    private GameSettings gameSettings;
+    private static String obfuscationState;
+    private EntityPlayerSP player;
 
     static {
-        if (Event.Y() == null) {
-            Event.b("Wfjubc");
+        if (Event.getObfuscationState() == null) {
+            Event.setObfuscationState("Wfjubc");
         }
     }
 
     @Override
-    public void setCancelled(boolean bl) {
-        this.u = bl;
+    public void setCancelled(boolean canceled) {
+        this.canceled = canceled;
     }
 
-    public static String Y() {
-        return I;
+    public static String getObfuscationState() {
+        return obfuscationState;
     }
 
     @Override
     public boolean isCanceled() {
-        return this.u;
+        return this.canceled;
     }
 
     public final EntityPlayerSP getThePlayer() {
-        if (this.z == null) {
-            this.z = Minecraft.thePlayer();
+        if (this.player == null) {
+            this.player = Minecraft.thePlayer();
         }
-        return this.z;
+        return this.player;
     }
 
     public final RenderManager getRenderManager() {
-        if (this.D == null) {
-            this.D = Minecraft.D();
+        if (this.renderManager == null) {
+            this.renderManager = Minecraft.D();
         }
-        return this.D;
+        return this.renderManager;
     }
 
     public final GameSettings getGameSettings() {
-        if (this.J == null) {
-            this.J = Minecraft.gameSettings();
+        if (this.gameSettings == null) {
+            this.gameSettings = Minecraft.gameSettings();
         }
-        return this.J;
+        return this.gameSettings;
     }
 
     public final EntityRenderer getEntityRenderer() {
-        if (this.R == null) {
-            this.R = Minecraft.m$src$Lgg_vape_wrapper_impl_EntityRenderer_$13begmf();
+        if (this.entityRenderer == null) {
+            this.entityRenderer = Minecraft.m$src$Lgg_vape_wrapper_impl_EntityRenderer_$13begmf();
         }
-        return this.R;
+        return this.entityRenderer;
     }
 
     public final FontRenderer getFontRenderer() {
-        if (this.k == null) {
-            this.k = Minecraft.getFontRenderer();
+        if (this.fontRenderer == null) {
+            this.fontRenderer = Minecraft.getFontRenderer();
         }
-        return this.k;
+        return this.fontRenderer;
     }
 
     @Override
@@ -86,21 +86,21 @@ implements ICancelableEvent {
 
 
     public final WorldClient getWorld() {
-        if (this.o == null) {
-            this.o = Minecraft.theWorld();
+        if (this.world == null) {
+            this.world = Minecraft.theWorld();
         }
-        return this.o;
+        return this.world;
     }
 
     public final GuiScreen getCurrentScreen() {
-        if (this.X == null) {
-            this.X = Minecraft.currentScreen();
+        if (this.currentScreen == null) {
+            this.currentScreen = Minecraft.currentScreen();
         }
-        return this.X;
+        return this.currentScreen;
     }
 
-    public static void b(String string) {
-        I = string;
+    public static void setObfuscationState(String state) {
+        obfuscationState = state;
     }
 }
 

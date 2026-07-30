@@ -9,23 +9,23 @@ import gg.vape.wrapper.impl.RenderPlayer;
 
 public class EventRenderPlayerPre
 extends Event {
-    private double g;
-    private final float Q;
-    private double T;
-    private static final EventListeners l = new EventListeners();
-    private final EntityPlayer G;
-    private final MatrixStack i;
-    private final RenderPlayer p;
-    private double j;
+    private double y;
+    private final float partialTicks;
+    private double x;
+    private static final EventListeners EVENT_LISTENERS = new EventListeners();
+    private final EntityPlayer player;
+    private final MatrixStack matrixStack;
+    private final RenderPlayer renderer;
+    private double z;
 
-    public EventRenderPlayerPre(Object object, Object object2, double d, double d2, double d3, float f) {
-        this.p = new RenderPlayer(object);
-        this.G = new EntityPlayer(object2);
-        this.Q = f;
-        this.i = null;
-        this.T = d;
-        this.g = d2;
-        this.j = d3;
+    public EventRenderPlayerPre(Object rendererHandle, Object playerHandle, double x, double y, double z, float partialTicks) {
+        this.renderer = new RenderPlayer(rendererHandle);
+        this.player = new EntityPlayer(playerHandle);
+        this.partialTicks = partialTicks;
+        this.matrixStack = null;
+        this.x = x;
+        this.y = y;
+        this.z = z;
     }
 
     @Override
@@ -34,60 +34,59 @@ extends Event {
     }
 
     public double getZ() {
-        return this.j;
+        return this.z;
     }
 
-    public EventRenderPlayerPre(Object object, Object object2, float f, Object object3) {
-        this.p = new RenderPlayer(object);
-        this.G = new EntityPlayer(object2);
-        this.Q = f;
-        this.i = new MatrixStack(object3);
-        this.T = this.G.z();
-        this.g = this.G.N();
-        this.j = this.G.h();
+    public EventRenderPlayerPre(Object rendererHandle, Object playerHandle, float partialTicks, Object matrixStackHandle) {
+        this.renderer = new RenderPlayer(rendererHandle);
+        this.player = new EntityPlayer(playerHandle);
+        this.partialTicks = partialTicks;
+        this.matrixStack = new MatrixStack(matrixStackHandle);
+        this.x = this.player.z();
+        this.y = this.player.N();
+        this.z = this.player.h();
     }
 
     public static EventListeners getEventListeners() {
-        return l;
+        return EVENT_LISTENERS;
     }
 
     public double getX() {
-        return this.T;
+        return this.x;
     }
 
     public double getY() {
-        return this.g;
+        return this.y;
     }
 
     public EntityPlayer getEntityPlayer() {
-        return this.G;
+        return this.player;
     }
 
     public float getPartialTicks() {
-        return this.Q;
+        return this.partialTicks;
     }
 
-    public EventRenderPlayerPre(Object object, Object object2, Object object3) {
-        this.p = new RenderPlayer(object3);
-        this.G = new EntityPlayer(object);
-        this.i = new MatrixStack(object2);
-        this.Q = Minecraft.getTimer().renderPartialTicks();
-        this.T = this.G.z();
-        this.g = this.G.N();
-        this.j = this.G.h();
+    public EventRenderPlayerPre(Object playerHandle, Object matrixStackHandle, Object rendererHandle) {
+        this.renderer = new RenderPlayer(rendererHandle);
+        this.player = new EntityPlayer(playerHandle);
+        this.matrixStack = new MatrixStack(matrixStackHandle);
+        this.partialTicks = Minecraft.getTimer().renderPartialTicks();
+        this.x = this.player.z();
+        this.y = this.player.N();
+        this.z = this.player.h();
     }
 
     @Override
     public EventListeners getListeners() {
-        return l;
+        return EVENT_LISTENERS;
     }
 
     public MatrixStack getMatrixStack() {
-        return this.i;
+        return this.matrixStack;
     }
 
     public RenderPlayer getRenderer() {
-        return this.p;
+        return this.renderer;
     }
 }
-

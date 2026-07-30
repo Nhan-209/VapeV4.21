@@ -29,7 +29,7 @@ extends Mapping {
         boolean bl = true;
         String string3 = c;
         MItemRendererBridge mItemRendererBridge = this;
-        this.X = this.u(string3, bl, clazz);
+        this.X = this.registerStaticField(string3, bl, clazz);
     }
 
     static {

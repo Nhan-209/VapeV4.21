@@ -6,36 +6,35 @@ import org.jetbrains.annotations.Nullable;
 
 public class ClientServerAddressPacket
 implements ZeusSerializablePacket {
-    private String X;
+    private String serverAddress;
 
     @Nullable
-    public String A() {
-        return this.X;
+    public String getServerAddress() {
+        return this.serverAddress;
     }
 
     @Override
     public void o(ZeusPacketBuffer zeusPacketBuffer) {
         ZeusPacketBuffer zeusPacketBuffer2 = zeusPacketBuffer;
-        boolean bl = this.X != null;
-        zeusPacketBuffer2.Y(bl);
-        if (this.X != null) {
-            zeusPacketBuffer.y(this.X);
+        boolean hasServerAddress = this.serverAddress != null;
+        zeusPacketBuffer2.writeBoolean(hasServerAddress);
+        if (this.serverAddress != null) {
+            zeusPacketBuffer.writeString(this.serverAddress);
         }
     }
 
     @Override
     public void S(ZeusPacketBuffer zeusPacketBuffer) {
-        if (zeusPacketBuffer.boolean_a()) {
-            this.X = zeusPacketBuffer.v(255);
+        if (zeusPacketBuffer.readBoolean()) {
+            this.serverAddress = zeusPacketBuffer.readString(255);
         }
     }
 
     public ClientServerAddressPacket() {
     }
 
-    public ClientServerAddressPacket(String string) {
-        this.X = string;
+    public ClientServerAddressPacket(String serverAddress) {
+        this.serverAddress = serverAddress;
     }
 
 }
-

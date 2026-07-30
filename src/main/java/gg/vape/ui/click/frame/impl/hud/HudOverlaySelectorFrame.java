@@ -125,7 +125,7 @@ extends Frame {
         ArrayList<HudOverlayEntrySpec> arrayList = new ArrayList<HudOverlayEntrySpec>();
         try {
             ModManager modManager = Vape.INSTANCE.getModManager();
-            for (Mod mod : new ArrayList<Mod>(modManager.l())) {
+            for (Mod mod : new ArrayList<Mod>(modManager.getActiveModuleList())) {
                 Class clazz;
                 HudModule hudModule;
                 if (!(mod instanceof HudModule) || (hudModule = (HudModule)mod).getGroup() != HudModuleGroup.HUD || (clazz = hudModule.getConfigFrameClass()) == null) continue;

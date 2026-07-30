@@ -29,7 +29,7 @@ extends ExprEditor {
         if (this.u.get()) {
             return;
         }
-        if (methodCall.getMethodName().equals(this.t.v()) && methodCall.getSignature().equals(this.t.j())) {
+        if (methodCall.getMethodName().equals(this.t.getResolvedName()) && methodCall.getSignature().equals(this.t.getDescriptor())) {
             methodCall.replace("{ " + EventRender2DStaticCallback.class.getName() + "#call(); $_ = $proceed($$); }");
             this.u.set(true);
         }

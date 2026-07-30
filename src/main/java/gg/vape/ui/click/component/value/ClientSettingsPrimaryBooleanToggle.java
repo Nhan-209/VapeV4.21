@@ -21,6 +21,6 @@ extends BooleanToggleComponent {
 
     @Override
     public boolean V$src$Z$1xhop3l() {
-        return this.publicProfileSettings.R.getEffectiveValue();
+        return this.publicProfileSettings.notifications.getEffectiveValue();
     }
 }

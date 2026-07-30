@@ -73,7 +73,7 @@ public class ColorUtil {
     }
 
     public static Color getAccentTextColor() {
-        return ColorUtil.getContrastingGray(Vape.INSTANCE.getClientSettings().w.getMutableColor(), 45, 240);
+        return ColorUtil.getContrastingGray(Vape.INSTANCE.getClientSettings().guiColor.getMutableColor(), 45, 240);
     }
 
     public static Color createReadableHsbColor(float hue, float saturation, float brightness, int minimumContrast) {
@@ -109,7 +109,7 @@ public class ColorUtil {
     }
 
     public static Color selectContrastingGray(Color color, int darkGray, int lightGray, boolean ignoreRainbowMode) {
-        double brightnessThreshold = !ignoreRainbowMode && Vape.INSTANCE.getClientSettings().w.isRainbowEnabled() ? 0.0 : 130.0;
+        double brightnessThreshold = !ignoreRainbowMode && Vape.INSTANCE.getClientSettings().guiColor.isRainbowEnabled() ? 0.0 : 130.0;
         int perceivedBrightness = ColorUtil.calculatePerceivedBrightness(color);
         if ((double)perceivedBrightness > brightnessThreshold) {
             return new Color(darkGray, darkGray, darkGray);

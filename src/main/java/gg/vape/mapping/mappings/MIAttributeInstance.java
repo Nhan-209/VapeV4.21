@@ -24,11 +24,11 @@ extends Mapping {
     }
 
     private void V(Object object, Object object2) {
-        this.o.c(object, object2);
+        this.o.invokeVoid(object, object2);
     }
 
     private Object o(Object object, UUID uUID) {
-        return this.E.L(object, uUID);
+        return this.E.invokeObject(object, uUID);
     }
 
     public static void V(MIAttributeInstance mIAttributeInstance, Object object) {
@@ -36,7 +36,7 @@ extends Mapping {
     }
 
     private double U(Object object) {
-        return this.Z.F(object, new Object[0]);
+        return this.Z.invokeDouble(object, new Object[0]);
     }
 
 
@@ -69,15 +69,15 @@ extends Mapping {
     }
 
     private void j(Object object) {
-        this.Q.F(object);
+        this.Q.invokeVoidNoArgs(object);
     }
 
     private void V(Object object, double d) {
-        this.H.c(object, d);
+        this.H.invokeVoid(object, d);
     }
 
     private Set q(Object object) {
-        return (Set)this.g.L(object, new Object[0]);
+        return (Set)this.g.invokeObject(object, new Object[0]);
     }
 
     public static double I(MIAttributeInstance mIAttributeInstance, Object object) {
@@ -118,13 +118,13 @@ extends Mapping {
                 this.Z = this.Y(string5, bl4, clazz4, classArray4);
                 Class[] classArray5 = new Class[]{};
                 Class<Set> clazz5 = Set.class;
-                boolean bl5 = Wrapper.G;
+                boolean bl5 = Wrapper.isNativeAvailable;
                 String string6 = "func_225505_c_";
                 MIAttributeInstance mIAttributeInstance5 = this;
                 this.g = this.Y(string6, bl5, clazz5, classArray5);
                 Class[] classArray6 = new Class[]{};
                 Class<Void> clazz6 = Void.TYPE;
-                boolean bl6 = Wrapper.G;
+                boolean bl6 = Wrapper.isNativeAvailable;
                 String string7 = "func_142049_d";
                 MIAttributeInstance mIAttributeInstance6 = this;
                 this.Q = this.Y(string7, bl6, clazz6, classArray6);
@@ -137,7 +137,7 @@ extends Mapping {
                 this.Z = this.Y(string8, bl7, clazz7, classArray7);
                 Class[] classArray8 = new Class[]{};
                 Class<Collection> clazz8 = Collection.class;
-                boolean bl8 = Wrapper.G;
+                boolean bl8 = Wrapper.isNativeAvailable;
                 String string9 = "func_111122_c";
                 MIAttributeInstance mIAttributeInstance8 = this;
                 this.g = this.Y(string9, bl8, clazz8, classArray8);
@@ -165,7 +165,7 @@ extends Mapping {
     }
 
     private Collection y(Object object) {
-        return (Collection)this.g.L(object, new Object[0]);
+        return (Collection)this.g.invokeObject(object, new Object[0]);
     }
 }
 

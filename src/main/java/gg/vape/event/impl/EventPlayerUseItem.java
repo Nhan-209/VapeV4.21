@@ -6,24 +6,24 @@ import gg.vape.wrapper.impl.ItemStack;
 
 public class EventPlayerUseItem
 extends Event {
-    private final ItemStack b;
-    private static final EventListeners L = new EventListeners();
+    private final ItemStack itemStack;
+    private static final EventListeners EVENT_LISTENERS = new EventListeners();
 
     @Override
     public EventListeners getListeners() {
-        return L;
+        return EVENT_LISTENERS;
     }
 
     public ItemStack getItemStack() {
-        return this.b;
+        return this.itemStack;
     }
 
-    public EventPlayerUseItem(Object object) {
-        this.b = new ItemStack(object);
+    public EventPlayerUseItem(Object itemStackHandle) {
+        this.itemStack = new ItemStack(itemStackHandle);
     }
 
     public static EventListeners getEventListeners() {
-        return L;
+        return EVENT_LISTENERS;
     }
 
     @Override
@@ -31,4 +31,3 @@ extends Event {
         return super.fire();
     }
 }
-

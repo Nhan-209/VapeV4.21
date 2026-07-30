@@ -6,8 +6,7 @@ public class EventPreTick
 extends EventTickBase {
     @Override
     public boolean fire() {
-        S.runPending();
+        PRE_TICK_EXECUTOR.runPending();
         return super.fire();
     }
 }
-

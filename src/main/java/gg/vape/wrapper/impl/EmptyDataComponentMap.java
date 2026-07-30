@@ -1,7 +1,5 @@
 package gg.vape.wrapper.impl;
 
-import gg.vape.wrapper.impl.DataComponentMap;
-
 public class EmptyDataComponentMap
 extends DataComponentMap {
     public EmptyDataComponentMap(Object object) {
@@ -9,7 +7,7 @@ extends DataComponentMap {
     }
 
     public static EmptyDataComponentMap J() {
-        return new EmptyDataComponentMap(EmptyDataComponentMap.c.getMappingsMapperCompat().RS.L(DataComponentMap.u().getObject()));
+        return new EmptyDataComponentMap(EmptyDataComponentMap.vapeInstance.getMappingsMapperCompat().RS.L(DataComponentMap.u().getObject()));
     }
 }
 

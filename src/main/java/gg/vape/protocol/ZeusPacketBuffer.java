@@ -7,166 +7,155 @@ import java.nio.ByteBuffer;
 import java.util.UUID;
 
 public class ZeusPacketBuffer {
-    private static GuiComponent[] x;
-    private final ByteBuf u;
+    private static GuiComponent[] guiComponents;
+    private final ByteBuf byteBuf;
 
-    public void x(double d) {
-        this.u.writeDouble(d);
+    public void writeDouble(double value) {
+        this.byteBuf.writeDouble(value);
     }
 
-    public short x() {
-        return this.u.readShort();
+    public short readShort() {
+        return this.byteBuf.readShort();
     }
 
-    public void Y(boolean bl) {
-        this.u.writeBoolean(bl);
+    public void writeBoolean(boolean value) {
+        this.byteBuf.writeBoolean(value);
     }
 
-    public ByteBuf B(byte[] byArray, int n, int n2) {
-        return this.u.writeBytes(byArray, n, n2);
+    public ByteBuf writeBytes(byte[] source, int sourceIndex, int length) {
+        return this.byteBuf.writeBytes(source, sourceIndex, length);
     }
 
-    public void r(UUID uUID) {
-        ZeusPacketBufferUtil.z(this.u, uUID);
+    public void writeUuid(UUID uuid) {
+        ZeusPacketBufferUtil.writeUuid(this.byteBuf, uuid);
     }
 
-    public static int O(int n) {
+    public static int getVarIntSize(int value) {
         for (int i = 1; i < 5; ++i) {
-            if ((n & -1 << i * 7) != 0) continue;
+            if ((value & -1 << i * 7) != 0) continue;
             return i;
         }
         return 5;
     }
 
-    public void l(float f) {
-        this.u.writeFloat(f);
+    public void writeFloat(float value) {
+        this.byteBuf.writeFloat(value);
     }
 
-    public boolean boolean_a() {
-        return this.u.readBoolean();
+    public boolean readBoolean() {
+        return this.byteBuf.readBoolean();
     }
 
-    public void i(int n) {
-        ZeusPacketBufferUtil.L(this.u, n);
+    public void writeVarInt(int value) {
+        ZeusPacketBufferUtil.writeVarInt(this.byteBuf, value);
     }
 
-    public void t(short s) {
-        this.u.writeShort((int)s);
+    public void writeShort(short value) {
+        this.byteBuf.writeShort((int)value);
     }
 
-    public ByteBuf P(ByteBuf byteBuf, int n) {
-        return this.u.writeBytes(byteBuf, n);
+    public ByteBuf writeBytes(ByteBuf source, int length) {
+        return this.byteBuf.writeBytes(source, length);
     }
 
-    public ByteBuf j(ByteBuffer byteBuffer) {
-        return this.u.writeBytes(byteBuffer);
+    public ByteBuf writeBytes(ByteBuffer source) {
+        return this.byteBuf.writeBytes(source);
     }
 
-    public static void V(GuiComponent[] guiComponentArray) {
-        x = guiComponentArray;
+    public static void setGuiComponents(GuiComponent[] components) {
+        guiComponents = components;
     }
 
-    public String v(int n) {
-        return ZeusPacketBufferUtil.Y(this.u, n);
+    public String readString(int maxLength) {
+        return ZeusPacketBufferUtil.readString(this.byteBuf, maxLength);
     }
 
-    public void v(long l) {
-        this.u.writeLong(l);
+    public void writeLong(long value) {
+        this.byteBuf.writeLong(value);
     }
 
-    public boolean h(int n) {
-        return this.u.release(n);
+    public boolean release(int decrement) {
+        return this.byteBuf.release(decrement);
     }
 
-    public int Y() {
-        return ZeusPacketBufferUtil.P(this.u);
+    public int readVarInt() {
+        return ZeusPacketBufferUtil.readVarInt(this.byteBuf);
     }
 
-    public UUID N() {
-        return ZeusPacketBufferUtil.l(this.u);
+    public UUID readUuid() {
+        return ZeusPacketBufferUtil.readUuid(this.byteBuf);
     }
 
-    public ByteBuf M(ByteBuf byteBuf) {
-        return this.u.writeBytes(byteBuf);
+    public ByteBuf writeBytes(ByteBuf source) {
+        return this.byteBuf.writeBytes(source);
     }
 
-    public int k() {
-        return this.u.readInt();
+    public int readInt() {
+        return this.byteBuf.readInt();
     }
 
-    public ByteBuf p(byte[] byArray) {
-        return this.u.writeBytes(byArray);
+    public ByteBuf writeBytes(byte[] source) {
+        return this.byteBuf.writeBytes(source);
     }
 
-    public ByteBuf io_netty_buffer_ByteBuf_A() {
-        return this.u;
+    public ByteBuf getByteBuf() {
+        return this.byteBuf;
     }
 
-    public ByteBuf S(int n) {
-        return this.u.ensureWritable(n);
+    public ByteBuf ensureWritable(int minWritableBytes) {
+        return this.byteBuf.ensureWritable(minWritableBytes);
     }
 
-    public <E extends Enum<E>> E Y(Class<E> clazz) {
-        return ZeusPacketBufferUtil.z(this.u, clazz);
+    public <E extends Enum<E>> E readEnum(Class<E> enumType) {
+        return ZeusPacketBufferUtil.readEnum(this.byteBuf, enumType);
     }
 
-    public void y(String string) {
-        ZeusPacketBufferUtil.T(this.u, string);
+    public void writeString(String value) {
+        ZeusPacketBufferUtil.writeString(this.byteBuf, value);
     }
 
-    public void K(int n) {
-        this.u.writeInt(n);
+    public void writeInt(int value) {
+        this.byteBuf.writeInt(value);
     }
 
-    public long long_a() {
-        return this.u.readLong();
+    public long readLong() {
+        return this.byteBuf.readLong();
     }
 
-    public float e() {
-        return this.u.readFloat();
+    public float readFloat() {
+        return this.byteBuf.readFloat();
     }
 
-    public double S() {
-        return this.u.readDouble();
+    public double readDouble() {
+        return this.byteBuf.readDouble();
     }
 
 
-    public void U(Enum<?> enum_) {
-        ZeusPacketBufferUtil.R(this.u, enum_);
+    public void writeEnum(Enum<?> value) {
+        ZeusPacketBufferUtil.writeEnum(this.byteBuf, value);
     }
 
-    public ByteBuf L(ByteBuf byteBuf, int n, int n2) {
-        return this.u.writeBytes(byteBuf, n, n2);
+    public ByteBuf writeBytes(ByteBuf source, int sourceIndex, int length) {
+        return this.byteBuf.writeBytes(source, sourceIndex, length);
     }
 
-    public static GuiComponent[] q() {
-        return x;
+    public static GuiComponent[] getGuiComponents() {
+        return guiComponents;
     }
 
     public ZeusPacketBuffer(ByteBuf byteBuf) {
-        this.u = byteBuf;
+        this.byteBuf = byteBuf;
     }
 
-    public boolean boolean_A() {
-        return this.u.release();
+    public boolean releaseBuffer() {
+        return this.byteBuf.release();
     }
 
     static {
-        if (ZeusPacketBuffer.q() != null) {
-            ZeusPacketBuffer.V(new GuiComponent[3]);
+        if (ZeusPacketBuffer.getGuiComponents() != null) {
+            ZeusPacketBuffer.setGuiComponents(new GuiComponent[3]);
         }
     }
 
-    public /* synthetic */ boolean A() {
-        return this.boolean_A();
-    }
-
-    public /* synthetic */ long a() {
-        return this.long_a();
-    }
-
-    public /* synthetic */ boolean a$src$Z$1c50x8d() {
-        return this.boolean_a();
-    }
 }
 

@@ -29,7 +29,7 @@ extends Mod {
     private void handleRePress() {
         if (this.rePressTimer.hasTimeElapsed(((Double)this.rePressDelay.getValue()).longValue())) {
             KeyBinding forwardKey = Minecraft.gameSettings().Y();
-            if (ClientSettings.B(forwardKey)) {
+            if (ClientSettings.isPhysicalKeyDown(forwardKey)) {
                 forwardKey.setPressed(true);
             }
             this.rePressPending = false;

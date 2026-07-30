@@ -135,7 +135,7 @@ implements CollapsibleFrame {
     }
 
     protected boolean isPublicProfilePreview() {
-        return this.isManagedByClickGui() && Vape.INSTANCE.getPublicProfileSettings().P.isSelected();
+        return this.isManagedByClickGui() && Vape.INSTANCE.getPublicProfileSettings().centralGuiStyle.isSelected();
     }
 
     @Override

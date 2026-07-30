@@ -5,14 +5,14 @@ import gg.vape.ui.click.component.GuiClickListener;
 
 public class OnlineFriendsFramePopupCloseClickHandler
 implements GuiClickListener {
-    final OnlineFriendsFrame E;
+    private final OnlineFriendsFrame friendsFrame;
 
     @Override
     public void onPrimaryClick() {
-        OnlineFriendsFrame.c$src$V$11veyie(this.E);
+        OnlineFriendsFrame.toggleFriendRequestsPopup(this.friendsFrame);
     }
 
     public OnlineFriendsFramePopupCloseClickHandler(OnlineFriendsFrame onlineFriendsFrame) {
-        this.E = onlineFriendsFrame;
+        this.friendsFrame = onlineFriendsFrame;
     }
 }

@@ -7,27 +7,26 @@ import gg.vape.protocol.packet.ZeusTrackedPacket;
 
 public class FriendDeletePacket
 extends ZeusTrackedPacket<FriendDeleteResponsePacket> {
-    private UserModel I;
+    private UserModel user;
 
     public FriendDeletePacket() {
     }
 
     @Override
     public void x(ZeusPacketBuffer zeusPacketBuffer) {
-        this.I = new UserModel(zeusPacketBuffer);
+        this.user = new UserModel(zeusPacketBuffer);
     }
 
     @Override
     public void T(ZeusPacketBuffer zeusPacketBuffer) {
-        this.I.a(zeusPacketBuffer);
+        this.user.writeTo(zeusPacketBuffer);
     }
 
-    public FriendDeletePacket(UserModel userModel) {
-        this.I = userModel;
+    public FriendDeletePacket(UserModel user) {
+        this.user = user;
     }
 
-    public UserModel c() {
-        return this.I;
+    public UserModel getUser() {
+        return this.user;
     }
 }
-

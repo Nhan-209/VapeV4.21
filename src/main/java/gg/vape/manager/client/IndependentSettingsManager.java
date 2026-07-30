@@ -10,63 +10,63 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class IndependentSettingsManager {
-    private final List<Value<?, ?>> D = new ArrayList();
+    private final List<Value<?, ?>> values = new ArrayList();
 
 
     public JsonArray toJson() {
-        JsonArray jsonArray = new JsonArray();
-        for (Value<?, ?> jsonObject2 : this.D) {
-            if (jsonObject2.isDefault()) continue;
-            jsonArray.add((JsonElement)jsonObject2.toJson(false));
+        JsonArray result = new JsonArray();
+        for (Value<?, ?> value : this.values) {
+            if (value.isDefault()) continue;
+            result.add((JsonElement)value.toJson(false));
         }
-        JsonObject jsonObject3 = new JsonObject();
-        jsonObject3.add("enemies", (JsonElement)Vape.INSTANCE.getEnemyManager().H());
-        jsonArray.add((JsonElement)jsonObject3);
-        JsonObject jsonObject = new JsonObject();
-        jsonObject.add("frames", (JsonElement)ClientSettings.INSTANCE.serializeFrameStates());
-        jsonArray.add((JsonElement)jsonObject);
-        JsonObject jsonObject2 = new JsonObject();
-        jsonObject2.add("inventoryManager", (JsonElement)Vape.INSTANCE.getInventoryFilterPresetRegistry().toJson());
-        jsonArray.add((JsonElement)jsonObject2);
-        return jsonArray;
+        JsonObject enemies = new JsonObject();
+        enemies.add("enemies", (JsonElement)Vape.INSTANCE.getEnemyManager().toJson());
+        result.add((JsonElement)enemies);
+        JsonObject frames = new JsonObject();
+        frames.add("frames", (JsonElement)ClientSettings.INSTANCE.serializeFrameStates());
+        result.add((JsonElement)frames);
+        JsonObject inventoryManager = new JsonObject();
+        inventoryManager.add("inventoryManager", (JsonElement)Vape.INSTANCE.getInventoryFilterPresetRegistry().toJson());
+        result.add((JsonElement)inventoryManager);
+        return result;
     }
 
     public List<Value<?, ?>> values() {
-        return this.D;
+        return this.values;
     }
 
-    public void loadIndependentSettings(JsonArray jsonArray) {
-        if (jsonArray.size() == 0) {
+    public void loadIndependentSettings(JsonArray serializedSettings) {
+        if (serializedSettings.size() == 0) {
             return;
         }
-        for (int i = 0; i < jsonArray.size(); ++i) {
-            JsonArray jsonArray2;
-            JsonElement jsonElement = jsonArray.get(i);
-            if (!jsonElement.isJsonObject() || jsonElement.isJsonNull()) continue;
-            JsonObject jsonObject = jsonElement.getAsJsonObject();
-            for (Value<?, ?> value : this.D) {
-                if (!value.matchesJsonId(jsonObject)) continue;
-                value.loadJson(jsonObject);
+        for (int index = 0; index < serializedSettings.size(); ++index) {
+            JsonArray nestedArray;
+            JsonElement element = serializedSettings.get(index);
+            if (!element.isJsonObject() || element.isJsonNull()) continue;
+            JsonObject setting = element.getAsJsonObject();
+            for (Value<?, ?> value : this.values) {
+                if (!value.matchesJsonId(setting)) continue;
+                value.loadJson(setting);
             }
-            if (jsonObject.get("enemies") != null && !jsonObject.get("enemies").isJsonNull()) {
-                jsonArray2 = jsonObject.get("enemies").getAsJsonArray();
-                Vape.INSTANCE.getEnemyManager().d(jsonArray2);
+            if (setting.get("enemies") != null && !setting.get("enemies").isJsonNull()) {
+                nestedArray = setting.get("enemies").getAsJsonArray();
+                Vape.INSTANCE.getEnemyManager().loadJson(nestedArray);
             }
-            if (jsonObject.get("frames") != null && !jsonObject.get("frames").isJsonNull()) {
-                jsonArray2 = jsonObject.get("frames").getAsJsonArray();
-                if (!Vape.INSTANCE.getPublicProfileSettings().Z.getEffectiveValue().booleanValue()) {
-                    JsonArray jsonArray3 = new JsonArray();
-                    jsonArray3.add((JsonElement)jsonArray2);
-                    ClientSettings.INSTANCE.loadFrameStates(jsonArray3);
+            if (setting.get("frames") != null && !setting.get("frames").isJsonNull()) {
+                nestedArray = setting.get("frames").getAsJsonArray();
+                if (!Vape.INSTANCE.getPublicProfileSettings().framePositionsPerProfile.getEffectiveValue().booleanValue()) {
+                    JsonArray wrappedFrameStates = new JsonArray();
+                    wrappedFrameStates.add((JsonElement)nestedArray);
+                    ClientSettings.INSTANCE.loadFrameStates(wrappedFrameStates);
                 }
             }
-            if (jsonObject.get("inventoryManager") == null || jsonObject.get("inventoryManager").isJsonNull()) continue;
-            JsonObject inventoryManager = jsonObject.get("inventoryManager").getAsJsonObject();
+            if (setting.get("inventoryManager") == null || setting.get("inventoryManager").isJsonNull()) continue;
+            JsonObject inventoryManager = setting.get("inventoryManager").getAsJsonObject();
             Vape.INSTANCE.getInventoryFilterPresetRegistry().loadJson(inventoryManager);
         }
     }
 
     public void registerValue(Value<?, ?> value) {
-        this.D.add(value);
+        this.values.add(value);
     }
 }

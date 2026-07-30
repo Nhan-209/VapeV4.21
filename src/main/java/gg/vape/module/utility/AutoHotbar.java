@@ -95,7 +95,7 @@ implements InventoryActionModule {
         List<PotionEffect> list = itemSplashPotion.getPotionEffects(itemStack);
         for (PotionEffect potionEffect : list) {
             PotionEntry potionEntry = PotionRegistry.R(potionEffect);
-            if (!potionEntry.L()) continue;
+            if (!potionEntry.isResolved()) continue;
             return true;
         }
         return false;
@@ -193,10 +193,10 @@ implements InventoryActionModule {
         List<Slot> inventorySlots = localPlayer.F$src$Lgg_vape_wrapper_impl_Container_$152y6lm().getInventorySlots();
         inventorySlots.sort(Comparator.comparingInt(this::hotbarRegionOf));
         this.bestArmorPieces = this.collectBestArmor();
-        this.bestItemA = this.findBestByComparator(inventorySlots, MappedClasses.V5, Comparator.comparingDouble(ClientSettings::U));
-        this.bestItemB = this.findBestByComparator(inventorySlots, MappedClasses.DU, Comparator.comparingDouble(ClientSettings::X));
-        this.bestItemC = this.findBestByComparator(inventorySlots, MappedClasses.Vl, Comparator.comparingDouble(ClientSettings::c));
-        this.bestItemD = this.findBestByComparator(inventorySlots, MappedClasses.YP, Comparator.comparingDouble(ClientSettings::U));
+        this.bestItemA = this.findBestByComparator(inventorySlots, MappedClasses.V5, Comparator.comparingDouble(ClientSettings::getWeaponDamageScore));
+        this.bestItemB = this.findBestByComparator(inventorySlots, MappedClasses.DU, Comparator.comparingDouble(ClientSettings::getToolDamageScore));
+        this.bestItemC = this.findBestByComparator(inventorySlots, MappedClasses.Vl, Comparator.comparingDouble(ClientSettings::getHiddenItemScore));
+        this.bestItemD = this.findBestByComparator(inventorySlots, MappedClasses.YP, Comparator.comparingDouble(ClientSettings::getWeaponDamageScore));
         slotLoop: for (Slot slot : localPlayer.F$src$Lgg_vape_wrapper_impl_Container_$152y6lm().getInventorySlots()) {
             try {
                 if (!slot.v() || slot.I().isNull()) continue;
@@ -272,7 +272,7 @@ implements InventoryActionModule {
 
     @EventHandler
     public void onTick(EventPrePlayerTick event) {
-        if (Vape.INSTANCE.getModManager().N(AutoHotbar.class) || Vape.INSTANCE.getClientSettings().J$src$Z$c57s1l()) {
+        if (Vape.INSTANCE.getModManager().isOtherInventoryActionActive(AutoHotbar.class) || Vape.INSTANCE.getClientSettings().isLobbyCheckActive()) {
             this.active = false;
             return;
         }

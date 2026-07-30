@@ -4,39 +4,34 @@ import gg.vape.ui.click.component.PanelComponent;
 
 public abstract class PartyMemberStatusComponent
 extends PanelComponent {
-    private boolean _q = false;
-    private static String _C;
+    private boolean localUser;
+    private static String obfuscationName;
 
-    public boolean boolean_l() {
-        return this._q;
+    public boolean isLocalUser() {
+        return this.localUser;
     }
 
     public PartyMemberStatusComponent() {
         super(0.0, 0.0);
     }
 
-    public void J(boolean bl) {
-        this._q = bl;
+    public void setLocalUser(boolean localUser) {
+        this.localUser = localUser;
     }
 
-    public static void i(String string) {
-        _C = string;
+    public static void setObfuscationName(String name) {
+        obfuscationName = name;
     }
 
-    public static String java_lang_String_P() {
-        return _C;
+    public static String getObfuscationName() {
+        return obfuscationName;
     }
 
-    public abstract boolean boolean_I();
+    public abstract boolean showsAvatar();
 
     static {
-        if (PartyMemberStatusComponent.java_lang_String_P() != null) {
-            PartyMemberStatusComponent.i("fFjvh");
+        if (PartyMemberStatusComponent.getObfuscationName() != null) {
+            PartyMemberStatusComponent.setObfuscationName("fFjvh");
         }
     }
-
-    public /* synthetic */ boolean I$src$Z$19lcktz() {
-        return this.boolean_I();
-    }
 }
-

@@ -13,11 +13,11 @@ extends Mapping {
 
 
     private Object l(double d, double d2, double d3, float f, float f2, boolean bl) {
-        return this.E.O(d, d2, d3, Float.valueOf(f), Float.valueOf(f2), bl);
+        return this.E.newInstance(d, d2, d3, Float.valueOf(f), Float.valueOf(f2), bl);
     }
 
     private Object U(double d, double d2, double d3, float f, float f2, boolean bl, boolean bl2) {
-        return this.E.O(d, d2, d3, Float.valueOf(f), Float.valueOf(f2), bl, bl2);
+        return this.E.newInstance(d, d2, d3, Float.valueOf(f), Float.valueOf(f2), bl, bl2);
     }
 
     public static Object b(MCPacketPlayer_PositionRotation mCPacketPlayer_PositionRotation, double d, double d2, double d3, float f, float f2, boolean bl) {
@@ -78,7 +78,7 @@ extends Mapping {
     }
 
     public Object L(double d, double d2, double d3, double d4, float f, float f2, boolean bl) {
-        return this.E.O(d, d2, d3, d4, Float.valueOf(f), Float.valueOf(f2), bl);
+        return this.E.newInstance(d, d2, d3, d4, Float.valueOf(f), Float.valueOf(f2), bl);
     }
 
     public static Object P(MCPacketPlayer_PositionRotation mCPacketPlayer_PositionRotation, double d, double d2, double d3, float f, float f2, boolean bl, boolean bl2) {

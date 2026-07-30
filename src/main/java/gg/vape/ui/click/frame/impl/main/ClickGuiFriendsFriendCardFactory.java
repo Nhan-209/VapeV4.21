@@ -17,20 +17,20 @@ public final class ClickGuiFriendsFriendCardFactory {
     }
 
     public static ClickGuiOverlaySpec createOverlay(OnlineFriend onlineFriend) {
-        String string = onlineFriend != null && onlineFriend.C() != null ? onlineFriend.C() : "Vape Online User";
+        String string = onlineFriend != null && onlineFriend.getDisplayName() != null ? onlineFriend.getDisplayName() : "Vape Online User";
         return ClickGuiOverlaySpec.builder().title(string).sidecarIcon("user").initializeContent(panel -> ClickGuiFriendsFriendCardFactory.populate(panel, onlineFriend)).transitionMode(ClickGuiOverlayTransitionMode.REPLACE).build();
     }
 
     private static void populate(PanelComponent panelComponent, OnlineFriend onlineFriend) {
-        long l = Vape.INSTANCE.getAccountInfo() != null ? Vape.INSTANCE.getAccountInfo().i() : -1L;
+        long l = Vape.INSTANCE.getAccountInfo() != null ? Vape.INSTANCE.getAccountInfo().getUserId() : -1L;
         String string = "Username";
         String string2 = "Offline";
         if (onlineFriend != null) {
-            if (onlineFriend.S() != null) {
-                l = onlineFriend.S().g();
+            if (onlineFriend.getUser() != null) {
+                l = onlineFriend.getUser().getId();
             }
-            string = onlineFriend.C() != null ? onlineFriend.C() : string;
-            string2 = onlineFriend.F() != null ? onlineFriend.F().f() : string2;
+            string = onlineFriend.getDisplayName() != null ? onlineFriend.getDisplayName() : string;
+            string2 = onlineFriend.getStatus() != null ? onlineFriend.getStatus().getDisplayName() : string2;
         }
         PublicProfileUserAvatarComponent publicProfileUserAvatarComponent = new PublicProfileUserAvatarComponent(l, 28.0, 28.0);
         publicProfileUserAvatarComponent.setShowBorder(true);

@@ -133,7 +133,7 @@ public abstract class PlayerMovementTask {
                     && Math.abs(this.remainingZ) < 2.0) {
                 MovementInputHelper.setKeyPressed(sneakKey, true);
             } else {
-                boolean physicallyPressed = ClientSettings.B(sneakKey);
+                boolean physicallyPressed = ClientSettings.isPhysicalKeyDown(sneakKey);
                 if (physicallyPressed) {
                     MovementInputHelper.setKeyPressed(sneakKey, true);
                 } else {

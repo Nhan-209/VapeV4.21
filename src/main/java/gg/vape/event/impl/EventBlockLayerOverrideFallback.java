@@ -6,11 +6,11 @@ import gg.vape.event.EventListeners;
 
 public class EventBlockLayerOverrideFallback
 extends Event {
-    private static final EventListeners F = new EventListeners();
+    private static final EventListeners EVENT_LISTENERS = new EventListeners();
 
     @Override
     public EventListeners getListeners() {
-        return F;
+        return EVENT_LISTENERS;
     }
 
 
@@ -23,7 +23,7 @@ extends Event {
     }
 
     public static EventListeners getEventListeners() {
-        return F;
+        return EVENT_LISTENERS;
     }
 }
 

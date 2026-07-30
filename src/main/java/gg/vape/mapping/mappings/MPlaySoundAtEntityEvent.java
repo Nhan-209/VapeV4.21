@@ -31,7 +31,7 @@ extends Mapping {
         Class<Void> clazz = Void.TYPE;
         String string = "endSection";
         MPlaySoundAtEntityEvent mPlaySoundAtEntityEvent = this;
-        this.S = ((MappingMethodBuilder)((MappingMethodBuilder)this.u(string, clazz, classArray).A(ForgeVersion.MC_1_16_5.n(), "pop")).Q(ForgeVersion.MC_1_21_4.n(), MappedClasses.Y0)).s();
+        this.S = ((MappingMethodBuilder)((MappingMethodBuilder)this.methodBuilder(string, clazz, classArray).setNameForVersion(ForgeVersion.MC_1_16_5.n(), "pop")).setOwnerClassForVersion(ForgeVersion.MC_1_21_4.n(), MappedClasses.Y0)).buildMethod();
         GuiComponent[] guiComponentArray2 = guiComponentArray;
         if (ForgeVersion.MC_1_16_5.d()) {
             Class<String> clazz2 = String.class;
@@ -43,7 +43,7 @@ extends Mapping {
             Class<Void> clazz3 = Void.TYPE;
             String string3 = "func_219895_b";
             MPlaySoundAtEntityEvent mPlaySoundAtEntityEvent3 = this;
-            this.A = ((MappingMethodBuilder)((MappingMethodBuilder)((MappingMethodBuilder)((MappingMethodBuilder)this.u(string3, clazz3, classArray2).y(MappedClasses.FV)).i(ForgeVersion.MC_1_21_4.b(), Wrapper.G)).A(ForgeVersion.MC_1_16_5.n(), "popPush")).Q(ForgeVersion.MC_1_21_4.n(), MappedClasses.Y0)).s();
+            this.A = ((MappingMethodBuilder)((MappingMethodBuilder)((MappingMethodBuilder)((MappingMethodBuilder)this.methodBuilder(string3, clazz3, classArray2).setOwnerClass(MappedClasses.FV)).setMappedMemberForVersion(ForgeVersion.MC_1_21_4.b(), Wrapper.isNativeAvailable)).setNameForVersion(ForgeVersion.MC_1_16_5.n(), "popPush")).setOwnerClassForVersion(ForgeVersion.MC_1_21_4.n(), MappedClasses.Y0)).buildMethod();
         } else {
             Class[] classArray3 = new Class[]{String.class};
             Class<Void> clazz4 = Void.TYPE;

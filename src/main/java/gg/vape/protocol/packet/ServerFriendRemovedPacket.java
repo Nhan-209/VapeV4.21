@@ -26,7 +26,7 @@ implements ZeusSerializablePacket {
 
     @Override
     public void o(ZeusPacketBuffer zeusPacketBuffer) {
-        this.M.a(zeusPacketBuffer);
+        this.M.writeTo(zeusPacketBuffer);
     }
 }
 

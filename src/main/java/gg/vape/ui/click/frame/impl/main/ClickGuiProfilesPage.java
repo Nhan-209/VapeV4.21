@@ -72,17 +72,17 @@ implements EventListener {
             return;
         }
         this.mainFrame.closeActiveOverlay();
-        Profile profile = Vape.INSTANCE.getProfilesManager().M();
-        profile.a();
+        Profile profile = Vape.INSTANCE.getProfilesManager().getActiveProfile();
+        profile.captureCurrentState();
         this.previousActiveProfile = profile;
-        this.draftProfile = new Profile(profile.n$src$Ljava_lang_String_$xqhelw(), "4.21");
-        this.draftProfile.e(profile.C(true));
-        this.draftProfile.d(UUID.randomUUID());
-        this.draftProfile.K(null);
-        this.draftProfile.s(false);
-        this.draftProfile.B(true);
-        ApiServices.d().c().u().whenCompleteAsync(this::handleDraftProfileIdResponse, (Executor)ClientSettings.UI_EXECUTOR).exceptionally(ClickGuiProfilesPage::ignoreCreateProfileFailure);
-        Vape.INSTANCE.getProfilesManager().U(this.draftProfile);
+        this.draftProfile = new Profile(profile.getName(), "4.21");
+        this.draftProfile.loadJson(profile.toJson(true));
+        this.draftProfile.setLocalId(UUID.randomUUID());
+        this.draftProfile.setOnlineId(null);
+        this.draftProfile.setPublicProfileFlag(false);
+        this.draftProfile.setDraft(true);
+        ApiServices.getInstance().getUserDataApi().reserveProfileId().whenCompleteAsync(this::handleDraftProfileIdResponse, (Executor)ClientSettings.UI_EXECUTOR).exceptionally(ClickGuiProfilesPage::ignoreCreateProfileFailure);
+        Vape.INSTANCE.getProfilesManager().switchProfile(this.draftProfile);
         this.creatingProfile = true;
         this.refreshProfileList();
         this.renderMainContent();
@@ -92,9 +92,9 @@ implements EventListener {
         if (!this.creatingProfile) {
             return;
         }
-        Profile profile = Vape.INSTANCE.getProfilesManager().M();
-        if (profile != null && profile.Z()) {
-            Vape.INSTANCE.getProfilesManager().L(this.previousActiveProfile != null ? this.previousActiveProfile : this.displayedActiveProfile);
+        Profile profile = Vape.INSTANCE.getProfilesManager().getActiveProfile();
+        if (profile != null && profile.isDraft()) {
+            Vape.INSTANCE.getProfilesManager().setActiveProfile(this.previousActiveProfile != null ? this.previousActiveProfile : this.displayedActiveProfile);
         }
         this.draftProfile = null;
         this.previousActiveProfile = null;
@@ -212,8 +212,8 @@ implements EventListener {
         this.profileList.E(true);
         this.profileList.h(new SpacerComponent(0.0, 1.0), new Object[0]);
         this.getSidebarContent().h(this.profileList, new Object[0]);
-        object = Vape.INSTANCE.getProfilesManager().M();
-        for (Profile profile : Vape.INSTANCE.getProfilesManager().b()) {
+        object = Vape.INSTANCE.getProfilesManager().getActiveProfile();
+        for (Profile profile : Vape.INSTANCE.getProfilesManager().getProfiles()) {
             ClickGuiProfileCardComponent clickGuiProfileCardComponent = new ClickGuiProfileCardComponent(profile);
             clickGuiProfileCardComponent.o(this.profileList.A());
             clickGuiProfileCardComponent.Y(20.0);
@@ -236,15 +236,15 @@ implements EventListener {
             return;
         }
         String string = this.createNameInput.getText();
-        Profile profile = Vape.INSTANCE.getProfilesManager().G(string);
+        Profile profile = Vape.INSTANCE.getProfilesManager().getProfileByName(string);
         if (profile != null) {
             return;
         }
-        this.draftProfile.h(string);
-        this.draftProfile.c(true);
-        this.draftProfile.B(false);
-        Vape.INSTANCE.getProfilesManager().m(this.draftProfile, true);
-        Vape.INSTANCE.getProfilesManager().L(this.draftProfile);
+        this.draftProfile.setName(string);
+        this.draftProfile.setDirty(true);
+        this.draftProfile.setDraft(false);
+        Vape.INSTANCE.getProfilesManager().addProfile(this.draftProfile, true);
+        Vape.INSTANCE.getProfilesManager().setActiveProfile(this.draftProfile);
         this.draftProfile = null;
         this.previousActiveProfile = null;
         this.createNameInput = null;
@@ -258,7 +258,7 @@ implements EventListener {
     @EventHandler
     public void onProfileListMutation(ProfileListMutationEvent profileListMutationEvent) {
         this.refreshProfileList();
-        Profile profile = Vape.INSTANCE.getProfilesManager().M();
+        Profile profile = Vape.INSTANCE.getProfilesManager().getActiveProfile();
         if (!this.creatingProfile && this.displayedActiveProfile != profile) {
             this.renderMainContent();
         }
@@ -338,10 +338,10 @@ implements EventListener {
         if (throwable != null) {
             return;
         }
-        if (!apiResponse.t()) {
+        if (!apiResponse.isSuccessful()) {
             return;
         }
-        this.draftProfile.K((UUID)apiResponse.T());
+        this.draftProfile.setOnlineId((UUID)apiResponse.getData());
     }
 
     private void initializeProfileSidecar(Profile profile, PanelComponent panelComponent) {
@@ -361,7 +361,7 @@ implements EventListener {
         this.selectProfileCard(profile);
         ProfilesPageOverlayController profilesPageOverlayController = new ProfilesPageOverlayController(null, profile);
         profilesPageOverlayController.setDividerVisible(false);
-        this.mainFrame.showOverlay(ClickGuiOverlaySpec.builder().title(profile.n$src$Ljava_lang_String_$xqhelw()).sidecarIcon("newsettings").placement(ClickGuiOverlayPlacement.DOCKED).width(192.0).backdropEnabled(false).sidecar(profilesPageOverlayController).initializeContent(panel -> this.initializeProfileSidecar(profile, panel)).build());
+        this.mainFrame.showOverlay(ClickGuiOverlaySpec.builder().title(profile.getName()).sidecarIcon("newsettings").placement(ClickGuiOverlayPlacement.DOCKED).width(192.0).backdropEnabled(false).sidecar(profilesPageOverlayController).initializeContent(panel -> this.initializeProfileSidecar(profile, panel)).build());
     }
 
     private void updateDraftCardName() {
@@ -391,7 +391,7 @@ implements EventListener {
             this.updateDraftCardName();
         }
         if (this.profileList != null) {
-            Profile profile = Vape.INSTANCE.getProfilesManager().M();
+            Profile profile = Vape.INSTANCE.getProfilesManager().getActiveProfile();
             if (this.displayedActiveProfile != profile && !this.creatingProfile) {
                 this.displayedActiveProfile = profile;
                 if (this.profileHeader != null) {
@@ -423,7 +423,7 @@ implements EventListener {
 
     private void renderMainContent() {
         this.getMainContent().removeMarkedChildren();
-        Profile profile = Vape.INSTANCE.getProfilesManager().M();
+        Profile profile = Vape.INSTANCE.getProfilesManager().getActiveProfile();
         if (!this.creatingProfile) {
             this.displayedActiveProfile = profile;
         }
@@ -469,7 +469,7 @@ implements EventListener {
         }
         this.profileList.removeMarkedChildren();
         this.profileList.h(new SpacerComponent(0.0, 1.0), new Object[0]);
-        Profile profile = Vape.INSTANCE.getProfilesManager().M();
+        Profile profile = Vape.INSTANCE.getProfilesManager().getActiveProfile();
         if (this.creatingProfile && this.draftProfile != null) {
             this.draftProfileCard = new ClickGuiProfileCardComponent(this.draftProfile);
             this.draftProfileCard.o(this.profileList.A());
@@ -482,7 +482,7 @@ implements EventListener {
         } else {
             this.draftProfileCard = null;
         }
-        for (Profile profile2 : Vape.INSTANCE.getProfilesManager().b()) {
+        for (Profile profile2 : Vape.INSTANCE.getProfilesManager().getProfiles()) {
             ClickGuiProfileCardComponent clickGuiProfileCardComponent = new ClickGuiProfileCardComponent(profile2);
             clickGuiProfileCardComponent.o(this.profileList.A());
             clickGuiProfileCardComponent.Y(20.0);

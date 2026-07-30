@@ -7,28 +7,27 @@ import gg.vape.protocol.packet.ZeusTrackedPacket;
 
 public class GroupDeleteResponsePacket
 extends ZeusTrackedPacket<GroupDeletePacket> {
-    private GroupDeleteStatus H;
+    private GroupDeleteStatus status;
 
     public GroupDeleteResponsePacket() {
     }
 
-    public GroupDeleteResponsePacket(GroupDeletePacket gb_02, GroupDeleteStatus ls_22) {
-        super(gb_02);
-        this.H = ls_22;
+    public GroupDeleteResponsePacket(GroupDeletePacket request, GroupDeleteStatus status) {
+        super(request);
+        this.status = status;
     }
 
     @Override
     public void x(ZeusPacketBuffer gx_12) {
-        this.H = gx_12.Y(GroupDeleteStatus.class);
+        this.status = gx_12.readEnum(GroupDeleteStatus.class);
     }
 
     @Override
     public void T(ZeusPacketBuffer gx_12) {
-        gx_12.U(this.H);
+        gx_12.writeEnum(this.status);
     }
 
-    public GroupDeleteStatus t() {
-        return this.H;
+    public GroupDeleteStatus getStatus() {
+        return this.status;
     }
 }
-

@@ -35,8 +35,8 @@ implements ZeusSerializablePacket {
 
     @Override
     public void S(ZeusPacketBuffer zeusPacketBuffer) {
-        this.n = zeusPacketBuffer.Y(PingAudience.class);
-        this.C = zeusPacketBuffer.long_a();
+        this.n = zeusPacketBuffer.readEnum(PingAudience.class);
+        this.C = zeusPacketBuffer.readLong();
         this.c = new PingTargetData(zeusPacketBuffer);
     }
 
@@ -59,8 +59,8 @@ implements ZeusSerializablePacket {
 
     @Override
     public void o(ZeusPacketBuffer zeusPacketBuffer) {
-        zeusPacketBuffer.U(this.n);
-        zeusPacketBuffer.v(this.C);
+        zeusPacketBuffer.writeEnum(this.n);
+        zeusPacketBuffer.writeLong(this.C);
         this.c.n(zeusPacketBuffer);
     }
 

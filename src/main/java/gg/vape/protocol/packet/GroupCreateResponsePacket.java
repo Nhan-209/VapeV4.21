@@ -7,16 +7,16 @@ import gg.vape.protocol.packet.ZeusTrackedPacket;
 
 public class GroupCreateResponsePacket
 extends ZeusTrackedPacket<GroupCreatePacket> {
-    private GroupCreateStatus g;
+    private GroupCreateStatus status;
     private static String X;
 
-    public GroupCreateStatus q$src$Lgg_vape_protocol_packet_GroupCreateStatus_$1c0kqtl() {
-        return this.g;
+    public GroupCreateStatus getStatus() {
+        return this.status;
     }
 
-    public GroupCreateResponsePacket(GroupCreatePacket groupCreatePacket, GroupCreateStatus groupCreateStatus) {
+    public GroupCreateResponsePacket(GroupCreatePacket groupCreatePacket, GroupCreateStatus status) {
         super(groupCreatePacket);
-        this.g = groupCreateStatus;
+        this.status = status;
     }
 
     public static void m(String string) {
@@ -35,15 +35,14 @@ extends ZeusTrackedPacket<GroupCreatePacket> {
 
     @Override
     public void T(ZeusPacketBuffer zeusPacketBuffer) {
-        zeusPacketBuffer.U(this.g);
+        zeusPacketBuffer.writeEnum(this.status);
     }
 
     @Override
     public void x(ZeusPacketBuffer zeusPacketBuffer) {
-        this.g = zeusPacketBuffer.Y(GroupCreateStatus.class);
+        this.status = zeusPacketBuffer.readEnum(GroupCreateStatus.class);
     }
 
     public GroupCreateResponsePacket() {
     }
 }
-

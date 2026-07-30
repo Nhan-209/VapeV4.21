@@ -308,7 +308,7 @@ public class OffscreenRenderContext {
             this.frameReady = true;
         }
         catch (Exception exception) {
-            Object ignored = Minecraft.c;
+            Object ignored = Minecraft.vapeInstance;
             return;
         }
         finally {

@@ -33,68 +33,68 @@ import org.jetbrains.annotations.Nullable;
 
 public class PartyMemberEntryComponent
 extends InteractiveComponent {
-    private static final double tP = 12.0;
-    private final ColorAnimation t3;
-    private static final double tE = 4.0;
-    private static final Color tS;
-    private static final Color t4;
-    private static final double tl = 6.0;
-    private final TruncatedTextComponent tr;
-    private static final double tw = 0.625;
-    private static final Color tH;
-    private static final Color tt;
-    private static final double b = 8.0;
-    private static final Color tb;
-    private static final float tC = 2.5f;
-    private static final Color to;
-    private static final String ta;
+    private static final double DECLINE_BUTTON_SIZE = 12.0;
+    private final ColorAnimation backgroundAnimation;
+    private static final double TITLE_ICON_GAP = 4.0;
+    private static final Color CURRENT_PARTY_HOVER_BACKGROUND;
+    private static final Color CURRENT_PARTY_TITLE_COLOR;
+    private static final double ELEMENT_GAP = 6.0;
+    private final TruncatedTextComponent subtitleLabel;
+    private static final double SUBTITLE_FONT_SCALE = 0.625;
+    private static final Color DECLINE_ICON_COLOR;
+    private static final Color CURRENT_PARTY_BORDER_COLOR;
+    private static final double SIDE_PADDING = 8.0;
+    private static final Color DECLINE_ICON_HOVER_COLOR;
+    private static final float ACTIVE_BADGE_CORNER_RADIUS = 2.5f;
+    private static final Color INVITE_BORDER_HOVER_COLOR;
+    private static final String PARTY_ICON_RESOURCE;
     @Nullable
-    private final Supplier<@Nullable PartyState> tc;
-    private static final Color tp;
-    private static final Color t6;
-    private static final double tY = 0.75;
-    private static final String tj;
-    private static final Color t7;
-    private static final Color tZ;
-    private static final double tX = 12.0;
+    private final Supplier<@Nullable PartyState> partySupplier;
+    private static final Color CURRENT_PARTY_BORDER_HOVER_COLOR;
+    private static final Color SUBTITLE_HOVER_COLOR;
+    private static final double TITLE_FONT_SCALE = 0.75;
+    private static final String DECLINE_ICON_RESOURCE;
+    private static final Color INVITE_PARTY_ICON_COLOR;
+    private static final Color INVITE_BACKGROUND_COLOR;
+    private static final double ACTIVE_BADGE_WIDTH = 12.0;
     @Nullable
-    private final PartyInviteStatusIconComponent Q;
-    private final PartyMemberEntryMode tV;
-    private static final Color tJ;
-    private static final Color td;
-    private static final float tn = 3.0f;
+    private final PartyInviteStatusIconComponent declineButton;
+    private final PartyMemberEntryMode mode;
+    private static final Color INVITE_TITLE_COLOR;
+    private static final Color INVITE_BACKGROUND_HOVER_COLOR;
+    private static final float COMPONENT_CORNER_RADIUS = 3.0f;
     @Nullable
-    private final PartyInvite K;
-    private static final double tv = 20.0;
+    private final PartyInvite invite;
+    private static final double DECLINE_ACTION_RESERVED_WIDTH = 20.0;
     @Nullable
-    private final ColorAnimation tT;
-    private boolean v;
-    private static final double t8 = 8.0;
-    private static final double tF = 22.0;
-    private static final Color t_;
-    private static final double t5 = 10.0;
-    private static final double tW = 0.5;
-    private static final double I = 6.0;
+    private final ColorAnimation borderAnimation;
+    private boolean actionPending;
+    private static final double RIGHT_PADDING = 8.0;
+    private static final double COMPONENT_HEIGHT = 22.0;
+    private static final Color ACTIVE_BADGE_TEXT_COLOR;
+    private static final double ACTION_BUTTON_HEIGHT = 10.0;
+    private static final double ACTION_BUTTON_FONT_SCALE = 0.5;
+    private static final double PARTY_ICON_SIZE = 6.0;
     @Nullable
-    private final ShapeIconComponent tk;
-    private static final double ts = 8.0;
-    private boolean tm;
-    private final TruncatedTextComponent tu;
-    private final TextButton t2;
-    private static final Color t1;
-    private static final double tO = 6.0;
-    private static final Color tg;
-    private static final double tR = 0.5;
-    private static final Color tG;
-    private static final double te = 10.0;
-    private static final Color tU;
-    private static final Color t9;
+    private final ShapeIconComponent activeBadge;
+    private static final double SUBTITLE_LEFT_PADDING = 8.0;
+    private boolean declinePending;
+    private final TruncatedTextComponent titleLabel;
+    private final TextButton actionButton;
+    private static final Color SUBTITLE_COLOR;
+    private static final double PARTY_ICON_GAP = 6.0;
+    private static final Color CURRENT_PARTY_ICON_COLOR;
+    private static final double BORDER_WIDTH = 0.5;
+    private static final Color CURRENT_PARTY_BACKGROUND;
+    private static final double ACTIVE_BADGE_HEIGHT = 10.0;
+    private static final Color ACTIVE_BADGE_BACKGROUND;
+    private static final Color INVITE_BORDER_COLOR;
 
-    private static String y(@Nullable OnlineFriend onlineFriend) {
+    private static String formatPartyName(@Nullable OnlineFriend onlineFriend) {
         if (onlineFriend == null) {
             return "Party";
         }
-        String string = onlineFriend.C();
+        String string = onlineFriend.getDisplayName();
         if (string == null || string.isEmpty()) {
             return "Party";
         }
@@ -104,261 +104,261 @@ extends InteractiveComponent {
         return string + "'s Party";
     }
 
-    static Color c$src$Ljava_awt_Color_$ph3aai() {
-        return tH;
+    static Color getDeclineIconColor() {
+        return DECLINE_ICON_COLOR;
     }
 
-    private static String d(@NotNull OnlineFriend onlineFriend) {
-        String string = onlineFriend.C();
-        String string2 = onlineFriend.I();
+    private static String formatInviteSubtitle(@NotNull OnlineFriend onlineFriend) {
+        String string = onlineFriend.getDisplayName();
+        String string2 = onlineFriend.getMinecraftUsername();
         if (string2 != null && !string2.isEmpty() && !string2.equalsIgnoreCase(string)) {
             return string + " (" + string2 + ") invited you";
         }
         return string + " invited you";
     }
 
-    private void V$src$V$1xpbqj3() {
+    private void configureComponent() {
         this.Y(22.0);
         this.setShowDisabledOverlay(false);
-        this.tu.setShadowEnabled(false);
-        this.tr.setShadowEnabled(false);
-        this.tr.setAdditionalTooltipText("");
-        this.t2.Y(10.0);
-        this.t2.setDeriveTextColorFromBackground(false);
-        this.t2.setNormalTextColor(Color.WHITE);
-        this.t2.setCornerRadius(2.0f);
-        this.t2.addClickListener(this::v);
-        this.addChildren(this.tu, this.tr, this.t2);
-        if (this.tk != null) {
-            this.addChildren(this.tk);
+        this.titleLabel.setShadowEnabled(false);
+        this.subtitleLabel.setShadowEnabled(false);
+        this.subtitleLabel.setAdditionalTooltipText("");
+        this.actionButton.Y(10.0);
+        this.actionButton.setDeriveTextColorFromBackground(false);
+        this.actionButton.setNormalTextColor(Color.WHITE);
+        this.actionButton.setCornerRadius(2.0f);
+        this.actionButton.addClickListener(this::handlePrimaryAction);
+        this.addChildren(this.titleLabel, this.subtitleLabel, this.actionButton);
+        if (this.activeBadge != null) {
+            this.addChildren(this.activeBadge);
         }
-        if (this.Q != null) {
-            this.addChildren(this.Q);
-            this.Q.addClickListener(this::U$src$V$1xorxxq);
+        if (this.declineButton != null) {
+            this.addChildren(this.declineButton);
+            this.declineButton.addClickListener(this::declineInvite);
         }
     }
 
     public PartyMemberEntryComponent(@NotNull PartyInvite partyInvite) {
-        this.tV = PartyMemberEntryMode.INVITE;
-        this.tc = null;
-        this.K = Objects.requireNonNull(partyInvite, "invite");
+        this.mode = PartyMemberEntryMode.INVITE;
+        this.partySupplier = null;
+        this.invite = Objects.requireNonNull(partyInvite, "invite");
         this.getClass();
-        this.t3 = new ColorAnimation(0.15, tZ, td);
+        this.backgroundAnimation = new ColorAnimation(0.15, INVITE_BACKGROUND_COLOR, INVITE_BACKGROUND_HOVER_COLOR);
         this.getClass();
-        this.tT = new ColorAnimation(0.15, t9, to);
-        this.tu = this.S(tJ);
-        this.tr = this.g$src$Lgg_vape_ui_click_component_TruncatedTextCompone$1sn5zit();
-        this.tk = null;
-        this.t2 = this.T(PartyMemberEntryComponent.J.B, PartyMemberEntryComponent.J.O, "ACCEPT");
-        this.Q = new PartyInviteStatusIconComponent(this, null);
-        this.Q.w("Decline party invite");
-        this.V$src$V$1xpbqj3();
+        this.borderAnimation = new ColorAnimation(0.15, INVITE_BORDER_COLOR, INVITE_BORDER_HOVER_COLOR);
+        this.titleLabel = this.createTitleLabel(INVITE_TITLE_COLOR);
+        this.subtitleLabel = this.createSubtitleLabel();
+        this.activeBadge = null;
+        this.actionButton = this.createActionButton(PartyMemberEntryComponent.J.B, PartyMemberEntryComponent.J.O, "ACCEPT");
+        this.declineButton = new PartyInviteStatusIconComponent(this, null);
+        this.declineButton.w("Decline party invite");
+        this.configureComponent();
     }
 
-    private void lambda$handleCloseAction$1() {
-        this.tm = false;
+    private void handleDeclineFailure() {
+        this.declinePending = false;
     }
 
-    private void lambda$null$3() {
-        this.v = false;
+    private void handleDisbandFailure() {
+        this.actionPending = false;
     }
 
-    private void lambda$handleCloseAction$0(GroupInviteStateResponsePacket groupInviteStateResponsePacket) {
-        if (groupInviteStateResponsePacket.M() == GroupInviteStateStatus.SUCCESSFULLY_DECLINED || groupInviteStateResponsePacket.M() == GroupInviteStateStatus.FAILED) {
-            Vape.INSTANCE.getOnlineManager().y().y(this.K);
+    private void handleDeclineResponse(GroupInviteStateResponsePacket response) {
+        if (response.getStatus() == GroupInviteStateStatus.SUCCESSFULLY_DECLINED || response.getStatus() == GroupInviteStateStatus.FAILED) {
+            Vape.INSTANCE.getOnlineManager().getPartyManager().removeInvite(this.invite);
         }
     }
 
-    private void lambda$sendInviteAcceptance$11() {
-        this.v = false;
+    private void handleInviteAcceptanceFailure() {
+        this.actionPending = false;
     }
 
-    private void z() {
+    private void handleCurrentPartyAction() {
         PartyState partyState;
-        PartyState partyState2 = partyState = this.tc != null ? this.tc.get() : null;
+        PartyState partyState2 = partyState = this.partySupplier != null ? this.partySupplier.get() : null;
         if (partyState == null) {
-            this.v = false;
+            this.actionPending = false;
             return;
         }
-        LocalOnlineFriend localOnlineFriend = Vape.INSTANCE.getOnlineManager().r();
-        boolean bl = partyState.r() != null && partyState.r().equals(localOnlineFriend);
+        LocalOnlineFriend localOnlineFriend = Vape.INSTANCE.getOnlineManager().getLocalFriend();
+        boolean localPlayerIsLeader = partyState.getLeader() != null && partyState.getLeader().equals(localOnlineFriend);
         ZeusConnectionManager zeusConnectionManager = ZeusConnectionManager.T();
         if (zeusConnectionManager == null) {
-            this.v = false;
+            this.actionPending = false;
             return;
         }
-        if (bl) {
-            this.U("Are you sure you want to disband the party?", () -> this.lambda$handleCurrentPartyAction$4(zeusConnectionManager));
+        if (localPlayerIsLeader) {
+            this.showConfirmationPopup("Are you sure you want to disband the party?", () -> this.disbandCurrentParty(zeusConnectionManager));
         } else {
-            zeusConnectionManager.u().u(PartyMemberEntryComponent::lambda$handleCurrentPartyAction$5, this::lambda$handleCurrentPartyAction$6);
+            zeusConnectionManager.u().u(PartyMemberEntryComponent::handleLeaveResponse, this::handleLeaveFailure);
         }
     }
 
     public PartyMemberEntryComponent(@NotNull Supplier<@Nullable PartyState> supplier) {
-        this.tV = PartyMemberEntryMode.CURRENT_PARTY;
-        this.tc = Objects.requireNonNull(supplier, "partySupplier");
-        this.K = null;
+        this.mode = PartyMemberEntryMode.CURRENT_PARTY;
+        this.partySupplier = Objects.requireNonNull(supplier, "partySupplier");
+        this.invite = null;
         this.getClass();
-        this.t3 = new ColorAnimation(0.15, tG, tS);
+        this.backgroundAnimation = new ColorAnimation(0.15, CURRENT_PARTY_BACKGROUND, CURRENT_PARTY_HOVER_BACKGROUND);
         this.getClass();
-        this.tT = new ColorAnimation(0.15, tt, tp);
-        this.tu = this.S(t4);
-        this.tr = this.g$src$Lgg_vape_ui_click_component_TruncatedTextCompone$1sn5zit();
-        this.tk = new ShapeIconComponent(IconShape.ROUNDED_RECT, "ACTIVE", 10.0, 12.0, 4.0, 2.5f, tU, t_, 0.5);
-        this.t2 = this.T(PartyMemberEntryComponent.J.d, PartyMemberEntryComponent.J.c, "DISBAND");
-        this.Q = null;
-        this.V$src$V$1xpbqj3();
+        this.borderAnimation = new ColorAnimation(0.15, CURRENT_PARTY_BORDER_COLOR, CURRENT_PARTY_BORDER_HOVER_COLOR);
+        this.titleLabel = this.createTitleLabel(CURRENT_PARTY_TITLE_COLOR);
+        this.subtitleLabel = this.createSubtitleLabel();
+        this.activeBadge = new ShapeIconComponent(IconShape.ROUNDED_RECT, "ACTIVE", 10.0, 12.0, 4.0, 2.5f, ACTIVE_BADGE_BACKGROUND, ACTIVE_BADGE_TEXT_COLOR, 0.5);
+        this.actionButton = this.createActionButton(PartyMemberEntryComponent.J.d, PartyMemberEntryComponent.J.c, "DISBAND");
+        this.declineButton = null;
+        this.configureComponent();
     }
 
-    private static void lambda$null$2(GroupDeleteResponsePacket groupDeleteResponsePacket) {
+    private static void handleDisbandResponse(GroupDeleteResponsePacket response) {
     }
 
-    private void L$src$V$1xjtslh() {
+    private void updateInviteMode() {
         this.setVisible(true);
-        OnlineFriend onlineFriend = this.K.x();
-        this.tu.setText(PartyMemberEntryComponent.y(onlineFriend));
-        this.tr.setText(PartyMemberEntryComponent.d(onlineFriend));
-        this.t2.w("Accept party invite");
+        OnlineFriend inviter = this.invite.getInviter();
+        this.titleLabel.setText(PartyMemberEntryComponent.formatPartyName(inviter));
+        this.subtitleLabel.setText(PartyMemberEntryComponent.formatInviteSubtitle(inviter));
+        this.actionButton.w("Accept party invite");
     }
 
-    private void o$src$V$1y32ld4() {
-        double d;
-        double d2;
-        double d3;
-        double d4 = this.G$src$D$1b2f02a();
-        double d5 = this.n();
-        double d6 = this.A();
-        double d7 = this.L();
-        double d8 = d4 + d6 - 8.0;
-        if (this.Q != null) {
-            d3 = d8 - 12.0;
-            this.Q.o(12.0);
-            this.Q.Y(12.0);
-            this.Q.K(d3);
-            this.Q.S(d5 + (d7 - 12.0) / 2.0);
-            d8 = d3 - 8.0;
+    private void layoutChildren() {
+        double subtitleWidth;
+        double badgeWidth;
+        double titleX;
+        double left = this.G$src$D$1b2f02a();
+        double top = this.n();
+        double width = this.A();
+        double height = this.L();
+        double contentRight = left + width - RIGHT_PADDING;
+        if (this.declineButton != null) {
+            titleX = contentRight - DECLINE_BUTTON_SIZE;
+            this.declineButton.o(DECLINE_BUTTON_SIZE);
+            this.declineButton.Y(DECLINE_BUTTON_SIZE);
+            this.declineButton.K(titleX);
+            this.declineButton.S(top + (height - DECLINE_BUTTON_SIZE) / 2.0);
+            contentRight = titleX - RIGHT_PADDING;
         }
-        this.E(d5, d7);
-        d8 = Math.min(d8, this.t2.G$src$D$1b2f02a() - 8.0);
-        d3 = d4 + 20.0;
-        double d9 = Math.max(0.0, d8 - d3);
-        if (this.tk != null && this.tk.V$src$Z$1xhop3l()) {
-            d2 = this.tk.getRequiredWidth();
-            d9 = Math.max(0.0, d9 - d2 - 6.0);
-            d = d4 + 20.0 + d9 + 6.0;
-            this.tk.K(d);
-            this.tk.S(d5 + (d7 - 10.0) / 2.0);
-            this.tk.o(d2);
-            this.tk.Y(10.0);
+        this.layoutActionButton(top, height);
+        contentRight = Math.min(contentRight, this.actionButton.G$src$D$1b2f02a() - RIGHT_PADDING);
+        titleX = left + DECLINE_ACTION_RESERVED_WIDTH;
+        double titleWidth = Math.max(0.0, contentRight - titleX);
+        if (this.activeBadge != null && this.activeBadge.V$src$Z$1xhop3l()) {
+            badgeWidth = this.activeBadge.getRequiredWidth();
+            titleWidth = Math.max(0.0, titleWidth - badgeWidth - ELEMENT_GAP);
+            double badgeX = left + DECLINE_ACTION_RESERVED_WIDTH + titleWidth + ELEMENT_GAP;
+            this.activeBadge.K(badgeX);
+            this.activeBadge.S(top + (height - ACTIVE_BADGE_HEIGHT) / 2.0);
+            this.activeBadge.o(badgeWidth);
+            this.activeBadge.Y(ACTIVE_BADGE_HEIGHT);
         }
-        this.tu.K(d3);
-        this.tu.S(d5);
-        this.tu.o(d9);
-        this.tu.Y(d7);
-        this.tu.setMaxWidth(d9);
-        d2 = d4 + 8.0 + 6.0 + 4.0;
-        d = Math.max(0.0, d8 - d2);
-        this.tr.K(d2);
-        this.tr.S(d5);
-        this.tr.o(d);
-        this.tr.Y(d7);
-        this.tr.setMaxWidth(d);
+        this.titleLabel.K(titleX);
+        this.titleLabel.S(top);
+        this.titleLabel.o(titleWidth);
+        this.titleLabel.Y(height);
+        this.titleLabel.setMaxWidth(titleWidth);
+        double subtitleX = left + SIDE_PADDING + PARTY_ICON_SIZE + TITLE_ICON_GAP;
+        subtitleWidth = Math.max(0.0, contentRight - subtitleX);
+        this.subtitleLabel.K(subtitleX);
+        this.subtitleLabel.S(top);
+        this.subtitleLabel.o(subtitleWidth);
+        this.subtitleLabel.Y(height);
+        this.subtitleLabel.setMaxWidth(subtitleWidth);
     }
 
-    private void D$src$V$1xffful() {
-        double d = this.G$src$D$1b2f02a() + 8.0;
-        double d2 = this.n() + (this.L() - 6.0) / 2.0;
-        Color color = this.tV == PartyMemberEntryMode.CURRENT_PARTY ? tg : t7;
-        ImageRenderer.drawImage(color, (float)d, (float)d2, "party1@2x", 6.0f, 6.0f, false);
+    private void renderPartyIcon() {
+        double iconX = this.G$src$D$1b2f02a() + SIDE_PADDING;
+        double iconY = this.n() + (this.L() - PARTY_ICON_SIZE) / 2.0;
+        Color color = this.mode == PartyMemberEntryMode.CURRENT_PARTY ? CURRENT_PARTY_ICON_COLOR : INVITE_PARTY_ICON_COLOR;
+        ImageRenderer.drawImage(color, (float)iconX, (float)iconY, PARTY_ICON_RESOURCE, (float)PARTY_ICON_SIZE, (float)PARTY_ICON_SIZE, false);
     }
 
     @Override
     public void u() {
         super.u();
-        switch (this.tV) {
+        switch (this.mode) {
             case CURRENT_PARTY: {
-                this.C$src$V$1xevn98();
+                this.updateCurrentPartyMode();
                 break;
             }
             case INVITE: {
-                this.L$src$V$1xjtslh();
+                this.updateInviteMode();
             }
         }
     }
 
-    private void l$src$V$1y1f7l1() {
-        if (this.K == null) {
+    private void handleInviteAction() {
+        if (this.invite == null) {
             return;
         }
         ZeusConnectionManager zeusConnectionManager = ZeusConnectionManager.T();
         if (zeusConnectionManager == null) {
-            this.v = false;
+            this.actionPending = false;
             return;
         }
-        PartyState partyState = Vape.INSTANCE.getOnlineManager().y().j();
+        PartyState partyState = Vape.INSTANCE.getOnlineManager().getPartyManager().getCurrentParty();
         if (partyState != null) {
-            LocalOnlineFriend localOnlineFriend = Vape.INSTANCE.getOnlineManager().r();
-            boolean bl = partyState.r() != null && partyState.r().equals(localOnlineFriend);
-            this.U(bl ? "Are you sure you want to disband the party?" : "Are you sure you want to leave your current party?", () -> this.lambda$handleInviteAction$9(zeusConnectionManager));
+            LocalOnlineFriend localOnlineFriend = Vape.INSTANCE.getOnlineManager().getLocalFriend();
+            boolean localPlayerIsLeader = partyState.getLeader() != null && partyState.getLeader().equals(localOnlineFriend);
+            this.showConfirmationPopup(localPlayerIsLeader ? "Are you sure you want to disband the party?" : "Are you sure you want to leave your current party?", () -> this.acceptInviteAfterLeaving(zeusConnectionManager));
             return;
         }
-        this.q(zeusConnectionManager);
+        this.sendInviteAcceptance(zeusConnectionManager);
     }
 
-    private void q(ZeusConnectionManager zeusConnectionManager) {
-        zeusConnectionManager.u().c(this.K.x().S(), true, this::lambda$sendInviteAcceptance$10, this::lambda$sendInviteAcceptance$11);
+    private void sendInviteAcceptance(ZeusConnectionManager connectionManager) {
+        connectionManager.u().c(this.invite.getInviter().getUser(), true, this::handleInviteAcceptanceResponse, this::handleInviteAcceptanceFailure);
     }
 
-    private static void lambda$handleCurrentPartyAction$5(GroupLeaveResponsePacket groupLeaveResponsePacket) {
+    private static void handleLeaveResponse(GroupLeaveResponsePacket response) {
     }
 
-    private static void lambda$showConfirmationPopup$7(PopupFrame popupFrame, Runnable runnable) {
+    private static void confirmPopupAction(PopupFrame popupFrame, Runnable action) {
         ClientSettings.removePopup(popupFrame);
-        runnable.run();
+        action.run();
     }
 
-    private TruncatedTextComponent g$src$Lgg_vape_ui_click_component_TruncatedTextCompone$1sn5zit() {
-        TruncatedTextComponent truncatedTextComponent = new TruncatedTextComponent("", "", 0.0, 0.625, t1, false);
+    private TruncatedTextComponent createSubtitleLabel() {
+        TruncatedTextComponent truncatedTextComponent = new TruncatedTextComponent("", "", 0.0, 0.625, SUBTITLE_COLOR, false);
         truncatedTextComponent.setCentered(true);
         return truncatedTextComponent;
     }
 
-    private void v() {
-        if (this.v) {
+    private void handlePrimaryAction() {
+        if (this.actionPending) {
             return;
         }
-        this.v = true;
-        switch (this.tV) {
+        this.actionPending = true;
+        switch (this.mode) {
             case CURRENT_PARTY: {
-                this.z();
+                this.handleCurrentPartyAction();
                 break;
             }
             case INVITE: {
-                this.l$src$V$1y1f7l1();
+                this.handleInviteAction();
             }
         }
     }
 
-    private void lambda$handleCurrentPartyAction$6() {
-        this.v = false;
+    private void handleLeaveFailure() {
+        this.actionPending = false;
     }
 
-    private void lambda$handleInviteAction$9(ZeusConnectionManager zeusConnectionManager) {
-        this.q(zeusConnectionManager);
+    private void acceptInviteAfterLeaving(ZeusConnectionManager connectionManager) {
+        this.sendInviteAcceptance(connectionManager);
     }
 
-    private void E(double d, double d2) {
-        double d3 = this.t2.getTextWidth();
-        double d4 = Math.max(d3 + 8.0, this.t2.A());
-        this.t2.o(d4);
-        this.t2.Y(10.0);
-        double d5 = this.G$src$D$1b2f02a() + this.A() - 8.0 - d4 - (this.Q != null ? 20.0 : 0.0);
-        this.t2.K(d5);
-        this.t2.S(d + (d2 - 10.0) / 2.0);
+    private void layoutActionButton(double top, double height) {
+        double textWidth = this.actionButton.getTextWidth();
+        double buttonWidth = Math.max(textWidth + 8.0, this.actionButton.A());
+        this.actionButton.o(buttonWidth);
+        this.actionButton.Y(10.0);
+        double buttonX = this.G$src$D$1b2f02a() + this.A() - 8.0 - buttonWidth - (this.declineButton != null ? 20.0 : 0.0);
+        this.actionButton.K(buttonX);
+        this.actionButton.S(top + (height - 10.0) / 2.0);
     }
 
-    static Color q$src$Ljava_awt_Color_$1uk170() {
-        return tb;
+    static Color getDeclineIconHoverColor() {
+        return DECLINE_ICON_HOVER_COLOR;
     }
 
     @Override
@@ -367,59 +367,58 @@ extends InteractiveComponent {
         if (!this.V$src$Z$1xhop3l()) {
             return;
         }
-        boolean bl = this.w$src$Z$e457mb();
-        this.t3.u(bl);
-        if (this.tT != null) {
-            this.tT.u(bl);
+        boolean hovered = this.w$src$Z$e457mb();
+        this.backgroundAnimation.u(hovered);
+        if (this.borderAnimation != null) {
+            this.borderAnimation.u(hovered);
         }
-        GuiRenderPrimitives.B(this.G$src$D$1b2f02a(), this.n(), this.A(), this.L(), this.t3.getInterpolatedColor(), 3.0f);
-        if (this.tT != null) {
-            GuiRenderPrimitives.P(this.G$src$D$1b2f02a(), this.n(), this.A(), this.L(), this.tT.getInterpolatedColor(), 3.0f, 1.0f, 1.0f);
+        GuiRenderPrimitives.B(this.G$src$D$1b2f02a(), this.n(), this.A(), this.L(), this.backgroundAnimation.getInterpolatedColor(), 3.0f);
+        if (this.borderAnimation != null) {
+            GuiRenderPrimitives.P(this.G$src$D$1b2f02a(), this.n(), this.A(), this.L(), this.borderAnimation.getInterpolatedColor(), 3.0f, 1.0f, 1.0f);
         }
-        this.o$src$V$1y32ld4();
-        this.D$src$V$1xffful();
-        this.tr.setTextColor(bl ? t6 : t1);
-        this.tu.setTextColor(this.tV == PartyMemberEntryMode.CURRENT_PARTY ? t4 : tJ);
+        this.layoutChildren();
+        this.renderPartyIcon();
+        this.subtitleLabel.setTextColor(hovered ? SUBTITLE_HOVER_COLOR : SUBTITLE_COLOR);
+        this.titleLabel.setTextColor(this.mode == PartyMemberEntryMode.CURRENT_PARTY ? CURRENT_PARTY_TITLE_COLOR : INVITE_TITLE_COLOR);
     }
 
 
-    private void lambda$handleCurrentPartyAction$4(ZeusConnectionManager zeusConnectionManager) {
-        zeusConnectionManager.u().l(PartyMemberEntryComponent::lambda$null$2, this::lambda$null$3);
+    private void disbandCurrentParty(ZeusConnectionManager connectionManager) {
+        connectionManager.u().l(PartyMemberEntryComponent::handleDisbandResponse, this::handleDisbandFailure);
     }
 
-    private void lambda$showConfirmationPopup$8(PopupFrame popupFrame) {
+    private void cancelPopupAction(PopupFrame popupFrame) {
         ClientSettings.removePopup(popupFrame);
-        this.v = false;
+        this.actionPending = false;
     }
 
-    private void lambda$sendInviteAcceptance$10(GroupInviteStateResponsePacket groupInviteStateResponsePacket) {
-        if (groupInviteStateResponsePacket.M() == GroupInviteStateStatus.SUCCESSFULLY_ACCEPTED) {
-            Vape.INSTANCE.getOnlineManager().y().y(this.K);
+    private void handleInviteAcceptanceResponse(GroupInviteStateResponsePacket response) {
+        if (response.getStatus() == GroupInviteStateStatus.SUCCESSFULLY_ACCEPTED) {
+            Vape.INSTANCE.getOnlineManager().getPartyManager().removeInvite(this.invite);
         }
     }
 
-    private void C$src$V$1xevn98() {
+    private void updateCurrentPartyMode() {
         PartyState partyState;
-        PartyState partyState2 = partyState = this.tc != null ? this.tc.get() : null;
+        PartyState partyState2 = partyState = this.partySupplier != null ? this.partySupplier.get() : null;
         if (partyState != null) {
-            boolean bl;
             this.setVisible(true);
-            OnlineFriend onlineFriend = partyState.r();
-            LocalOnlineFriend localOnlineFriend = Vape.INSTANCE.getOnlineManager().r();
-            boolean bl2 = bl = onlineFriend != null && onlineFriend.equals(localOnlineFriend);
-            if (bl) {
-                this.tu.setText("My VAPE Party");
-                this.t2.setLabelText("DISBAND");
-                this.t2.w("Disband party");
+            OnlineFriend leader = partyState.getLeader();
+            LocalOnlineFriend localFriend = Vape.INSTANCE.getOnlineManager().getLocalFriend();
+            boolean localPlayerIsLeader = leader != null && leader.equals(localFriend);
+            if (localPlayerIsLeader) {
+                this.titleLabel.setText("My VAPE Party");
+                this.actionButton.setLabelText("DISBAND");
+                this.actionButton.w("Disband party");
             } else {
-                this.tu.setText(PartyMemberEntryComponent.y(onlineFriend));
-                this.t2.setLabelText("LEAVE");
-                this.t2.w("Leave party");
+                this.titleLabel.setText(PartyMemberEntryComponent.formatPartyName(leader));
+                this.actionButton.setLabelText("LEAVE");
+                this.actionButton.w("Leave party");
             }
-            this.tr.setText(PartyMemberEntryComponent.c(partyState, localOnlineFriend));
-            if (this.tk != null) {
-                this.tk.setText("ACTIVE");
-                this.tk.setVisible(true);
+            this.subtitleLabel.setText(PartyMemberEntryComponent.formatMemberSummary(partyState, localFriend));
+            if (this.activeBadge != null) {
+                this.activeBadge.setText("ACTIVE");
+                this.activeBadge.setVisible(true);
             }
             return;
         }
@@ -427,76 +426,76 @@ extends InteractiveComponent {
     }
 
     static {
-        tj = "newclose";
-        ta = "party1@2x";
-        tG = new Color(98, 197, 84, 10);
-        tS = new Color(98, 197, 84, 24);
-        tt = new Color(98, 197, 84, 31);
-        tp = new Color(98, 197, 84, 56);
-        tZ = PartyMemberEntryComponent.J.m;
-        td = PartyMemberEntryComponent.J.a;
-        t9 = new Color(255, 255, 255, 10);
-        to = new Color(255, 255, 255, 26);
-        tJ = PartyMemberEntryComponent.J.A;
-        t4 = Color.WHITE;
-        t1 = PartyMemberEntryComponent.J.C;
-        t6 = PartyMemberEntryComponent.J.Z;
-        tU = new Color(98, 197, 84, 20);
-        t_ = new Color(98, 197, 84);
-        tg = new Color(98, 197, 84);
-        t7 = new Color(173, 173, 173);
-        tH = PartyMemberEntryComponent.J.W;
-        tb = PartyMemberEntryComponent.J.f;
+        DECLINE_ICON_RESOURCE = "newclose";
+        PARTY_ICON_RESOURCE = "party1@2x";
+        CURRENT_PARTY_BACKGROUND = new Color(98, 197, 84, 10);
+        CURRENT_PARTY_HOVER_BACKGROUND = new Color(98, 197, 84, 24);
+        CURRENT_PARTY_BORDER_COLOR = new Color(98, 197, 84, 31);
+        CURRENT_PARTY_BORDER_HOVER_COLOR = new Color(98, 197, 84, 56);
+        INVITE_BACKGROUND_COLOR = PartyMemberEntryComponent.J.m;
+        INVITE_BACKGROUND_HOVER_COLOR = PartyMemberEntryComponent.J.a;
+        INVITE_BORDER_COLOR = new Color(255, 255, 255, 10);
+        INVITE_BORDER_HOVER_COLOR = new Color(255, 255, 255, 26);
+        INVITE_TITLE_COLOR = PartyMemberEntryComponent.J.A;
+        CURRENT_PARTY_TITLE_COLOR = Color.WHITE;
+        SUBTITLE_COLOR = PartyMemberEntryComponent.J.C;
+        SUBTITLE_HOVER_COLOR = PartyMemberEntryComponent.J.Z;
+        ACTIVE_BADGE_BACKGROUND = new Color(98, 197, 84, 20);
+        ACTIVE_BADGE_TEXT_COLOR = new Color(98, 197, 84);
+        CURRENT_PARTY_ICON_COLOR = new Color(98, 197, 84);
+        INVITE_PARTY_ICON_COLOR = new Color(173, 173, 173);
+        DECLINE_ICON_COLOR = PartyMemberEntryComponent.J.W;
+        DECLINE_ICON_HOVER_COLOR = PartyMemberEntryComponent.J.f;
     }
 
-    private TruncatedTextComponent S(Color color) {
+    private TruncatedTextComponent createTitleLabel(Color color) {
         return new TruncatedTextComponent("", "...", 0.0, 0.75, color, false);
     }
 
-    private void U(String string, Runnable runnable) {
-        ConfirmationDialogComponent confirmationDialogComponent = new ConfirmationDialogComponent(string, "DISBAND", "disband confirm@2x");
-        DimmedCenteredPopupFrame dimmedCenteredPopupFrame = ClientSettings.createPopup(this.L$src$Lgg_vape_ui_click_frame_Frame_$1djx6sa(), confirmationDialogComponent, DimmedCenteredPopupFrame.class);
-        confirmationDialogComponent.getConfirmButton().addClickListener(() -> PartyMemberEntryComponent.lambda$showConfirmationPopup$7(dimmedCenteredPopupFrame, runnable));
-        confirmationDialogComponent.getCloseButton().addClickListener(() -> this.lambda$showConfirmationPopup$8(dimmedCenteredPopupFrame));
-        dimmedCenteredPopupFrame.q(this.L$src$Lgg_vape_ui_click_frame_Frame_$1djx6sa(), dimmedCenteredPopupFrame);
+    private void showConfirmationPopup(String message, Runnable action) {
+        ConfirmationDialogComponent confirmationDialog = new ConfirmationDialogComponent(message, "DISBAND", "disband confirm@2x");
+        DimmedCenteredPopupFrame confirmationPopup = ClientSettings.createPopup(this.L$src$Lgg_vape_ui_click_frame_Frame_$1djx6sa(), confirmationDialog, DimmedCenteredPopupFrame.class);
+        confirmationDialog.getConfirmButton().addClickListener(() -> PartyMemberEntryComponent.confirmPopupAction(confirmationPopup, action));
+        confirmationDialog.getCloseButton().addClickListener(() -> this.cancelPopupAction(confirmationPopup));
+        confirmationPopup.q(this.L$src$Lgg_vape_ui_click_frame_Frame_$1djx6sa(), confirmationPopup);
     }
 
-    private static String c(@NotNull PartyState partyState, @Nullable OnlineFriend onlineFriend) {
-        ArrayList<String> arrayList = new ArrayList<String>();
-        for (OnlineFriend object2 : partyState.c()) {
-            String n;
-            if (onlineFriend != null && object2.equals(onlineFriend) || (n = object2.C()) == null || n.isEmpty()) continue;
-            arrayList.add(n);
+    private static String formatMemberSummary(@NotNull PartyState partyState, @Nullable OnlineFriend localFriend) {
+        ArrayList<String> memberNames = new ArrayList<String>();
+        for (OnlineFriend member : partyState.getMembers()) {
+            String displayName;
+            if (localFriend != null && member.equals(localFriend) || (displayName = member.getDisplayName()) == null || displayName.isEmpty()) continue;
+            memberNames.add(displayName);
         }
-        if (arrayList.isEmpty()) {
+        if (memberNames.isEmpty()) {
             return "Waiting for members to join";
         }
-        if (arrayList.size() == 1) {
-            return (String)arrayList.get(0) + " joined";
+        if (memberNames.size() == 1) {
+            return memberNames.get(0) + " joined";
         }
-        String string = (String)arrayList.get(0);
-        String string2 = (String)arrayList.get(1);
-        int n = arrayList.size() - 2;
-        if (n <= 0) {
-            return (String)string + ", " + string2 + " joined";
+        String firstName = memberNames.get(0);
+        String secondName = memberNames.get(1);
+        int additionalCount = memberNames.size() - 2;
+        if (additionalCount <= 0) {
+            return firstName + ", " + secondName + " joined";
         }
-        return (String)string + ", " + string2 + " + " + n + " others joined";
+        return firstName + ", " + secondName + " + " + additionalCount + " others joined";
     }
 
-    private void U$src$V$1xorxxq() {
-        if (this.tm || this.K == null) {
+    private void declineInvite() {
+        if (this.declinePending || this.invite == null) {
             return;
         }
         ZeusConnectionManager zeusConnectionManager = ZeusConnectionManager.T();
         if (zeusConnectionManager == null) {
             return;
         }
-        this.tm = true;
-        zeusConnectionManager.u().c(this.K.x().S(), false, this::lambda$handleCloseAction$0, this::lambda$handleCloseAction$1);
+        this.declinePending = true;
+        zeusConnectionManager.u().c(this.invite.getInviter().getUser(), false, this::handleDeclineResponse, this::handleDeclineFailure);
     }
 
-    private TextButton T(Color color, Color color2, String string) {
-        TextButton textButton = new TextButton(string, 0.5, color, color2);
+    private TextButton createActionButton(Color normalColor, Color hoverColor, String label) {
+        TextButton textButton = new TextButton(label, 0.5, normalColor, hoverColor);
         textButton.setUppercase(true);
         return textButton;
     }

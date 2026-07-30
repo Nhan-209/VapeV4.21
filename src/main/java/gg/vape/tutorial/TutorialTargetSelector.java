@@ -5,41 +5,41 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public abstract class TutorialTargetSelector<T extends GuiComponent> {
-    private static boolean Z;
-    private final Class<T> Y;
+    private static boolean obfuscationState;
+    private final Class<T> targetType;
 
-    public static void A(boolean bl) {
-        Z = bl;
+    public static void setObfuscationState(boolean state) {
+        obfuscationState = state;
     }
 
-    public Class<T> o() {
-        return this.Y;
+    public Class<T> getTargetType() {
+        return this.targetType;
     }
 
     static {
-        if (!TutorialTargetSelector.Y()) {
-            TutorialTargetSelector.A(true);
+        if (!TutorialTargetSelector.isObfuscationStateDisabled()) {
+            TutorialTargetSelector.setObfuscationState(true);
         }
     }
 
-    public abstract boolean X(T var1);
+    public abstract boolean matches(T component);
 
-    public static boolean Y() {
-        boolean bl = TutorialTargetSelector.Z();
-        return !bl;
+    public static boolean isObfuscationStateDisabled() {
+        boolean state = TutorialTargetSelector.getObfuscationState();
+        return !state;
     }
 
-    public static boolean Z() {
-        return Z;
+    public static boolean getObfuscationState() {
+        return obfuscationState;
     }
 
 
     public TutorialTargetSelector(Class<T> clazz) {
-        this.Y = clazz;
+        this.targetType = clazz;
     }
 
-    public ArrayList<GuiComponent> v(GuiComponent guiComponent) {
-        if (this.o().isInstance(guiComponent) && this.X(this.o().cast(guiComponent))) {
+    public ArrayList<GuiComponent> findTargets(GuiComponent guiComponent) {
+        if (this.getTargetType().isInstance(guiComponent) && this.matches(this.getTargetType().cast(guiComponent))) {
             return new ArrayList<GuiComponent>(Arrays.asList(guiComponent));
         }
         return null;

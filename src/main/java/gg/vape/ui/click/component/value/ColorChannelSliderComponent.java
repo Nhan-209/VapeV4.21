@@ -243,7 +243,7 @@ extends SliderComponentBase {
         }
         resolvedBackgroundColor = this.getDisabledOverlayColor().equals(Color.WHITE) ? this.fallbackColorComponent.getDisabledOverlayColor() : this.getDisabledOverlayColor();
         double handleSize = this.handleHoverAnimation.getInterpolatedValue();
-        GuiRenderPrimitives.Y((float)(this.handleBounds.o() + this.handleBounds.e() / 2.0 - handleSize / 2.0), (float)(this.handleBounds.W() + this.handleBounds.R() / 2.0 - handleSize / 2.0), (float)handleSize, (float)(0.8 / Vape.INSTANCE.getClientSettings().s()), ColorChannelSliderComponent.J.A, 0.0, null);
+        GuiRenderPrimitives.Y((float)(this.handleBounds.o() + this.handleBounds.e() / 2.0 - handleSize / 2.0), (float)(this.handleBounds.W() + this.handleBounds.R() / 2.0 - handleSize / 2.0), (float)handleSize, (float)(0.8 / Vape.INSTANCE.getClientSettings().getGuiScaleFactor()), ColorChannelSliderComponent.J.A, 0.0, null);
     }
 
     public ColorChannelSliderComponent(ColorChannelType channelType, ColorValue colorValue) {

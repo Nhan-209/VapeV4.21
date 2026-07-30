@@ -9,9 +9,9 @@ import java.util.List;
 public class ProfilesSettingsFrameState {
     public static List<GuiComponent> F(boolean bl) {
         ArrayList<GuiComponent> arrayList = new ArrayList<GuiComponent>();
-        arrayList.add(new BooleanToggleComponent(Vape.INSTANCE.getPublicProfileSettings().u));
+        arrayList.add(new BooleanToggleComponent(Vape.INSTANCE.getPublicProfileSettings().autoLoadModuleStates));
         if (!bl) {
-            arrayList.add(new BooleanToggleComponent(Vape.INSTANCE.getPublicProfileSettings().Z));
+            arrayList.add(new BooleanToggleComponent(Vape.INSTANCE.getPublicProfileSettings().framePositionsPerProfile));
         }
         return arrayList;
     }

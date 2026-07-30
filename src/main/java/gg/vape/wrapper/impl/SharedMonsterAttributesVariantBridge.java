@@ -9,11 +9,11 @@ extends Wrapper {
     }
 
     public static SharedMonsterAttributesVariantBridge C() {
-        return new SharedMonsterAttributesVariantBridge(SharedMonsterAttributesVariantBridge.c.getMappingsMapperCompat().D7.h());
+        return new SharedMonsterAttributesVariantBridge(SharedMonsterAttributesVariantBridge.vapeInstance.getMappingsMapperCompat().D7.h());
     }
 
     public static SharedMonsterAttributesVariantBridge l() {
-        return new SharedMonsterAttributesVariantBridge(SharedMonsterAttributesVariantBridge.c.getMappingsMapperCompat().D7.D());
+        return new SharedMonsterAttributesVariantBridge(SharedMonsterAttributesVariantBridge.vapeInstance.getMappingsMapperCompat().D7.D());
     }
 }
 

@@ -15,27 +15,27 @@ import gg.vape.unmap.ModeOption;
 
 public class OnlineRadarSettingsFrame
 extends HudSettingsFrameBase {
-    private final ColorValueEditorComponent kN;
-    private final ColorValueEditorComponent kE;
-    private final DropdownSelectComponent<ModeOption> kg;
-    private final DropdownSelectComponent<ModeOption> kp;
-    private final NumberSliderComponent kG;
-    private final ColorValueEditorComponent kS;
-    private final DropdownSelectComponent<ModeOption> kJ;
-    private final NumberSliderComponent kY;
-    private final DropdownSelectComponent<ModeOption> kh;
-    private final OnlineRadarSettings kv = new OnlineRadarSettings();
-    private final BooleanToggleComponent kQ;
-    private boolean km;
-    private final NumberSliderComponent k_;
-    private final NumberSliderComponent kC;
-    private final NumberSliderComponent kF;
-    private double kj;
-    private final BooleanToggleComponent kw;
-    private final BooleanToggleComponent k4;
+    private final ColorValueEditorComponent customColorEditor;
+    private final ColorValueEditorComponent friendlyColorEditor;
+    private final DropdownSelectComponent<ModeOption> dotStyleDropdown;
+    private final DropdownSelectComponent<ModeOption> colorModeDropdown;
+    private final NumberSliderComponent maxShownSlider;
+    private final ColorValueEditorComponent enemyColorEditor;
+    private final DropdownSelectComponent<ModeOption> radarStyleDropdown;
+    private final NumberSliderComponent dotSizeSlider;
+    private final DropdownSelectComponent<ModeOption> radarModeDropdown;
+    private final OnlineRadarSettings settings = new OnlineRadarSettings();
+    private final BooleanToggleComponent clampRadarToggle;
+    private boolean radarSizeDragging;
+    private final NumberSliderComponent radarScaleSlider;
+    private final NumberSliderComponent radarSizeSlider;
+    private final NumberSliderComponent maxDistanceSlider;
+    private double previewRadarSize;
+    private final BooleanToggleComponent showBackgroundToggle;
+    private final BooleanToggleComponent showCrossToggle;
 
-    public OnlineRadarSettings H$src$Lgg_vape_friend_ui_OnlineRadarSettings_$q24dh8() {
-        return this.kv;
+    public OnlineRadarSettings getSettings() {
+        return this.settings;
     }
 
     @Override
@@ -44,32 +44,32 @@ extends HudSettingsFrameBase {
 
     public OnlineRadarSettingsFrame() {
         super("newradar", "Radar");
-        this.kh = new DropdownSelectComponent(this.kv.n);
-        this.kp = new DropdownSelectComponent(this.kv.I);
-        this.kN = new ColorValueEditorComponent(this.kv.v);
-        this.kE = new ColorValueEditorComponent(this.kv.j);
-        this.kS = new ColorValueEditorComponent(this.kv.F);
-        this.kg = new DropdownSelectComponent(this.kv.L);
-        this.kJ = new DropdownSelectComponent(this.kv.p);
-        this.kY = new NumberSliderComponent(this.kv.s);
-        this.kC = new NumberSliderComponent(this.kv.h);
-        this.k_ = new NumberSliderComponent(this.kv.V);
-        this.kw = new BooleanToggleComponent(this.kv.y);
-        this.kF = new NumberSliderComponent(this.kv.e);
-        this.kG = new NumberSliderComponent(this.kv.C);
-        this.k4 = new BooleanToggleComponent(this.kv.U);
-        this.kQ = new BooleanToggleComponent(this.kv.r);
-        this.kj = (Double)this.kv.h.getValue();
-        this.addSettings(this.kh, this.kp, this.kN, this.kE, this.kS, this.kg,
-                this.kJ, this.kY, this.kC, this.k_, this.kw, this.kF, this.kG,
-                this.k4, this.kQ);
+        this.radarModeDropdown = new DropdownSelectComponent(this.settings.radarMode);
+        this.colorModeDropdown = new DropdownSelectComponent(this.settings.colorMode);
+        this.customColorEditor = new ColorValueEditorComponent(this.settings.customColor);
+        this.friendlyColorEditor = new ColorValueEditorComponent(this.settings.friendlyColor);
+        this.enemyColorEditor = new ColorValueEditorComponent(this.settings.enemyColor);
+        this.dotStyleDropdown = new DropdownSelectComponent(this.settings.dotStyle);
+        this.radarStyleDropdown = new DropdownSelectComponent(this.settings.radarStyle);
+        this.dotSizeSlider = new NumberSliderComponent(this.settings.dotSize);
+        this.radarSizeSlider = new NumberSliderComponent(this.settings.radarSize);
+        this.radarScaleSlider = new NumberSliderComponent(this.settings.radarScale);
+        this.showBackgroundToggle = new BooleanToggleComponent(this.settings.showBackground);
+        this.maxDistanceSlider = new NumberSliderComponent(this.settings.maxDistance);
+        this.maxShownSlider = new NumberSliderComponent(this.settings.maxShown);
+        this.showCrossToggle = new BooleanToggleComponent(this.settings.showCross);
+        this.clampRadarToggle = new BooleanToggleComponent(this.settings.clampRadar);
+        this.previewRadarSize = (Double)this.settings.radarSize.getValue();
+        this.addSettings(this.radarModeDropdown, this.colorModeDropdown, this.customColorEditor, this.friendlyColorEditor, this.enemyColorEditor, this.dotStyleDropdown,
+                this.radarStyleDropdown, this.dotSizeSlider, this.radarSizeSlider, this.radarScaleSlider, this.showBackgroundToggle, this.maxDistanceSlider, this.maxShownSlider,
+                this.showCrossToggle, this.clampRadarToggle);
         this.h(new OnlineRadarPreviewComponent(this), new Object[0]);
     }
 
     @Override
     public double A() {
-        if (this.isPublicProfilePreview() && this.m$src$Z$1ty1uhu()) {
-            return this.kC.isDragging() ? this.kj : (Double)this.kv.h.getValue();
+        if (this.isPublicProfilePreview() && this.isTwoDimensionalMode()) {
+            return this.radarSizeSlider.isDragging() ? this.previewRadarSize : (Double)this.settings.radarSize.getValue();
         }
         return super.A();
     }
@@ -79,20 +79,19 @@ extends HudSettingsFrameBase {
         return "Radar";
     }
 
-    private boolean m$src$Z$1ty1uhu() {
-        return this.kv.n.getValue() == this.kv.W;
+    private boolean isTwoDimensionalMode() {
+        return this.settings.radarMode.getValue() == this.settings.twoDimensionalRadarMode;
     }
 
     @Override
     public double L() {
-        if (this.isPublicProfilePreview() && this.m$src$Z$1ty1uhu()) {
-            double d = this.kC.isDragging() ? this.kj : (Double)this.kv.h.getValue();
-            return d + 2.0;
+        if (this.isPublicProfilePreview() && this.isTwoDimensionalMode()) {
+            double radarSize = this.radarSizeSlider.isDragging() ? this.previewRadarSize : (Double)this.settings.radarSize.getValue();
+            return radarSize + 2.0;
         }
-        if (this.isPublicProfilePreview() && !this.m$src$Z$1ty1uhu()) {
-            boolean bl;
-            boolean bl2 = bl = !ClientSettings.INSTANCE.inputEnabled && HudModuleConfigFrameBase.isHudEditorContext();
-            if (bl) {
+        if (this.isPublicProfilePreview() && !this.isTwoDimensionalMode()) {
+            boolean showingEditorPlaceholder = !ClientSettings.INSTANCE.inputEnabled && HudModuleConfigFrameBase.isHudEditorContext();
+            if (showingEditorPlaceholder) {
                 return Math.max(26, 32);
             }
         }
@@ -108,22 +107,22 @@ extends HudSettingsFrameBase {
 
     @Override
     public void Y() {
-        if (this.isPublicProfilePreview() && this.m$src$Z$1ty1uhu()) {
-            if (this.kC.isDragging()) {
-                if (!this.km) {
-                    this.km = true;
+        if (this.isPublicProfilePreview() && this.isTwoDimensionalMode()) {
+            if (this.radarSizeSlider.isDragging()) {
+                if (!this.radarSizeDragging) {
+                    this.radarSizeDragging = true;
                 }
             } else {
-                if (this.km) {
-                    this.km = false;
+                if (this.radarSizeDragging) {
+                    this.radarSizeDragging = false;
                     this.H(true);
                 }
-                this.kj = (Double)this.kv.h.getValue();
+                this.previewRadarSize = (Double)this.settings.radarSize.getValue();
             }
             return;
         }
-        this.km = false;
-        this.kj = (Double)this.kv.h.getValue();
+        this.radarSizeDragging = false;
+        this.previewRadarSize = (Double)this.settings.radarSize.getValue();
     }
 
     @Override

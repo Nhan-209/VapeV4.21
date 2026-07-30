@@ -3,27 +3,11 @@ package gg.vape.wrapper.impl;
 import gg.vape.Vape;
 import gg.vape.mapping.mappings.MBlock;
 import gg.vape.wrapper.Wrapper;
-import gg.vape.wrapper.impl.AxisAlignedBB;
-import gg.vape.wrapper.impl.BlockPos;
-import gg.vape.wrapper.impl.BlockState;
-import gg.vape.wrapper.impl.BlockStatePredicate;
-import gg.vape.wrapper.impl.Entity;
-import gg.vape.wrapper.impl.EntityPlayer;
-import gg.vape.wrapper.impl.EnumActionResult;
-import gg.vape.wrapper.impl.EnumFacing;
-import gg.vape.wrapper.impl.EnumHand;
-import gg.vape.wrapper.impl.ForgeVersion;
-import gg.vape.wrapper.impl.ItemStack;
-import gg.vape.wrapper.impl.Material;
-import gg.vape.wrapper.impl.Minecraft;
-import gg.vape.wrapper.impl.RayTraceResult;
-import gg.vape.wrapper.impl.Vec3;
-import gg.vape.wrapper.impl.World;
 
 public class Block
 extends Wrapper {
     public float c() {
-        return MBlock.w(Block.c.getMappings().qg, this.I);
+        return MBlock.w(Block.vapeInstance.getMappings().qg, this.I);
     }
 
     public static Block t(String string) {
@@ -31,7 +15,7 @@ extends Wrapper {
             if (!string.startsWith("block.minecraft.")) {
                 string = "block.minecraft." + string;
             }
-            Iterable iterable = (Iterable)MBlock.N(Block.c.getMappings().qg);
+            Iterable iterable = (Iterable)MBlock.N(Block.vapeInstance.getMappings().qg);
             for (Object t : iterable) {
                 Block block = new Block(t);
                 if (block.U() == null || !block.U().equalsIgnoreCase(string)) continue;
@@ -39,7 +23,7 @@ extends Wrapper {
             }
             return null;
         }
-        Object object = Block.c.getMappings().qg.a(string);
+        Object object = Block.vapeInstance.getMappings().qg.a(string);
         if (object == null) {
             return null;
         }
@@ -52,22 +36,22 @@ extends Wrapper {
             return 0;
         }
         if (ForgeVersion.MC_1_7_10.L()) {
-            return MBlock.Q(Block.c.getMappings().qg, this.I, Minecraft.theWorld().getObject(), n, n2, n3);
+            return MBlock.Q(Block.vapeInstance.getMappings().qg, this.I, Minecraft.theWorld().getObject(), n, n2, n3);
         }
         if (ForgeVersion.MC_1_8_9.L()) {
-            return MBlock.V(Block.c.getMappings().qg, this.I, Minecraft.theWorld().getObject(), BlockPos.create(n, n2, n3).getObject());
+            return MBlock.V(Block.vapeInstance.getMappings().qg, this.I, Minecraft.theWorld().getObject(), BlockPos.create(n, n2, n3).getObject());
         }
         if (ForgeVersion.MC_1_12_2.L()) {
-            return MBlock.W(Block.c.getMappings().qg, this.I, Minecraft.theWorld().getBlockState(BlockPos.create(n, n2, n3)).getObject());
+            return MBlock.W(Block.vapeInstance.getMappings().qg, this.I, Minecraft.theWorld().getBlockState(BlockPos.create(n, n2, n3)).getObject());
         }
         return 0;
     }
 
     public Boolean J(BlockState blockState, boolean bl) {
         if (ForgeVersion.MC_1_16_5.d()) {
-            return MBlock.X(Block.c.getMappings().qg, this.I);
+            return MBlock.X(Block.vapeInstance.getMappings().qg, this.I);
         }
-        return Block.c.getMappings().qg.C(this.I, blockState, bl);
+        return Block.vapeInstance.getMappings().qg.C(this.I, blockState, bl);
     }
 
     public Material H() {
@@ -75,16 +59,16 @@ extends Wrapper {
             return null;
         }
         if (ForgeVersion.MC_1_16_5.d()) {
-            return new Material(MBlock.k(Block.c.getMappings().qg, this.I));
+            return new Material(MBlock.k(Block.vapeInstance.getMappings().qg, this.I));
         }
         if (ForgeVersion.MC_1_12_2.d()) {
-            return new Material(MBlock.z(Block.c.getMappings().qg, this.I, null));
+            return new Material(MBlock.z(Block.vapeInstance.getMappings().qg, this.I, null));
         }
-        return new Material(MBlock.h(Block.c.getMappings().qg, this.I));
+        return new Material(MBlock.h(Block.vapeInstance.getMappings().qg, this.I));
     }
 
     public ItemStack Z(World world, BlockPos blockPos, BlockState blockState) {
-        return new ItemStack(MBlock.Q(Block.c.getMappings().qg, this.I, world.getObject(), blockPos.getObject(), blockState.getObject()));
+        return new ItemStack(MBlock.Q(Block.vapeInstance.getMappings().qg, this.I, world.getObject(), blockPos.getObject(), blockState.getObject()));
     }
 
     public AxisAlignedBB Q(World world, int n, int n2, int n3) {
@@ -92,7 +76,7 @@ extends Wrapper {
             Vape.notifyNativeStackTrace();
             return null;
         }
-        return new AxisAlignedBB(MBlock.J(Block.c.getMappings().qg, this.I, world.getObject(), n, n2, n3));
+        return new AxisAlignedBB(MBlock.J(Block.vapeInstance.getMappings().qg, this.I, world.getObject(), n, n2, n3));
     }
 
     public boolean p(BlockState blockState) {
@@ -103,40 +87,40 @@ extends Wrapper {
             return blockState.g() && blockState.Y();
         }
         if (ForgeVersion.MC_1_16_5.d()) {
-            return Block.c.getMappings().qg.A(this.I);
+            return Block.vapeInstance.getMappings().qg.A(this.I);
         }
         if (ForgeVersion.MC_1_12_2.d()) {
-            return Block.c.getMappings().qg.E(this.I, blockState.getObject());
+            return Block.vapeInstance.getMappings().qg.E(this.I, blockState.getObject());
         }
-        return Block.c.getMappings().qg.F$src$Z$6w97vr(this.I);
+        return Block.vapeInstance.getMappings().qg.F$src$Z$6w97vr(this.I);
     }
 
     public String U() {
-        return MBlock.l(Block.c.getMappings().qg, this.I);
+        return MBlock.l(Block.vapeInstance.getMappings().qg, this.I);
     }
 
     public AxisAlignedBB M(World world, int n, int n2, int n3) {
-        return new AxisAlignedBB(MBlock.d(Block.c.getMappings().qg, this.I, world.getObject(), n, n2, n3));
+        return new AxisAlignedBB(MBlock.d(Block.vapeInstance.getMappings().qg, this.I, world.getObject(), n, n2, n3));
     }
 
     public BlockStatePredicate a() {
-        return new BlockStatePredicate(MBlock.N(Block.c.getMappings().qg, this.I));
+        return new BlockStatePredicate(MBlock.N(Block.vapeInstance.getMappings().qg, this.I));
     }
 
     public boolean y(World world, BlockPos blockPos, BlockState blockState, EntityPlayer entityPlayer, EnumFacing enumFacing, float f, float f2, float f3) {
         if (ForgeVersion.MC_1_16_5.d()) {
             RayTraceResult rayTraceResult = RayTraceResult.create(null, Vec3.create(f, f2, f3), enumFacing, blockPos);
-            Object object = MBlock.E(Block.c.getMappings().qg, this.I, Minecraft.theWorld().getBlockState(blockPos).getObject(), world.getObject(), blockPos.getObject(), entityPlayer.getObject(), enumFacing.getObject(), rayTraceResult.getObject());
+            Object object = MBlock.E(Block.vapeInstance.getMappings().qg, this.I, Minecraft.theWorld().getBlockState(blockPos).getObject(), world.getObject(), blockPos.getObject(), entityPlayer.getObject(), enumFacing.getObject(), rayTraceResult.getObject());
             EnumActionResult enumActionResult = new EnumActionResult(object);
             return enumActionResult.equals(EnumActionResult.A());
         }
         if (ForgeVersion.MC_1_12_2.d()) {
-            return MBlock.G(Block.c.getMappings().qg, this.I, world.getObject(), blockPos.getObject(), blockState.getObject(), entityPlayer.getObject(), EnumHand.M().getObject(), enumFacing.getObject(), f, f2, f3);
+            return MBlock.G(Block.vapeInstance.getMappings().qg, this.I, world.getObject(), blockPos.getObject(), blockState.getObject(), entityPlayer.getObject(), EnumHand.M().getObject(), enumFacing.getObject(), f, f2, f3);
         }
         if (ForgeVersion.MC_1_7_10.Y()) {
-            return MBlock.L(Block.c.getMappings().qg, this.I, world.getObject(), blockPos.getObject(), blockState.getObject(), entityPlayer.getObject(), enumFacing.getObject(), f, f2, f3);
+            return MBlock.L(Block.vapeInstance.getMappings().qg, this.I, world.getObject(), blockPos.getObject(), blockState.getObject(), entityPlayer.getObject(), enumFacing.getObject(), f, f2, f3);
         }
-        return MBlock.w(Block.c.getMappings().qg, this.I, world.getObject(), blockPos.P(), blockPos.o(), blockPos.d(), entityPlayer.getObject(), enumFacing.Y(), f, f2, f3);
+        return MBlock.w(Block.vapeInstance.getMappings().qg, this.I, world.getObject(), blockPos.P(), blockPos.o(), blockPos.d(), entityPlayer.getObject(), enumFacing.Y(), f, f2, f3);
     }
 
     public Block(Object object) {
@@ -144,27 +128,27 @@ extends Wrapper {
     }
 
     public void W(World world, int n, int n2, int n3, Entity entity) {
-        MBlock.v(Block.c.getMappings().qg, this.I, world.getObject(), n, n2, n3, entity.getObject());
+        MBlock.v(Block.vapeInstance.getMappings().qg, this.I, world.getObject(), n, n2, n3, entity.getObject());
     }
 
     public static boolean r(Entity entity) {
         if (ForgeVersion.MC_1_21_4.d()) {
-            return MBlock.k$src$Z$8ngnn6(Block.c.getMappings().qg, entity.getObject());
+            return MBlock.k$src$Z$8ngnn6(Block.vapeInstance.getMappings().qg, entity.getObject());
         }
         return true;
     }
 
     public int M() {
-        return MBlock.E(Block.c.getMappings().qg, this.I);
+        return MBlock.E(Block.vapeInstance.getMappings().qg, this.I);
     }
 
     public void r(World world, Entity entity) {
         if (ForgeVersion.MC_1_21_4.d()) {
             if (ForgeVersion.MC_26_2.d()) {
                 BlockPos blockPos = entity.C$src$Lgg_vape_wrapper_impl_BlockPos_$y7f4vu();
-                MBlock.u(Block.c.getMappings().qg, this.I, world.getObject(), world.getBlockState(blockPos).getObject(), blockPos.getObject(), entity.getObject(), entity.M$src$F$ff28gb());
+                MBlock.u(Block.vapeInstance.getMappings().qg, this.I, world.getObject(), world.getBlockState(blockPos).getObject(), blockPos.getObject(), entity.getObject(), entity.M$src$F$ff28gb());
             } else {
-                MBlock.y(Block.c.getMappings().qg, this.I, world.getObject(), entity.getObject());
+                MBlock.y(Block.vapeInstance.getMappings().qg, this.I, world.getObject(), entity.getObject());
             }
         }
     }
@@ -173,14 +157,14 @@ extends Wrapper {
         if (ForgeVersion.MC_1_20_6.d()) {
             throw new UnsupportedOperationException("Unimplemented");
         }
-        return Block.c.getMappings().qg.F(this.I);
+        return Block.vapeInstance.getMappings().qg.F(this.I);
     }
 
     public BlockState Z() {
         if (ForgeVersion.c() >= 35) {
             return this.a();
         }
-        return new BlockState(MBlock.N(Block.c.getMappings().qg, this.I));
+        return new BlockState(MBlock.N(Block.vapeInstance.getMappings().qg, this.I));
     }
 
     private static UnsupportedOperationException a(UnsupportedOperationException unsupportedOperationException) {
@@ -188,15 +172,15 @@ extends Wrapper {
     }
 
     public AxisAlignedBB Y(BlockState blockState, World world, BlockPos blockPos) {
-        return new AxisAlignedBB(MBlock.y(Block.c.getMappings().qg, this.I, blockState.getObject(), world.getObject(), blockPos.getObject()));
+        return new AxisAlignedBB(MBlock.y(Block.vapeInstance.getMappings().qg, this.I, blockState.getObject(), world.getObject(), blockPos.getObject()));
     }
 
     public static int R(Block block) {
         if (ForgeVersion.MC_1_16_5.d()) {
-            Object object = MBlock.N(Block.c.getMappings().qg, block.getObject());
-            return Block.c.getMappings().qg.h(object);
+            Object object = MBlock.N(Block.vapeInstance.getMappings().qg, block.getObject());
+            return Block.vapeInstance.getMappings().qg.h(object);
         }
-        return Block.c.getMappings().qg.h(block.getObject());
+        return Block.vapeInstance.getMappings().qg.h(block.getObject());
     }
 
     public boolean X(BlockState blockState) {
@@ -207,16 +191,16 @@ extends Wrapper {
             return blockState.g() && blockState.Y();
         }
         if (ForgeVersion.MC_1_16_5.d()) {
-            return Block.c.getMappings().qg.A(this.I);
+            return Block.vapeInstance.getMappings().qg.A(this.I);
         }
         if (ForgeVersion.MC_1_12_2.d()) {
-            return Block.c.getMappings().qg.r(this.I, blockState.getObject());
+            return Block.vapeInstance.getMappings().qg.r(this.I, blockState.getObject());
         }
-        return Block.c.getMappings().qg.Z(this.I);
+        return Block.vapeInstance.getMappings().qg.Z(this.I);
     }
 
     public AxisAlignedBB Q(World world, BlockPos blockPos) {
-        return new AxisAlignedBB(MBlock.d(Block.c.getMappings().qg, this.I, world.getObject(), blockPos.getObject()));
+        return new AxisAlignedBB(MBlock.d(Block.vapeInstance.getMappings().qg, this.I, world.getObject(), blockPos.getObject()));
     }
 }
 

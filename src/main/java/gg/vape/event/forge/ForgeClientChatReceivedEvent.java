@@ -12,7 +12,7 @@ import gg.vape.wrapper.impl.ForgeVersion;
 public class ForgeClientChatReceivedEvent
 implements EventListener {
 
-    @EventHandler(A=EventPriority.LOW)
+    @EventHandler(priority=EventPriority.LOW)
     public void onPacketReceive(EventPacketReceive eventPacketReceive) {
         if (!eventPacketReceive.getPacket().isInstance(MappedClasses.Zu)) {
             return;

@@ -3,29 +3,28 @@ package gg.vape.friend;
 import gg.vape.friend.TargetType;
 
 public class TargetEntry {
-    private static int[] i;
-    private final TargetType T;
+    private static int[] obfuscationState;
+    private final TargetType type;
 
-    public TargetType a() {
-        return this.T;
+    public TargetType getType() {
+        return this.type;
     }
 
-    public static void E(int[] nArray) {
-        i = nArray;
+    public static void setTargetObfuscationState(int[] state) {
+        obfuscationState = state;
     }
 
-    public static int[] s$src$AI$15w11fb() {
-        return i;
+    public static int[] getTargetObfuscationState() {
+        return obfuscationState;
     }
 
     public TargetEntry(TargetType targetType) {
-        this.T = targetType;
+        this.type = targetType;
     }
 
     static {
-        if (TargetEntry.s$src$AI$15w11fb() == null) {
-            TargetEntry.E(new int[4]);
+        if (TargetEntry.getTargetObfuscationState() == null) {
+            TargetEntry.setTargetObfuscationState(new int[4]);
         }
     }
 }
-

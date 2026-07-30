@@ -6,34 +6,34 @@ import gg.vape.wrapper.impl.Entity;
 
 public class EventSetArmorModel
 extends Event {
-    private static final EventListeners O = new EventListeners();
-    private final float i;
-    private int F;
-    private final Entity h;
+    private static final EventListeners EVENT_LISTENERS = new EventListeners();
+    private final float partialTick;
+    private int result;
+    private final Entity entity;
 
     public float getPartialTick() {
-        return this.i;
+        return this.partialTick;
     }
 
     public int getResult() {
-        return this.F;
+        return this.result;
     }
 
     public Entity getEntity() {
-        return this.h;
+        return this.entity;
     }
 
     @Override
     public EventListeners getListeners() {
-        return O;
+        return EVENT_LISTENERS;
     }
 
-    public void setResult(int n) {
-        this.F = n;
+    public void setResult(int result) {
+        this.result = result;
     }
 
     public static EventListeners getEventListeners() {
-        return O;
+        return EVENT_LISTENERS;
     }
 
     @Override
@@ -41,10 +41,9 @@ extends Event {
         return super.fire();
     }
 
-    public EventSetArmorModel(Object object, int n, float f) {
-        this.h = new Entity(object);
-        this.F = n;
-        this.i = f;
+    public EventSetArmorModel(Object entityHandle, int result, float partialTick) {
+        this.entity = new Entity(entityHandle);
+        this.result = result;
+        this.partialTick = partialTick;
     }
 }
-

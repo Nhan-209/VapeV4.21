@@ -3,7 +3,6 @@ package gg.vape.mapping.mappings;
 import gg.vape.mapping.MappedClasses;
 import gg.vape.mapping.Mapping;
 import gg.vape.mapping.MappingField;
-import gg.vape.mapping.mappings.MSPacketMapChunkBulk;
 import gg.vape.wrapper.Wrapper;
 import gg.vape.wrapper.impl.ForgeVersion;
 
@@ -27,26 +26,26 @@ extends Mapping {
                 String string2 = "accelerationPower";
                 Class clazz2 = MappedClasses.ze;
                 MEntityArrow mEntityArrow = this;
-                this.l = mEntityArrow.X(clazz2, string2, bl, clazz);
+                this.l = mEntityArrow.registerInstanceFieldForOwner(clazz2, string2, bl, clazz);
             } else if (ForgeVersion.MC_1_16_5.d()) {
                 Class<Double> clazz = Double.TYPE;
-                boolean bl = Wrapper.G;
+                boolean bl = Wrapper.isNativeAvailable;
                 String string3 = "field_70232_b";
                 Class clazz3 = MappedClasses.ze;
                 MEntityArrow mEntityArrow = this;
-                this.c = mEntityArrow.X(clazz3, string3, bl, clazz);
+                this.c = mEntityArrow.registerInstanceFieldForOwner(clazz3, string3, bl, clazz);
                 Class<Double> clazz4 = Double.TYPE;
-                boolean bl2 = Wrapper.G;
+                boolean bl2 = Wrapper.isNativeAvailable;
                 String string4 = "field_70233_c";
                 Class clazz5 = MappedClasses.ze;
                 MEntityArrow mEntityArrow2 = this;
-                this.T = this.X(clazz5, string4, bl2, clazz4);
+                this.T = this.registerInstanceFieldForOwner(clazz5, string4, bl2, clazz4);
                 Class<Double> clazz6 = Double.TYPE;
-                boolean bl3 = Wrapper.G;
+                boolean bl3 = Wrapper.isNativeAvailable;
                 String string5 = "field_70230_d";
                 Class clazz7 = MappedClasses.ze;
                 MEntityArrow mEntityArrow3 = this;
-                this.p = this.X(clazz7, string5, bl3, clazz6);
+                this.p = this.registerInstanceFieldForOwner(clazz7, string5, bl3, clazz6);
             } else {
                 Class<Double> clazz = Double.TYPE;
                 boolean bl = true;
@@ -68,23 +67,23 @@ extends Mapping {
         }
         if (ForgeVersion.MC_1_21_0.d()) {
             Class<Double> clazz = Double.TYPE;
-            boolean bl = Wrapper.G;
+            boolean bl = Wrapper.isNativeAvailable;
             String string9 = "field_70232_b";
             Class clazz10 = MappedClasses.ze;
             MEntityArrow mEntityArrow = this;
-            this.c = mEntityArrow.X(clazz10, string9, bl, clazz);
+            this.c = mEntityArrow.registerInstanceFieldForOwner(clazz10, string9, bl, clazz);
             Class<Double> clazz11 = Double.TYPE;
-            boolean bl6 = Wrapper.G;
+            boolean bl6 = Wrapper.isNativeAvailable;
             String string10 = "field_70233_c";
             Class clazz12 = MappedClasses.ze;
             MEntityArrow mEntityArrow6 = this;
-            this.T = this.X(clazz12, string10, bl6, clazz11);
+            this.T = this.registerInstanceFieldForOwner(clazz12, string10, bl6, clazz11);
             Class<Double> clazz13 = Double.TYPE;
-            boolean bl7 = Wrapper.G;
+            boolean bl7 = Wrapper.isNativeAvailable;
             String string11 = "field_70230_d";
             Class clazz14 = MappedClasses.ze;
             MEntityArrow mEntityArrow7 = this;
-            this.p = this.X(clazz14, string11, bl7, clazz13);
+            this.p = this.registerInstanceFieldForOwner(clazz14, string11, bl7, clazz13);
         }
         Class<Double> clazz = Double.TYPE;
         boolean bl = true;

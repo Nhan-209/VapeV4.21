@@ -45,10 +45,10 @@ extends Mod {
     public void onTick(EventPrePlayerTick event) {
         EntityPlayerSP player = event.getThePlayer();
         if (this.removeNausea.getEffectiveValue().booleanValue()) {
-            player.q(PotionRegistry.X.D());
+            player.q(PotionRegistry.X.getResolvedId());
         }
         if (this.removeBlindness.getEffectiveValue().booleanValue() && this.removeEffects.getEffectiveValue().booleanValue()) {
-            player.q(PotionRegistry.K.D());
+            player.q(PotionRegistry.K.getResolvedId());
         }
         if (this.removeSlowness.getEffectiveValue().booleanValue() && this.removeEffects.getEffectiveValue().booleanValue()) {
             PotionEntry slowness = PotionRegistry.o;
@@ -60,7 +60,7 @@ extends Mod {
             } else {
                 slowness.t(player, player.z$src$Ljava_lang_Object_$1k68ls2(), 0);
             }
-            player.q(slowness.D());
+            player.q(slowness.getResolvedId());
         }
     }
 
@@ -73,7 +73,7 @@ extends Mod {
             return;
         }
         Potion potion = event.getPotion();
-        boolean suppressBlindness = this.removeBlindness.getEffectiveValue().booleanValue() && PotionRegistry.K.q(potion);
+        boolean suppressBlindness = this.removeBlindness.getEffectiveValue().booleanValue() && PotionRegistry.K.matchesLegacyPotion(potion);
         if (suppressBlindness) {
             event.setActive(false);
             event.setCancelled(true);

@@ -16,11 +16,11 @@ extends Mapping {
     private MappingMethod u;
 
     private int S(Object object) {
-        return this.O.Z(null, object);
+        return this.O.invokeInt(null, object);
     }
 
     private Object T(Object object) {
-        return this.N.L(object, new Object[0]);
+        return this.N.invokeObject(object, new Object[0]);
     }
 
 
@@ -29,11 +29,11 @@ extends Mapping {
     }
 
     private boolean q(Object object) {
-        return this.u.e(object, new Object[0]);
+        return this.u.invokeBoolean(object, new Object[0]);
     }
 
     public Object O(int n) {
-        return this.M.L(null, n);
+        return this.M.invokeObject(null, n);
     }
 
     public static boolean r(MStatusEffect mStatusEffect, Object object) {
@@ -55,13 +55,13 @@ extends Mapping {
             boolean bl = true;
             String string = "get";
             MStatusEffect mStatusEffect = this;
-            this.M = mStatusEffect.x(string, bl, clazz, classArray);
+            this.M = mStatusEffect.registerStaticMethod(string, bl, clazz, classArray);
             Class[] classArray2 = new Class[]{MappedClasses.D3};
             Class<Integer> clazz2 = Integer.TYPE;
             boolean bl2 = true;
             String string2 = "getId";
             MStatusEffect mStatusEffect2 = this;
-            this.O = this.x(string2, bl2, clazz2, classArray2);
+            this.O = this.registerStaticMethod(string2, bl2, clazz2, classArray2);
         }
         Class[] classArray = new Class[]{};
         Class<Boolean> clazz = Boolean.TYPE;

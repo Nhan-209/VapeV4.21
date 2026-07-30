@@ -229,7 +229,7 @@ extends GuiComponent {
         boolean bl2;
         MousePosition mousePosition = RenderUtils.h();
         float f2 = ((Double)this.i.scale.getValue()).floatValue();
-        double d = Vape.INSTANCE.getClientSettings().s();
+        double d = Vape.INSTANCE.getClientSettings().getGuiScaleFactor();
         f2 = (float)((double)f2 * d);
         SmoothFontRenderer smoothFontRenderer = this.w((int)(16.0f * f2));
         int n2 = !this.q$src$Z$emgut() ? 14 : 16;
@@ -237,12 +237,12 @@ extends GuiComponent {
         float f3 = this.v.isManagedByClickGui() ? (float)this.n() : (bl ? (float)(this.n() - this.v.j$src$Lgg_vape_ui_click_frame_FrameHeaderComponent_$175vsfc().L()) : (float)(this.n() + 4.0));
         float f4 = f3;
         double d2 = this.v.A();
-        boolean bl3 = bl2 = this.G$src$D$1b2f02a() + d2 / 2.0 >= (double)(Minecraft.J() / 4) / Vape.INSTANCE.getClientSettings().s();
+        boolean bl3 = bl2 = this.G$src$D$1b2f02a() + d2 / 2.0 >= (double)(Minecraft.J() / 4) / Vape.INSTANCE.getClientSettings().getGuiScaleFactor();
         if (bl2) {
             float f5;
             Object object2;
             int n3;
-            boolean bl4 = Vape.INSTANCE.getClientSettings().w.isRainbowEnabled();
+            boolean bl4 = Vape.INSTANCE.getClientSettings().guiColor.isRainbowEnabled();
             double d3 = 10.0;
             CopyOnWriteArrayList<Mod> copyOnWriteArrayList = new CopyOnWriteArrayList<Mod>();
             for (Mod object5 : Vape.INSTANCE.getModManager().collectMods()) {
@@ -317,9 +317,9 @@ extends GuiComponent {
                 double d7 = smoothFontRenderer4.Y(string, this.q$src$Z$emgut());
                 f5 = (float)(this.G$src$D$1b2f02a() + d2 - 4.0 - d7);
                 if (this.i.shadow.getEffectiveValue().booleanValue()) {
-                    smoothFontRenderer4.V(string, f5, f3, this.v.applyDefaultEditorAlpha(this.i.customTextColorEnabled.getEffectiveValue() != false && !Vape.INSTANCE.getClientSettings().w.isRainbowEnabled() ? this.i.customTextColor.getMutableColor() : J.z()), this.q$src$Z$emgut());
+                    smoothFontRenderer4.V(string, f5, f3, this.v.applyDefaultEditorAlpha(this.i.customTextColorEnabled.getEffectiveValue() != false && !Vape.INSTANCE.getClientSettings().guiColor.isRainbowEnabled() ? this.i.customTextColor.getMutableColor() : J.z()), this.q$src$Z$emgut());
                 } else {
-                    smoothFontRenderer4.E(string, f5, f3, this.v.applyDefaultEditorAlpha(this.i.customTextColorEnabled.getEffectiveValue() != false && !Vape.INSTANCE.getClientSettings().w.isRainbowEnabled() ? this.i.customTextColor.getMutableColor() : J.z()), this.q$src$Z$emgut());
+                    smoothFontRenderer4.E(string, f5, f3, this.v.applyDefaultEditorAlpha(this.i.customTextColorEnabled.getEffectiveValue() != false && !Vape.INSTANCE.getClientSettings().guiColor.isRainbowEnabled() ? this.i.customTextColor.getMutableColor() : J.z()), this.q$src$Z$emgut());
                 }
                 f3 = (float)((double)f3 + (smoothFontRenderer4.R(string, this.q$src$Z$emgut()) + (double)(4.0f * f2)));
             }
@@ -712,7 +712,7 @@ extends GuiComponent {
             OpenGlBackendHolder.backend.setColor(1.0f, 1.0f, 1.0f, 1.0f);
             return;
         }
-        boolean bl20 = Vape.INSTANCE.getClientSettings().w.isRainbowEnabled();
+        boolean bl20 = Vape.INSTANCE.getClientSettings().guiColor.isRainbowEnabled();
         double d56 = 10.0;
         CopyOnWriteArrayList<Mod> copyOnWriteArrayList = new CopyOnWriteArrayList<Mod>();
         for (Mod mod : Vape.INSTANCE.getModManager().collectMods()) {
@@ -787,9 +787,9 @@ extends GuiComponent {
             double d60 = smoothFontRenderer6.Y(string, this.q$src$Z$emgut());
             f = (float)(this.G$src$D$1b2f02a() + 2.0);
             if (this.i.shadow.getEffectiveValue().booleanValue()) {
-                smoothFontRenderer6.V(string, f, f3, this.v.applyDefaultEditorAlpha(this.i.customTextColorEnabled.getEffectiveValue() != false && !Vape.INSTANCE.getClientSettings().w.isRainbowEnabled() ? this.i.customTextColor.getMutableColor() : J.z()), this.q$src$Z$emgut());
+                smoothFontRenderer6.V(string, f, f3, this.v.applyDefaultEditorAlpha(this.i.customTextColorEnabled.getEffectiveValue() != false && !Vape.INSTANCE.getClientSettings().guiColor.isRainbowEnabled() ? this.i.customTextColor.getMutableColor() : J.z()), this.q$src$Z$emgut());
             } else {
-                smoothFontRenderer6.E(string, f, f3, this.v.applyDefaultEditorAlpha(this.i.customTextColorEnabled.getEffectiveValue() != false && !Vape.INSTANCE.getClientSettings().w.isRainbowEnabled() ? this.i.customTextColor.getMutableColor() : J.z()), this.q$src$Z$emgut());
+                smoothFontRenderer6.E(string, f, f3, this.v.applyDefaultEditorAlpha(this.i.customTextColorEnabled.getEffectiveValue() != false && !Vape.INSTANCE.getClientSettings().guiColor.isRainbowEnabled() ? this.i.customTextColor.getMutableColor() : J.z()), this.q$src$Z$emgut());
             }
             f3 = (float)((double)f3 + (smoothFontRenderer6.R(string, this.q$src$Z$emgut()) + (double)(4.0f * f2)));
         }
@@ -1218,7 +1218,7 @@ extends GuiComponent {
 
     private double o(int n) {
         float f = ((Double)this.i.scale.getValue()).floatValue();
-        double d = Vape.INSTANCE.getClientSettings().s();
+        double d = Vape.INSTANCE.getClientSettings().getGuiScaleFactor();
         f = (float)((double)f * d);
         SmoothFontRenderer smoothFontRenderer = this.w((int)(16.0f * f));
         double d2 = smoothFontRenderer.R("A", this.q$src$Z$emgut());

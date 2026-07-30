@@ -21,7 +21,7 @@ extends Mapping {
     }
 
     private Object y(Object object) {
-        return this.q.L(object, new Object[0]);
+        return this.q.invokeObject(object, new Object[0]);
     }
 
     static {
@@ -50,7 +50,7 @@ extends Mapping {
             }
             Class[] classArray = new Class[]{};
             Class clazz = MappedClasses.uj;
-            boolean bl = Wrapper.G;
+            boolean bl = Wrapper.isNativeAvailable;
             String string = "func_145881_a";
             MTileEntityMobSpawner mTileEntityMobSpawner = this;
             this.q = mTileEntityMobSpawner.Y(string, bl, clazz, classArray);
@@ -66,7 +66,7 @@ extends Mapping {
         } else {
             Class[] classArray = new Class[]{};
             Class clazz = MappedClasses.uj;
-            boolean bl = Wrapper.G;
+            boolean bl = Wrapper.isNativeAvailable;
             String string = "func_145881_a";
             MTileEntityMobSpawner mTileEntityMobSpawner = this;
             this.q = mTileEntityMobSpawner.Y(string, bl, clazz, classArray);

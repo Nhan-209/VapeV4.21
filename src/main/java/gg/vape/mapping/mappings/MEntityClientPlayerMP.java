@@ -227,7 +227,7 @@ extends Mapping {
     }
 
     private void A(Object object, String string) {
-        this.N.c(object, string);
+        this.N.invokeVoid(object, string);
     }
 
     private float G(Object object) {

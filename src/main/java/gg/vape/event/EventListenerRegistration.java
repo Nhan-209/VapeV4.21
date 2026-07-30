@@ -19,53 +19,53 @@ import java.util.function.Predicate;
 import org.jetbrains.annotations.UnmodifiableView;
 
 public class EventListenerRegistration {
-    private final Map<Class<? extends IEvent>, ArrayList<EventHandlerEntry>> H = new LinkedHashMap<Class<? extends IEvent>, ArrayList<EventHandlerEntry>>();
-    private static String q;
-    private final Predicate<IEvent>[] Z;
-    private final EventListener A;
+    private final Map<Class<? extends IEvent>, ArrayList<EventHandlerEntry>> handlersByEventType = new LinkedHashMap<Class<? extends IEvent>, ArrayList<EventHandlerEntry>>();
+    private static String obfuscationState;
+    private final Predicate<IEvent>[] filters;
+    private final EventListener listener;
 
-    public EventListenerRegistration(EventListener eventListener, Predicate<IEvent> ... predicateArray) {
-        this.A = eventListener;
-        this.Z = predicateArray;
+    public EventListenerRegistration(EventListener listener, Predicate<IEvent> ... filters) {
+        this.listener = listener;
+        this.filters = filters;
         this.discoverHandlers();
     }
 
     public EventListener getListener() {
-        return this.A;
+        return this.listener;
     }
 
     public @UnmodifiableView Collection<Class<? extends IEvent>> getEventTypes() {
-        return this.H.keySet();
+        return this.handlersByEventType.keySet();
     }
 
-    public static String M() {
-        return q;
+    public static String getObfuscationState() {
+        return obfuscationState;
     }
 
-    private static Exception a(Exception exception) {
+    private static Exception identityException(Exception exception) {
         return exception;
     }
 
     static {
-        if (EventListenerRegistration.M() != null) {
-            EventListenerRegistration.C("HxeBW");
+        if (EventListenerRegistration.getObfuscationState() != null) {
+            EventListenerRegistration.setObfuscationState("HxeBW");
         }
     }
 
     private void discoverHandlers() {
         try {
-            for (Method method : this.A.getClass().getMethods()) {
-                Class<?> clazz;
-                EventHandler eventHandler = method.getDeclaredAnnotation(EventHandler.class);
-                if (eventHandler == null || method.getParameterCount() != 1 || !IEvent.class.isAssignableFrom(clazz = method.getParameterTypes()[0])) continue;
-                Class<? extends IEvent> clazz2 = clazz.asSubclass(IEvent.class);
-                EventHandlerInvoker eventHandlerInvoker = EventHandlerInvoker.create(this.A, clazz2, method);
-                EventHandlerEntry eventHandlerEntry = new EventHandlerEntry(this, eventHandler.A(), eventHandler.b(), eventHandlerInvoker);
-                List<EventHandlerEntry> list = this.H.computeIfAbsent(clazz2, EventListenerRegistration::lambda$processHandlers$0);
-                list.add(eventHandlerEntry);
+            for (Method method : this.listener.getClass().getMethods()) {
+                Class<?> parameterType;
+                EventHandler annotation = method.getDeclaredAnnotation(EventHandler.class);
+                if (annotation == null || method.getParameterCount() != 1 || !IEvent.class.isAssignableFrom(parameterType = method.getParameterTypes()[0])) continue;
+                Class<? extends IEvent> eventType = parameterType.asSubclass(IEvent.class);
+                EventHandlerInvoker invoker = EventHandlerInvoker.create(this.listener, eventType, method);
+                EventHandlerEntry handler = new EventHandlerEntry(this, annotation.priority(), annotation.skipCanceled(), invoker);
+                List<EventHandlerEntry> handlers = this.handlersByEventType.computeIfAbsent(eventType, EventListenerRegistration::createHandlerList);
+                handlers.add(handler);
             }
-            for (List list : this.H.values()) {
-                list.sort(Comparator.comparing(EventHandlerEntry::F));
+            for (List<EventHandlerEntry> handlers : this.handlersByEventType.values()) {
+                handlers.sort(Comparator.comparing(EventHandlerEntry::getPriority));
             }
         }
         catch (Exception exception) {
@@ -73,35 +73,35 @@ public class EventListenerRegistration {
         }
     }
 
-    public static void C(String string) {
-        q = string;
+    public static void setObfuscationState(String state) {
+        obfuscationState = state;
     }
 
-    public boolean passesFilters(IEvent iEvent) {
-        for (Predicate<IEvent> predicate : this.Z) {
-            if (predicate.test(iEvent)) continue;
+    public boolean passesFilters(IEvent event) {
+        for (Predicate<IEvent> filter : this.filters) {
+            if (filter.test(event)) continue;
             return false;
         }
         return true;
     }
 
-    public <T extends IEvent> T dispatch(T t, EventPriority eventPriority) {
-        boolean bl = t instanceof EventPreTick;
-        ArrayList<EventHandlerEntry> arrayList = this.H.get(t.getClass());
-        if (arrayList == null || arrayList.isEmpty()) {
-            return t;
+    public <T extends IEvent> T dispatch(T event, EventPriority priority) {
+        boolean isPreTickEvent = event instanceof EventPreTick;
+        ArrayList<EventHandlerEntry> handlers = this.handlersByEventType.get(event.getClass());
+        if (handlers == null || handlers.isEmpty()) {
+            return event;
         }
-        ICancelableEvent iCancelableEvent = t instanceof ICancelableEvent ? (ICancelableEvent)t : null;
-        int n = arrayList.size();
-        for (int i = 0; i < n; ++i) {
-            EventHandlerEntry eventHandlerEntry = arrayList.get(i);
-            if (!eventHandlerEntry.F().equals((Object)eventPriority) || eventHandlerEntry.y() && iCancelableEvent != null && iCancelableEvent.isCanceled()) continue;
-            eventHandlerEntry.X(t);
+        ICancelableEvent cancelableEvent = event instanceof ICancelableEvent ? (ICancelableEvent)event : null;
+        int handlerCount = handlers.size();
+        for (int index = 0; index < handlerCount; ++index) {
+            EventHandlerEntry handler = handlers.get(index);
+            if (!handler.getPriority().equals(priority) || handler.shouldSkipCanceled() && cancelableEvent != null && cancelableEvent.isCanceled()) continue;
+            handler.invoke(event);
         }
-        return t;
+        return event;
     }
 
-    private static ArrayList<EventHandlerEntry> lambda$processHandlers$0(Class<? extends IEvent> clazz) {
+    private static ArrayList<EventHandlerEntry> createHandlerList(Class<? extends IEvent> eventType) {
         return new ArrayList<>();
     }
 }

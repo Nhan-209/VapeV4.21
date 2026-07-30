@@ -47,19 +47,19 @@ extends JavassistMappingTask {
     }
 
     @Override
-    public void c() {
+    public void transform() {
         this.J(this::lambda$create$0);
     }
 
     private void s() throws CannotCompileException, NotFoundException {
         String string;
         this.J = Vape.INSTANCE.getMappings().q_.M;
-        this.q = Vape.INSTANCE.getMappings().RQ.n.J();
-        this.M = Vape.INSTANCE.getMappings().RQ.n.w();
-        String string2 = ForgeVersion.MC_1_16_5.d() ? Vape.INSTANCE.getMappings().Rr.jz.v() : null;
-        this.y = Vape.INSTANCE.getMappings().Rr.jv.J();
-        this.u = Vape.INSTANCE.getMappings().Rr.jT.J();
-        this.b = Vape.INSTANCE.getMappings().Rr.U.J();
+        this.q = Vape.INSTANCE.getMappings().RQ.n.getResolvedName();
+        this.M = Vape.INSTANCE.getMappings().RQ.n.getDescriptor();
+        String string2 = ForgeVersion.MC_1_16_5.d() ? Vape.INSTANCE.getMappings().Rr.jz.getResolvedName() : null;
+        this.y = Vape.INSTANCE.getMappings().Rr.jv.getResolvedName();
+        this.u = Vape.INSTANCE.getMappings().Rr.jT.getResolvedName();
+        this.b = Vape.INSTANCE.getMappings().Rr.U.getResolvedName();
         this.p = this.i(MappedClasses.uk);
         String string3 = EventMotion.class.getName();
         CtBehavior ctBehavior = this.F(this.J);
@@ -78,4 +78,3 @@ extends JavassistMappingTask {
         return entityClientPlayerMPMotionMappingTask.y;
     }
 }
-

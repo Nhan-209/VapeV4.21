@@ -14,7 +14,7 @@ implements Comparator<Slot> {
     final InventoryManager inventoryManager;
 
     public int comparePrimaryScore(Slot first, Slot second) {
-        return Double.compare(ClientSettings.U(first.I()), ClientSettings.U(second.I()));
+        return Double.compare(ClientSettings.getWeaponDamageScore(first.I()), ClientSettings.getWeaponDamageScore(second.I()));
     }
 
     public InventoryManagerPrimaryItemScoreComparator(InventoryManager inventoryManager) {

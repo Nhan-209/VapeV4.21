@@ -5,24 +5,24 @@ import gg.vape.value.BooleanValue;
 
 class OnlineFriendNotificationsValue
 extends BooleanValue {
-    final OnlineFriendActionPanel y;
+    private final OnlineFriendActionPanel actionPanel;
 
     @Override
     public Boolean getEffectiveValue() {
-        if (OnlineFriendActionPanel.O(this.y) == null) {
+        if (OnlineFriendActionPanel.getFriend(this.actionPanel) == null) {
             return false;
         }
-        return OnlineFriendActionPanel.O(this.y).y();
+        return OnlineFriendActionPanel.getFriend(this.actionPanel).isSyncWithFriends();
     }
 
-    public void P(Boolean bl) {
-        super.setValue(bl);
-        OnlineFriendActionPanel.O(this.y).O(bl);
+    public void P(Boolean value) {
+        super.setValue(value);
+        OnlineFriendActionPanel.getFriend(this.actionPanel).setSyncWithFriends(value);
     }
 
 
-    OnlineFriendNotificationsValue(OnlineFriendActionPanel onlineFriendActionPanel, Object object, String string, boolean bl) {
-        super(object, string, bl);
-        this.y = onlineFriendActionPanel;
+    OnlineFriendNotificationsValue(OnlineFriendActionPanel actionPanel, Object owner, String name, boolean defaultValue) {
+        super(owner, name, defaultValue);
+        this.actionPanel = actionPanel;
     }
 }

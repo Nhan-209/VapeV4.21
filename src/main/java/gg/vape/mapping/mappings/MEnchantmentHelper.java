@@ -6,7 +6,6 @@ import gg.vape.mapping.MappedClasses;
 import gg.vape.mapping.Mapping;
 import gg.vape.mapping.MappingField;
 import gg.vape.mapping.MappingMethod;
-import gg.vape.mapping.mappings.MEnchantments;
 import gg.vape.ui.click.component.GuiComponent;
 import gg.vape.wrapper.Wrapper;
 import gg.vape.wrapper.impl.ForgeVersion;
@@ -30,7 +29,7 @@ extends Mapping {
             return;
         }
         try {
-            this.c.c(null, object, iterable);
+            this.c.invokeVoid(null, object, iterable);
         }
         catch (Exception exception) {
             // empty catch block
@@ -41,7 +40,7 @@ extends Mapping {
         if (this.k == null) {
             return 0;
         }
-        return this.k.Z(null, object);
+        return this.k.invokeInt(null, object);
     }
 
     public MEnchantmentHelper() {
@@ -57,7 +56,7 @@ extends Mapping {
             boolean bl = true;
             String string3 = "getEnchantmentLevel";
             MEnchantmentHelper mEnchantmentHelper = this;
-            this.l = mEnchantmentHelper.x(string3, bl, clazz, classArray);
+            this.l = mEnchantmentHelper.registerStaticMethod(string3, bl, clazz, classArray);
         }
         if (ForgeVersion.MC_1_20_6.d()) {
             Class[] classArray = new Class[]{MappedClasses.VK};
@@ -65,28 +64,28 @@ extends Mapping {
             boolean bl = true;
             String string4 = "getEnchantmentsForCrafting";
             MEnchantmentHelper mEnchantmentHelper = this;
-            this.U = mEnchantmentHelper.x(string4, bl, clazz, classArray);
+            this.U = mEnchantmentHelper.registerStaticMethod(string4, bl, clazz, classArray);
             if (ForgeVersion.MC_26_1.d()) {
                 Class[] classArray2 = new Class[]{MappedClasses.Vo, MappedClasses.q7};
                 Class<Integer> clazz2 = Integer.TYPE;
                 boolean bl2 = true;
                 String string5 = "getItemEnchantmentLevel";
                 MEnchantmentHelper mEnchantmentHelper2 = this;
-                this.B = this.x(string5, bl2, clazz2, classArray2);
+                this.B = this.registerStaticMethod(string5, bl2, clazz2, classArray2);
             } else {
                 Class[] classArray3 = new Class[]{MappedClasses.lR, MappedClasses.VK};
                 Class<Integer> clazz3 = Integer.TYPE;
                 boolean bl3 = true;
                 String string6 = "getItemEnchantmentLevel";
                 MEnchantmentHelper mEnchantmentHelper3 = this;
-                this.B = this.x(string6, bl3, clazz3, classArray3);
+                this.B = this.registerStaticMethod(string6, bl3, clazz3, classArray3);
             }
             Class[] classArray4 = new Class[]{MappedClasses.VK};
             Class<Boolean> clazz4 = Boolean.TYPE;
             boolean bl4 = true;
             String string7 = "hasAnyEnchantments";
             MEnchantmentHelper mEnchantmentHelper4 = this;
-            this.N = this.x(string7, bl4, clazz4, classArray4);
+            this.N = this.registerStaticMethod(string7, bl4, clazz4, classArray4);
         }
         if (ForgeVersion.MC_1_21_4.d()) {
             Class[] classArray = new Class[]{MappedClasses.ZB, MappedClasses.VK, MappedClasses.zc, MappedClasses.uB, Float.TYPE};
@@ -94,7 +93,7 @@ extends Mapping {
             boolean bl = true;
             String string8 = "modifyDamage";
             MEnchantmentHelper mEnchantmentHelper = this;
-            this.f = mEnchantmentHelper.x(string8, bl, clazz, classArray);
+            this.f = mEnchantmentHelper.registerStaticMethod(string8, bl, clazz, classArray);
         }
         if (ForgeVersion.MC_1_12_2.d()) {
             if (ForgeVersion.MC_1_21_0.v()) {
@@ -103,7 +102,7 @@ extends Mapping {
                 boolean bl = true;
                 String string9 = "getDepthStriderModifier";
                 MEnchantmentHelper mEnchantmentHelper = this;
-                this.k = mEnchantmentHelper.x(string9, bl, clazz, classArray);
+                this.k = mEnchantmentHelper.registerStaticMethod(string9, bl, clazz, classArray);
             }
             if (ForgeVersion.MC_26_1.v()) {
                 Class[] classArray = new Class[]{MappedClasses.lR, MappedClasses.VK};
@@ -111,7 +110,7 @@ extends Mapping {
                 boolean bl = true;
                 String string10 = "getEnchantmentLevel";
                 MEnchantmentHelper mEnchantmentHelper = this;
-                this.K = mEnchantmentHelper.x(string10, bl, clazz, classArray);
+                this.K = mEnchantmentHelper.registerStaticMethod(string10, bl, clazz, classArray);
             } else {
                 this.K = null;
             }
@@ -121,19 +120,19 @@ extends Mapping {
                 boolean bl = true;
                 String string11 = "getEnchantmentModifierDamage";
                 MEnchantmentHelper mEnchantmentHelper = this;
-                this.m = mEnchantmentHelper.x(string11, bl, clazz, classArray);
+                this.m = mEnchantmentHelper.registerStaticMethod(string11, bl, clazz, classArray);
                 Class[] classArray5 = new Class[]{MappedClasses.VK, MappedClasses.O};
                 Class<Float> clazz5 = Float.TYPE;
                 boolean bl5 = true;
                 String string12 = "getModifierForCreature";
                 MEnchantmentHelper mEnchantmentHelper5 = this;
-                this.b = this.x(string12, bl5, clazz5, classArray5);
+                this.b = this.registerStaticMethod(string12, bl5, clazz5, classArray5);
                 Class[] classArray6 = new Class[]{MappedClasses.Vp, Iterable.class};
                 Class<Void> clazz6 = Void.TYPE;
                 boolean bl6 = true;
                 String string13 = "applyEnchantmentModifierArray";
                 MEnchantmentHelper mEnchantmentHelper6 = this;
-                this.c = this.x(string13, bl6, clazz6, classArray6);
+                this.c = this.registerStaticMethod(string13, bl6, clazz6, classArray6);
             } else {
                 this.m = null;
                 this.b = null;
@@ -146,40 +145,40 @@ extends Mapping {
                 boolean bl = true;
                 String string14 = "getDepthStriderModifier";
                 MEnchantmentHelper mEnchantmentHelper = this;
-                this.k = mEnchantmentHelper.x(string14, bl, clazz, classArray);
+                this.k = mEnchantmentHelper.registerStaticMethod(string14, bl, clazz, classArray);
             }
             Class[] classArray = new Class[]{Integer.TYPE, MappedClasses.VK};
             Class<Integer> clazz = Integer.TYPE;
             boolean bl = true;
             String string15 = "getEnchantmentLevel";
             MEnchantmentHelper mEnchantmentHelper = this;
-            this.K = mEnchantmentHelper.x(string15, bl, clazz, classArray);
+            this.K = mEnchantmentHelper.registerStaticMethod(string15, bl, clazz, classArray);
             Class[] classArray7 = new Class[]{DescUtils.getArrayType(MappedClasses.VK), MappedClasses.uB};
             Class<Integer> clazz7 = Integer.TYPE;
             boolean bl7 = true;
             String string16 = "getEnchantmentModifierDamage";
             MEnchantmentHelper mEnchantmentHelper7 = this;
-            this.m = this.x(string16, bl7, clazz7, classArray7);
+            this.m = this.registerStaticMethod(string16, bl7, clazz7, classArray7);
             Class[] classArray8 = new Class[]{MappedClasses.Vp, DescUtils.getArrayType(MappedClasses.VK)};
             Class<Void> clazz8 = Void.TYPE;
             boolean bl8 = true;
             String string17 = "applyEnchantmentModifierArray";
             MEnchantmentHelper mEnchantmentHelper8 = this;
-            this.c = this.x(string17, bl8, clazz8, classArray8);
+            this.c = this.registerStaticMethod(string17, bl8, clazz8, classArray8);
             if (Vape.INSTANCE.isVanillaMinecraftPresent() && ForgeVersion.MC_1_7_10.Y()) {
                 Class[] classArray9 = new Class[]{MappedClasses.VK, MappedClasses.O};
                 Class<Float> clazz9 = Float.TYPE;
                 boolean bl9 = true;
                 String string18 = "getModifierForCreature";
                 MEnchantmentHelper mEnchantmentHelper9 = this;
-                this.b = this.x(string18, bl9, clazz9, classArray9);
+                this.b = this.registerStaticMethod(string18, bl9, clazz9, classArray9);
             } else {
                 Class[] classArray10 = new Class[]{MappedClasses.VK, MappedClasses.O};
                 Class<Float> clazz10 = Float.TYPE;
-                boolean bl10 = Wrapper.G;
+                boolean bl10 = Wrapper.isNativeAvailable;
                 String string19 = "func_152377_a";
                 MEnchantmentHelper mEnchantmentHelper10 = this;
-                this.b = this.x(string19, bl10, clazz10, classArray10);
+                this.b = this.registerStaticMethod(string19, bl10, clazz10, classArray10);
             }
         }
         if (ForgeVersion.MC_1_16_5.v()) {
@@ -187,7 +186,7 @@ extends Mapping {
             boolean bl = true;
             String string20 = ForgeVersion.MC_1_12_2.d() ? "ENCHANTMENT_MODIFIER_DAMAGE" : "enchantmentModifierDamage";
             MEnchantmentHelper mEnchantmentHelper = this;
-            this.C = mEnchantmentHelper.u(string20, bl, clazz); 
+            this.C = mEnchantmentHelper.registerStaticField(string20, bl, clazz);
         }
         if (GuiComponent.getLegacyComponentState() == null) {
             MEnchantments.b("T0jqMc");
@@ -198,7 +197,7 @@ extends Mapping {
         if (this.K == null) {
             return 0;
         }
-        return this.K.Z(null, object, object2);
+        return this.K.invokeInt(null, object, object2);
     }
 
     public static Object l(MEnchantmentHelper mEnchantmentHelper, Object object) {
@@ -206,18 +205,18 @@ extends Mapping {
     }
 
     private int N(Object object, Object object2) {
-        return this.l.Z(null, object, object2);
+        return this.l.invokeInt(null, object, object2);
     }
 
     private float a(Object object, Object object2, Object object3, Object object4, float f) {
-        return this.b.s(null, object, object2, object3, object4, Float.valueOf(f));
+        return this.b.invokeFloat(null, object, object2, object3, object4, Float.valueOf(f));
     }
 
     private float L(Object object, Object object2) {
         if (ForgeVersion.MC_1_21_0.d()) {
             throw new UnsupportedOperationException("Unavailable");
         }
-        return this.b.s(null, object, object2);
+        return this.b.invokeFloat(null, object, object2);
     }
 
     public static int h(MEnchantmentHelper mEnchantmentHelper, int n, Object object) {
@@ -225,7 +224,7 @@ extends Mapping {
     }
 
     private int p(Object object, Object object2) {
-        return this.B.Z(null, object, object2);
+        return this.B.invokeInt(null, object, object2);
     }
 
     private void M(Object object, Object[] objectArray) {
@@ -233,7 +232,7 @@ extends Mapping {
             return;
         }
         try {
-            this.c.c(null, object, objectArray);
+            this.c.invokeVoid(null, object, objectArray);
         }
         catch (Exception exception) {
             // empty catch block
@@ -245,7 +244,7 @@ extends Mapping {
     }
 
     private Object B(Object object) {
-        return this.U.L(null, object);
+        return this.U.invokeObject(null, object);
     }
 
     public static boolean z(MEnchantmentHelper mEnchantmentHelper, Object object) {
@@ -261,7 +260,7 @@ extends Mapping {
     }
 
     private int y(Object[] objectArray, Object object) {
-        return this.m.Z(null, objectArray, object);
+        return this.m.invokeInt(null, objectArray, object);
     }
 
     public static void o(MEnchantmentHelper mEnchantmentHelper, Object object, Object[] objectArray) {
@@ -289,15 +288,15 @@ extends Mapping {
     }
 
     private boolean m(Object object) {
-        return this.N.e(null, object);
+        return this.N.invokeBoolean(null, object);
     }
 
     private int w(Iterable iterable, Object object) {
-        return this.m.Z(null, iterable, object);
+        return this.m.invokeInt(null, iterable, object);
     }
 
     private int N(int n, Object object) {
-        return this.K.Z(null, n, object);
+        return this.K.invokeInt(null, n, object);
     }
 
     private Object K() {

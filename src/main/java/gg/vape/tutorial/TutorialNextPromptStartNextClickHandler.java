@@ -10,7 +10,7 @@ implements GuiClickListener {
 
     @Override
     public void onPrimaryClick() {
-        Vape.INSTANCE.getTutorialManager().X();
+        Vape.INSTANCE.getTutorialManager().startNextPage();
     }
 
     public TutorialNextPromptStartNextClickHandler(TutorialNextPromptPanel tutorialNextPromptPanel) {

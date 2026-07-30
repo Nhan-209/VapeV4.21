@@ -25,14 +25,14 @@ extends Mapping {
 
     private int D(Object object, String string, float f, float f2, int n, boolean bl, Object object2, Object object3, Object object4, int n2, int n3) {
         if (ForgeVersion.MC_1_21_6.d()) {
-            this.P.c(object, string, Float.valueOf(f), Float.valueOf(f2), n, bl, object2, object3, object4, n2, n3);
+            this.P.invokeVoid(object, string, Float.valueOf(f), Float.valueOf(f2), n, bl, object2, object3, object4, n2, n3);
             return 0;
         }
-        return this.P.Z(object, string, Float.valueOf(f), Float.valueOf(f2), n, bl, object2, object3, object4, n2, n3);
+        return this.P.invokeInt(object, string, Float.valueOf(f), Float.valueOf(f2), n, bl, object2, object3, object4, n2, n3);
     }
 
     public int C(Object object, Object object2, float f, float f2, int n, boolean bl, Object object3, Object object4, boolean bl2, int n2, int n3) {
-        return this.W.Z(object, object2, Float.valueOf(f), Float.valueOf(f2), n, bl, object3, object4, bl2, n2, n3);
+        return this.W.invokeInt(object, object2, Float.valueOf(f), Float.valueOf(f2), n, bl, object3, object4, bl2, n2, n3);
     }
 
     public static int i(MFontRenderer mFontRenderer, Object object, String string, float f, float f2, int n, boolean bl, Object object2, Object object3, Object object4, int n2, int n3) {
@@ -40,15 +40,15 @@ extends Mapping {
     }
 
     private int b(Object object, Object object2, Object object3, float f, float f2, int n) {
-        return this.b.Z(object, object2, object3, Float.valueOf(f), Float.valueOf(f2), n);
+        return this.b.invokeInt(object, object2, object3, Float.valueOf(f), Float.valueOf(f2), n);
     }
 
     public int S(Object object, Object object2, String string, float f, float f2, int n) {
-        return this.h.Z(object, object2, string, Float.valueOf(f), Float.valueOf(f2), n);
+        return this.h.invokeInt(object, object2, string, Float.valueOf(f), Float.valueOf(f2), n);
     }
 
     public int u(Object object, String string, int n, int n2, int n3) {
-        return this.h.Z(object, string, n, n2, n3);
+        return this.h.invokeInt(object, string, n, n2, n3);
     }
 
     public int m(Object object) {
@@ -57,13 +57,13 @@ extends Mapping {
 
     public int Y(Object object, String string, float f, float f2, int n, boolean bl) {
         if (ForgeVersion.MC_1_7_10.L()) {
-            return this.L.Z(object, string, (int)f, (int)f2, n, bl);
+            return this.L.invokeInt(object, string, (int)f, (int)f2, n, bl);
         }
-        return this.L.Z(object, string, Float.valueOf(f), Float.valueOf(f2), n, bl);
+        return this.L.invokeInt(object, string, Float.valueOf(f), Float.valueOf(f2), n, bl);
     }
 
     public int drawStringWithShadow(Object object, String string, float f, float f2, int n) {
-        return this.l.Z(object, string, Float.valueOf(f), Float.valueOf(f2), n);
+        return this.l.invokeInt(object, string, Float.valueOf(f), Float.valueOf(f2), n);
     }
 
     public MFontRenderer() {
@@ -93,7 +93,7 @@ extends Mapping {
                 String string3 = "text";
                 Class clazz4 = MappedClasses.m;
                 MFontRenderer mFontRenderer3 = this;
-                this.m = this.W(clazz4, string3, bl3, clazz3, classArray3);
+                this.m = this.registerInstanceMethodForOwner(clazz4, string3, bl3, clazz3, classArray3);
             } else {
                 Class[] classArray4 = new Class[]{String.class, Float.TYPE, Float.TYPE, Integer.TYPE, Boolean.TYPE, MappedClasses.qr, MappedClasses.ZK, MappedClasses.Y8, Integer.TYPE, Integer.TYPE};
                 Class<Integer> clazz5 = Integer.TYPE;
@@ -107,7 +107,7 @@ extends Mapping {
                 String string5 = "drawString";
                 Class clazz7 = MappedClasses.m;
                 MFontRenderer mFontRenderer5 = this;
-                this.m = this.W(clazz7, string5, bl5, clazz6, classArray5);
+                this.m = this.registerInstanceMethodForOwner(clazz7, string5, bl5, clazz6, classArray5);
             }
         } else {
             if (ForgeVersion.MC_1_7_10.L()) {
@@ -132,13 +132,13 @@ extends Mapping {
             } else if (ForgeVersion.MC_1_16_5.d()) {
                 Class[] classArray = new Class[]{MappedClasses.DQ, MappedClasses.Yr, Float.TYPE, Float.TYPE, Integer.TYPE};
                 Class<Integer> clazz = Integer.TYPE;
-                boolean bl = Wrapper.G;
+                boolean bl = Wrapper.isNativeAvailable;
                 String string = "func_243246_a";
                 MFontRenderer mFontRenderer = this;
                 this.b = mFontRenderer.Y(string, bl, clazz, classArray);
                 Class[] classArray8 = new Class[]{MappedClasses.DQ, MappedClasses.Yr, Float.TYPE, Float.TYPE, Integer.TYPE};
                 Class<Integer> clazz10 = Integer.TYPE;
-                boolean bl8 = Wrapper.G;
+                boolean bl8 = Wrapper.isNativeAvailable;
                 String string8 = "func_243248_b";
                 MFontRenderer mFontRenderer8 = this;
                 this.X = this.Y(string8, bl8, clazz10, classArray8);
@@ -152,20 +152,20 @@ extends Mapping {
                 } else {
                     Class[] classArray10 = new Class[]{MappedClasses.DQ, String.class, Float.TYPE, Float.TYPE, Integer.TYPE};
                     Class<Integer> clazz12 = Integer.TYPE;
-                    boolean bl10 = Wrapper.G;
+                    boolean bl10 = Wrapper.isNativeAvailable;
                     String string10 = "func_238405_a_";
                     MFontRenderer mFontRenderer10 = this;
                     this.g = this.Y(string10, bl10, clazz12, classArray10);
                 }
                 Class[] classArray11 = new Class[]{MappedClasses.DQ, String.class, Float.TYPE, Float.TYPE, Integer.TYPE};
                 Class<Integer> clazz13 = Integer.TYPE;
-                boolean bl11 = Wrapper.G;
+                boolean bl11 = Wrapper.isNativeAvailable;
                 String string11 = "func_238421_b_";
                 MFontRenderer mFontRenderer11 = this;
                 this.h = this.Y(string11, bl11, clazz13, classArray11);
                 Class[] classArray12 = new Class[]{MappedClasses.Yr, Float.TYPE, Float.TYPE, Integer.TYPE, Boolean.TYPE, MappedClasses.qr, MappedClasses.ZK, Boolean.TYPE, Integer.TYPE, Integer.TYPE};
                 Class<Integer> clazz14 = Integer.TYPE;
-                boolean bl12 = Wrapper.G;
+                boolean bl12 = Wrapper.isNativeAvailable;
                 String string12 = "func_243247_a";
                 MFontRenderer mFontRenderer12 = this;
                 this.W = this.Y(string12, bl12, clazz14, classArray12);
@@ -198,7 +198,7 @@ extends Mapping {
                 } else {
                     Class[] classArray16 = new Class[]{String.class, Integer.TYPE, Integer.TYPE, Integer.TYPE};
                     Class<Integer> clazz18 = Integer.TYPE;
-                    boolean bl16 = Wrapper.G;
+                    boolean bl16 = Wrapper.isNativeAvailable;
                     String string16 = "func_78276_b";
                     MFontRenderer mFontRenderer16 = this;
                     this.h = this.Y(string16, bl16, clazz18, classArray16);
@@ -214,7 +214,7 @@ extends Mapping {
             } else if (ForgeVersion.MC_1_16_5.d()) {
                 Class[] classArray = new Class[]{String.class};
                 Class<Integer> clazz = Integer.TYPE;
-                boolean bl = Wrapper.G;
+                boolean bl = Wrapper.isNativeAvailable;
                 String string = "func_78256_a";
                 MFontRenderer mFontRenderer = this;
                 this.T = mFontRenderer.Y(string, bl, clazz, classArray);
@@ -230,16 +230,16 @@ extends Mapping {
     }
 
     public int e(Object object, String string) {
-        return this.T.Z(object, string);
+        return this.T.invokeInt(object, string);
     }
 
 
     public int C(Object object, Object object2, String string, int n, int n2, int n3, boolean bl) {
         if (ForgeVersion.MC_1_21_6.d()) {
-            this.m.c(object, object2, string, n, n2, n3, bl);
+            this.m.invokeVoid(object, object2, string, n, n2, n3, bl);
             return 0;
         }
-        return this.m.Z(object, object2, string, n, n2, n3, bl);
+        return this.m.invokeInt(object, object2, string, n, n2, n3, bl);
     }
 
     public static int A(MFontRenderer mFontRenderer, Object object, Object object2, Object object3, float f, float f2, int n) {
@@ -247,11 +247,11 @@ extends Mapping {
     }
 
     private int A(Object object, Object object2, Object object3, float f, float f2, int n) {
-        return this.X.Z(object, object2, object3, Float.valueOf(f), Float.valueOf(f2), n);
+        return this.X.invokeInt(object, object2, object3, Float.valueOf(f), Float.valueOf(f2), n);
     }
 
     public int M(Object object, Object object2, String string, float f, float f2, int n) {
-        return this.g.Z(object, object2, string, Float.valueOf(f), Float.valueOf(f2), n);
+        return this.g.invokeInt(object, object2, string, Float.valueOf(f), Float.valueOf(f2), n);
     }
 
     public static int q(MFontRenderer mFontRenderer, Object object, Object object2, Object object3, float f, float f2, int n) {
@@ -259,11 +259,11 @@ extends Mapping {
     }
 
     public int d(Object object, String string, int n, int n2, int n3) {
-        return this.c.Z(object, string, n, n2, n3);
+        return this.c.invokeInt(object, string, n, n2, n3);
     }
 
     public void J(Object object) {
-        this.i.F(object);
+        this.i.invokeVoidNoArgs(object);
     }
 }
 

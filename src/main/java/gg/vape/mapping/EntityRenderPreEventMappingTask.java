@@ -18,7 +18,7 @@ extends JavassistMappingTask {
     }
 
     @Override
-    public void c() {
+    public void transform() {
         if (ForgeVersion.MC_1_21_10.d()) {
             this.L();
             return;

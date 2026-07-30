@@ -209,14 +209,14 @@ extends Mod {
         while (simulatedTicks < 6) {
             ++simulatedTicks;
             Vec3d simulatedPosition = simulation.getSimulatedPosition();
-            Vec3 eyePosition = Vec3.create(simulatedPosition.Y(), simulatedPosition.t() + eyeHeight, simulatedPosition.o());
+            Vec3 eyePosition = Vec3.create(simulatedPosition.getX(), simulatedPosition.getY() + eyeHeight, simulatedPosition.getZ());
             if (ClutchPlacementPathUtils.isBlockFaceVisible(eyePosition, world, placementTarget.supportBlock, placementTarget.facing)) {
                 Vec3 placementHit = ClutchPlacementPathUtils.findPlacementHitPoint(localPlayer, world, eyePosition, placementTarget, yaw, pitch);
                 if (placementHit != null && eyePosition.distanceTo(placementHit) <= 5.0) {
                     targetReached = true;
                     placementTarget.hitPoint = placementHit;
                     Vec3d hitPosition = simulation.getSimulatedPosition();
-                    pathSegment.hitVector = Vec3.create(hitPosition.Y(), hitPosition.t() + eyeHeight, hitPosition.o());
+                    pathSegment.hitVector = Vec3.create(hitPosition.getX(), hitPosition.getY() + eyeHeight, hitPosition.getZ());
                     break;
                 }
             }
@@ -224,7 +224,7 @@ extends Mod {
             double targetZ = (double)placementTarget.supportBlock.G() + 0.5;
             float targetYawDelta = (float)RotationUtil.N(eyePosition.getX(), eyePosition.getZ(), yaw, targetX, targetZ);
             facingAwayFromTarget = Math.abs(MathUtil.wrapAngleTo180((double)targetYawDelta)) > 110.0f;
-            if (simulatedPosition.t() <= (double)pathSegment.targetCoordinate.E()) break;
+            if (simulatedPosition.getY() <= (double)pathSegment.targetCoordinate.E()) break;
             BlockInBooleanState strafeState = null;
             if (!this.silentAim.getEffectiveValue().booleanValue() && (strafeState = this.computeStrafeState(simulatedPlayer, this.placeYaw, this.graph.forwardKeyDown, this.graph.backwardKeyDown, this.graph.leftKeyDown, this.graph.rightKeyDown)) != null) {
                 simulation.setDirectionalKeys(strafeState.correctedForward, strafeState.correctedBackward, strafeState.correctedLeft, strafeState.correctedRight);
@@ -235,7 +235,7 @@ extends Mod {
         }
         Vec3d finalPosition = simulation.getSimulatedPosition();
         if (targetReached) {
-            pathSegment.hitVector = Vec3.create(finalPosition.Y(), finalPosition.t() + eyeHeight, finalPosition.o());
+            pathSegment.hitVector = Vec3.create(finalPosition.getX(), finalPosition.getY() + eyeHeight, finalPosition.getZ());
             boolean targetTouchesStart = placementTarget.supportBlock.L(pathSegment.startCoordinate.O());
             if (targetTouchesStart && player.b$src$Z$fqlxe4()) {
                 return facingAwayFromTarget ? 2 : 1;
@@ -247,7 +247,7 @@ extends Mod {
         Vec3 fallbackEyePosition = Vec3.create((double)placedBlock.D() + 0.5, player.N() + eyeHeight, (double)placedBlock.G() + 0.5);
         Vec3 finalHit = ClutchPlacementPathUtils.findPlacementHitPoint(localPlayer, world, fallbackEyePosition, placementTarget, yaw, pitch);
         pathSegment.hitVector = fallbackEyePosition;
-        placementTarget.hitPoint = finalHit == null ? RotationUtil.M(fallbackEyePosition, BlockUtil.F(world, supportBlock), 0.0, 0.0, 0.0).n() : finalHit;
+        placementTarget.hitPoint = finalHit == null ? RotationUtil.M(fallbackEyePosition, BlockUtil.F(world, supportBlock), 0.0, 0.0, 0.0).toVec3() : finalHit;
         return 2;
     }
 
@@ -346,7 +346,7 @@ extends Mod {
     @EventHandler
     public void onMouseButton(EventMouseButton eventMouseButton) {
         GameSettings gameSettings = eventMouseButton.getGameSettings();
-        if (this.clutchPath != null && eventMouseButton.getButton() == EventMouseButton.E && eventMouseButton.getButtonState()) {
+        if (this.clutchPath != null && eventMouseButton.getButton() == EventMouseButton.LEFT_BUTTON && eventMouseButton.getButtonState()) {
             eventMouseButton.setCancelled(true);
             gameSettings.F().e();
         }
@@ -491,7 +491,7 @@ extends Mod {
         for (Vec3d candidatePosition : candidatePositions) {
             if (remainingTargets.isEmpty()) break;
             PlacementTarget placementTarget = remainingTargets.peek();
-            Vec3 eyePosition = Vec3.create(candidatePosition.Y(), candidatePosition.t(), candidatePosition.o());
+            Vec3 eyePosition = Vec3.create(candidatePosition.getX(), candidatePosition.getY(), candidatePosition.getZ());
             if (ClutchPlacementPathUtils.isBlockFaceVisible(eyePosition, world, placementTarget.supportBlock, placementTarget.facing)) {
                 remainingTargets.pop();
                 noTargetReached = false;
@@ -1127,7 +1127,7 @@ extends Mod {
         int estimatedBlockDistance = (int)Math.round(Math.sqrt(projectedX * projectedX + projectedZ * projectedZ));
         if (estimatedBlockDistance >= 4) {
             this.debugLog("Clutch is not possible standing still. Forcing counter motion.");
-            this.graph.jumpKeyDown = this.takingKnockback && gg.vape.config.ClientSettings.B(Minecraft.gameSettings().O());
+            this.graph.jumpKeyDown = this.takingKnockback && gg.vape.config.ClientSettings.isPhysicalKeyDown(Minecraft.gameSettings().O());
             this.graph.forwardKeyDown = true;
             this.graph.backwardKeyDown = false;
             this.graph.leftKeyDown = false;
@@ -1200,7 +1200,7 @@ extends Mod {
                             }
                             this.placeableBlocks.add(candidate);
                             Vec3 candidateCenter = Vec3.create((double)candidate.D() + 0.5, (double)candidate.B() + 0.5, (double)candidate.G() + 0.5);
-                            Vec3 simulatedEyePosition = simulatedPosition.n().addVector(0.0, simulatedPlayer.X(), 0.0);
+                            Vec3 simulatedEyePosition = simulatedPosition.toVec3().addVector(0.0, simulatedPlayer.X(), 0.0);
                             RotationAngles rotation = RotationVectorMath.d(simulatedEyePosition, candidateCenter, searchRotation.getCurrentYaw(), searchRotation.getCurrentPitch());
                             double yawDistance = Math.abs(MathUtil.wrapAngleTo180(rotation.getYaw() - searchRotation.getCurrentYaw()));
                             if (yawDistance > 120.0) {
@@ -1337,7 +1337,7 @@ extends Mod {
             cost -= (double)((targetBlock.B() - startBlock.B()) * 200);
         }
         if (this.recentlyClutched) {
-            cost += Math.sqrt(Math.pow((double)startBlock.D() + 0.5 - playerPosition.Y(), 2.0) + Math.pow((double)startBlock.G() + 0.5 - playerPosition.o(), 2.0)) * 1000.0;
+            cost += Math.sqrt(Math.pow((double)startBlock.D() + 0.5 - playerPosition.getX(), 2.0) + Math.pow((double)startBlock.G() + 0.5 - playerPosition.getZ(), 2.0)) * 1000.0;
         }
         return cost + Math.abs((double)(startBlock.B() + 1) - this.fallTargetY) * 200.0;
     }
@@ -1565,7 +1565,7 @@ extends Mod {
         if (Minecraft.currentScreen().getObject() == null) {
             KeyboardCodeUtil.disableLegacyRepeatEvents();
         }
-        boolean forwardPressed = gg.vape.config.ClientSettings.B(Minecraft.gameSettings().Y());
+        boolean forwardPressed = gg.vape.config.ClientSettings.isPhysicalKeyDown(Minecraft.gameSettings().Y());
         this.graph = new BlockPlacementGraph(localPlayer);
         if (this.pendingInputApply) {
             this.graph.forwardKeyDown = this.pendingInputForward;
@@ -1593,7 +1593,7 @@ extends Mod {
             this.resetState();
             return;
         }
-        boolean jumpPressed = gg.vape.config.ClientSettings.B(eventPreTick.getGameSettings().O());
+        boolean jumpPressed = gg.vape.config.ClientSettings.isPhysicalKeyDown(eventPreTick.getGameSettings().O());
         if (jumpPressed) {
             if (this.clutchPath != null) {
                 if (localPlayer.b$src$Z$fqlxe4()) {
@@ -2055,7 +2055,7 @@ extends Mod {
         }
     }
 
-    @EventHandler(A=EventPriority.LOWEST)
+    @EventHandler(priority=EventPriority.LOWEST)
     public void onPreLocalPlayerTick(EventPreLocalPlayerTick eventPreLocalPlayerTick) {
         EntityPlayerSP localPlayer = eventPreLocalPlayerTick.getThePlayer();
         if (this.clutchPath != null && Minecraft.currentScreen().isNull() && localPlayer.isNotNull()) {
@@ -2074,7 +2074,7 @@ extends Mod {
         }
     }
 
-    @EventHandler(A=EventPriority.LOWEST)
+    @EventHandler(priority=EventPriority.LOWEST)
     public void onPacketReceive(EventPacketReceive eventPacketReceive) {
         EntityPlayerSP localPlayer = eventPacketReceive.getThePlayer();
         if (localPlayer.isNull()) {

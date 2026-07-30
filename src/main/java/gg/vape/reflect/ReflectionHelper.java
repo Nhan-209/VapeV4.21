@@ -8,9 +8,9 @@ import java.util.Map;
 
 public final class ReflectionHelper
 extends Reflections {
-    public static final Map<Integer, Method> METHODS_BY_ID = Reflections.methodMap;
-    public static final Map<Integer, Field> FIELDS_BY_ID = Reflections.fieldMap;
-    public static final Map<Integer, Constructor<?>> CONSTRUCTORS_BY_ID = Reflections.constructorMap;
+    public static final Map<Integer, Method> METHODS_BY_ID = Reflections.METHODS_BY_ID;
+    public static final Map<Integer, Field> FIELDS_BY_ID = Reflections.FIELDS_BY_ID;
+    public static final Map<Integer, Constructor<?>> CONSTRUCTORS_BY_ID = Reflections.CONSTRUCTORS_BY_ID;
 
     private ReflectionHelper() {
     }
@@ -55,4 +55,3 @@ extends Reflections {
         return Reflections.invokeConstructor(id, arguments);
     }
 }
-

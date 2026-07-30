@@ -17,27 +17,28 @@ import org.lwjgl.opengl.GL11;
 
 public class OnlinePlayerPreviewComponent
 extends GuiComponent {
-    private OnlinePlayerPreviewRenderContext O;
-    private final OnlinePlayerPreviewSettingsFrame K;
-    public static OnlinePlayerPreviewComponent b;
+    private OnlinePlayerPreviewRenderContext renderContext;
+    private final OnlinePlayerPreviewSettingsFrame settingsFrame;
+    public static OnlinePlayerPreviewComponent instance;
 
-    public void S(EventPreRenderTick eventPreRenderTick) {
-        if (!this.K.y$src$Z$1f55jvh() || !this.K.V$src$Z$1xhop3l()) {
+    public void onPreRenderTick(EventPreRenderTick eventPreRenderTick) {
+        if (!this.settingsFrame.y$src$Z$1f55jvh() || !this.settingsFrame.V$src$Z$1xhop3l()) {
             return;
         }
         if (eventPreRenderTick.getThePlayer().isNull() || eventPreRenderTick.getWorld().isNull()) {
             return;
         }
-        if (this.O != null) {
-            if (((Double)this.K.B$src$Lgg_vape_friend_ui_OnlinePlayerPreviewSettings_$1v47p92().p.getValue()).intValue() <= 0) {
-                this.K.B$src$Lgg_vape_friend_ui_OnlinePlayerPreviewSettings_$1v47p92().p.setValue(1.0);
+        if (this.renderContext != null) {
+            OnlinePlayerPreviewSettings settings = this.settingsFrame.getSettings();
+            if (((Double)settings.framesPerSecond.getValue()).intValue() <= 0) {
+                settings.framesPerSecond.setValue(1.0);
             }
-            this.O.setFrameIntervalMillis(1000 / ((Double)this.K.B$src$Lgg_vape_friend_ui_OnlinePlayerPreviewSettings_$1v47p92().p.getValue()).intValue());
-            this.O.setLevelView(this.K.B$src$Lgg_vape_friend_ui_OnlinePlayerPreviewSettings_$1v47p92().A.getEffectiveValue());
-            this.O.setFieldOfView(((Double)this.K.B$src$Lgg_vape_friend_ui_OnlinePlayerPreviewSettings_$1v47p92().W.getValue()).intValue());
-            this.O.renderOffscreenFrame();
+            this.renderContext.setFrameIntervalMillis(1000 / ((Double)settings.framesPerSecond.getValue()).intValue());
+            this.renderContext.setLevelView(settings.levelView.getEffectiveValue());
+            this.renderContext.setFieldOfView(((Double)settings.fieldOfView.getValue()).intValue());
+            this.renderContext.renderOffscreenFrame();
         } else {
-            this.O = new OnlinePlayerPreviewRenderContext();
+            this.renderContext = new OnlinePlayerPreviewRenderContext();
         }
     }
 
@@ -48,7 +49,7 @@ extends GuiComponent {
 
     @Override
     public void H() {
-        this.j$src$V$pujnrp();
+        this.renderPreview();
     }
 
     @Override
@@ -57,15 +58,15 @@ extends GuiComponent {
 
     @Override
     public double x() {
-        if (this.K.isPublicProfilePreviewActive()) {
-            return 110.0 * (Double)this.K.B$src$Lgg_vape_friend_ui_OnlinePlayerPreviewSettings_$1v47p92().d.getValue();
+        if (this.settingsFrame.isPublicProfilePreviewActive()) {
+            return 110.0 * (Double)this.settingsFrame.getSettings().scale.getValue();
         }
         return 110.0;
     }
 
     @Override
     public void I() {
-        this.j$src$V$pujnrp();
+        this.renderPreview();
     }
 
     @Override
@@ -73,26 +74,26 @@ extends GuiComponent {
     }
 
     public OnlinePlayerPreviewComponent(OnlinePlayerPreviewSettingsFrame onlinePlayerPreviewSettingsFrame) {
-        b = this;
-        this.K = onlinePlayerPreviewSettingsFrame;
+        instance = this;
+        this.settingsFrame = onlinePlayerPreviewSettingsFrame;
     }
 
     @Override
     public double C() {
-        if (this.K.isPublicProfilePreviewActive()) {
-            return 61.0 * (Double)this.K.B$src$Lgg_vape_friend_ui_OnlinePlayerPreviewSettings_$1v47p92().d.getValue();
+        if (this.settingsFrame.isPublicProfilePreviewActive()) {
+            return 61.0 * (Double)this.settingsFrame.getSettings().scale.getValue();
         }
         return 61.0;
     }
 
-    private void j$src$V$pujnrp() {
-        float f = this.K.getEditorOpacity();
-        if (this.O == null || !this.K.y$src$Z$1f55jvh()) {
-            double d = this.L();
-            double d2 = this.A();
-            OpenGlBackendHolder.backend.setColor(0.1f, 0.1f, 0.1f, f);
-            GuiRenderPrimitives.d((double)((float)this.G$src$D$1b2f02a()), (double)((float)this.n()), d2, d, this.K.applyDefaultEditorAlpha(OnlinePlayerPreviewComponent.J.r));
-            ImageRenderer.drawImage(this.K.applyDefaultEditorAlpha(Color.WHITE), (float)(this.G$src$D$1b2f02a() + d2 / 2.0 - 10.0), (float)(this.n() + d / 2.0 - 10.0), "camera", 16.0f, 16.0f, false);
+    private void renderPreview() {
+        float opacity = this.settingsFrame.getEditorOpacity();
+        if (this.renderContext == null || !this.settingsFrame.y$src$Z$1f55jvh()) {
+            double height = this.L();
+            double width = this.A();
+            OpenGlBackendHolder.backend.setColor(0.1f, 0.1f, 0.1f, opacity);
+            GuiRenderPrimitives.d((double)((float)this.G$src$D$1b2f02a()), (double)((float)this.n()), width, height, this.settingsFrame.applyDefaultEditorAlpha(OnlinePlayerPreviewComponent.J.r));
+            ImageRenderer.drawImage(this.settingsFrame.applyDefaultEditorAlpha(Color.WHITE), (float)(this.G$src$D$1b2f02a() + width / 2.0 - 10.0), (float)(this.n() + height / 2.0 - 10.0), "camera", 16.0f, 16.0f, false);
             return;
         }
         if (Minecraft.gameSettings().d() > 0) {
@@ -107,44 +108,45 @@ extends GuiComponent {
             Vape.INSTANCE.getFontManager().w().F("Disable fast render to use this feature", this.G$src$D$1b2f02a() + 4.0, this.n() + 4.0, -65536);
             return;
         }
-        if (this.O.hasFrame()) {
-            double d = this.L();
-            double d3 = this.A();
-            if (!this.K.isPublicProfilePreviewActive()) {
-                d *= ((Double)this.K.B$src$Lgg_vape_friend_ui_OnlinePlayerPreviewSettings_$1v47p92().d.getValue()).doubleValue();
-                d3 *= ((Double)this.K.B$src$Lgg_vape_friend_ui_OnlinePlayerPreviewSettings_$1v47p92().d.getValue()).doubleValue();
+        if (this.renderContext.hasFrame()) {
+            double height = this.L();
+            double width = this.A();
+            if (!this.settingsFrame.isPublicProfilePreviewActive()) {
+                double scale = (Double)this.settingsFrame.getSettings().scale.getValue();
+                height *= scale;
+                width *= scale;
             }
             if (ForgeVersion.MC_1_21_4.d()) {
-                Color color = this.K.applyDefaultEditorAlpha(new Color(0.1f, 0.1f, 0.1f, 0.2f));
-                GuiRenderPrimitives.C(this.G$src$D$1b2f02a(), this.n(), d3, d, color);
-                Color color2 = new Color(1.0f, 1.0f, 1.0f, f);
-                this.O.drawFramebuffer(this.K.y$src$Z$1f55jvh(), this.G$src$D$1b2f02a() + 0.5, this.n() + 0.5, this.G$src$D$1b2f02a() + d3 - 0.5, this.n() + d - 0.5, color2);
+                Color backgroundColor = this.settingsFrame.applyDefaultEditorAlpha(new Color(0.1f, 0.1f, 0.1f, 0.2f));
+                GuiRenderPrimitives.C(this.G$src$D$1b2f02a(), this.n(), width, height, backgroundColor);
+                Color framebufferColor = new Color(1.0f, 1.0f, 1.0f, opacity);
+                this.renderContext.drawFramebuffer(this.settingsFrame.y$src$Z$1f55jvh(), this.G$src$D$1b2f02a() + 0.5, this.n() + 0.5, this.G$src$D$1b2f02a() + width - 0.5, this.n() + height - 0.5, framebufferColor);
                 return;
             }
-            boolean bl = GL11.glIsEnabled((int)3553);
-            boolean bl2 = GL11.glIsEnabled((int)3008);
-            boolean bl3 = GL11.glIsEnabled((int)3042);
-            if (bl) {
+            boolean textureEnabled = GL11.glIsEnabled((int)3553);
+            boolean alphaEnabled = GL11.glIsEnabled((int)3008);
+            boolean blendEnabled = GL11.glIsEnabled((int)3042);
+            if (textureEnabled) {
                 GlStateManager.disableTexture2D();
             }
-            if (!bl2) {
+            if (!alphaEnabled) {
                 GlStateManager.enableAlpha();
             }
-            if (!bl3) {
+            if (!blendEnabled) {
                 GlStateManager.enableBlend();
             }
-            Color color = this.K.applyDefaultEditorAlpha(new Color(0.1f, 0.1f, 0.1f, 0.2f));
-            OpenGlBackendHolder.backend.setColor(0.1f, 0.1f, 0.1f, (float)color.getAlpha() / 255.0f);
-            GuiRenderPrimitives.C(this.G$src$D$1b2f02a(), this.n(), d3, d, color);
-            Color color3 = new Color(1.0f, 1.0f, 1.0f, f);
-            this.O.drawFramebuffer(this.K.y$src$Z$1f55jvh(), this.G$src$D$1b2f02a() + 0.5, this.n() + 0.5, this.G$src$D$1b2f02a() + d3 - 0.5, this.n() + d - 0.5, color3);
-            if (bl) {
+            Color backgroundColor = this.settingsFrame.applyDefaultEditorAlpha(new Color(0.1f, 0.1f, 0.1f, 0.2f));
+            OpenGlBackendHolder.backend.setColor(0.1f, 0.1f, 0.1f, (float)backgroundColor.getAlpha() / 255.0f);
+            GuiRenderPrimitives.C(this.G$src$D$1b2f02a(), this.n(), width, height, backgroundColor);
+            Color framebufferColor = new Color(1.0f, 1.0f, 1.0f, opacity);
+            this.renderContext.drawFramebuffer(this.settingsFrame.y$src$Z$1f55jvh(), this.G$src$D$1b2f02a() + 0.5, this.n() + 0.5, this.G$src$D$1b2f02a() + width - 0.5, this.n() + height - 0.5, framebufferColor);
+            if (textureEnabled) {
                 GlStateManager.enableTexture2D();
             }
-            if (!bl2) {
+            if (!alphaEnabled) {
                 GlStateManager.disableAlpha();
             }
-            if (!bl3) {
+            if (!blendEnabled) {
                 GlStateManager.disableBlend();
             }
         }

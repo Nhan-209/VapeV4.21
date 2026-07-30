@@ -10,7 +10,7 @@ extends Mapping {
     private static final String b = "lookupOrThrow";
 
     public Object m(Object object, Object object2) {
-        return this.i.L(object, object2);
+        return this.i.invokeObject(object, object2);
     }
 
     public MRegistryAccessBridge() {

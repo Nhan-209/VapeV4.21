@@ -7,13 +7,13 @@ import java.util.function.Predicate;
 
 public class SubModule<T extends Mod>
 extends Mod {
-    private static boolean a;
-    private final SubModuleValue Y;
-    private final Mod k;
-    private boolean j;
+    private static boolean opaqueState;
+    private final SubModuleValue selectionValue;
+    private final Mod parentModule;
+    private boolean enabled;
 
-    public boolean U() {
-        return this.j;
+    public boolean isEnabled() {
+        return this.enabled;
     }
 
     @Override
@@ -32,23 +32,23 @@ extends Mod {
     }
 
     private boolean lambda$getEventPredicate$0(IEvent iEvent) {
-        return this.r$src$Z$14eylz9() && this.J$src$Z$gcqtyf();
+        return this.r$src$Z$14eylz9() && this.isSelectedSubModule();
     }
 
     public static boolean y$src$Z$h2l5ue() {
-        return a;
+        return opaqueState;
     }
 
 
     public T getParent() {
-        return (T)this.k;
+        return (T)this.parentModule;
     }
 
-    public SubModule(Mod mod, String string, boolean bl) {
+    public SubModule(Mod mod, String string, boolean enabled) {
         super(string);
-        this.k = mod;
-        this.j = bl;
-        this.Y = new SubModuleValue<SubModule>(this);
+        this.parentModule = mod;
+        this.enabled = enabled;
+        this.selectionValue = new SubModuleValue<SubModule>(this);
     }
 
     public static boolean g$src$Z$gsov5w() {
@@ -56,19 +56,19 @@ extends Mod {
         return false;
     }
 
-    public SubModuleValue r$src$Lgg_vape_value_SubModuleValue_$1rfa4wx() {
-        return this.Y;
+    public SubModuleValue getSelectionValue() {
+        return this.selectionValue;
     }
 
-    public boolean J$src$Z$gcqtyf() {
-        return this.Y.isSelected();
+    public boolean isSelectedSubModule() {
+        return this.selectionValue.isSelected();
     }
 
     public static void W(boolean bl) {
-        a = bl;
+        opaqueState = bl;
     }
 
-    public boolean G() {
+    public boolean isParentEnabled() {
         return super.r$src$Z$14eylz9();
     }
 }

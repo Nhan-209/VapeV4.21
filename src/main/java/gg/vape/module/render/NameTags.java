@@ -81,7 +81,7 @@ extends Mod {
     private final BooleanValue ignoreInvisibles;
     private final NumberFormat numberFormat;
     private final BooleanValue renderAnimals;
-    private static final String RESET_COLOR = ClientSettings.F + "r";
+    private static final String RESET_COLOR = ClientSettings.FORMAT_CODE + "r";
     private final BooleanValue animalsEffects;
     private static final String LESS_DAMAGE_LABEL;
     private final BooleanValue mobsDistance;
@@ -213,10 +213,10 @@ extends Mod {
     }
 
     private static int lambda$onRenderWorldLast$0(OnlineRadarPreviewState onlineRadarPreviewState, OnlineRadarPreviewState onlineRadarPreviewState2) {
-        return Double.compare(((RenderEntityContext)onlineRadarPreviewState2.R()).getDistance(), ((RenderEntityContext)onlineRadarPreviewState.R()).getDistance());
+        return Double.compare(((RenderEntityContext)onlineRadarPreviewState2.getValue()).getDistance(), ((RenderEntityContext)onlineRadarPreviewState.getValue()).getDistance());
     }
 
-    @EventHandler(b=true)
+    @EventHandler(skipCanceled=true)
     public void S(EventPreRenderLiving eventPreRenderLiving) {
         if (eventPreRenderLiving.getWorld().isNull()) {
             return;
@@ -230,9 +230,9 @@ extends Mod {
     }
 
     static {
-        EQUAL_DAMAGE_LABEL = ClientSettings.F + "e=";
-        LESS_DAMAGE_LABEL = ClientSettings.F + "c-";
-        MORE_DAMAGE_LABEL = ClientSettings.F + "a+";
+        EQUAL_DAMAGE_LABEL = ClientSettings.FORMAT_CODE + "e=";
+        LESS_DAMAGE_LABEL = ClientSettings.FORMAT_CODE + "c-";
+        MORE_DAMAGE_LABEL = ClientSettings.FORMAT_CODE + "a+";
     }
 
     private void renderNameTag(RenderManager renderManager, EntityRenderer entityRenderer, FontRenderer fontRenderer, EntityPlayerSP entityPlayerSP, float f, float f2, GameSettings gameSettings, EntityLivingBase entityLivingBase, RenderEntityContext renderEntityContext, double d, double d2, double d3, float f3, boolean bl, boolean bl2, boolean bl3, boolean bl4, boolean bl5, MatrixStack matrixStack) {
@@ -425,7 +425,7 @@ extends Mod {
         this.equipment = BooleanValue.create(this, "Equipment", false);
         this.playersEffects = BooleanValue.create(this, "Effects", false);
         this.playersMaxDistance = NumberValue.create(this, "Max Distance", "#", "m", 0.0, 0.0, 250.0, 1.0, "Maximum distance allowed to render.\nUse 0 to render at any distance.");
-        this.strengthIndicator = BooleanValue.create(this, "Strength Indicator", false, "Gives you an indicator of your enemies\npossible damage relative to yours.\n    " + ClientSettings.F + "a+ " + RESET_COLOR + "Enemy deals less damage than you\n    " + ClientSettings.F + "e= " + RESET_COLOR + "Enemy deals equal damage to you\n    " + ClientSettings.F + "c- " + RESET_COLOR + "Enemy deals more damage than you");
+        this.strengthIndicator = BooleanValue.create(this, "Strength Indicator", false, "Gives you an indicator of your enemies\npossible damage relative to yours.\n    " + ClientSettings.FORMAT_CODE + "a+ " + RESET_COLOR + "Enemy deals less damage than you\n    " + ClientSettings.FORMAT_CODE + "e= " + RESET_COLOR + "Enemy deals equal damage to you\n    " + ClientSettings.FORMAT_CODE + "c- " + RESET_COLOR + "Enemy deals more damage than you");
         this.calculateEffects = BooleanValue.create(this, "Calculate Effects", false, "Calculates potion effects to determine\ntotal possible damage. (Strength)");
         this.renderAnimals = BooleanValue.create(this, "Render Animals", false);
         this.animalsHealth = BooleanValue.create(this, "Health", false);
@@ -456,7 +456,7 @@ extends Mod {
         double d2;
         double d3;
         String string = renderEntityContext.getTypeName();
-        String string2 = ClientSettings.F + "a" + ClientSettings.F + "r" + string;
+        String string2 = ClientSettings.FORMAT_CODE + "a" + ClientSettings.FORMAT_CODE + "r" + string;
         boolean bl5 = entityLivingBase.isInstance(MappedClasses.Yl);
         if (bl5) {
             float f3;
@@ -464,10 +464,10 @@ extends Mod {
             float f4;
             double d5;
             double d6;
-            FriendEntry friendEntry = Vape.INSTANCE.getFriendManager().O(renderEntityContext.getName());
+            FriendEntry friendEntry = Vape.INSTANCE.getFriendManager().findTargetedFriend(renderEntityContext.getName());
             if (friendEntry != null) {
-                string2 = friendEntry.o();
-                if (!Vape.INSTANCE.getFriendManager().q.getEffectiveValue().booleanValue() && !Vape.INSTANCE.getFriendManager().q.getEffectiveValue().booleanValue()) {
+                string2 = friendEntry.getDisplayName();
+                if (!Vape.INSTANCE.getFriendManager().recolorVisuals.getEffectiveValue().booleanValue() && !Vape.INSTANCE.getFriendManager().recolorVisuals.getEffectiveValue().booleanValue()) {
                     int n;
                     char[] cArray = string.toCharArray();
                     for (int i = n = string.indexOf(string2); i > 0; --i) {
@@ -481,19 +481,19 @@ extends Mod {
                 }
             }
             if (bl) {
-                string2 = ClientSettings.F + "a[" + ClientSettings.F + "f" + (int)renderEntityContext.getDistance() + ClientSettings.F + "a]" + ClientSettings.F + "r " + string2;
+                string2 = ClientSettings.FORMAT_CODE + "a[" + ClientSettings.FORMAT_CODE + "f" + (int)renderEntityContext.getDistance() + ClientSettings.FORMAT_CODE + "a]" + ClientSettings.FORMAT_CODE + "r " + string2;
             }
             if (renderEntityContext.getModelPlayer().isCreativeMode()) {
-                string2 = ClientSettings.F + "a[C] " + ClientSettings.F + "r" + string2;
+                string2 = ClientSettings.FORMAT_CODE + "a[C] " + ClientSettings.FORMAT_CODE + "r" + string2;
             }
             String string4 = (d6 = 100.0 * ((d5 = (double)((f4 = entityLivingBase.w$src$F$15l9epb()) / 2.0f)) / (d4 = (double)(entityLivingBase.I$src$F$14vyvep() / 2.0f)))) > 75.0 ? "2" : (d6 > 50.0 ? "e" : (d6 > 25.0 ? "6" : "4"));
             String string5 = this.numberFormat.format(Math.floor((d5 + 0.25) / 0.5) * 0.5);
             if (bl2) {
-                string2 = String.format("%s %s%s%s", string2, ClientSettings.F, string4, string5);
+                string2 = String.format("%s %s%s%s", string2, ClientSettings.FORMAT_CODE, string4, string5);
             }
             if (bl4 && (f3 = renderEntityContext.getHealth()) > 0.0f) {
                 String string6 = this.numberFormat.format(Math.floor(((double)f3 + 0.25) / 0.5) * 0.5);
-                string2 = String.format("%s %s%s%s", string2, ClientSettings.F, "6", string6);
+                string2 = String.format("%s %s%s%s", string2, ClientSettings.FORMAT_CODE, "6", string6);
             }
             if (bl3) {
                 string2 = String.format("%s %s", string2, renderEntityContext.getNameTag());
@@ -501,16 +501,16 @@ extends Mod {
             return string2;
         }
         if (bl) {
-            string2 = ClientSettings.F + "a[" + ClientSettings.F + "f" + (int)renderEntityContext.getDistance() + ClientSettings.F + "a]" + ClientSettings.F + "r " + string2;
+            string2 = ClientSettings.FORMAT_CODE + "a[" + ClientSettings.FORMAT_CODE + "f" + (int)renderEntityContext.getDistance() + ClientSettings.FORMAT_CODE + "a]" + ClientSettings.FORMAT_CODE + "r " + string2;
         }
         String string7 = (d3 = 100.0 * ((d2 = (double)((f2 = entityLivingBase.w$src$F$15l9epb()) / 2.0f)) / (d = (double)(entityLivingBase.I$src$F$14vyvep() / 2.0f)))) > 75.0 ? "2" : (d3 > 50.0 ? "e" : (d3 > 25.0 ? "6" : "4"));
         String string8 = this.numberFormat.format(Math.floor((d2 + 0.25) / 0.5) * 0.5);
         if (bl2) {
-            string2 = String.format("%s %s%s%s", string2, ClientSettings.F, string7, string8);
+            string2 = String.format("%s %s%s%s", string2, ClientSettings.FORMAT_CODE, string7, string8);
         }
         if (bl4 && (f = renderEntityContext.getHealth()) > 0.0f) {
             String string9 = this.numberFormat.format(Math.floor(((double)f + 0.25) / 0.5) * 0.5);
-            string2 = String.format("%s %s%s%s", string2, ClientSettings.F, "6", string9);
+            string2 = String.format("%s %s%s%s", string2, ClientSettings.FORMAT_CODE, "6", string9);
         }
         if (bl3) {
             string2 = String.format("%s %s", string2, renderEntityContext.getNameTag());
@@ -538,7 +538,7 @@ extends Mod {
             if (!this.shouldRender(entity, worldClient, entityPlayerSP)) continue;
             EntityLivingBase entityLivingBase = new EntityLivingBase(entity);
             RenderEntityContext object = RenderEntityContextCache.getOrCreate(entityLivingBase, entityPlayerSP);
-            arrayList.add(OnlineRadarPreviewState.l(entityLivingBase, object));
+            arrayList.add(OnlineRadarPreviewState.create(entityLivingBase, object));
         }
         arrayList.sort(NameTags::lambda$onRenderWorldLast$0);
         GameSettings gameSettings = Minecraft.gameSettings();
@@ -546,8 +546,8 @@ extends Mod {
         float f2 = FreeLookHudModule.isActive() ? FreeLookHudModule.getRenderYaw() : eventRender3D.getRenderManager().getPlayerViewY();
         GuiRenderPrimitives.U = true;
         for (OnlineRadarPreviewState onlineRadarPreviewState : arrayList) {
-            EntityLivingBase entityLivingBase = (EntityLivingBase)onlineRadarPreviewState.P();
-            RenderEntityContext renderEntityContext = (RenderEntityContext)onlineRadarPreviewState.R();
+            EntityLivingBase entityLivingBase = (EntityLivingBase)onlineRadarPreviewState.getKey();
+            RenderEntityContext renderEntityContext = (RenderEntityContext)onlineRadarPreviewState.getValue();
             double d7 = entityLivingBase.M();
             double d8 = entityLivingBase.W();
             double d9 = entityLivingBase.m$src$D$fwnne5();
@@ -578,7 +578,7 @@ extends Mod {
 
     private int computeNameColor(EntityLivingBase entityLivingBase, RenderEntityContext renderEntityContext, MutableColor mutableColor, MutableColor mutableColor2, double d) {
         int n = 0xFFFFFF;
-        if (Vape.INSTANCE.getFriendManager().q.getEffectiveValue().booleanValue()) {
+        if (Vape.INSTANCE.getFriendManager().recolorVisuals.getEffectiveValue().booleanValue()) {
             boolean bl = renderEntityContext.isFriend();
             if (renderEntityContext.isAttackable() || bl) {
                 n = -12417292;
@@ -595,8 +595,8 @@ extends Mod {
                 mutableColor2.withAlpha((int)(128.0 * d));
             }
             if (bl) {
-                n = Vape.INSTANCE.getFriendManager().R.toRgb();
-                mutableColor2.setColor(Vape.INSTANCE.getFriendManager().R.getMutableColor());
+                n = Vape.INSTANCE.getFriendManager().friendColor.toRgb();
+                mutableColor2.setColor(Vape.INSTANCE.getFriendManager().friendColor.getMutableColor());
             }
         }
         if (Vape.INSTANCE.getModManager().getMod(MurderMystery.class).isMurderer(entityLivingBase)) {

@@ -5,43 +5,43 @@ import gg.vape.event.EventListeners;
 
 public class EventRenderGlobalUpdateChunksThrottle
 extends Event {
-    private static final EventListeners T;
-    static float E;
-    private static String N;
+    private static final EventListeners EVENT_LISTENERS;
+    static float callsSinceReset;
+    private static String obfuscationState;
 
     @Override
     public EventListeners getListeners() {
-        return T;
+        return EVENT_LISTENERS;
     }
 
     @Override
     public boolean fire() {
-        if ((E += 1.0f) >= 100.0f) {
-            E = 0.0f;
+        if ((callsSinceReset += 1.0f) >= 100.0f) {
+            callsSinceReset = 0.0f;
         }
-        if (E > 0.0f) {
+        if (callsSinceReset > 0.0f) {
             this.setCancelled(true);
         }
         return super.fire();
     }
 
 
-    public static void h(String string) {
-        N = string;
+    public static void setObfuscationState(String state) {
+        obfuscationState = state;
     }
 
-    public static String k() {
-        return N;
+    public static String getObfuscationState() {
+        return obfuscationState;
     }
 
     public static EventListeners getEventListeners() {
-        return T;
+        return EVENT_LISTENERS;
     }
 
     static {
-        E = 0.0f;
-        EventRenderGlobalUpdateChunksThrottle.h("p3vFd");
-        T = new EventListeners();
+        callsSinceReset = 0.0f;
+        EventRenderGlobalUpdateChunksThrottle.setObfuscationState("p3vFd");
+        EVENT_LISTENERS = new EventListeners();
     }
 }
 

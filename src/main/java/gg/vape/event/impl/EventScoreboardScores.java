@@ -7,16 +7,16 @@ import java.util.Collection;
 
 public class EventScoreboardScores
 extends Event {
-    private static final EventListeners f = new EventListeners();
-    private static boolean G;
+    private static final EventListeners EVENT_LISTENERS = new EventListeners();
+    private static boolean locked;
 
     @Override
     public boolean fire() {
-        return G;
+        return locked;
     }
 
     public static EventListeners getEventListeners() {
-        return f;
+        return EVENT_LISTENERS;
     }
 
     public Collection getScores() {
@@ -25,11 +25,10 @@ extends Event {
 
     @Override
     public EventListeners getListeners() {
-        return f;
+        return EVENT_LISTENERS;
     }
 
-    public static void setLocked(boolean bl) {
-        G = bl;
+    public static void setLocked(boolean locked) {
+        EventScoreboardScores.locked = locked;
     }
 }
-

@@ -1,21 +1,19 @@
 package gg.vape.wrapper.impl;
 
 import gg.vape.wrapper.Wrapper;
-import gg.vape.wrapper.impl.BlockStateBridge;
-import gg.vape.wrapper.impl.FontGlyphInfo;
 
 public class GlyphInfo
 extends Wrapper {
     public float M() {
-        return GlyphInfo.c.getMappings().qp.h(this.I);
+        return GlyphInfo.vapeInstance.getMappings().qp.h(this.I);
     }
 
     public float s() {
-        return GlyphInfo.c.getMappings().qp.j(this.I);
+        return GlyphInfo.vapeInstance.getMappings().qp.j(this.I);
     }
 
     public FontGlyphInfo z() {
-        Object object = GlyphInfo.c.getMappings().qp.H(this.I);
+        Object object = GlyphInfo.vapeInstance.getMappings().qp.H(this.I);
         return object != null ? new FontGlyphInfo(object) : null;
     }
 
@@ -24,7 +22,7 @@ extends Wrapper {
     }
 
     public float S() {
-        return GlyphInfo.c.getMappings().qp.v(this.I);
+        return GlyphInfo.vapeInstance.getMappings().qp.v(this.I);
     }
 
     public float E() {
@@ -32,7 +30,7 @@ extends Wrapper {
     }
 
     public BlockStateBridge H$src$Lgg_vape_wrapper_impl_BlockStateBridge_$1eevee() {
-        Object object = GlyphInfo.c.getMappings().qp.r$src$Ljava_lang_Object_$1r6sqxs(this.I);
+        Object object = GlyphInfo.vapeInstance.getMappings().qp.r$src$Ljava_lang_Object_$1r6sqxs(this.I);
         return object != null ? new BlockStateBridge(object) : null;
     }
 
@@ -43,7 +41,7 @@ extends Wrapper {
     }
 
     public float j() {
-        return GlyphInfo.c.getMappings().qp.K(this.I);
+        return GlyphInfo.vapeInstance.getMappings().qp.K(this.I);
     }
 
     public int q() {
@@ -52,7 +50,7 @@ extends Wrapper {
     }
 
     public float h() {
-        return GlyphInfo.c.getMappings().qp.r(this.I);
+        return GlyphInfo.vapeInstance.getMappings().qp.r(this.I);
     }
 
     public float Q() {
@@ -60,15 +58,15 @@ extends Wrapper {
     }
 
     public float x() {
-        return GlyphInfo.c.getMappings().qp.g(this.I);
+        return GlyphInfo.vapeInstance.getMappings().qp.g(this.I);
     }
 
     public float H() {
-        return GlyphInfo.c.getMappings().qp.M(this.I);
+        return GlyphInfo.vapeInstance.getMappings().qp.M(this.I);
     }
 
     public float t() {
-        return GlyphInfo.c.getMappings().qp.N(this.I);
+        return GlyphInfo.vapeInstance.getMappings().qp.N(this.I);
     }
 }
 

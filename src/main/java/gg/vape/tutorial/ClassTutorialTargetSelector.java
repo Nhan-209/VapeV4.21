@@ -5,16 +5,15 @@ import gg.vape.ui.click.component.GuiComponent;
 
 class ClassTutorialTargetSelector
 extends TutorialTargetSelector<GuiComponent> {
-    final Class V;
+    private final Class selectedClass;
 
     @Override
-    public boolean X(GuiComponent guiComponent) {
-        return this.V.isInstance(guiComponent);
+    public boolean matches(GuiComponent guiComponent) {
+        return this.selectedClass.isInstance(guiComponent);
     }
 
     ClassTutorialTargetSelector(Class clazz, Class clazz2) {
         super(clazz);
-        this.V = clazz2;
+        this.selectedClass = clazz2;
     }
 }
-

@@ -13,7 +13,7 @@ implements ZeusSerializablePacket {
 
     @Override
     public final void S(ZeusPacketBuffer gx_12) {
-        this.A = gx_12.N();
+        this.A = gx_12.readUuid();
         this.x(gx_12);
     }
 
@@ -31,7 +31,7 @@ implements ZeusSerializablePacket {
 
     @Override
     public final void o(ZeusPacketBuffer gx_12) {
-        gx_12.r(this.A);
+        gx_12.writeUuid(this.A);
         this.T(gx_12);
     }
 

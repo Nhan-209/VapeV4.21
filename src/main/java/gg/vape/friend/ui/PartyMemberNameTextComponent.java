@@ -6,11 +6,11 @@ import java.awt.Color;
 
 public class PartyMemberNameTextComponent
 extends TruncatedTextComponent {
-    final PartyMemberRow i;
+    private final PartyMemberRow row;
 
     public PartyMemberNameTextComponent(PartyMemberRow partyMemberRow, String string, String string2, double d, double d2, Color color, boolean bl) {
         super(string, string2, d, d2, color, bl);
-        this.i = partyMemberRow;
+        this.row = partyMemberRow;
     }
 
     @Override

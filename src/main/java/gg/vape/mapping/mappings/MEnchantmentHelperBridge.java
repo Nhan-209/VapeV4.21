@@ -22,7 +22,7 @@ extends Mapping {
         boolean bl = true;
         String string = b;
         MEnchantmentHelperBridge mEnchantmentHelperBridge = this;
-        this.F = this.x(string, bl, clazz, classArray);
+        this.F = this.registerStaticMethod(string, bl, clazz, classArray);
     }
 
     public static int Y() {
@@ -31,7 +31,7 @@ extends Mapping {
     }
 
     public Object l() {
-        return this.F.L(null, new Object[0]);
+        return this.F.invokeObject(null, new Object[0]);
     }
 
     public static void F(int n) {

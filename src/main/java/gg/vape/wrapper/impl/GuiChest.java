@@ -1,9 +1,6 @@
 package gg.vape.wrapper.impl;
 
 import gg.vape.mapping.mappings.MGuiChest;
-import gg.vape.wrapper.impl.ForgeVersion;
-import gg.vape.wrapper.impl.GuiContainer;
-import gg.vape.wrapper.impl.Inventory;
 
 public class GuiChest
 extends GuiContainer {
@@ -20,10 +17,10 @@ extends GuiContainer {
 
     public Inventory getLowerChestInventory() {
         if (ForgeVersion.MC_1_16_5.d()) {
-            Object object = GuiChest.c.getMappingsMapperCompat().hK.t(this.I);
-            return new Inventory(MGuiChest.F(GuiChest.c.getMappingsMapperCompat().Ch, object));
+            Object object = GuiChest.vapeInstance.getMappingsMapperCompat().hK.t(this.I);
+            return new Inventory(MGuiChest.F(GuiChest.vapeInstance.getMappingsMapperCompat().Ch, object));
         }
-        return new Inventory(MGuiChest.F(GuiChest.c.getMappingsMapperCompat().Ch, this.I));
+        return new Inventory(MGuiChest.F(GuiChest.vapeInstance.getMappingsMapperCompat().Ch, this.I));
     }
 
 }

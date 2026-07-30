@@ -5,7 +5,6 @@ import gg.vape.mapping.Mapping;
 import gg.vape.mapping.MappingField;
 import gg.vape.mapping.MappingMethod;
 import gg.vape.mapping.MappingMethodBuilder;
-import gg.vape.mapping.mappings.MScoreboard;
 import gg.vape.ui.click.component.GuiComponent;
 import gg.vape.wrapper.Wrapper;
 import gg.vape.wrapper.impl.ForgeVersion;
@@ -19,7 +18,7 @@ extends Mapping {
     private MappingField e;
 
     private String k(Object object, String string) {
-        return (String)this.B.L(null, object, string);
+        return (String)this.B.invokeObject(null, object, string);
     }
 
     public static Object H(MScorePlayerTeam mScorePlayerTeam, Object object, Object object2) {
@@ -57,17 +56,17 @@ extends Mapping {
             if (ForgeVersion.MC_1_16_5.d()) {
                 Class[] classArray = new Class[]{MappedClasses.Yh, MappedClasses.Yr};
                 Class clazz = MappedClasses.YO;
-                boolean bl = Wrapper.G;
+                boolean bl = Wrapper.isNativeAvailable;
                 String string = "func_237500_a_";
                 MScorePlayerTeam mScorePlayerTeam = this;
-                this.B = mScorePlayerTeam.x(string, bl, clazz, classArray);
+                this.B = mScorePlayerTeam.registerStaticMethod(string, bl, clazz, classArray);
             } else {
                 Class[] classArray = new Class[]{MappedClasses.Yh, String.class};
                 Class<String> clazz = String.class;
                 boolean bl = true;
                 String string = "formatPlayerName";
                 MScorePlayerTeam mScorePlayerTeam = this;
-                this.B = mScorePlayerTeam.x(string, bl, clazz, classArray);
+                this.B = mScorePlayerTeam.registerStaticMethod(string, bl, clazz, classArray);
             }
             if (ForgeVersion.MC_1_20_6.d()) {
                 Class clazz = MappedClasses.Yr;
@@ -92,7 +91,7 @@ extends Mapping {
                 Class clazz = MappedClasses.YO;
                 String string = "formatNameForTeam";
                 MScorePlayerTeam mScorePlayerTeam = this;
-                this.r = ((MappingMethodBuilder)((MappingMethodBuilder)mScorePlayerTeam.u(string, clazz, classArray).X(ForgeVersion.MC_1_20_6.n(), MappedClasses.uM)).H(true)).s();
+                this.r = ((MappingMethodBuilder)((MappingMethodBuilder)mScorePlayerTeam.methodBuilder(string, clazz, classArray).setTypeForVersion(ForgeVersion.MC_1_20_6.n(), MappedClasses.uM)).setStaticMember(true)).buildMethod();
             }
             if (GuiComponent.getLegacyComponentState() == null) {
                 MScoreboard.c(new int[4]);
@@ -104,7 +103,7 @@ extends Mapping {
         boolean bl = true;
         String string = "formatPlayerName";
         MScorePlayerTeam mScorePlayerTeam = this;
-        this.B = mScorePlayerTeam.x(string, bl, clazz, classArray);
+        this.B = mScorePlayerTeam.registerStaticMethod(string, bl, clazz, classArray);
         if (ForgeVersion.MC_1_20_6.d()) {
             Class clazz3 = MappedClasses.Yr;
             boolean bl3 = true;
@@ -127,7 +126,7 @@ extends Mapping {
             Class clazz6 = MappedClasses.YO;
             String string6 = "formatNameForTeam";
             MScorePlayerTeam mScorePlayerTeam6 = this;
-            this.r = ((MappingMethodBuilder)((MappingMethodBuilder)this.u(string6, clazz6, classArray2).X(ForgeVersion.MC_1_20_6.n(), MappedClasses.uM)).H(true)).s();
+            this.r = ((MappingMethodBuilder)((MappingMethodBuilder)this.methodBuilder(string6, clazz6, classArray2).setTypeForVersion(ForgeVersion.MC_1_20_6.n(), MappedClasses.uM)).setStaticMember(true)).buildMethod();
         }
         if (GuiComponent.getLegacyComponentState() == null) {
             MScoreboard.c(new int[4]);
@@ -135,11 +134,11 @@ extends Mapping {
     }
 
     private Object j(Object object, Object object2) {
-        return this.r.L(null, object, object2);
+        return this.r.invokeObject(null, object, object2);
     }
 
     public Object I(Object object, Object object2) {
-        return this.B.L(null, object, object2);
+        return this.B.invokeObject(null, object, object2);
     }
 }
 

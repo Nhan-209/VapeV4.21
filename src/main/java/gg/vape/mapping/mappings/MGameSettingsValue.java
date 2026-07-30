@@ -62,7 +62,7 @@ extends Mapping {
 
 
     private Object X(Object object) {
-        return this.B.L(object, new Object[0]);
+        return this.B.invokeObject(object, new Object[0]);
     }
 
     public static boolean X() {
@@ -83,7 +83,7 @@ extends Mapping {
     }
 
     private void d(Object object, Object object2) {
-        this.d.c(object, object2);
+        this.d.invokeVoid(object, object2);
     }
 }
 

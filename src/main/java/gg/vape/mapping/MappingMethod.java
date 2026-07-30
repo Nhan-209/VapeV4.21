@@ -16,51 +16,51 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 
 public class MappingMethod {
-    private final String Y;
-    private final Class<?> O;
-    private static int a;
-    private Constructor<?> V;
-    private final boolean m;
-    private Class<?> B;
-    private Class<?> T;
-    private final int p;
-    private boolean v;
-    private boolean k;
-    private final String Q;
-    private final Class<?>[] o;
-    private final String l;
-    private Class<?>[] M;
-    private MethodInvoker H;
-    private final boolean E;
-    private Method P;
-    private final String z;
-    private boolean g;
-    private final String w;
-    private static String d;
-    private final Mapping S;
+    private final String mappedDescriptor;
+    private final Class<?> ownerClass;
+    private static int nextMethodId;
+    private Constructor<?> reflectedConstructor;
+    private final boolean mappedMember;
+    private Class<?> resolvedReturnType;
+    private Class<?> declaredReturnType;
+    private final int methodId;
+    private boolean resolutionFailed;
+    private boolean skipAccessorGeneration;
+    private final String descriptor;
+    private final Class<?>[] declaredParameterTypes;
+    private final String ownerInternalName;
+    private Class<?>[] resolvedParameterTypes;
+    private MethodInvoker generatedInvoker;
+    private final boolean staticMethod;
+    private Method reflectedMethod;
+    private final String originalName;
+    private boolean secondaryMember;
+    private final String runtimeName;
+    private static String controlFlowMarker;
+    private final Mapping mappingOwner;
 
-    public char[] K(Object object, Object ... objectArray) {
-        if (this.H != null) {
-            return (char[])this.H.invoke(object, objectArray);
+    public char[] invokeCharArray(Object object, Object ... objectArray) {
+        if (this.generatedInvoker != null) {
+            return (char[])this.generatedInvoker.invoke(object, objectArray);
         }
-        if (this.P != null) {
-            return (char[])this.l(object, objectArray);
+        if (this.reflectedMethod != null) {
+            return (char[])this.invokeReflected(object, objectArray);
         }
-        return NativeMappedMemberInvoker.m(this.p, object, objectArray);
+        return NativeMappedMemberInvoker.invokeCharArray(this.methodId, object, objectArray);
     }
 
-    public void J(Class clazz) {
-        if ((Vape.INSTANCE.isMappingsRemapped() || Vape.INSTANCE.isForgeRemapInactive()) && !this.v) {
-            if (this.w.equals("<init>") || this.w.equals("<clinit>")) {
-                this.D(clazz);
+    public void initializeAccessor(Class<?> owner) {
+        if ((Vape.INSTANCE.isMappingsRemapped() || Vape.INSTANCE.isForgeRemapInactive()) && !this.resolutionFailed) {
+            if (this.runtimeName.equals("<init>") || this.runtimeName.equals("<clinit>")) {
+                this.resolveConstructor(owner);
                 return;
             }
             try {
-                Class<? extends MethodInvoker> clazz2 = GeneratedAccessorFactory.A(clazz, this);
+                Class<? extends MethodInvoker> clazz2 = GeneratedAccessorFactory.A(owner, this);
                 if (clazz2 == null) {
                     return;
                 }
-                this.H = clazz2.newInstance();
+                this.generatedInvoker = clazz2.newInstance();
             }
             catch (Throwable throwable) {
                 // empty catch block
@@ -69,188 +69,183 @@ public class MappingMethod {
     }
 
     public Object[] invokeObjectArray(Object object, Object ... objectArray) {
-        if (this.H != null) {
-            return (Object[])this.H.invoke(object, objectArray);
+        if (this.generatedInvoker != null) {
+            return (Object[])this.generatedInvoker.invoke(object, objectArray);
         }
-        if (this.P != null) {
-            return (Object[])this.l(object, objectArray);
+        if (this.reflectedMethod != null) {
+            return (Object[])this.invokeReflected(object, objectArray);
         }
-        return NativeMappedMemberInvoker.s(this.p, object, objectArray);
+        return NativeMappedMemberInvoker.invokeObjectArray(this.methodId, object, objectArray);
     }
 
-    public void c(Object object, Object ... objectArray) {
-        if (this.H != null) {
-            this.H.invoke(object, objectArray);
-        } else if (this.P != null) {
-            this.l(object, objectArray);
+    public void invokeVoid(Object object, Object ... objectArray) {
+        if (this.generatedInvoker != null) {
+            this.generatedInvoker.invoke(object, objectArray);
+        } else if (this.reflectedMethod != null) {
+            this.invokeReflected(object, objectArray);
         } else {
-            NativeMappedMemberInvoker.c(this.p, object, objectArray);
+            NativeMappedMemberInvoker.invokeVoid(this.methodId, object, objectArray);
         }
     }
 
-    public static String A() {
-        return d;
+    public static String getControlFlowMarker() {
+        return controlFlowMarker;
     }
 
-    public String B() {
-        return this.z;
+    public String getOriginalName() {
+        return this.originalName;
     }
 
-    public String v() {
+    public String getResolvedName() {
         if (Vape.INSTANCE.isForgeRemapInactive()) {
-            return this.w;
+            return this.runtimeName;
         }
-        return NativeMappedMemberInvoker.gmn(this.p);
+        return NativeMappedMemberInvoker.getMethodName(this.methodId);
     }
 
-    public Class<?>[] D() {
-        return this.o;
+    public Class<?>[] getDeclaredParameterTypes() {
+        return this.declaredParameterTypes;
     }
 
-    public boolean[] K$src$AZ$hb7l1t(Object object, Object ... objectArray) {
-        if (this.H != null) {
-            return (boolean[])this.H.invoke(object, objectArray);
+    public boolean[] invokeBooleanArray(Object object, Object ... objectArray) {
+        if (this.generatedInvoker != null) {
+            return (boolean[])this.generatedInvoker.invoke(object, objectArray);
         }
-        if (this.P != null) {
-            return (boolean[])this.l(object, objectArray);
+        if (this.reflectedMethod != null) {
+            return (boolean[])this.invokeReflected(object, objectArray);
         }
-        return NativeMappedMemberInvoker.l(this.p, object, objectArray);
+        return NativeMappedMemberInvoker.invokeBooleanArray(this.methodId, object, objectArray);
     }
 
-    public long[] w$src$AJ$19yiaod(Object object, Object ... objectArray) {
-        if (this.H != null) {
-            return (long[])this.H.invoke(object, objectArray);
+    public long[] invokeLongArray(Object object, Object ... objectArray) {
+        if (this.generatedInvoker != null) {
+            return (long[])this.generatedInvoker.invoke(object, objectArray);
         }
-        if (this.P != null) {
-            return (long[])this.l(object, objectArray);
+        if (this.reflectedMethod != null) {
+            return (long[])this.invokeReflected(object, objectArray);
         }
-        return NativeMappedMemberInvoker.p(this.p, object, objectArray);
+        return NativeMappedMemberInvoker.invokeLongArray(this.methodId, object, objectArray);
     }
 
-    public short A(Object object, Object ... objectArray) {
-        if (this.H != null) {
-            return (Short)this.H.invoke(object, objectArray);
+    public short invokeShort(Object object, Object ... objectArray) {
+        if (this.generatedInvoker != null) {
+            return (Short)this.generatedInvoker.invoke(object, objectArray);
         }
-        if (this.P != null) {
-            return (Short)this.l(object, objectArray);
+        if (this.reflectedMethod != null) {
+            return (Short)this.invokeReflected(object, objectArray);
         }
-        return NativeMappedMemberInvoker.f(this.p, object, objectArray);
+        return NativeMappedMemberInvoker.invokeShort(this.methodId, object, objectArray);
     }
 
-    public MappingMethod g() {
-        this.v = false;
-        String string = MappingMethod.A();
+    public MappingMethod register() {
+        this.resolutionFailed = false;
         try {
             if (Vape.INSTANCE.isForgeRemapInactive()) {
-                this.X();
-            } else if (this.m) {
-                String string2 = this.w;
+                this.resolveReflectionMember();
+            } else if (this.mappedMember) {
+                String string2 = this.runtimeName;
                 if (!Vape.INSTANCE.isVanillaMinecraftPresent()) {
-                    string2 = string2 + ":" + this.Q;
+                    string2 = string2 + ":" + this.descriptor;
                 }
-                NativeMappedMemberInvoker.a(this.p, this.O, this.l, this.w, this.Q, this.Y, this.E);
+                NativeMappedMemberInvoker.registerMethodWithMetadata(this.methodId, this.ownerClass, this.ownerInternalName, this.runtimeName, this.descriptor, this.mappedDescriptor, this.staticMethod);
             } else {
-                NativeMappedMemberInvoker.b(this.p, this.O, this.w, this.Q, this.E);
+                NativeMappedMemberInvoker.registerMethod(this.methodId, this.ownerClass, this.runtimeName, this.descriptor, this.staticMethod);
             }
-            if (!this.k && !Vape.INSTANCE.isForgeRemapInactive()) {
-                this.J(this.O);
+            if (!this.skipAccessorGeneration && !Vape.INSTANCE.isForgeRemapInactive()) {
+                this.initializeAccessor(this.ownerClass);
             }
         }
         catch (Throwable throwable) {
-            if (this.g) {
+            if (this.secondaryMember) {
                 MappingProfileSnapshotRegistry.O();
             } else {
                 MappingProfileSnapshotRegistry.X(this);
             }
-            this.v = true;
+            this.resolutionFailed = true;
         }
         return this;
     }
 
-    public float[] i(Object object, Object ... objectArray) {
-        if (this.H != null) {
-            return (float[])this.H.invoke(object, objectArray);
+    public float[] invokeFloatArray(Object object, Object ... objectArray) {
+        if (this.generatedInvoker != null) {
+            return (float[])this.generatedInvoker.invoke(object, objectArray);
         }
-        if (this.P != null) {
-            return (float[])this.l(object, objectArray);
+        if (this.reflectedMethod != null) {
+            return (float[])this.invokeReflected(object, objectArray);
         }
-        return NativeMappedMemberInvoker.q(this.p, object, objectArray);
+        return NativeMappedMemberInvoker.invokeFloatArray(this.methodId, object, objectArray);
     }
 
-    public Class O() {
-        return this.O;
+    public Class<?> getOwnerClass() {
+        return this.ownerClass;
     }
 
-    private void X() throws Throwable {
-        if (this.w.equals("<init>") || this.w.equals("<clinit>")) {
-            this.D(this.O);
-            if (this.V == null) {
-                throw new NoSuchMethodException(this.O.getName() + "#" + this.w + this.Q);
+    private void resolveReflectionMember() throws Throwable {
+        if (this.runtimeName.equals("<init>") || this.runtimeName.equals("<clinit>")) {
+            this.resolveConstructor(this.ownerClass);
+            if (this.reflectedConstructor == null) {
+                throw new NoSuchMethodException(this.ownerClass.getName() + "#" + this.runtimeName + this.descriptor);
             }
             return;
         }
-        this.J(this.O);
-        if (this.H != null) {
+        this.initializeAccessor(this.ownerClass);
+        if (this.generatedInvoker != null) {
             return;
         }
-        this.P = this.c(this.O, this.w, this.M);
-        if (this.P == null) {
-            throw new NoSuchMethodException(this.O.getName() + "#" + this.w + this.Q);
+        this.reflectedMethod = this.findMethodInHierarchy(this.ownerClass, this.runtimeName, this.resolvedParameterTypes);
+        if (this.reflectedMethod == null) {
+            throw new NoSuchMethodException(this.ownerClass.getName() + "#" + this.runtimeName + this.descriptor);
         }
-        this.P.setAccessible(true);
+        this.reflectedMethod.setAccessible(true);
     }
 
-    public Mapping Z() {
-        return this.S;
+    public Mapping getMappingOwner() {
+        return this.mappingOwner;
     }
 
-    public Object O(Object ... objectArray) {
-        if (this.V != null) {
+    public Object newInstance(Object ... objectArray) {
+        if (this.reflectedConstructor != null) {
             try {
-                return this.V.newInstance(objectArray);
+                return this.reflectedConstructor.newInstance(objectArray);
             }
             catch (Throwable throwable) {
                 Vape.logThrowable(throwable);
             }
         }
         try {
-            return NativeMappedMemberInvoker.ccc(this.p, this.O, objectArray);
+            return NativeMappedMemberInvoker.invokeConstructor(this.methodId, this.ownerClass, objectArray);
         }
         catch (Exception exception) {
             return MappingMethod.<RuntimeException, Object>sneakyThrow(exception);
         }
     }
 
-    public Class<?>[] T() {
-        return this.M;
+    public Class<?>[] getResolvedParameterTypes() {
+        return this.resolvedParameterTypes;
     }
 
-    public double[] H(Object object, Object ... objectArray) {
-        if (this.H != null) {
-            return (double[])this.H.invoke(object, objectArray);
+    public double[] invokeDoubleArray(Object object, Object ... objectArray) {
+        if (this.generatedInvoker != null) {
+            return (double[])this.generatedInvoker.invoke(object, objectArray);
         }
-        if (this.P != null) {
-            return (double[])this.l(object, objectArray);
+        if (this.reflectedMethod != null) {
+            return (double[])this.invokeReflected(object, objectArray);
         }
-        return NativeMappedMemberInvoker.r(this.p, object, objectArray);
+        return NativeMappedMemberInvoker.invokeDoubleArray(this.methodId, object, objectArray);
     }
 
-    public short[] o(Object object, Object ... objectArray) {
-        if (this.H != null) {
-            return (short[])this.H.invoke(object, objectArray);
+    public short[] invokeShortArray(Object object, Object ... objectArray) {
+        if (this.generatedInvoker != null) {
+            return (short[])this.generatedInvoker.invoke(object, objectArray);
         }
-        if (this.P != null) {
-            return (short[])this.l(object, objectArray);
+        if (this.reflectedMethod != null) {
+            return (short[])this.invokeReflected(object, objectArray);
         }
-        return NativeMappedMemberInvoker.n(this.p, object, objectArray);
+        return NativeMappedMemberInvoker.invokeShortArray(this.methodId, object, objectArray);
     }
 
-    public Object Y(Object object, Object ... objectArray) {
-        return NativeMappedMemberInvoker.jjj(this.p, object, objectArray);
-    }
-
-    private static Throwable a(Throwable throwable) {
-        return throwable;
+    public Object invokeNativeBridge(Object object, Object ... objectArray) {
+        return NativeMappedMemberInvoker.invokeNativeBridge(this.methodId, object, objectArray);
     }
 
     @SuppressWarnings("unchecked")
@@ -258,9 +253,9 @@ public class MappingMethod {
         throw (E)throwable;
     }
 
-    private Object l(Object object, Object ... objectArray) {
+    private Object invokeReflected(Object instance, Object ... arguments) {
         try {
-            return this.P.invoke(object, objectArray);
+            return this.reflectedMethod.invoke(instance, arguments);
         }
         catch (Throwable throwable) {
             Vape.logThrowable(throwable);
@@ -268,194 +263,192 @@ public class MappingMethod {
         }
     }
 
-    public String j() {
-        return this.Q;
+    public String getDescriptor() {
+        return this.descriptor;
     }
 
-    public MappingMethod(Mapping mapping, Class clazz, String string, boolean bl, boolean bl2, boolean bl3, Class clazz2, Class ... classArray) {
-        String string2 = MappingMethod.A();
-        String string3 = string2;
+    public MappingMethod(Mapping mappingOwner, Class<?> ownerClass, String methodName, boolean mappedMember, boolean staticMethod, boolean secondaryMember, Class<?> returnType, Class<?> ... parameterTypes) {
         if (ForgeVersion.MC_26_1.d()) {
-            bl = false;
+            mappedMember = false;
         }
-        this.S = mapping;
-        this.O = clazz;
-        this.l = MappedClasses.b(clazz).replace(".", "/");
-        this.z = string;
-        this.T = clazz2;
-        this.o = classArray;
-        MemberLookupSignature memberLookupSignature = RuntimeNameMappingRegistry.lookupMethodMapping(clazz, string);
+        this.mappingOwner = mappingOwner;
+        this.ownerClass = ownerClass;
+        this.ownerInternalName = MappedClasses.b(ownerClass).replace(".", "/");
+        this.originalName = methodName;
+        this.declaredReturnType = returnType;
+        this.declaredParameterTypes = parameterTypes;
+        MemberLookupSignature memberLookupSignature = RuntimeNameMappingRegistry.lookupMethodMapping(ownerClass, methodName);
         if (memberLookupSignature != null) {
-            this.w = memberLookupSignature.M;
-            this.B = memberLookupSignature.a != null ? memberLookupSignature.a : clazz2;
-            this.M = memberLookupSignature.v.length > 0 ? memberLookupSignature.v : classArray;
-            this.m = memberLookupSignature.H() != null ? memberLookupSignature.H() : bl;
+            this.runtimeName = memberLookupSignature.M;
+            this.resolvedReturnType = memberLookupSignature.a != null ? memberLookupSignature.a : returnType;
+            this.resolvedParameterTypes = memberLookupSignature.v.length > 0 ? memberLookupSignature.v : parameterTypes;
+            this.mappedMember = memberLookupSignature.H() != null ? memberLookupSignature.H() : mappedMember;
         } else {
-            this.w = string;
-            this.B = clazz2;
-            this.M = classArray;
-            this.m = bl;
+            this.runtimeName = methodName;
+            this.resolvedReturnType = returnType;
+            this.resolvedParameterTypes = parameterTypes;
+            this.mappedMember = mappedMember;
         }
-        this.E = bl2;
-        this.g = bl3;
-        this.p = ++a;
-        this.Q = DescUtils.S(false, this.B, this.M);
-        this.Y = DescUtils.S(true, this.B, this.M);
+        this.staticMethod = staticMethod;
+        this.secondaryMember = secondaryMember;
+        this.methodId = ++nextMethodId;
+        this.descriptor = DescUtils.getMethodDescriptor(false, this.resolvedReturnType, this.resolvedParameterTypes);
+        this.mappedDescriptor = DescUtils.getMethodDescriptor(true, this.resolvedReturnType, this.resolvedParameterTypes);
     }
 
-    public Class<?> P() {
-        return this.B;
+    public Class<?> getResolvedReturnType() {
+        return this.resolvedReturnType;
     }
 
-    public void D(Class clazz) {
+    public void resolveConstructor(Class<?> owner) {
         try {
-            this.V = clazz.getDeclaredConstructor(this.T());
-            this.V.setAccessible(true);
+            this.reflectedConstructor = owner.getDeclaredConstructor(this.getResolvedParameterTypes());
+            this.reflectedConstructor.setAccessible(true);
         }
         catch (Throwable throwable) {
             Vape.logThrowable(throwable);
         }
     }
 
-    public int R() {
-        return this.p;
+    public int getMethodId() {
+        return this.methodId;
     }
 
-    public Class<?> R$src$Ljava_lang_Class_$n2d0qz() {
-        return this.T;
+    public Class<?> getDeclaredReturnType() {
+        return this.declaredReturnType;
     }
 
-    public byte w(Object object, Object ... objectArray) {
-        if (this.H != null) {
-            return (Byte)this.H.invoke(object, objectArray);
+    public byte invokeByte(Object object, Object ... objectArray) {
+        if (this.generatedInvoker != null) {
+            return (Byte)this.generatedInvoker.invoke(object, objectArray);
         }
-        if (this.P != null) {
-            return (Byte)this.l(object, objectArray);
+        if (this.reflectedMethod != null) {
+            return (Byte)this.invokeReflected(object, objectArray);
         }
-        return NativeMappedMemberInvoker.ddd(this.p, object, objectArray);
+        return NativeMappedMemberInvoker.invokeByte(this.methodId, object, objectArray);
     }
 
-    public long n(Object object, Object ... objectArray) {
-        if (this.H != null) {
-            return (Long)this.H.invoke(object, objectArray);
+    public long invokeLong(Object object, Object ... objectArray) {
+        if (this.generatedInvoker != null) {
+            return (Long)this.generatedInvoker.invoke(object, objectArray);
         }
-        if (this.P != null) {
-            return (Long)this.l(object, objectArray);
+        if (this.reflectedMethod != null) {
+            return (Long)this.invokeReflected(object, objectArray);
         }
-        return NativeMappedMemberInvoker.h(this.p, object, objectArray);
+        return NativeMappedMemberInvoker.invokeLong(this.methodId, object, objectArray);
     }
 
-    public char u(Object object, Object ... objectArray) {
-        if (this.H != null) {
-            return ((Character)this.H.invoke(object, objectArray)).charValue();
+    public char invokeChar(Object object, Object ... objectArray) {
+        if (this.generatedInvoker != null) {
+            return ((Character)this.generatedInvoker.invoke(object, objectArray)).charValue();
         }
-        if (this.P != null) {
-            return ((Character)this.l(object, objectArray)).charValue();
+        if (this.reflectedMethod != null) {
+            return ((Character)this.invokeReflected(object, objectArray)).charValue();
         }
-        return NativeMappedMemberInvoker.e(this.p, object, objectArray);
+        return NativeMappedMemberInvoker.invokeChar(this.methodId, object, objectArray);
     }
 
-    public boolean s() {
-        return this.m;
+    public boolean isMappedMember() {
+        return this.mappedMember;
     }
 
     static {
-        MappingMethod.f("YeDWk");
-        a = 0;
+        MappingMethod.setControlFlowMarker("YeDWk");
+        nextMethodId = 0;
     }
 
-    public Object L(Object object, Object ... objectArray) {
-        if (this.H != null) {
-            return this.H.invoke(object, objectArray);
+    public Object invokeObject(Object object, Object ... objectArray) {
+        if (this.generatedInvoker != null) {
+            return this.generatedInvoker.invoke(object, objectArray);
         }
-        if (this.P != null) {
-            return this.l(object, objectArray);
+        if (this.reflectedMethod != null) {
+            return this.invokeReflected(object, objectArray);
         }
-        return NativeMappedMemberInvoker.k(this.p, object, objectArray);
+        return NativeMappedMemberInvoker.invokeObject(this.methodId, object, objectArray);
     }
 
-    public boolean d() {
-        return this.E;
+    public boolean isStaticMethod() {
+        return this.staticMethod;
     }
 
-    public boolean e(Object object, Object ... objectArray) {
-        if (this.H != null) {
-            return (Boolean)this.H.invoke(object, objectArray);
+    public boolean invokeBoolean(Object object, Object ... objectArray) {
+        if (this.generatedInvoker != null) {
+            return (Boolean)this.generatedInvoker.invoke(object, objectArray);
         }
-        if (this.P != null) {
-            return (Boolean)this.l(object, objectArray);
+        if (this.reflectedMethod != null) {
+            return (Boolean)this.invokeReflected(object, objectArray);
         }
-        return NativeMappedMemberInvoker.d(this.p, object, objectArray);
+        return NativeMappedMemberInvoker.invokeBoolean(this.methodId, object, objectArray);
     }
 
-    public void B(Object object, Object ... objectArray) {
-        NativeMappedMemberInvoker.bbb(this.p, object, objectArray);
+    public void invokeVoidNative(Object object, Object ... objectArray) {
+        NativeMappedMemberInvoker.invokeVoid(this.methodId, object, objectArray);
     }
 
-    public static MappingMethod G(MappingMethodBuilder mappingMethodBuilder) {
-        MemberLookupSignature memberLookupSignature = RuntimeNameMappingRegistry.lookupMethodMapping(mappingMethodBuilder.F$src$Ljava_lang_Class_$100ldxh(), mappingMethodBuilder.Y());
+    public static MappingMethod fromBuilder(MappingMethodBuilder mappingMethodBuilder) {
+        MemberLookupSignature memberLookupSignature = RuntimeNameMappingRegistry.lookupMethodMapping(mappingMethodBuilder.getOwnerClass(), mappingMethodBuilder.getMemberName());
         if (memberLookupSignature != null) {
-            mappingMethodBuilder.v(memberLookupSignature.M);
+            mappingMethodBuilder.setMemberName(memberLookupSignature.M);
             if (memberLookupSignature.a != null) {
-                mappingMethodBuilder.l(memberLookupSignature.a);
+                mappingMethodBuilder.setType(memberLookupSignature.a);
             }
             if (memberLookupSignature.v.length > 0) {
-                mappingMethodBuilder.G(memberLookupSignature.v);
+                mappingMethodBuilder.setParameterTypes(memberLookupSignature.v);
             }
             if (memberLookupSignature.H() != null) {
-                mappingMethodBuilder.S(memberLookupSignature.H());
+                mappingMethodBuilder.setMappedMember(memberLookupSignature.H());
             }
         }
-        MappingMethod mappingMethod = new MappingMethod(mappingMethodBuilder.w(), mappingMethodBuilder.F$src$Ljava_lang_Class_$100ldxh(), mappingMethodBuilder.Y(), mappingMethodBuilder.z$src$Z$103hrpe(), mappingMethodBuilder.D(), mappingMethodBuilder.B(), mappingMethodBuilder.X(), mappingMethodBuilder.t());
-        if (mappingMethodBuilder.o()) {
-            mappingMethod.k = true;
+        MappingMethod mappingMethod = new MappingMethod(mappingMethodBuilder.getMappingOwner(), mappingMethodBuilder.getOwnerClass(), mappingMethodBuilder.getMemberName(), mappingMethodBuilder.isMappedMember(), mappingMethodBuilder.isStaticMember(), mappingMethodBuilder.isSecondaryMember(), mappingMethodBuilder.getType(), mappingMethodBuilder.getParameterTypes());
+        if (mappingMethodBuilder.isSkipAccessorGeneration()) {
+            mappingMethod.skipAccessorGeneration = true;
         }
         MappingMethod mappingMethod2 = mappingMethod;
-        return mappingMethod2.g();
+        return mappingMethod2.register();
     }
 
-    public void F(Object object) {
-        if (this.H != null) {
-            this.H.invoke(object, new Object[0]);
-        } else if (this.P != null) {
-            this.l(object, new Object[0]);
+    public void invokeVoidNoArgs(Object object) {
+        if (this.generatedInvoker != null) {
+            this.generatedInvoker.invoke(object, new Object[0]);
+        } else if (this.reflectedMethod != null) {
+            this.invokeReflected(object, new Object[0]);
         } else {
-            NativeMappedMemberInvoker.c(this.p, object, new Object[0]);
+            NativeMappedMemberInvoker.invokeVoid(this.methodId, object, new Object[0]);
         }
     }
 
-    public double F(Object object, Object ... objectArray) {
-        if (this.H != null) {
-            return (Double)this.H.invoke(object, objectArray);
+    public double invokeDouble(Object object, Object ... objectArray) {
+        if (this.generatedInvoker != null) {
+            return (Double)this.generatedInvoker.invoke(object, objectArray);
         }
-        if (this.P != null) {
-            return (Double)this.l(object, objectArray);
+        if (this.reflectedMethod != null) {
+            return (Double)this.invokeReflected(object, objectArray);
         }
-        return NativeMappedMemberInvoker.j(this.p, object, objectArray);
+        return NativeMappedMemberInvoker.invokeDouble(this.methodId, object, objectArray);
     }
 
-    public int Z(Object object, Object ... objectArray) {
-        if (this.H != null) {
-            return (Integer)this.H.invoke(object, objectArray);
+    public int invokeInt(Object object, Object ... objectArray) {
+        if (this.generatedInvoker != null) {
+            return (Integer)this.generatedInvoker.invoke(object, objectArray);
         }
-        if (this.P != null) {
-            return (Integer)this.l(object, objectArray);
+        if (this.reflectedMethod != null) {
+            return (Integer)this.invokeReflected(object, objectArray);
         }
-        return NativeMappedMemberInvoker.g(this.p, object, objectArray);
+        return NativeMappedMemberInvoker.invokeInt(this.methodId, object, objectArray);
     }
 
-    public boolean h() {
-        return this.v;
+    public boolean hasResolutionFailed() {
+        return this.resolutionFailed;
     }
 
-    private Method c(Class<?> clazz, String string, Class<?>[] classArray) {
+    private Method findMethodInHierarchy(Class<?> owner, String name, Class<?>[] parameterTypes) {
         try {
-            return clazz.getMethod(string, classArray);
+            return owner.getMethod(name, parameterTypes);
         }
         catch (NoSuchMethodException noSuchMethodException) {
-            for (Class<?> clazz2 = clazz; clazz2 != null; clazz2 = clazz2.getSuperclass()) {
+            for (Class<?> currentClass = owner; currentClass != null; currentClass = currentClass.getSuperclass()) {
                 try {
-                    return clazz2.getDeclaredMethod(string, classArray);
+                    return currentClass.getDeclaredMethod(name, parameterTypes);
                 }
                 catch (NoSuchMethodException noSuchMethodException2) {
                     continue;
@@ -465,31 +458,31 @@ public class MappingMethod {
         }
     }
 
-    public String V() {
-        return this.w;
+    public String getRuntimeName() {
+        return this.runtimeName;
     }
 
-    public static void f(String string) {
-        d = string;
+    public static void setControlFlowMarker(String marker) {
+        controlFlowMarker = marker;
     }
 
-    public float s(Object object, Object ... objectArray) {
-        if (this.H != null) {
-            return ((Float)this.H.invoke(object, objectArray)).floatValue();
+    public float invokeFloat(Object object, Object ... objectArray) {
+        if (this.generatedInvoker != null) {
+            return ((Float)this.generatedInvoker.invoke(object, objectArray)).floatValue();
         }
-        if (this.P != null) {
-            return ((Float)this.l(object, objectArray)).floatValue();
+        if (this.reflectedMethod != null) {
+            return ((Float)this.invokeReflected(object, objectArray)).floatValue();
         }
-        return NativeMappedMemberInvoker.i(this.p, object, objectArray);
+        return NativeMappedMemberInvoker.invokeFloat(this.methodId, object, objectArray);
     }
 
-    public int[] z(Object object, Object ... objectArray) {
-        if (this.H != null) {
-            return (int[])this.H.invoke(object, objectArray);
+    public int[] invokeIntArray(Object object, Object ... objectArray) {
+        if (this.generatedInvoker != null) {
+            return (int[])this.generatedInvoker.invoke(object, objectArray);
         }
-        if (this.P != null) {
-            return (int[])this.l(object, objectArray);
+        if (this.reflectedMethod != null) {
+            return (int[])this.invokeReflected(object, objectArray);
         }
-        return NativeMappedMemberInvoker.o(this.p, object, objectArray);
+        return NativeMappedMemberInvoker.invokeIntArray(this.methodId, object, objectArray);
     }
 }

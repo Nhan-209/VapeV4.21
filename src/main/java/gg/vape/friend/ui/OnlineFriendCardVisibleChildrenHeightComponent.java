@@ -18,10 +18,10 @@ extends FlowLayoutComponent {
     @Override
     public double getVisibleChildrenWidth() {
         double totalWidth = 0.0;
-        if (!OnlineFriendCard.B(this.onlineFriendCard).V$src$Z$1xhop3l()) {
+        if (!OnlineFriendCard.getCompactActions(this.onlineFriendCard).V$src$Z$1xhop3l()) {
             return totalWidth;
         }
-        for (GuiComponent child : OnlineFriendCard.B(this.onlineFriendCard).f()) {
+        for (GuiComponent child : OnlineFriendCard.getCompactActions(this.onlineFriendCard).f()) {
             if (child instanceof SpacerComponent || !child.V$src$Z$1xhop3l()) continue;
             totalWidth += child.A();
         }

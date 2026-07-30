@@ -6,54 +6,54 @@ import gg.vape.config.SettingsPayload;
 public class GlobalSettingsPayload
 implements SettingsPayload {
     @SerializedName(value="firstRun")
-    private Boolean U;
-    private static boolean r;
+    private Boolean firstRun;
+    private static boolean initializationGuard;
     @SerializedName(value="cache")
-    private Boolean H;
+    private Boolean cacheEnabled;
 
     @Override
-    public void H() {
-        if (this.U == null) {
-            this.U = true;
+    public void initializeDefaults() {
+        if (this.firstRun == null) {
+            this.firstRun = true;
         }
-        if (this.H == null) {
-            this.H = false;
+        if (this.cacheEnabled == null) {
+            this.cacheEnabled = false;
         }
     }
 
-    public void J(Boolean bl) {
-        this.H = bl;
+    public void setCacheEnabled(Boolean cacheEnabled) {
+        this.cacheEnabled = cacheEnabled;
     }
 
-    public static void W(boolean bl) {
-        r = bl;
+    public static void setInitializationGuard(boolean initializationGuard) {
+        GlobalSettingsPayload.initializationGuard = initializationGuard;
     }
 
-    public Boolean C() {
-        return this.H;
+    public Boolean isCacheEnabled() {
+        return this.cacheEnabled;
     }
 
-    public static boolean X() {
-        boolean bl = GlobalSettingsPayload.f();
+    public static boolean isInitializationCheckActive() {
+        boolean initialized = GlobalSettingsPayload.isInitializationGuardSet();
         return false;
     }
 
-    public Boolean c() {
-        return this.U;
+    public Boolean isFirstRun() {
+        return this.firstRun;
     }
 
-    public void h(Boolean bl) {
-        this.U = bl;
+    public void setFirstRun(Boolean firstRun) {
+        this.firstRun = firstRun;
     }
 
 
-    public static boolean f() {
-        return r;
+    public static boolean isInitializationGuardSet() {
+        return initializationGuard;
     }
 
     static {
-        if (!GlobalSettingsPayload.f()) {
-            GlobalSettingsPayload.W(true);
+        if (!GlobalSettingsPayload.isInitializationGuardSet()) {
+            GlobalSettingsPayload.setInitializationGuard(true);
         }
     }
 }

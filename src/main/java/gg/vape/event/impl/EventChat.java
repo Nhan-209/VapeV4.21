@@ -6,33 +6,32 @@ import gg.vape.wrapper.impl.ITextComponent;
 
 public class EventChat
 extends Event {
-    private ITextComponent P;
-    private static final EventListeners V = new EventListeners();
+    private ITextComponent message;
+    private static final EventListeners EVENT_LISTENERS = new EventListeners();
 
     @Override
     public boolean fire() {
         return super.fire();
     }
 
-    public void setMessage(ITextComponent iTextComponent) {
-        this.P = iTextComponent;
+    public void setMessage(ITextComponent message) {
+        this.message = message;
     }
 
     public static EventListeners getEventListeners() {
-        return V;
+        return EVENT_LISTENERS;
     }
 
     public ITextComponent getMessage() {
-        return this.P;
+        return this.message;
     }
 
-    public EventChat(ITextComponent iTextComponent) {
-        this.P = iTextComponent;
+    public EventChat(ITextComponent message) {
+        this.message = message;
     }
 
     @Override
     public EventListeners getListeners() {
-        return V;
+        return EVENT_LISTENERS;
     }
 }
-

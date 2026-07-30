@@ -41,7 +41,7 @@ implements InventoryFilterCondition<MaterialFilterCondition> {
 
     public MaterialFilterCondition(JsonObject jsonObject) {
         this.membershipMode = MembershipMode.fromName(jsonObject.get("operator").getAsString());
-        JsonArray jsonArray = ConfigJsonUtils.q(jsonObject, "items");
+        JsonArray jsonArray = ConfigJsonUtils.getJsonArray(jsonObject, "items");
         if (jsonArray != null) {
             for (int i = 0; i < jsonArray.size(); ++i) {
                 JsonElement jsonElement = jsonArray.get(i);
@@ -69,9 +69,9 @@ implements InventoryFilterCondition<MaterialFilterCondition> {
         return InventoryFilterConditionType.MATERIAL;
     }
 
-    public MaterialFilterCondition(List<ItemFilterSelection> list, MembershipMode membershipMode) {
-        for (ItemFilterSelection itemFilterSelection : list) {
-            this.selections.add(itemFilterSelection.copy());
+    public MaterialFilterCondition(List<ItemFilterSelection> selections, MembershipMode membershipMode) {
+        for (ItemFilterSelection selection : selections) {
+            this.selections.add(selection.copy());
         }
         this.membershipMode = membershipMode;
     }
@@ -109,10 +109,10 @@ implements InventoryFilterCondition<MaterialFilterCondition> {
     }
 
     @Nullable
-    public ItemFilterSelection findSelectionById(String string) {
-        for (ItemFilterSelection itemFilterSelection : this.selections) {
-            if (itemFilterSelection.getItemName() == null || !itemFilterSelection.getItemName().equalsIgnoreCase(string)) continue;
-            return itemFilterSelection;
+    public ItemFilterSelection findSelectionById(String id) {
+        for (ItemFilterSelection selection : this.selections) {
+            if (selection.getItemName() == null || !selection.getItemName().equalsIgnoreCase(id)) continue;
+            return selection;
         }
         return null;
     }

@@ -11,7 +11,7 @@ implements GuiClickListener {
 
     @Override
     public void onPrimaryClick() {
-        Vape.INSTANCE.getTutorialManager().I(TutorialState.FINISHED);
+        Vape.INSTANCE.getTutorialManager().setState(TutorialState.FINISHED);
     }
 
     public TutorialFinishedAcknowledgeClickHandler(TutorialFinishedPanel tutorialFinishedPanel) {

@@ -121,8 +121,8 @@ public class ItemStackScoreUtil {
             --n;
             --n2;
         }
-        StatusEffect statusEffect = PotionRegistry.z.K();
-        StatusEffect statusEffect2 = PotionRegistry.i.K();
+        StatusEffect statusEffect = PotionRegistry.z.getStatusEffect();
+        StatusEffect statusEffect2 = PotionRegistry.i.getStatusEffect();
         if (ForgeVersion.MC_1_20_6.d() && (statusEffect == null || statusEffect2 == null)) {
             Vape.debugLog("WTF?");
             return false;
@@ -329,11 +329,11 @@ public class ItemStackScoreUtil {
         int n;
         ItemMappingEntry itemMappingEntry = Vape.INSTANCE.getItemStackResolver().resolve(itemStack);
         ItemMappingEntry itemMappingEntry2 = Vape.INSTANCE.getItemStackResolver().resolve(itemStack2);
-        int n2 = itemMappingEntry != null && itemMappingEntry.s() != null ? itemMappingEntry.s().intValue() : itemStack.getItem().P();
-        int n3 = n = itemMappingEntry2 != null && itemMappingEntry2.s() != null ? itemMappingEntry2.s().intValue() : itemStack2.getItem().P();
+        int n2 = itemMappingEntry != null && itemMappingEntry.getLegacyId() != null ? itemMappingEntry.getLegacyId().intValue() : itemStack.getItem().P();
+        int n3 = n = itemMappingEntry2 != null && itemMappingEntry2.getLegacyId() != null ? itemMappingEntry2.getLegacyId().intValue() : itemStack2.getItem().P();
         if (n2 == n) {
-            n2 += itemMappingEntry != null && itemMappingEntry.f() != null ? itemMappingEntry.f() : 0;
-            n += itemMappingEntry2 != null && itemMappingEntry2.f() != null ? itemMappingEntry2.f() : 0;
+            n2 += itemMappingEntry != null && itemMappingEntry.getMetadata() != null ? itemMappingEntry.getMetadata() : 0;
+            n += itemMappingEntry2 != null && itemMappingEntry2.getMetadata() != null ? itemMappingEntry2.getMetadata() : 0;
         }
         return Integer.compare(n2, n);
     }

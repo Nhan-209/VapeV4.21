@@ -15,10 +15,10 @@ public class RenderTickEventMappingTask
 extends ClassTransformer {
 
     @Override
-    public void c() {
+    public void transform() {
         MappingMethod mappingMethod = Vape.INSTANCE.getMappings().RY.J;
         if (ForgeVersion.MC_1_21_4.d()) {
-            this.injectEventAtEntry(mappingMethod, EventPreRenderTick.class, new TypedIndexedLocal(1, DescUtils.U(MappedClasses.uy)).setDescriptorClass(Object.class));
+            this.injectEventAtEntry(mappingMethod, EventPreRenderTick.class, new TypedIndexedLocal(1, DescUtils.getDescriptor(MappedClasses.uy)).setDescriptorClass(Object.class));
             this.injectEventAtExit(mappingMethod, EventPostRenderTick.class, new ITramsformNode[0]);
         }
     }

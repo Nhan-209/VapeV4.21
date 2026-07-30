@@ -5,24 +5,23 @@ import gg.vape.event.EventListeners;
 
 public class EventEntityAnimation
 extends Event {
-    private boolean f;
-    private Object P;
-    private int Q;
-    private static final EventListeners W = new EventListeners();
+    private final boolean state;
+    private final Object entityHandle;
+    private final int animationId;
+    private static final EventListeners EVENT_LISTENERS = new EventListeners();
 
-    public EventEntityAnimation(Object object, int n, boolean bl) {
-        this.P = object;
-        this.Q = n;
-        this.f = bl;
+    public EventEntityAnimation(Object entityHandle, int animationId, boolean state) {
+        this.entityHandle = entityHandle;
+        this.animationId = animationId;
+        this.state = state;
     }
 
     @Override
     public EventListeners getListeners() {
-        return W;
+        return EVENT_LISTENERS;
     }
 
     public static EventListeners getEventListeners() {
-        return W;
+        return EVENT_LISTENERS;
     }
 }
-

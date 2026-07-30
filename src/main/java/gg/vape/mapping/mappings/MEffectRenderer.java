@@ -29,12 +29,12 @@ extends Mapping {
                 Class<List> clazz2 = List.class;
                 String string2 = "fxLayers";
                 MEffectRenderer mEffectRenderer2 = this;
-                this.F = this.T(string2, clazz2).J(2).z();
+                this.F = this.fieldBuilder(string2, clazz2).setArrayDimensions(2).buildField();
             } else {
                 Class<List> clazz = List.class;
                 String string = "fxLayers";
                 MEffectRenderer mEffectRenderer = this;
-                this.F = mEffectRenderer.T(string, clazz).J(1).z();
+                this.F = mEffectRenderer.fieldBuilder(string, clazz).setArrayDimensions(1).buildField();
             }
             if (GuiComponent.getLegacyComponentState() == null) {
                 MSoundAwareEntityFX.Z(new String[5]);
@@ -44,7 +44,7 @@ extends Mapping {
         Class<List> clazz = List.class;
         String string = "fxLayers";
         MEffectRenderer mEffectRenderer = this;
-        this.F = mEffectRenderer.T(string, clazz).J(1).z(); 
+        this.F = mEffectRenderer.fieldBuilder(string, clazz).setArrayDimensions(1).buildField();
         if (GuiComponent.getLegacyComponentState() == null) {
             MSoundAwareEntityFX.Z(new String[5]);
         }
@@ -60,7 +60,7 @@ extends Mapping {
 
 
     private List[][] s(Object object) {
-        if (object == null || this.F == null || this.F.x()) {
+        if (object == null || this.F == null || this.F.hasResolutionFailed()) {
             return new List[0][];
         }
         return (List[][])this.F.getObjectArray(object);

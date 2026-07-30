@@ -66,16 +66,16 @@ extends InteractiveComponent {
             ClientSettings.activeComponent = null;
             if (this.dropIndex != -1) {
                 ProfilesManager profilesManager = Vape.INSTANCE.getProfilesManager();
-                List<Profile> profiles = profilesManager.b();
+                List<Profile> profiles = profilesManager.getProfiles();
                 Profile displacedProfile = this.dropIndex < profiles.size() ? profiles.get(this.dropIndex) : null;
                 if (displacedProfile != null) {
-                    displacedProfile.c(true);
+                    displacedProfile.setDirty(true);
                 }
                 profiles.remove(this.profile);
                 profiles.add(this.dropIndex, this.profile);
-                this.profile.c(true);
+                this.profile.setDirty(true);
             }
-            Vape.INSTANCE.getProfilesManager().H();
+            Vape.INSTANCE.getProfilesManager().sortProfiles();
             ProfilesSettingsFrame.refreshProfileList();
             this.dropIndex = -1;
             return;
@@ -113,11 +113,11 @@ extends InteractiveComponent {
 
     @Override
     public boolean V$src$Z$1xhop3l() {
-        return super.V$src$Z$1xhop3l() && (this.profilesFrame.isShowingAllProfiles() || this.profile.U());
+        return super.V$src$Z$1xhop3l() && (this.profilesFrame.isShowingAllProfiles() || this.profile.isVisible());
     }
 
     public boolean isActiveProfile() {
-        return Vape.INSTANCE.getProfilesManager().M().equals(this.profile);
+        return Vape.INSTANCE.getProfilesManager().getActiveProfile().equals(this.profile);
     }
 
     @Override
@@ -156,7 +156,7 @@ extends InteractiveComponent {
         this.profile = profile;
         this.bindComponent = new BindableInputComponent(profile);
         this.settingsButton.addClickListener(new ProfileListEntryOpenSettingsClickHandler(this, profile));
-        this.nameLabel = new FadingTruncatedTextComponent(profile.n$src$Ljava_lang_String_$xqhelw(), 64.0, 0.9, ProfileListEntryComponent.J.Z, ProfileListEntryComponent.J.m, false, false);
+        this.nameLabel = new FadingTruncatedTextComponent(profile.getName(), 64.0, 0.9, ProfileListEntryComponent.J.Z, ProfileListEntryComponent.J.m, false, false);
         this.nameLabel.addMouseListener(new ProfileListEntryMouseForwardingListener(this));
         this.reorderButton.addClickListener(this::startDrag);
         this.addClickListener(this::toggleProfileVisibility);
@@ -249,7 +249,7 @@ extends InteractiveComponent {
         if (activeProfile) {
             toggleColor = toggleColor.darker().darker();
         }
-        if (this.profile.U()) {
+        if (this.profile.isVisible()) {
             GuiRenderPrimitives.C(x + 2.0 + inset, this.n() - 1.0 + inset, toggleAreaWidth - inset * 2.0, this.L() - inset * 1.8, toggleColor);
             GuiRenderPrimitives.C(x + 2.0 + middleInset, this.n() - 1.0 + middleInset, toggleAreaWidth - middleInset * 2.0, this.L() - middleInset * 1.8, ProfileListEntryComponent.J.r);
             double innerInset = 8.0;
@@ -339,9 +339,9 @@ extends InteractiveComponent {
         if (!this.profilesFrame.isShowingAllProfiles()) {
             return;
         }
-        if (this.visibilityToggleBounds.Z(RenderUtils.h()) && !Vape.INSTANCE.getProfilesManager().M().equals(this.profile)) {
-            this.profile.Y(!this.profile.U());
-            this.profile.c(true);
+        if (this.visibilityToggleBounds.Z(RenderUtils.h()) && !Vape.INSTANCE.getProfilesManager().getActiveProfile().equals(this.profile)) {
+            this.profile.setVisible(!this.profile.isVisible());
+            this.profile.setDirty(true);
             ClientSettings.refreshModuleCategoryHeaders();
         }
     }
@@ -353,7 +353,7 @@ extends InteractiveComponent {
 
     private void toggleRenameInput(TextInputComponentBase textInputComponentBase) {
         textInputComponentBase.setVisible(!textInputComponentBase.V$src$Z$1xhop3l());
-        textInputComponentBase.setText(this.profile.n$src$Ljava_lang_String_$xqhelw());
+        textInputComponentBase.setText(this.profile.getName());
     }
 
     @Override
@@ -367,14 +367,14 @@ extends InteractiveComponent {
             return;
         }
         if (guiMouseEvent.getAction().equals((Object)MouseButton.LEFT_CLICK)) {
-            Vape.INSTANCE.getProfilesManager().U(this.profile);
+            Vape.INSTANCE.getProfilesManager().switchProfile(this.profile);
         } else if (guiMouseEvent.getAction().equals((Object)MouseButton.RIGHT_CLICK)) {
-            this.profile.r$src$V$1goqkjq();
+            this.profile.applyEnabledModuleStates();
         }
     }
 
     public void openSettings() {
-        String profileName = this.profile.n$src$Ljava_lang_String_$xqhelw();
+        String profileName = this.profile.getName();
         TruncatedTextComponent nameDisplay = new TruncatedTextComponent(profileName, "...", this.profilesFrame.A() - 25.0, 0.9, ProfileListEntryComponent.J.A, true);
         ProfileRenameInputComponent profileRenameInputComponent = new ProfileRenameInputComponent(this, profileName, nameDisplay);
         profileRenameInputComponent.setMaxLength(48);
@@ -387,7 +387,7 @@ extends InteractiveComponent {
         PanelComponent panelComponent = new PanelComponent(this.profilesFrame.A(), this.profilesFrame.getContentLayout().L());
         panelComponent.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M("wrap");
         ProfileGlyphIconPanel profileGlyphIconPanel = null;
-        if (this.profile.j$src$Lgg_vape_config_ProfileRemoteMetadata_$1dp9fd0() != null) {
+        if (this.profile.getRemoteMetadata() != null) {
             profileGlyphIconPanel = new ProfileGlyphIconPanel(this.profile, 5.0, 5.0);
         }
         ProfileGlyphIconPanel profileGlyphIconPanel2 = profileGlyphIconPanel;

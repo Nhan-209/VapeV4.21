@@ -6,24 +6,23 @@ import gg.vape.wrapper.impl.Entity;
 
 public class EventLivingUpdate
 extends Event {
-    private final Entity v;
-    private static final EventListeners S = new EventListeners();
+    private final Entity entity;
+    private static final EventListeners EVENT_LISTENERS = new EventListeners();
 
     public EventLivingUpdate(Entity entity) {
-        this.v = entity;
+        this.entity = entity;
     }
 
     @Override
     public EventListeners getListeners() {
-        return S;
+        return EVENT_LISTENERS;
     }
 
     public Entity getEntity() {
-        return this.v;
+        return this.entity;
     }
 
     public static EventListeners getEventListeners() {
-        return S;
+        return EVENT_LISTENERS;
     }
 }
-

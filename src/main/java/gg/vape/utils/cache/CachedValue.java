@@ -1,39 +1,38 @@
 package gg.vape.utils.cache;
 
 public class CachedValue<T> {
-    private boolean y = false;
-    private static String D;
-    private T n;
+    private boolean cached = false;
+    private static String legacyState;
+    private T value;
 
-    public void I(T t) {
-        this.n = t;
-        this.y = true;
+    public void setValue(T value) {
+        this.value = value;
+        this.cached = true;
     }
 
-    public boolean r() {
-        return this.y;
+    public boolean isCached() {
+        return this.cached;
     }
 
-    public static String k() {
-        return D;
+    public static String getLegacyState() {
+        return legacyState;
     }
 
-    public T F() {
-        return this.n;
+    public T getCachedValue() {
+        return this.value;
     }
 
-    public static void m(String string) {
-        D = string;
+    public static void setLegacyState(String state) {
+        legacyState = state;
     }
 
-    public void S() {
-        this.y = false;
+    public void clear() {
+        this.cached = false;
     }
 
     static {
-        if (CachedValue.k() == null) {
-            CachedValue.m("zYblo");
+        if (CachedValue.getLegacyState() == null) {
+            CachedValue.setLegacyState("zYblo");
         }
     }
 }
-

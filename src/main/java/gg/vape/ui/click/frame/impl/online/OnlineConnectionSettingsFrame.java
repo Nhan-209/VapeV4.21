@@ -50,10 +50,10 @@ extends SettingsSubpageFrame {
             }
         }
         if (onlineConnectionState == OnlineConnectionState.OFFLINE) {
-            onlineConnectionSettingsPageComponent = OnlineConnectionManager.T.b() == -1L ? (OnlineConnectionManager.T.j() == OnlineAccountState.REGISTERED ? this.x2 : (OnlineConnectionManager.T.j() == OnlineAccountState.UNREGISTERED ? this.xK : this.xb)) : this.xq;
+            onlineConnectionSettingsPageComponent = OnlineConnectionManager.INSTANCE.getNextReconnectAt() == -1L ? (OnlineConnectionManager.INSTANCE.getAccountState() == OnlineAccountState.REGISTERED ? this.x2 : (OnlineConnectionManager.INSTANCE.getAccountState() == OnlineAccountState.UNREGISTERED ? this.xK : this.xb)) : this.xq;
         }
         if (onlineConnectionState == OnlineConnectionState.CONNECTING) {
-            onlineConnectionSettingsPageComponent = OnlineConnectionManager.T.b() == -1L ? this.xE : this.xq;
+            onlineConnectionSettingsPageComponent = OnlineConnectionManager.INSTANCE.getNextReconnectAt() == -1L ? this.xE : this.xq;
         }
         if (onlineConnectionSettingsPageComponent != null) {
             ((OnlineConnectionSettingsPageComponent)onlineConnectionSettingsPageComponent).s();
@@ -136,7 +136,7 @@ extends SettingsSubpageFrame {
             this.i$src$Lgg_vape_ui_click_frame_FrameToolbarComponent_$gnpgc6().o(104.0);
             this.addGlobalMouseListener(new OnlineConnectionBackdropMouseListener(this));
             this.h(this.xN, new Object[0]);
-            this.x(OnlineConnectionManager.T.n());
+            this.x(OnlineConnectionManager.INSTANCE.getConnectionState());
         }
         catch (Exception exception) {
             Vape.logThrowable(exception);

@@ -17,8 +17,8 @@ extends AbstractTextFilterCondition<ItemNameFilterCondition> {
     public ItemNameFilterCondition() {
     }
 
-    public ItemNameFilterCondition(List<String> list, TextMatchMode textMatchMode) {
-        super(list, textMatchMode);
+    public ItemNameFilterCondition(List<String> texts, TextMatchMode matchMode) {
+        super(texts, matchMode);
     }
 
     @Override

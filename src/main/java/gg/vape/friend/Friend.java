@@ -8,62 +8,62 @@ import gg.vape.utils.Base64Util;
 
 public class Friend
 extends FriendEntry {
-    private String e;
-    private String a;
+    private String name;
+    private String alias;
 
     @Override
-    public String s() {
-        return this.e;
+    public String getName() {
+        return this.name;
     }
 
-    public Friend(String string, String string2) {
-        this.e = string;
-        this.a = string2;
+    public Friend(String name, String alias) {
+        this.name = name;
+        this.alias = alias;
     }
 
 
     @Override
     public Friend loadJson(JsonObject jsonObject) {
-        this.e = ConfigJsonUtils.B(jsonObject, "name_2");
-        this.a = ConfigJsonUtils.B(jsonObject, "alias_2");
-        this.k(ConfigJsonUtils.C(jsonObject, "target"));
-        this.H(jsonObject);
+        this.name = ConfigJsonUtils.getDecodedBase64String(jsonObject, "name_2");
+        this.alias = ConfigJsonUtils.getDecodedBase64String(jsonObject, "alias_2");
+        this.setTargeted(ConfigJsonUtils.getBooleanOrFalse(jsonObject, "target"));
+        this.loadLegacyFields(jsonObject);
         return this;
     }
 
     @Override
-    public String E() {
-        return this.a;
+    public String getAlias() {
+        return this.alias;
     }
 
-    private void H(JsonObject jsonObject) {
+    private void loadLegacyFields(JsonObject jsonObject) {
         if (jsonObject.get("name") != null && !jsonObject.get("name").isJsonNull()) {
-            this.e = jsonObject.get("name").getAsString();
+            this.name = jsonObject.get("name").getAsString();
         }
         if (jsonObject.get("alias") != null && !jsonObject.get("alias").isJsonNull()) {
-            this.a = jsonObject.get("alias").getAsString();
+            this.alias = jsonObject.get("alias").getAsString();
         }
     }
 
     @Override
-    public String o() {
-        if (Vape.INSTANCE.getFriendManager().J.getEffectiveValue().booleanValue()) {
-            return this.E();
+    public String getDisplayName() {
+        if (Vape.INSTANCE.getFriendManager().useAlias.getEffectiveValue().booleanValue()) {
+            return this.getAlias();
         }
-        return this.e;
+        return this.name;
     }
 
     @Override
     public JsonObject toJson() {
         JsonObject jsonObject = new JsonObject();
-        jsonObject.addProperty("name_2", Base64Util.encodeUtf8Base64(this.e));
-        jsonObject.addProperty("alias_2", Base64Util.encodeUtf8Base64(this.a));
-        jsonObject.addProperty("target", Boolean.valueOf(this.c()));
+        jsonObject.addProperty("name_2", Base64Util.encodeUtf8Base64(this.name));
+        jsonObject.addProperty("alias_2", Base64Util.encodeUtf8Base64(this.alias));
+        jsonObject.addProperty("target", Boolean.valueOf(this.isTargeted()));
         return jsonObject;
     }
 
-    public void T(String string) {
-        this.a = string;
+    public void setAlias(String alias) {
+        this.alias = alias;
     }
 }
 

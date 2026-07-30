@@ -42,25 +42,25 @@ extends Mapping {
         super(MappedClasses.Ft);
         if (stringArray != null) {
             if (ForgeVersion.MC_1_7_10.L()) {
-                if (Wrapper.c.isVanillaMinecraftPresent()) {
+                if (Wrapper.vapeInstance.isVanillaMinecraftPresent()) {
                     Class clazz = MappedClasses.zC;
                     boolean bl = true;
                     String string = "inventoryBackground";
                     MGuiContainer mGuiContainer = this;
-                    this.g = mGuiContainer.u(string, bl, clazz);
+                    this.g = mGuiContainer.registerStaticField(string, bl, clazz);
                 } else {
                     Class clazz = MappedClasses.zC;
-                    boolean bl = Wrapper.G;
+                    boolean bl = Wrapper.isNativeAvailable;
                     String string = "field_147001_a";
                     MGuiContainer mGuiContainer = this;
-                    this.g = mGuiContainer.u(string, bl, clazz);
+                    this.g = mGuiContainer.registerStaticField(string, bl, clazz);
                 }
             } else {
                 Class clazz = MappedClasses.zC;
                 boolean bl = true;
                 String string = ForgeVersion.MC_1_12_2.d() ? "INVENTORY_BACKGROUND" : "inventoryBackground";
                 MGuiContainer mGuiContainer = this;
-                this.g = mGuiContainer.u(string, bl, clazz);
+                this.g = mGuiContainer.registerStaticField(string, bl, clazz);
             }
             Class<Integer> clazz = Integer.TYPE;
             boolean bl = true;
@@ -90,13 +90,13 @@ extends Mapping {
                     MGuiContainer mGuiContainer5 = this;
                     this.p = this.J(string5, bl5, clazz5);
                     Class clazz6 = MappedClasses.X;
-                    boolean bl6 = Wrapper.G;
+                    boolean bl6 = Wrapper.isNativeAvailable;
                     String string6 = "field_147002_h";
                     MGuiContainer mGuiContainer6 = this;
                     this.l = this.J(string6, bl6, clazz6);
                 } else {
                     Class clazz7 = MappedClasses.YQ;
-                    boolean bl7 = Wrapper.G;
+                    boolean bl7 = Wrapper.isNativeAvailable;
                     String string7 = "field_147006_u";
                     MGuiContainer mGuiContainer7 = this;
                     this.p = this.J(string7, bl7, clazz7);
@@ -152,19 +152,19 @@ extends Mapping {
             boolean bl = true;
             String string = "inventoryBackground";
             MGuiContainer mGuiContainer = this;
-            mGuiContainer.u(string, bl, clazz);
+            mGuiContainer.registerStaticField(string, bl, clazz);
             GuiComponent.setLegacyComponentState(new GuiComponent[3]);
         }
         Class clazz = MappedClasses.zC;
-        boolean bl = Wrapper.G;
+        boolean bl = Wrapper.isNativeAvailable;
         String string = "field_147001_a";
         MGuiContainer mGuiContainer = this;
-        mGuiContainer.u(string, bl, clazz);
+        mGuiContainer.registerStaticField(string, bl, clazz);
         Class clazz15 = MappedClasses.zC;
         boolean bl15 = true;
         String string15 = ForgeVersion.MC_1_12_2.d() ? "INVENTORY_BACKGROUND" : "inventoryBackground";
         MGuiContainer mGuiContainer15 = this;
-        this.g = this.u(string15, bl15, clazz15);
+        this.g = this.registerStaticField(string15, bl15, clazz15);
         Class<Integer> clazz16 = Integer.TYPE;
         boolean bl16 = true;
         String string16 = "guiLeft";
@@ -244,17 +244,17 @@ extends Mapping {
 
     private Object g(Object object, int n, int n2) {
         if (ForgeVersion.MC_1_16_5.d()) {
-            return this.F.L(object, n, n2);
+            return this.F.invokeObject(object, n, n2);
         }
-        return this.F.L(object, n, n2);
+        return this.F.invokeObject(object, n, n2);
     }
 
     private void B(Object object, Object object2, int n, int n2, int n3) {
-        this.I.c(object, object2, n, n2, n3);
+        this.I.invokeVoid(object, object2, n, n2, n3);
     }
 
     private void q(Object object, Object object2, int n, int n2, Object object3) {
-        this.I.c(object, object2, n, n2, object3);
+        this.I.invokeVoid(object, object2, n, n2, object3);
     }
 
     public Object v() {

@@ -82,16 +82,16 @@ extends Mod {
             if (!entity.isInstance(MappedClasses.zm) || entity.equals(player)) continue;
             EntityLivingBase livingEntity = new EntityLivingBase(entity);
             RenderEntityContext context = RenderEntityContextCache.getOrCreate(livingEntity, player);
-            if (context.isSyntheticEntity() || !this.showInvisibles.getEffectiveValue().booleanValue() && context.isInvisibleWithoutEquipment() || context.isBot() || this.enemyOnly.getEffectiveValue().booleanValue() && (this.enemyListOnly.getEffectiveValue() != false ? !context.isEnemy() : !Vape.INSTANCE.getClientSettings().g(entity, false))) continue;
+            if (context.isSyntheticEntity() || !this.showInvisibles.getEffectiveValue().booleanValue() && context.isInvisibleWithoutEquipment() || context.isBot() || this.enemyOnly.getEffectiveValue().booleanValue() && (this.enemyListOnly.getEffectiveValue() != false ? !context.isEnemy() : !Vape.INSTANCE.getClientSettings().isValidTarget(entity, false))) continue;
             float distance = (float)context.getDistance();
             if (entity.isInstance(MappedClasses.lG)) {
                 if (!this.renderPlayers.getEffectiveValue().booleanValue() || this.playerDistanceCheck.getEffectiveValue().booleanValue() && ((double)distance < this.playerDistance.getMinimumValue() || (double)distance > this.playerDistance.getMaximumValue())) continue;
-                if (context.isFriend() && Vape.INSTANCE.getFriendManager().q.getEffectiveValue().booleanValue()) {
-                    this.entries.put(livingEntity, new RenderEntityContextEntry(context, Vape.INSTANCE.getFriendManager().R.getMutableColor()));
+                if (context.isFriend() && Vape.INSTANCE.getFriendManager().recolorVisuals.getEffectiveValue().booleanValue()) {
+                    this.entries.put(livingEntity, new RenderEntityContextEntry(context, Vape.INSTANCE.getFriendManager().friendColor.getMutableColor()));
                     continue;
                 }
-                if (context.isEnemy() && Vape.INSTANCE.getEnemyManager().p.getEffectiveValue().booleanValue()) {
-                    this.entries.put(livingEntity, new RenderEntityContextEntry(context, Vape.INSTANCE.getEnemyManager().i.getMutableColor()));
+                if (context.isEnemy() && Vape.INSTANCE.getEnemyManager().useColor.getEffectiveValue().booleanValue()) {
+                    this.entries.put(livingEntity, new RenderEntityContextEntry(context, Vape.INSTANCE.getEnemyManager().enemyColor.getMutableColor()));
                     continue;
                 }
                 this.entries.put(livingEntity, new RenderEntityContextEntry(context, this.playerColor.getMutableColor()));
@@ -164,15 +164,15 @@ extends Mod {
         if (ForgeVersion.MC_1_12_2.d()) {
             Vec3d viewDirection = new Vec3d(0.0, 0.0, 1.0);
             if (ForgeVersion.MC_1_16_5.d()) {
-                viewDirection.k((float)(-Math.toRadians(Minecraft.D().getPlayerViewY())));
-                viewDirection.Y((float)(-Math.toRadians(Minecraft.D().getPlayerViewX())));
+                viewDirection.rotateAroundXAxis((float)(-Math.toRadians(Minecraft.D().getPlayerViewY())));
+                viewDirection.rotateAroundYAxis((float)(-Math.toRadians(Minecraft.D().getPlayerViewX())));
             } else {
-                viewDirection.k((float)(-Math.toRadians(player.V())));
-                viewDirection.Y((float)(-Math.toRadians(player.J())));
+                viewDirection.rotateAroundXAxis((float)(-Math.toRadians(player.V())));
+                viewDirection.rotateAroundYAxis((float)(-Math.toRadians(player.J())));
             }
-            startX = viewDirection.Y();
-            startY += ForgeVersion.MC_1_16_5.d() ? viewDirection.t() - (double)player.X() : viewDirection.t();
-            startZ = viewDirection.o();
+            startX = viewDirection.getX();
+            startY += ForgeVersion.MC_1_16_5.d() ? viewDirection.getY() - (double)player.X() : viewDirection.getY();
+            startZ = viewDirection.getZ();
             if (ForgeVersion.MC_1_16_5.d() && Minecraft.gameSettings().x() != 0) {
                 ActiveRenderInfo activeRenderInfo = Minecraft.m$src$Lgg_vape_wrapper_impl_EntityRenderer_$13begmf().l();
                 double cameraOffsetX = RenderManager.getInterpolatedRenderPosX() - activeRenderInfo.o().getX();
@@ -295,4 +295,3 @@ extends Mod {
         }
     }
 }
-

@@ -6,16 +6,16 @@ import gg.vape.ui.click.component.GuiClickListener;
 
 public class PartyDetailsPopupCloseClickHandler
 implements GuiClickListener {
-    final CurrentPartyPanel c;
+    private final CurrentPartyPanel panel;
 
     @Override
     public void onPrimaryClick() {
-        ClientSettings.removePopup(CurrentPartyPanel.n(this.c));
-        CurrentPartyPanel.U(this.c, null);
-        CurrentPartyPanel.f(this.c, null);
+        ClientSettings.removePopup(CurrentPartyPanel.getDetailsPopup(this.panel));
+        CurrentPartyPanel.setDetailsPanel(this.panel, null);
+        CurrentPartyPanel.setDetailsPopup(this.panel, null);
     }
 
-    public PartyDetailsPopupCloseClickHandler(CurrentPartyPanel kB) {
-        this.c = kB;
+    public PartyDetailsPopupCloseClickHandler(CurrentPartyPanel panel) {
+        this.panel = panel;
     }
 }

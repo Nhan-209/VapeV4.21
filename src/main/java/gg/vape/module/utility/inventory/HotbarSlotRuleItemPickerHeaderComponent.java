@@ -6,7 +6,7 @@ import gg.vape.ui.click.frame.impl.profile.PublicProfilesFrameHeaderActionCompon
 
 public class HotbarSlotRuleItemPickerHeaderComponent
 extends PublicProfilesFrameHeaderActionComponent {
-    final HotbarSlotRuleItemPickerFrame O;
+    final HotbarSlotRuleItemPickerFrame pickerFrame;
 
     @Override
     public double x() {
@@ -15,6 +15,6 @@ extends PublicProfilesFrameHeaderActionComponent {
 
     public HotbarSlotRuleItemPickerHeaderComponent(HotbarSlotRuleItemPickerFrame hotbarSlotRuleItemPickerFrame, Frame frame, String string, String string2) {
         super(frame, string, string2);
-        this.O = hotbarSlotRuleItemPickerFrame;
+        this.pickerFrame = hotbarSlotRuleItemPickerFrame;
     }
 }

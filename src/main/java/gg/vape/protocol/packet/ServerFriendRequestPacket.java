@@ -6,27 +6,26 @@ import gg.vape.protocol.packet.ZeusSerializablePacket;
 
 public class ServerFriendRequestPacket
 implements ZeusSerializablePacket {
-    private FriendRequestModel q;
+    private FriendRequestModel request;
 
-    public ServerFriendRequestPacket(FriendRequestModel friendRequestModel) {
-        this.q = friendRequestModel;
+    public ServerFriendRequestPacket(FriendRequestModel request) {
+        this.request = request;
     }
 
     @Override
     public void S(ZeusPacketBuffer zeusPacketBuffer) {
-        this.q = new FriendRequestModel(zeusPacketBuffer);
+        this.request = new FriendRequestModel(zeusPacketBuffer);
     }
 
-    public FriendRequestModel b() {
-        return this.q;
+    public FriendRequestModel getRequest() {
+        return this.request;
     }
 
     @Override
     public void o(ZeusPacketBuffer zeusPacketBuffer) {
-        this.q.l(zeusPacketBuffer);
+        this.request.writeTo(zeusPacketBuffer);
     }
 
     public ServerFriendRequestPacket() {
     }
 }
-

@@ -5,27 +5,26 @@ import gg.vape.protocol.packet.ZeusSerializablePacket;
 
 public class ClientCpsPacket
 implements ZeusSerializablePacket {
-    private int c;
+    private int clicksPerSecond;
 
-    public ClientCpsPacket(int n) {
-        this.c = n;
+    public ClientCpsPacket(int clicksPerSecond) {
+        this.clicksPerSecond = clicksPerSecond;
     }
 
     @Override
     public void o(ZeusPacketBuffer zeusPacketBuffer) {
-        zeusPacketBuffer.i(this.c);
+        zeusPacketBuffer.writeVarInt(this.clicksPerSecond);
     }
 
     @Override
     public void S(ZeusPacketBuffer zeusPacketBuffer) {
-        this.c = zeusPacketBuffer.Y();
+        this.clicksPerSecond = zeusPacketBuffer.readVarInt();
     }
 
-    public int s() {
-        return this.c;
+    public int getClicksPerSecond() {
+        return this.clicksPerSecond;
     }
 
     public ClientCpsPacket() {
     }
 }
-

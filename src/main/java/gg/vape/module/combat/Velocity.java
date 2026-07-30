@@ -235,16 +235,16 @@ extends Mod {
 
     @Override
     public void loadJson(JsonObject moduleJson) {
-        JsonObject profileJson = Vape.INSTANCE.getProfilesManager().M().V();
+        JsonObject profileJson = Vape.INSTANCE.getProfilesManager().getActiveProfile().getEnabledModuleStates();
         JsonArray values = moduleJson.getAsJsonArray("values");
         if (profileJson != null && profileJson.has("Velocity") && values != null) {
             for (JsonElement valueElement : values) {
                 JsonObject valueJson = valueElement.getAsJsonObject();
-                String valueId = ConfigJsonUtils.P(valueJson, "id");
+                String valueId = ConfigJsonUtils.getString(valueJson, "id");
                 if (!"Mode".equals(valueId)) {
                     continue;
                 }
-                String modeName = ConfigJsonUtils.P(valueJson, "value");
+                String modeName = ConfigJsonUtils.getString(valueJson, "value");
                 if (modeName != null && modeName.contains("Jump")) {
                     profileJson.remove("Velocity");
                     if (this.r$src$Z$14eylz9()) {
@@ -304,7 +304,7 @@ extends Mod {
                 double horizontalScale = reductionPercents[0] / 100.0;
                 double verticalScale = reductionPercents[1] / 100.0;
                 double currentVerticalMotion = player.q();
-                if (this.pendingVelocity.B != 0.0 && currentVerticalMotion > 0.0) {
+                if (this.pendingVelocity.getY() != 0.0 && currentVerticalMotion > 0.0) {
                     player.k(this.scaleMotion(currentVerticalMotion, verticalScale));
                 }
                 player.r(this.scaleMotion(player.t(), horizontalScale));
@@ -319,4 +319,3 @@ extends Mod {
         event.setPacket(new Packet(velocityPacket.getObject()));
     }
 }
-

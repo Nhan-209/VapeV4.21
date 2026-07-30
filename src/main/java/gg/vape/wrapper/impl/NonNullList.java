@@ -10,7 +10,7 @@ extends Wrapper {
     }
 
     public static NonNullList F() {
-        return new NonNullList(MNonNullList.f(NonNullList.c.getMappingsMapperCompat().DR));
+        return new NonNullList(MNonNullList.f(NonNullList.vapeInstance.getMappingsMapperCompat().DR));
     }
 }
 

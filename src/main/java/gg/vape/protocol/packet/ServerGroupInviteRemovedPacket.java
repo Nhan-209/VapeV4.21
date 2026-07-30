@@ -22,7 +22,7 @@ implements ZeusSerializablePacket {
 
     @Override
     public void o(ZeusPacketBuffer zeusPacketBuffer) {
-        this.d.a(zeusPacketBuffer);
+        this.d.writeTo(zeusPacketBuffer);
     }
 
     public UserModel G() {

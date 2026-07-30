@@ -9,58 +9,57 @@ import gg.vape.ui.click.component.PanelComponent;
 
 public class OnlineFriendsListPanel
 extends PanelComponent {
-    private static final String db;
-    private final PartyInviteCountBadge BH;
-    private final PartyInvitesPanel BA;
-    private FlowLayoutComponent Br;
-    private final CurrentPartyPanel B_;
-    private final OnlineFriendEntriesPanel B0 = new OnlineFriendEntriesPanel();
-    private static int[] B9;
+    private static final String WRAP_LAYOUT;
+    private final PartyInviteCountBadge inviteCountBadge;
+    private final PartyInvitesPanel invitesPanel;
+    private final FlowLayoutComponent partyHeader;
+    private final CurrentPartyPanel currentPartyPanel;
+    private final OnlineFriendEntriesPanel friendEntriesPanel = new OnlineFriendEntriesPanel();
+    private static int[] obfuscationValues;
 
     static {
-        OnlineFriendsListPanel.L(new int[2]);
-        db = "wrap";
+        OnlineFriendsListPanel.setObfuscationValues(new int[2]);
+        WRAP_LAYOUT = "wrap";
     }
 
-    public PartyInvitesPanel P() {
-        return this.BA;
+    public PartyInvitesPanel getInvitesPanel() {
+        return this.invitesPanel;
     }
 
     @Override
     public void c() {
         super.c();
-        double d = this.L() - this.Br.L();
-        this.B0.t(d);
+        double entriesHeight = this.L() - this.partyHeader.L();
+        this.friendEntriesPanel.t(entriesHeight);
     }
 
-    public OnlineFriendEntriesPanel l$src$Lgg_vape_friend_ui_OnlineFriendEntriesPanel_$257n8u() {
-        return this.B0;
+    public OnlineFriendEntriesPanel getFriendEntriesPanel() {
+        return this.friendEntriesPanel;
     }
 
-    public static void L(int[] nArray) {
-        B9 = nArray;
+    public static void setObfuscationValues(int[] values) {
+        obfuscationValues = values;
     }
 
     public OnlineFriendsListPanel() {
         super(104.0, 130.0);
-        this.Br = new FlowLayoutComponent(103.0);
-        this.B_ = new CurrentPartyPanel();
-        this.BH = new PartyInviteCountBadge();
-        this.BA = new PartyInvitesPanel();
-        this.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M(db);
-        this.Br.h(this.B_, new Object[0]);
-        this.Br.h(this.BH, new Object[0]);
-        this.Br.h(this.BA, new Object[0]);
-        this.B0.t(126.0);
-        this.addChildren(this.Br, this.B0);
+        this.partyHeader = new FlowLayoutComponent(103.0);
+        this.currentPartyPanel = new CurrentPartyPanel();
+        this.inviteCountBadge = new PartyInviteCountBadge();
+        this.invitesPanel = new PartyInvitesPanel();
+        this.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M(WRAP_LAYOUT);
+        this.partyHeader.h(this.currentPartyPanel, new Object[0]);
+        this.partyHeader.h(this.inviteCountBadge, new Object[0]);
+        this.partyHeader.h(this.invitesPanel, new Object[0]);
+        this.friendEntriesPanel.t(126.0);
+        this.addChildren(this.partyHeader, this.friendEntriesPanel);
     }
 
-    public CurrentPartyPanel U$src$Lgg_vape_friend_ui_CurrentPartyPanel_$nthhyv() {
-        return this.B_;
+    public CurrentPartyPanel getCurrentPartyPanel() {
+        return this.currentPartyPanel;
     }
 
-    public static int[] e$src$AI$or91d3() {
-        return B9;
+    public static int[] getObfuscationValues() {
+        return obfuscationValues;
     }
 }
-

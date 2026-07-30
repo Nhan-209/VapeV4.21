@@ -196,7 +196,7 @@ implements InventoryActionModule {
 
     @EventHandler
     public void onTick(EventPrePlayerTick eventPrePlayerTick) {
-        if (Vape.INSTANCE.getModManager().N(ChestSteal.class) || Vape.INSTANCE.getClientSettings().J$src$Z$c57s1l()) {
+        if (Vape.INSTANCE.getModManager().isOtherInventoryActionActive(ChestSteal.class) || Vape.INSTANCE.getClientSettings().isLobbyCheckActive()) {
             this.stealing = false;
             return;
         }
@@ -297,4 +297,3 @@ implements InventoryActionModule {
         this.queueInitialized = false;
     }
 }
-

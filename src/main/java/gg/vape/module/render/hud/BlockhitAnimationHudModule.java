@@ -42,7 +42,7 @@ extends HudModule {
 
     @EventHandler
     public void onTick(EventPreTick eventPreTick) {
-        if (this.isHoldingSword() && ClientSettings.V()) {
+        if (this.isHoldingSword() && ClientSettings.isUseItemButtonDown()) {
             if (Minecraft.thePlayer().o$src$Z$1iprrmi() && Minecraft.thePlayer().j$src$I$1in0s92() > 0) {
                 this.blockhitTimer.reset();
             }
@@ -91,7 +91,7 @@ extends HudModule {
     @EventHandler
     public void onRenderItemInFirstPerson(EventRenderItemInFirstPerson event) {
         if (this.renderBlockhit) {
-            this.renderBlockhitItem(event.getItemRenderer(), event.H);
+            this.renderBlockhitItem(event.getItemRenderer(), event.partialTicks);
             event.setCancelled(true);
         }
     }

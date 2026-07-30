@@ -3,9 +3,6 @@ package gg.vape.wrapper.impl;
 import gg.vape.mapping.mappings.MEnumFacing;
 import gg.vape.utils.MathUtil;
 import gg.vape.wrapper.Wrapper;
-import gg.vape.wrapper.impl.ForgeVersion;
-import gg.vape.wrapper.impl.InlineVec3i;
-import gg.vape.wrapper.impl.Vec3i;
 
 public class EnumFacing
 extends Wrapper {
@@ -30,7 +27,7 @@ extends Wrapper {
 
     public static EnumFacing[] t() {
         if (i == null) {
-            Object[] objectArray = ForgeVersion.MC_1_7_10.Y() ? EnumFacing.c.getMappings().O.H() : EnumFacing.c.getMappings().O.U();
+            Object[] objectArray = ForgeVersion.MC_1_7_10.Y() ? EnumFacing.vapeInstance.getMappings().O.H() : EnumFacing.vapeInstance.getMappings().O.U();
             EnumFacing[] enumFacingArray = new EnumFacing[6];
             for (Object object : objectArray) {
                 EnumFacing enumFacing = new EnumFacing(object);
@@ -44,8 +41,11 @@ extends Wrapper {
     public static EnumFacing[] c$src$ALgg_vape_wrapper_impl_EnumFacing_$1i3g4ft() {
         if (w == null) {
             EnumFacing[] enumFacingArray = new EnumFacing[4];
+            Object[] objectArray = null;
             if (ForgeVersion.MC_1_7_10.Y() && ForgeVersion.MC_1_16_5.v()) {
-                Object[] objectArray = EnumFacing.c.getMappings().O.A();
+                objectArray = EnumFacing.vapeInstance.getMappings().O.A();
+            }
+            if (objectArray != null) {
                 for (int i = 0; i < objectArray.length; ++i) {
                     enumFacingArray[i] = new EnumFacing(objectArray[i]);
                 }
@@ -84,7 +84,7 @@ extends Wrapper {
 
     public static EnumFacing F$src$Lgg_vape_wrapper_impl_EnumFacing_$glfxl5() {
         if (f == null) {
-            f = new EnumFacing(MEnumFacing.z(EnumFacing.c.getMappings().O).getObject(null));
+            f = new EnumFacing(MEnumFacing.z(EnumFacing.vapeInstance.getMappings().O).getObject(null));
         }
         return f;
     }
@@ -108,21 +108,21 @@ extends Wrapper {
 
     public static EnumFacing M() {
         if (A == null) {
-            A = new EnumFacing(MEnumFacing.R(EnumFacing.c.getMappings().O).getObject(null));
+            A = new EnumFacing(MEnumFacing.R(EnumFacing.vapeInstance.getMappings().O).getObject(null));
         }
         return A;
     }
 
     public static EnumFacing g$src$Lgg_vape_wrapper_impl_EnumFacing_$1ii8mzu() {
         if (H == null) {
-            H = ForgeVersion.MC_1_7_10.Y() ? new EnumFacing(MEnumFacing.s(EnumFacing.c.getMappings().O).getObject(null)) : new EnumFacing(MEnumFacing.n(EnumFacing.c.getMappings().O).getObject(null));
+            H = ForgeVersion.MC_1_7_10.Y() ? new EnumFacing(MEnumFacing.s(EnumFacing.vapeInstance.getMappings().O).getObject(null)) : new EnumFacing(MEnumFacing.n(EnumFacing.vapeInstance.getMappings().O).getObject(null));
         }
         return H;
     }
 
     public static EnumFacing X() {
         if (P == null) {
-            P = ForgeVersion.MC_1_7_10.Y() ? new EnumFacing(MEnumFacing.n(EnumFacing.c.getMappings().O).getObject(null)) : new EnumFacing(MEnumFacing.s(EnumFacing.c.getMappings().O).getObject(null));
+            P = ForgeVersion.MC_1_7_10.Y() ? new EnumFacing(MEnumFacing.n(EnumFacing.vapeInstance.getMappings().O).getObject(null)) : new EnumFacing(MEnumFacing.s(EnumFacing.vapeInstance.getMappings().O).getObject(null));
         }
         return P;
     }
@@ -130,11 +130,11 @@ extends Wrapper {
     public Vec3i w$src$Lgg_vape_wrapper_impl_Vec3i_$ixeccr() {
         if (this.y == null) {
             if (ForgeVersion.MC_1_7_10.Y()) {
-                this.y = new Vec3i(EnumFacing.c.getMappings().O.e(this.I));
+                this.y = new Vec3i(EnumFacing.vapeInstance.getMappings().O.e(this.I));
             } else {
-                int n = EnumFacing.c.getMappings().O.V(this.I);
-                int n2 = EnumFacing.c.getMappings().O.A(this.I);
-                int n3 = EnumFacing.c.getMappings().O.s(this.I);
+                int n = EnumFacing.vapeInstance.getMappings().O.V(this.I);
+                int n2 = EnumFacing.vapeInstance.getMappings().O.A(this.I);
+                int n3 = EnumFacing.vapeInstance.getMappings().O.s(this.I);
                 this.y = new InlineVec3i(n, n2, n3);
             }
         }
@@ -143,21 +143,21 @@ extends Wrapper {
 
     public static EnumFacing w() {
         if (K == null) {
-            K = new EnumFacing(MEnumFacing.b(EnumFacing.c.getMappings().O).getObject(null));
+            K = new EnumFacing(MEnumFacing.b(EnumFacing.vapeInstance.getMappings().O).getObject(null));
         }
         return K;
     }
 
     public static EnumFacing B() {
         if (s == null) {
-            s = new EnumFacing(MEnumFacing.E(EnumFacing.c.getMappings().O).getObject(null));
+            s = new EnumFacing(MEnumFacing.E(EnumFacing.vapeInstance.getMappings().O).getObject(null));
         }
         return s;
     }
 
     public EnumFacing getOpposite() {
         if (this.v == null) {
-            int n = ForgeVersion.MC_1_7_10.Y() ? EnumFacing.c.getMappings().O.b(this.I) : EnumFacing.c.getMappings().O.v(this.I);
+            int n = ForgeVersion.MC_1_7_10.Y() ? EnumFacing.vapeInstance.getMappings().O.b(this.I) : EnumFacing.vapeInstance.getMappings().O.v(this.I);
             this.v = EnumFacing.T(n);
         }
         return this.v;
@@ -190,12 +190,12 @@ extends Wrapper {
     }
 
     public String h() {
-        return String.valueOf(EnumFacing.c.getMappings().O.c(this.I));
+        return String.valueOf(EnumFacing.vapeInstance.getMappings().O.c(this.I));
     }
 
     public int Y() {
         if (this.C == null) {
-            this.C = ForgeVersion.MC_1_7_10.Y() ? Integer.valueOf(EnumFacing.c.getMappings().O.p(this.I)) : Integer.valueOf(EnumFacing.c.getMappings().O.i(this.I));
+            this.C = ForgeVersion.MC_1_7_10.Y() ? Integer.valueOf(EnumFacing.vapeInstance.getMappings().O.p(this.I)) : Integer.valueOf(EnumFacing.vapeInstance.getMappings().O.i(this.I));
         }
         return this.C;
     }
@@ -207,7 +207,7 @@ extends Wrapper {
     public int c() {
         if (this.S == null) {
             if (ForgeVersion.MC_1_7_10.Y() && ForgeVersion.MC_1_16_5.v()) {
-                this.S = EnumFacing.c.getMappings().O.S(this.I);
+                this.S = EnumFacing.vapeInstance.getMappings().O.S(this.I);
             } else {
                 int n = -1;
                 switch (this.Y()) {

@@ -21,13 +21,13 @@ extends Mapping {
         boolean bl2 = true;
         String string = "WOODEN_TOOL_MATERIALS";
         MChestTypeHolder mChestTypeHolder = this;
-        this.a = this.u(string, bl2, clazz);
+        this.a = this.registerStaticField(string, bl2, clazz);
         if (bl) {
             Class clazz2 = MappedClasses.qC;
             boolean bl3 = true;
             String string2 = "GOLD_TOOL_MATERIALS";
             MChestTypeHolder mChestTypeHolder2 = this;
-            this.O = this.u(string2, bl3, clazz2);
+            this.O = this.registerStaticField(string2, bl3, clazz2);
             if (GuiComponent.getLegacyComponentState() == null) {
                 MChestTypeHolder.F(false);
             }
@@ -37,7 +37,7 @@ extends Mapping {
         boolean bl4 = true;
         String string3 = "GOLD_TOOL_MATERIALS";
         MChestTypeHolder mChestTypeHolder3 = this;
-        this.O = this.u(string3, bl4, clazz3);
+        this.O = this.registerStaticField(string3, bl4, clazz3);
         if (GuiComponent.getLegacyComponentState() == null) {
             MChestTypeHolder.F(true);
         }

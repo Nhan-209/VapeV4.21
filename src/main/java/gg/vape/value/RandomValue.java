@@ -219,8 +219,8 @@ extends Value<double[], RandomValue> {
     @Override
     public boolean loadJson(JsonObject jsonObject) {
         if (jsonObject.get("id").getAsString().equalsIgnoreCase(this.getId())) {
-            Double minimum = ConfigJsonUtils.p(jsonObject, "minimum");
-            Double maximum = ConfigJsonUtils.p(jsonObject, "maximum");
+            Double minimum = ConfigJsonUtils.getDouble(jsonObject, "minimum");
+            Double maximum = ConfigJsonUtils.getDouble(jsonObject, "maximum");
             if (minimum == null && maximum == null) {
                 return false;
             }

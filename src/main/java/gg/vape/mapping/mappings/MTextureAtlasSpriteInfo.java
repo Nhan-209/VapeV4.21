@@ -49,7 +49,7 @@ extends Mapping {
             boolean bl3 = true;
             String string3 = "LOCATION_BLOCKS";
             MTextureAtlasSpriteInfo mTextureAtlasSpriteInfo3 = this;
-            this.j = this.u(string3, bl3, clazz3);
+            this.j = this.registerStaticField(string3, bl3, clazz3);
         }
         if (ForgeVersion.MC_1_21_10.d()) {
             Class[] classArray = new Class[]{MappedClasses.zC};
@@ -75,7 +75,7 @@ extends Mapping {
     }
 
     private Object Y(Object object, Object object2) {
-        return this.a.L(object, object2);
+        return this.a.invokeObject(object, object2);
     }
 
     public static Object x(MTextureAtlasSpriteInfo mTextureAtlasSpriteInfo, Object object) {

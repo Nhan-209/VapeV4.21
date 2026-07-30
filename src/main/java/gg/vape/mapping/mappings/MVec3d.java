@@ -23,7 +23,7 @@ extends Mapping {
     private final MappingField m;
 
     public Object q(double d, double d2, double d3) {
-        return this.k.O(d, d2, d3);
+        return this.k.newInstance(d, d2, d3);
     }
 
     public double z(Object object) {
@@ -31,7 +31,7 @@ extends Mapping {
     }
 
     public Object M(Object object, Object object2, double d) {
-        return this.l.L(object, object2, d);
+        return this.l.invokeObject(object, object2, d);
     }
 
     public double P(Object object) {
@@ -81,7 +81,7 @@ extends Mapping {
             } else {
                 Class[] classArray3 = new Class[]{Double.TYPE, Double.TYPE, Double.TYPE};
                 Class clazz6 = MappedClasses.qP;
-                boolean bl6 = Wrapper.G;
+                boolean bl6 = Wrapper.isNativeAvailable;
                 String string6 = "func_72441_c";
                 MVec3d mVec3d6 = this;
                 this.Z = this.Y(string6, bl6, clazz6, classArray3);
@@ -91,11 +91,11 @@ extends Mapping {
                 Class clazz7 = MappedClasses.qP;
                 String string7 = "with";
                 MVec3d mVec3d7 = this;
-                this.l = this.u(string7, clazz7, classArray4).s();
+                this.l = this.methodBuilder(string7, clazz7, classArray4).buildMethod();
                 Class clazz8 = MappedClasses.qP;
                 String string8 = "ZERO";
                 MVec3d mVec3d8 = this;
-                this.S = ((MappingFieldBuilder)this.T(string8, clazz8).H(true)).z();
+                this.S = ((MappingFieldBuilder)this.fieldBuilder(string8, clazz8).setStaticMember(true)).buildField();
             }
         } else {
             Class<Double> clazz = Double.TYPE;
@@ -129,7 +129,7 @@ extends Mapping {
         if (ForgeVersion.MC_1_12_2.d()) {
             Class[] classArray5 = new Class[]{MappedClasses.qP};
             Class<Double> clazz12 = Double.TYPE;
-            boolean bl10 = Wrapper.G;
+            boolean bl10 = Wrapper.isNativeAvailable;
             String string12 = "func_72436_e";
             MVec3d mVec3d12 = this;
             this.U = this.Y(string12, bl10, clazz12, classArray5);
@@ -154,11 +154,11 @@ extends Mapping {
     }
 
     public Object H(Object object, double d) {
-        return this.a.L(object, d);
+        return this.a.invokeObject(object, d);
     }
 
     public double S(Object object, Object object2) {
-        return this.J.F(object, object2);
+        return this.J.invokeDouble(object, object2);
     }
 
     public double O(Object object) {
@@ -175,11 +175,11 @@ extends Mapping {
     }
 
     public double A(Object object, Object object2) {
-        return this.U.F(object, object2);
+        return this.U.invokeDouble(object, object2);
     }
 
     public Object Y(Object object, double d, double d2, double d3) {
-        return this.Z.L(object, d, d2, d3);
+        return this.Z.invokeObject(object, d, d2, d3);
     }
 }
 

@@ -13,9 +13,9 @@ extends ZeusTrackedPacket<AuthenticationResponsePacket> {
 
     @Override
     public void x(ZeusPacketBuffer zeusPacketBuffer) {
-        this.E = zeusPacketBuffer.v(255);
-        this.I = zeusPacketBuffer.N();
-        this.V = zeusPacketBuffer.v(16);
+        this.E = zeusPacketBuffer.readString(255);
+        this.I = zeusPacketBuffer.readUuid();
+        this.V = zeusPacketBuffer.readString(16);
     }
 
     public UUID i() {
@@ -28,9 +28,9 @@ extends ZeusTrackedPacket<AuthenticationResponsePacket> {
 
     @Override
     public void T(ZeusPacketBuffer zeusPacketBuffer) {
-        zeusPacketBuffer.y(this.E);
-        zeusPacketBuffer.r(this.I);
-        zeusPacketBuffer.y(this.V);
+        zeusPacketBuffer.writeString(this.E);
+        zeusPacketBuffer.writeUuid(this.I);
+        zeusPacketBuffer.writeString(this.V);
     }
 
     public AuthenticationPacket() {

@@ -11,16 +11,16 @@ import java.awt.Color;
 
 public class OnlineChatInputComponent
 extends TextInputComponentBase {
-    private static GuiComponent[] oz;
-    private final OnlineChatSender oI;
-    private final OnlineChatPanel ow;
+    private static GuiComponent[] obfuscationComponents;
+    private final OnlineChatSender chatSender;
+    private final OnlineChatPanel chatPanel;
 
-    public static GuiComponent[] O$src$ALgg_vape_ui_click_component_GuiComponent_$1catzjv() {
-        return oz;
+    public static GuiComponent[] getObfuscationComponents() {
+        return obfuscationComponents;
     }
 
     static {
-        OnlineChatInputComponent.k(new GuiComponent[5]);
+        OnlineChatInputComponent.setObfuscationComponents(new GuiComponent[5]);
     }
 
     @Override
@@ -50,12 +50,12 @@ extends TextInputComponentBase {
         }
     }
 
-    public static void k(GuiComponent[] guiComponentArray) {
-        oz = guiComponentArray;
+    public static void setObfuscationComponents(GuiComponent[] components) {
+        obfuscationComponents = components;
     }
 
-    private static void lambda$onEnter$0(OnlineFriend onlineFriend, String string) {
-        OnlineFriendUiHelper.l(onlineFriend, null, string);
+    private static void handleSendResponse(OnlineFriend friend, String responseMessage) {
+        OnlineFriendUiHelper.addFriendChatMessage(friend, null, responseMessage);
     }
 
     @Override
@@ -67,12 +67,12 @@ extends TextInputComponentBase {
 
     @Override
     public void submit() {
-        String string = this.getText();
-        if (string.isEmpty()) {
+        String message = this.getText();
+        if (message.isEmpty()) {
             return;
         }
         this.setText("");
-        this.oI.W(string, OnlineChatInputComponent::lambda$onEnter$0);
+        this.chatSender.sendChatMessage(message, OnlineChatInputComponent::handleSendResponse);
     }
 
     @Override
@@ -80,12 +80,12 @@ extends TextInputComponentBase {
         return 0.0f;
     }
 
-    public OnlineChatInputComponent(OnlineChatPanel onlineChatPanel, OnlineChatSender onlineChatSender) {
+    public OnlineChatInputComponent(OnlineChatPanel chatPanel, OnlineChatSender chatSender) {
         super("Type message...");
         this.getActionButton().setIconResource("newnext");
         this.setBackgroundVisible(false);
-        this.ow = onlineChatPanel;
-        this.oI = onlineChatSender;
+        this.chatPanel = chatPanel;
+        this.chatSender = chatSender;
         this.setMaxLength(255);
         this.setActionButtonColor(OnlineChatInputComponent.J.B);
     }

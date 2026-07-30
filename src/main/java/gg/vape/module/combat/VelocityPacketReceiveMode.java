@@ -73,7 +73,7 @@ extends Mod {
     public void onPlayerTick(EventPostPlayerTick event) {
         if (this.jumping) {
             KeyBinding jumpKey = Minecraft.gameSettings().O();
-            ClientSettings.b(jumpKey, false);
+            ClientSettings.setPhysicalKeyState(jumpKey, false);
             Minecraft.gameSettings().O().setPressed(false);
             if (ForgeVersion.MC_1_21_4.v()) {
                 Minecraft.thePlayer().movementInput().V(false);
@@ -125,7 +125,7 @@ extends Mod {
                 return;
             }
             KeyBinding jumpKey = Minecraft.gameSettings().O();
-            ClientSettings.b(jumpKey, true);
+            ClientSettings.setPhysicalKeyState(jumpKey, true);
             jumpKey.setPressed(true);
             if (ForgeVersion.MC_1_21_4.v()) {
                 Minecraft.thePlayer().movementInput().V(true);

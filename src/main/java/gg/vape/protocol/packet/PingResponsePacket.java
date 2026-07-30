@@ -7,44 +7,43 @@ import org.jetbrains.annotations.Nullable;
 
 public class PingResponsePacket
 extends ZeusTrackedPacket<PingPacket> {
-    private long v;
-    private boolean Y;
-    private int i;
+    private long cooldownEndNanos;
+    private boolean requestAccepted;
+    private int remainingPingAllowance;
 
     @Override
     public void x(ZeusPacketBuffer zeusPacketBuffer) {
-        this.Y = zeusPacketBuffer.boolean_a();
-        this.i = zeusPacketBuffer.Y();
-        this.v = zeusPacketBuffer.long_a();
+        this.requestAccepted = zeusPacketBuffer.readBoolean();
+        this.remainingPingAllowance = zeusPacketBuffer.readVarInt();
+        this.cooldownEndNanos = zeusPacketBuffer.readLong();
     }
 
-    public PingResponsePacket(@Nullable PingPacket pingPacket, boolean bl, int n, long l) {
+    public PingResponsePacket(@Nullable PingPacket pingPacket, boolean requestAccepted, int remainingPingAllowance, long cooldownEndNanos) {
         super(pingPacket);
-        this.Y = bl;
-        this.i = n;
-        this.v = l;
+        this.requestAccepted = requestAccepted;
+        this.remainingPingAllowance = remainingPingAllowance;
+        this.cooldownEndNanos = cooldownEndNanos;
     }
 
     @Override
     public void T(ZeusPacketBuffer zeusPacketBuffer) {
-        zeusPacketBuffer.Y(this.Y);
-        zeusPacketBuffer.i(this.i);
-        zeusPacketBuffer.v(this.v);
+        zeusPacketBuffer.writeBoolean(this.requestAccepted);
+        zeusPacketBuffer.writeVarInt(this.remainingPingAllowance);
+        zeusPacketBuffer.writeLong(this.cooldownEndNanos);
     }
 
-    public long p() {
-        return this.v;
+    public long getCooldownEndNanos() {
+        return this.cooldownEndNanos;
     }
 
-    public boolean v() {
-        return this.Y;
+    public boolean isRequestAccepted() {
+        return this.requestAccepted;
     }
 
-    public int h() {
-        return this.i;
+    public int getRemainingPingAllowance() {
+        return this.remainingPingAllowance;
     }
 
     public PingResponsePacket() {
     }
 }
-

@@ -20,7 +20,7 @@ public class InvWalkSettingsState {
     }
 
     public static boolean isPhysicallyPressed(KeyBinding keyBinding) {
-        return ClientSettings.B(keyBinding);
+        return ClientSettings.isPhysicalKeyDown(keyBinding);
     }
 
 

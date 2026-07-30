@@ -91,7 +91,7 @@ extends Mod {
         return null;
     }
 
-    @EventHandler(A=EventPriority.LOWEST)
+    @EventHandler(priority=EventPriority.LOWEST)
     public void onPacketReceive(EventPacketReceive event) {
         if (event.getWorld().isNotNull() && event.getThePlayer().isNotNull()) {
             Packet packet = event.getPacket();

@@ -17,8 +17,8 @@ implements GuiClickListener {
 
     @Override
     public void onPrimaryClick() {
-        if (Vape.INSTANCE.getProfilesManager().M().equals(this.profile)) {
-            this.profile.a();
+        if (Vape.INSTANCE.getProfilesManager().getActiveProfile().equals(this.profile)) {
+            this.profile.captureCurrentState();
         }
         this.entry.openSettings();
     }

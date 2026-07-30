@@ -40,7 +40,7 @@ extends Mapping {
     private MappingField r;
 
     private Object n(String string) {
-        return this.X.L(null, string);
+        return this.X.invokeObject(null, string);
     }
 
     private Object o() {
@@ -52,7 +52,7 @@ extends Mapping {
     }
 
     private int n(Object object) {
-        return this.i.Z(object, new Object[0]);
+        return this.i.invokeInt(object, new Object[0]);
     }
 
     public MPotion() {
@@ -70,27 +70,27 @@ extends Mapping {
                     String string = "POTION";
                     Class clazz2 = MappedClasses.R;
                     MPotion mPotion = this;
-                    this.K = mPotion.s(clazz2, string, bl, clazz);
+                    this.K = mPotion.registerStaticFieldForOwner(clazz2, string, bl, clazz);
                 } else {
                     Class clazz = MappedClasses.lz;
                     boolean bl = true;
                     String string = "POTION";
                     Class clazz3 = MappedClasses.Fk;
                     MPotion mPotion = this;
-                    this.K = mPotion.s(clazz3, string, bl, clazz);
+                    this.K = mPotion.registerStaticFieldForOwner(clazz3, string, bl, clazz);
                     Class[] classArray = new Class[]{String.class};
                     Class clazz4 = MappedClasses.FR;
                     boolean bl2 = true;
                     String string2 = "getPotionTypeForName";
                     MPotion mPotion2 = this;
-                    this.X = this.x(string2, bl2, clazz4, classArray);
+                this.X = this.registerStaticMethod(string2, bl2, clazz4, classArray);
                     Class[] classArray2 = new Class[]{MappedClasses.D3};
                     Class<Integer> clazz5 = Integer.TYPE;
                     boolean bl3 = true;
                     String string3 = "getId";
                     Class clazz6 = MappedClasses.D3;
                     MPotion mPotion3 = this;
-                    this.x = this.K(clazz6, string3, bl3, clazz5, classArray2);
+                    this.x = this.registerStaticMethodForOwner(clazz6, string3, bl3, clazz5, classArray2);
                 }
                 Class<String> clazz = String.class;
                 boolean bl = true;
@@ -102,7 +102,7 @@ extends Mapping {
                 boolean bl = true;
                 String string = "REGISTRY";
                 MPotion mPotion = this;
-                this.K = mPotion.u(string, bl, clazz);
+                this.K = mPotion.registerStaticField(string, bl, clazz);
                 Class[] classArray = new Class[]{};
                 Class<String> clazz7 = String.class;
                 boolean bl4 = true;
@@ -114,80 +114,80 @@ extends Mapping {
                 boolean bl5 = true;
                 String string5 = "getIdFromPotion";
                 MPotion mPotion5 = this;
-                this.x = this.x(string5, bl5, clazz8, classArray3);
+        this.x = this.registerStaticMethod(string5, bl5, clazz8, classArray3);
                 Class[] classArray4 = new Class[]{Integer.TYPE};
                 Class clazz9 = MappedClasses.FR;
                 boolean bl6 = true;
                 String string6 = "getPotionById";
                 MPotion mPotion6 = this;
-                this.h = this.x(string6, bl6, clazz9, classArray4);
+        this.h = this.registerStaticMethod(string6, bl6, clazz9, classArray4);
             }
         } else {
             Class clazz = MappedClasses.FR;
             boolean bl = true;
             String string = "fireResistance";
             MPotion mPotion = this;
-            this.v = mPotion.u(string, bl, clazz);
+            this.v = mPotion.registerStaticField(string, bl, clazz);
             Class clazz10 = MappedClasses.FR;
             boolean bl7 = true;
             String string7 = "regeneration";
             MPotion mPotion7 = this;
-            this.p = this.u(string7, bl7, clazz10);
+            this.p = this.registerStaticField(string7, bl7, clazz10);
             Class clazz11 = MappedClasses.FR;
             boolean bl8 = true;
             String string8 = "resistance";
             MPotion mPotion8 = this;
-            this.F = this.u(string8, bl8, clazz11);
+            this.F = this.registerStaticField(string8, bl8, clazz11);
             Class clazz12 = MappedClasses.FR;
             boolean bl9 = true;
             String string9 = "damageBoost";
             MPotion mPotion9 = this;
-            this.l = this.u(string9, bl9, clazz12);
+            this.l = this.registerStaticField(string9, bl9, clazz12);
             Class clazz13 = MappedClasses.FR;
             boolean bl10 = true;
             String string10 = "moveSpeed";
             MPotion mPotion10 = this;
-            this.S = this.u(string10, bl10, clazz13);
+            this.S = this.registerStaticField(string10, bl10, clazz13);
             Class clazz14 = MappedClasses.FR;
             boolean bl11 = true;
             String string11 = "blindness";
             MPotion mPotion11 = this;
-            this.J = this.u(string11, bl11, clazz14);
+            this.J = this.registerStaticField(string11, bl11, clazz14);
             Class clazz15 = MappedClasses.FR;
             boolean bl12 = true;
             String string12 = "moveSlowdown";
             MPotion mPotion12 = this;
-            this.W = this.u(string12, bl12, clazz15);
+            this.W = this.registerStaticField(string12, bl12, clazz15);
             Class clazz16 = MappedClasses.FR;
             boolean bl13 = true;
             String string13 = "jump";
             MPotion mPotion13 = this;
-            this.P = this.u(string13, bl13, clazz16);
+            this.P = this.registerStaticField(string13, bl13, clazz16);
             Class clazz17 = MappedClasses.FR;
             boolean bl14 = true;
             String string14 = "heal";
             MPotion mPotion14 = this;
-            this.M = this.u(string14, bl14, clazz17);
+            this.M = this.registerStaticField(string14, bl14, clazz17);
             Class clazz18 = MappedClasses.FR;
             boolean bl15 = true;
             String string15 = "digSpeed";
             MPotion mPotion15 = this;
-            this.d = this.u(string15, bl15, clazz18);
+            this.d = this.registerStaticField(string15, bl15, clazz18);
             Class clazz19 = MappedClasses.FR;
             boolean bl16 = true;
             String string16 = "digSlowdown";
             MPotion mPotion16 = this;
-            this.r = this.u(string16, bl16, clazz19);
+            this.r = this.registerStaticField(string16, bl16, clazz19);
             Class clazz20 = MappedClasses.FR;
             boolean bl17 = true;
             String string17 = "confusion";
             MPotion mPotion17 = this;
-            this.H = this.u(string17, bl17, clazz20);
+            this.H = this.registerStaticField(string17, bl17, clazz20);
             Class<?> clazz21 = DescUtils.getArrayType(MappedClasses.FR);
             boolean bl18 = true;
             String string18 = "potionTypes";
             MPotion mPotion18 = this;
-            this.a = this.u(string18, bl18, clazz21);
+            this.a = this.registerStaticField(string18, bl18, clazz21);
             Class<Integer> clazz22 = Integer.TYPE;
             boolean bl19 = true;
             String string19 = "id";
@@ -220,13 +220,13 @@ extends Mapping {
             String string = "removeAttributesModifiersFromEntity";
             Class clazz24 = MappedClasses.D3;
             MPotion mPotion = this;
-            this.e = mPotion.W(clazz24, string, bl, clazz, classArray);
+            this.e = mPotion.registerInstanceMethodForOwner(clazz24, string, bl, clazz, classArray);
             Class<Boolean> clazz25 = Boolean.TYPE;
             boolean bl21 = true;
             String string21 = "showIcon";
             Class clazz26 = MappedClasses.u3;
             MPotion mPotion21 = this;
-            this.I = this.X(clazz26, string21, bl21, clazz25);
+            this.I = this.registerInstanceFieldForOwner(clazz26, string21, bl21, clazz25);
         } else {
             Class<Boolean> clazz = Boolean.TYPE;
             boolean bl = true;
@@ -300,7 +300,7 @@ extends Mapping {
     }
 
     private int Y(Object object) {
-        return this.x.Z(null, object);
+        return this.x.invokeInt(null, object);
     }
 
     public List W(Object object) {
@@ -311,7 +311,7 @@ extends Mapping {
         if (ForgeVersion.MC_1_16_5.d()) {
             return this.I.getBoolean(object);
         }
-        return this.O.e(object, new Object[0]);
+        return this.O.invokeBoolean(object, new Object[0]);
     }
 
     private Object f() {
@@ -323,7 +323,7 @@ extends Mapping {
     }
 
     private Object a(int n) {
-        return this.h.L(null, n);
+        return this.h.invokeObject(null, n);
     }
 
     private Object p() {
@@ -340,10 +340,10 @@ extends Mapping {
 
     public void b(Object object, Object object2, Object object3, int n) {
         if (ForgeVersion.MC_1_20_6.d()) {
-            this.e.c(object, object3);
+            this.e.invokeVoid(object, object3);
             return;
         }
-        this.e.c(object, object2, object3, n);
+        this.e.invokeVoid(object, object2, object3, n);
     }
 
     private Object y() {
@@ -378,7 +378,7 @@ extends Mapping {
         if (ForgeVersion.MC_1_16_5.d()) {
             return (String)this.j.getObject(object);
         }
-        return (String)this.k.L(object, new Object[0]);
+        return (String)this.k.invokeObject(object, new Object[0]);
     }
 
     public static Object Q(MPotion mPotion, int n) {

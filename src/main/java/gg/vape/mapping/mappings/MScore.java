@@ -18,7 +18,7 @@ extends Mapping {
     }
 
     private String j(Object object) {
-        return (String)this.g.L(object, new Object[0]);
+        return (String)this.g.invokeObject(object, new Object[0]);
     }
 
     public static String n(MScore mScore, Object object) {
@@ -40,7 +40,7 @@ extends Mapping {
                 String string = "owner";
                 Class clazz2 = MappedClasses.p;
                 MScore mScore = this;
-                this.g = mScore.W(clazz2, string, bl, clazz, classArray);
+                this.g = mScore.registerInstanceMethodForOwner(clazz2, string, bl, clazz, classArray);
             } else {
                 Class[] classArray = new Class[]{};
                 Class<String> clazz = String.class;
@@ -53,7 +53,7 @@ extends Mapping {
             Class<Integer> clazz = Integer.TYPE;
             String string = "getScorePoints";
             MScore mScore = this;
-            this.K = ((MappingMethodBuilder)((MappingMethodBuilder)((MappingMethodBuilder)mScore.u(string, clazz, classArray).A(ForgeVersion.MC_1_20_6.n(), "value")).A(ForgeVersion.MC_1_16_5.n(), "getScore")).Q(ForgeVersion.MC_1_21_4.n(), MappedClasses.VN)).s();
+            this.K = ((MappingMethodBuilder)((MappingMethodBuilder)((MappingMethodBuilder)mScore.methodBuilder(string, clazz, classArray).setNameForVersion(ForgeVersion.MC_1_20_6.n(), "value")).setNameForVersion(ForgeVersion.MC_1_16_5.n(), "getScore")).setOwnerClassForVersion(ForgeVersion.MC_1_21_4.n(), MappedClasses.VN)).buildMethod();
             return;
         }
         GuiComponent.setLegacyComponentState(new GuiComponent[3]);
@@ -67,11 +67,11 @@ extends Mapping {
         Class<Integer> clazz3 = Integer.TYPE;
         String string2 = "getScorePoints";
         MScore mScore2 = this;
-        this.K = ((MappingMethodBuilder)((MappingMethodBuilder)((MappingMethodBuilder)this.u(string2, clazz3, classArray2).A(ForgeVersion.MC_1_20_6.n(), "value")).A(ForgeVersion.MC_1_16_5.n(), "getScore")).Q(ForgeVersion.MC_1_21_4.n(), MappedClasses.VN)).s();
+        this.K = ((MappingMethodBuilder)((MappingMethodBuilder)((MappingMethodBuilder)this.methodBuilder(string2, clazz3, classArray2).setNameForVersion(ForgeVersion.MC_1_20_6.n(), "value")).setNameForVersion(ForgeVersion.MC_1_16_5.n(), "getScore")).setOwnerClassForVersion(ForgeVersion.MC_1_21_4.n(), MappedClasses.VN)).buildMethod();
     }
 
     private int J(Object object) {
-        return this.K.Z(object, new Object[0]);
+        return this.K.invokeInt(object, new Object[0]);
     }
 }
 

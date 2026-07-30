@@ -15,12 +15,12 @@ extends Mapping {
         boolean bl = true;
         String string = "NORMAL";
         MSharedMonsterAttributesBridge mSharedMonsterAttributesBridge = this;
-        this.v = this.u(string, bl, clazz);
+        this.v = this.registerStaticField(string, bl, clazz);
         Class clazz2 = MappedClasses.Y8;
         boolean bl2 = true;
         String string2 = "SEE_THROUGH";
         MSharedMonsterAttributesBridge mSharedMonsterAttributesBridge2 = this;
-        this.f = this.u(string2, bl2, clazz2);
+        this.f = this.registerStaticField(string2, bl2, clazz2);
     }
 
     public Object m() {

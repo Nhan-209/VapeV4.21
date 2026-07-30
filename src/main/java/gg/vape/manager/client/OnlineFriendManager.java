@@ -9,46 +9,46 @@ import java.util.Set;
 import org.jetbrains.annotations.Nullable;
 
 public class OnlineFriendManager {
-    private final Set<OnlineFriend> H = new HashSet<OnlineFriend>();
+    private final Set<OnlineFriend> friends = new HashSet<OnlineFriend>();
 
 
-    public void g(OnlineFriend onlineFriend) {
-        this.H.remove(onlineFriend);
-        OnlineFriendUiHelper.n$src$V$uh9sir();
+    public void removeFriend(OnlineFriend onlineFriend) {
+        this.friends.remove(onlineFriend);
+        OnlineFriendUiHelper.refreshFriendLists();
     }
 
-    public void s() {
-        this.H.clear();
-        OnlineFriendUiHelper.n$src$V$uh9sir();
+    public void clearFriends() {
+        this.friends.clear();
+        OnlineFriendUiHelper.refreshFriendLists();
     }
 
     @Nullable
-    public OnlineFriend F(String string) {
-        for (OnlineFriend onlineFriend : this.H) {
-            if (!onlineFriend.C().equals(string)) continue;
+    public OnlineFriend getByDisplayName(String displayName) {
+        for (OnlineFriend onlineFriend : this.friends) {
+            if (!onlineFriend.getDisplayName().equals(displayName)) continue;
             return onlineFriend;
         }
         return null;
     }
 
-    public Set<OnlineFriend> g() {
-        return this.H;
+    public Set<OnlineFriend> getFriends() {
+        return this.friends;
     }
 
-    public void D(OnlineFriend onlineFriend) {
-        this.H.add(onlineFriend);
-        OnlineFriendUiHelper.n$src$V$uh9sir();
-    }
-
-    @Nullable
-    public OnlineFriend h(FriendModel friendModel) {
-        return this.Q(friendModel.L());
+    public void addFriend(OnlineFriend onlineFriend) {
+        this.friends.add(onlineFriend);
+        OnlineFriendUiHelper.refreshFriendLists();
     }
 
     @Nullable
-    public OnlineFriend Q(UserModel userModel) {
-        for (OnlineFriend onlineFriend : this.H) {
-            if (onlineFriend.S().g() != userModel.g()) continue;
+    public OnlineFriend getByFriendModel(FriendModel friendModel) {
+        return this.getByUser(friendModel.getUser());
+    }
+
+    @Nullable
+    public OnlineFriend getByUser(UserModel userModel) {
+        for (OnlineFriend onlineFriend : this.friends) {
+            if (onlineFriend.getUser().getId() != userModel.getId()) continue;
             return onlineFriend;
         }
         return null;

@@ -9,25 +9,25 @@ import org.jetbrains.annotations.Nullable;
 
 public class GroupChatResponsePacket
 extends ZeusTrackedPacket<GroupChatPacket> {
-    private GroupChatStatus a;
-    private long P;
+    private GroupChatStatus status;
+    private long messageTimestamp;
     @Nullable
-    private String W;
+    private String responseMessage;
 
     @Override
     public void T(ZeusPacketBuffer zeusPacketBuffer) {
-        zeusPacketBuffer.U(this.a);
-        zeusPacketBuffer.y(this.W);
-        zeusPacketBuffer.v(this.P);
+        zeusPacketBuffer.writeEnum(this.status);
+        zeusPacketBuffer.writeString(this.responseMessage);
+        zeusPacketBuffer.writeLong(this.messageTimestamp);
     }
 
-    public GroupChatResponsePacket(@Nullable GroupChatPacket groupChatPacket, GroupChatStatus groupChatStatus) {
+    public GroupChatResponsePacket(@Nullable GroupChatPacket groupChatPacket, GroupChatStatus status) {
         super(groupChatPacket);
-        this.a = groupChatStatus;
+        this.status = status;
     }
 
-    public GroupChatStatus M() {
-        return this.a;
+    public GroupChatStatus getStatus() {
+        return this.status;
     }
 
     public GroupChatResponsePacket() {
@@ -35,24 +35,23 @@ extends ZeusTrackedPacket<GroupChatPacket> {
 
     @Override
     public void x(ZeusPacketBuffer zeusPacketBuffer) {
-        this.a = zeusPacketBuffer.Y(GroupChatStatus.class);
-        this.W = zeusPacketBuffer.v(255);
-        this.P = zeusPacketBuffer.a();
+        this.status = zeusPacketBuffer.readEnum(GroupChatStatus.class);
+        this.responseMessage = zeusPacketBuffer.readString(255);
+        this.messageTimestamp = zeusPacketBuffer.readLong();
     }
 
     @Nullable
-    public String x() {
-        return this.W;
+    public String getResponseMessage() {
+        return this.responseMessage;
     }
 
-    public long o() {
-        return this.P;
+    public long getMessageTimestamp() {
+        return this.messageTimestamp;
     }
 
     public GroupChatResponsePacket(@Nullable GroupChatPacket groupChatPacket, @NotNull String string) {
         this(groupChatPacket, GroupChatStatus.SUCCESS);
-        this.W = string;
-        this.P = System.currentTimeMillis();
+        this.responseMessage = string;
+        this.messageTimestamp = System.currentTimeMillis();
     }
 }
-

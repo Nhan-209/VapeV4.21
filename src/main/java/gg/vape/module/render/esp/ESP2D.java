@@ -171,8 +171,8 @@ extends SubModule<ESP> {
                     if (this.parentEsp.useDisplayName.getEffectiveValue().booleanValue()) {
                         displayName = displayName.replaceAll(NON_ASCII_PATTERN, "");
                     }
-                    if (friend && (friendEntry = Vape.INSTANCE.getFriendManager().O(projectedEntityBounds.context.getName())) != null) {
-                        displayName = friendEntry.o();
+                    if (friend && (friendEntry = Vape.INSTANCE.getFriendManager().findTargetedFriend(projectedEntityBounds.context.getName())) != null) {
+                        displayName = friendEntry.getDisplayName();
                     }
                     textWidth = fontRenderer.N(displayName);
                     if (this.parentEsp.showNameBackground.getEffectiveValue().booleanValue()) {
@@ -244,4 +244,3 @@ extends SubModule<ESP> {
         this.pendingBounds = new ArrayList<ProjectedEntityBounds>();
     }
 }
-

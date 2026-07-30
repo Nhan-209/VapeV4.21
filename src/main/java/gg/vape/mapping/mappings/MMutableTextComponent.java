@@ -13,7 +13,7 @@ extends Mapping {
 
 
     public Object p(Object object, Object object2) {
-        return this.r.L(object, object2);
+        return this.r.invokeObject(object, object2);
     }
 
     public static int[] e() {
@@ -64,7 +64,7 @@ extends Mapping {
     }
 
     public Object v(Object object, Object object2) {
-        return this.e.L(object, object2);
+        return this.e.invokeObject(object, object2);
     }
 
     static {

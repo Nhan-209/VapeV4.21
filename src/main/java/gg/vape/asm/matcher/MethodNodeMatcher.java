@@ -8,46 +8,45 @@ import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.MethodNode;
 
 public abstract class MethodNodeMatcher {
-    private static String X;
-    private final Class C;
-    private final ClassMethodReferenceIndex t;
-    private final ClassNode y;
+    private static String opaqueMarker;
+    private final Class targetClass;
+    private final ClassMethodReferenceIndex referenceIndex;
+    private final ClassNode classNode;
 
-    public String findMethodDescriptor(String string) {
-        Iterator<MethodNode> iterator = this.y.methods.iterator();
+    public String findMethodName(String descriptor) {
+        Iterator<MethodNode> iterator = this.classNode.methods.iterator();
         while (iterator.hasNext()) {
-            MethodNode methodNode;
-            MethodNode methodNode2 = methodNode = iterator.next();
-            if (!string.equals(methodNode2.desc) || !this.matchesMethod(methodNode2)) continue;
-            return methodNode2.name;
+            MethodNode method = iterator.next();
+            if (!descriptor.equals(method.desc) || !this.matchesMethod(method)) continue;
+            return method.name;
         }
         return null;
     }
 
-    public abstract boolean matchesMethod(MethodNode var1);
+    public abstract boolean matchesMethod(MethodNode methodNode);
 
-    public MethodNodeMatcher(Class clazz) {
-        this.C = clazz;
-        this.y = ClassNodeCache.j(clazz);
-        this.t = ClassNodeCache.g(clazz);
+    public MethodNodeMatcher(Class targetClass) {
+        this.targetClass = targetClass;
+        this.classNode = ClassNodeCache.getClassNode(targetClass);
+        this.referenceIndex = ClassNodeCache.getClassReferences(targetClass);
     }
 
     public MethodInstructionIndex getMethodInstructionIndex(MethodNode methodNode) {
-        return this.t.H().get(methodNode);
+        return this.referenceIndex.getMethodIndexes().get(methodNode);
     }
 
 
-    public static String b() {
-        return X;
+    public static String getOpaqueMarker() {
+        return opaqueMarker;
     }
 
-    public static void O(String string) {
-        X = string;
+    public static void setOpaqueMarker(String marker) {
+        opaqueMarker = marker;
     }
 
     static {
-        if (MethodNodeMatcher.b() == null) {
-            MethodNodeMatcher.O("h95Sqb");
+        if (MethodNodeMatcher.getOpaqueMarker() == null) {
+            MethodNodeMatcher.setOpaqueMarker("h95Sqb");
         }
     }
 }

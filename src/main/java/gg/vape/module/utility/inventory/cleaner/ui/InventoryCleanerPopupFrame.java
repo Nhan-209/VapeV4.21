@@ -130,8 +130,8 @@ extends Frame {
         materialFilterCondition.addSelection(itemPickerSelection);
     }
 
-    private static void updateProfileName(InventoryCleanerProfile inventoryCleanerProfile, SmallTextInputComponent smallTextInputComponent, char c, int n) {
-        inventoryCleanerProfile.setName(smallTextInputComponent.getText().trim());
+    private static void updateProfileName(InventoryCleanerProfile profile, SmallTextInputComponent nameInput, char character, int keyCode) {
+        profile.setName(nameInput.getText().trim());
     }
 
     public void setParentStack(@Nullable FrameStackManager frameStackManager) {
@@ -150,7 +150,7 @@ extends Frame {
                 runnable.run();
             }
             if (itemPickerSelection != null) {
-                if (!HiddenInventoryItemMatchers.R.getId().equals(itemPickerSelection.getLeft())) {
+                if (!HiddenInventoryItemMatchers.ANY_ITEM.getId().equals(itemPickerSelection.getLeft())) {
                     this.openRuleSettings(guiComponent, inventoryCleanerProfile, inventoryFilterRule, true);
                 }
             } else {
@@ -178,7 +178,7 @@ extends Frame {
     }
 
     private static void removeAnyItemSelection(MaterialFilterCondition materialFilterCondition, ItemPickerSelection itemPickerSelection) {
-        ItemFilterSelection itemFilterSelection = materialFilterCondition.findSelectionById(itemPickerSelection.getLeft() != null ? (String)itemPickerSelection.getLeft() : ((ItemMappingEntry)itemPickerSelection.getRight()).M());
+        ItemFilterSelection itemFilterSelection = materialFilterCondition.findSelectionById(itemPickerSelection.getLeft() != null ? (String)itemPickerSelection.getLeft() : ((ItemMappingEntry)itemPickerSelection.getRight()).getResourceKey());
         if (itemFilterSelection == null) {
             return;
         }
@@ -189,18 +189,18 @@ extends Frame {
         this.openItemPicker(guiComponent, inventoryFilterRule, selection -> this.handleItemSelection(inventoryFilterRule, inventoryCleanerProfile, runnable, guiComponent, selection));
     }
 
-    public static void openRuleEditor(InventoryFilterRule inventoryFilterRule, InventoryFilterPreset inventoryFilterPreset, InventoryFilterPreset inventoryFilterPreset2, boolean bl) {
-        InventoryCleanerPopupFrame inventoryCleanerPopupFrame = ClientSettings.getFrame(InventoryCleanerPopupFrame.class);
-        InventoryFilterRuleEditorFrame inventoryFilterRuleEditorFrame = ClientSettings.getFrame(InventoryFilterRuleEditorFrame.class);
-        inventoryFilterRuleEditorFrame.showRuleEditor(inventoryFilterRule, inventoryFilterPreset, inventoryFilterPreset2, bl, inventoryFilterRuleEditorFrame.V$src$Z$1xhop3l());
-        if (inventoryCleanerPopupFrame.u$src$Lgg_vape_ui_click_frame_FrameStackManager_$12v9ioe() instanceof ClickGuiFrameManager) {
-            ClickGuiFrameManager clickGuiFrameManager = (ClickGuiFrameManager)inventoryCleanerPopupFrame.u$src$Lgg_vape_ui_click_frame_FrameStackManager_$12v9ioe();
-            inventoryCleanerPopupFrame.setVisible(false);
-            clickGuiFrameManager.setSidecarFrame(inventoryFilterRuleEditorFrame);
+    public static void openRuleEditor(InventoryFilterRule rule, InventoryFilterPreset currentPreset, InventoryFilterPreset editedPreset, boolean newlyAddedRule) {
+        InventoryCleanerPopupFrame profileEditor = ClientSettings.getFrame(InventoryCleanerPopupFrame.class);
+        InventoryFilterRuleEditorFrame ruleEditor = ClientSettings.getFrame(InventoryFilterRuleEditorFrame.class);
+        ruleEditor.showRuleEditor(rule, currentPreset, editedPreset, newlyAddedRule, ruleEditor.V$src$Z$1xhop3l());
+        if (profileEditor.u$src$Lgg_vape_ui_click_frame_FrameStackManager_$12v9ioe() instanceof ClickGuiFrameManager) {
+            ClickGuiFrameManager clickGuiFrameManager = (ClickGuiFrameManager)profileEditor.u$src$Lgg_vape_ui_click_frame_FrameStackManager_$12v9ioe();
+            profileEditor.setVisible(false);
+            clickGuiFrameManager.setSidecarFrame(ruleEditor);
             return;
         }
-        inventoryCleanerPopupFrame.setVisible(false);
-        inventoryFilterRuleEditorFrame.setVisible(true);
+        profileEditor.setVisible(false);
+        ruleEditor.setVisible(true);
     }
 
     private static void closePopup(PopupFrame popupFrame) {
@@ -238,18 +238,18 @@ extends Frame {
         glyphIconComponent.addClickListener(this::close);
     }
 
-    public void openRuleSettings(GuiComponent guiComponent, InventoryCleanerProfile inventoryCleanerProfile, InventoryFilterRule inventoryFilterRule, boolean bl) {
-        AtomicReference<AnchoredPopupFrame> atomicReference = new AtomicReference<AnchoredPopupFrame>();
-        InventoryFilterRuleEditorPanel inventoryFilterRuleEditorPanel = new InventoryFilterRuleEditorPanel(inventoryCleanerProfile, inventoryFilterRule, bl);
-        inventoryFilterRuleEditorPanel.getActionButton().setClickListener(() -> this.saveRuleEdit(bl, inventoryFilterRule, inventoryCleanerProfile, atomicReference));
-        if (inventoryFilterRuleEditorPanel.getBackButton() != null) {
-            inventoryFilterRuleEditorPanel.getBackButton().addClickListener(() -> this.returnToItemPicker(inventoryFilterRuleEditorPanel, inventoryFilterRule, atomicReference, guiComponent, inventoryCleanerProfile));
+    public void openRuleSettings(GuiComponent anchor, InventoryCleanerProfile profile, InventoryFilterRule rule, boolean nestedEditor) {
+        AtomicReference<AnchoredPopupFrame> popupReference = new AtomicReference<AnchoredPopupFrame>();
+        InventoryFilterRuleEditorPanel editorPanel = new InventoryFilterRuleEditorPanel(profile, rule, nestedEditor);
+        editorPanel.getActionButton().setClickListener(() -> this.saveRuleEdit(nestedEditor, rule, profile, popupReference));
+        if (editorPanel.getBackButton() != null) {
+            editorPanel.getBackButton().addClickListener(() -> this.returnToItemPicker(editorPanel, rule, popupReference, anchor, profile));
         }
-        AnchoredPopupFrame anchoredPopupFrame = ClientSettings.createPopup(guiComponent, inventoryFilterRuleEditorPanel, AnchoredPopupFrame.class);
-        atomicReference.set(anchoredPopupFrame);
-        anchoredPopupFrame.O(false);
-        anchoredPopupFrame.r(false);
-        anchoredPopupFrame.q(this, anchoredPopupFrame);
+        AnchoredPopupFrame popup = ClientSettings.createPopup(anchor, editorPanel, AnchoredPopupFrame.class);
+        popupReference.set(popup);
+        popup.O(false);
+        popup.r(false);
+        popup.q(this, popup);
     }
 
     private void deleteProfile(InventoryCleanerProfileValue inventoryCleanerProfileValue, InventoryCleanerProfile inventoryCleanerProfile, Runnable runnable, PopupFrame popupFrame) {
@@ -271,7 +271,7 @@ extends Frame {
     private void handlePickerSelection(AtomicReference atomicReference, Consumer consumer, GuiComponent guiComponent, InventoryFilterRule inventoryFilterRule, ItemPickerSelection itemPickerSelection) {
         ClientSettings.removePopup((PopupFrame)atomicReference.get());
         consumer.accept(itemPickerSelection);
-        if (itemPickerSelection != null && HiddenInventoryItemMatchers.R.getId().equals(itemPickerSelection.getLeft())) {
+        if (itemPickerSelection != null && HiddenInventoryItemMatchers.ANY_ITEM.getId().equals(itemPickerSelection.getLeft())) {
             this.openAnyItemPicker(guiComponent, inventoryFilterRule);
         }
     }

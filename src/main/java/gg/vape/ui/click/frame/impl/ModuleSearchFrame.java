@@ -61,7 +61,7 @@ extends ModuleCategoryFrame {
     }
 
     public void p() {
-        this.M((double)Minecraft.J() / (4.0 * Vape.INSTANCE.getClientSettings().s()) - this.A() / 2.0, 7.0);
+        this.M((double)Minecraft.J() / (4.0 * Vape.INSTANCE.getClientSettings().getGuiScaleFactor()) - this.A() / 2.0, 7.0);
     }
 
 

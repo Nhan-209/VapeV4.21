@@ -22,12 +22,12 @@ implements GuiClickListener {
     @Override
     public void onPrimaryClick() {
         if (this.friendEntry instanceof Friend) {
-            Vape.INSTANCE.getFriendManager().E((Friend)this.friendEntry);
+            Vape.INSTANCE.getFriendManager().removeFriend((Friend)this.friendEntry);
         } else if (this.friendEntry instanceof ExternalFriend) {
             ExternalFriend externalFriend = (ExternalFriend)this.friendEntry;
-            externalFriend.d().O(false);
+            externalFriend.getOnlineFriend().setSyncWithFriends(false);
         }
-        OnlineFriendUiHelper.n$src$V$uh9sir();
+        OnlineFriendUiHelper.refreshFriendLists();
     }
 }
 

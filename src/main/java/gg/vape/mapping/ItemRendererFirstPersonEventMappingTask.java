@@ -10,7 +10,7 @@ extends JavassistMappingTask {
     private static final String c = "$0, $1";
 
     @Override
-    public void c() {
+    public void transform() {
         this.c(Vape.INSTANCE.getMappings().qE.S, EventRenderItemInFirstPerson.class, c);
     }
 
@@ -18,4 +18,3 @@ extends JavassistMappingTask {
         super(MappedClasses.zN);
     }
 }
-

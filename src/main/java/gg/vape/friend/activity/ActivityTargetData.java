@@ -4,30 +4,30 @@ import gg.vape.protocol.ZeusPacketBuffer;
 import java.util.UUID;
 
 public class ActivityTargetData {
-    private final UUID d;
-    private final String n;
+    private final UUID uuid;
+    private final String name;
 
-    public UUID B() {
-        return this.d;
+    public UUID getUuid() {
+        return this.uuid;
     }
 
-    public ActivityTargetData(ZeusPacketBuffer gx_12) {
-        this.d = gx_12.N();
-        this.n = gx_12.v(16);
+    public ActivityTargetData(ZeusPacketBuffer buffer) {
+        this.uuid = buffer.readUuid();
+        this.name = buffer.readString(16);
     }
 
-    public ActivityTargetData(UUID uUID, String string) {
-        this.d = uUID;
-        this.n = string;
+    public ActivityTargetData(UUID uuid, String name) {
+        this.uuid = uuid;
+        this.name = name;
     }
 
-    public void i(ZeusPacketBuffer gx_12) {
-        gx_12.r(this.d);
-        gx_12.y(this.n);
+    public void writeTo(ZeusPacketBuffer buffer) {
+        buffer.writeUuid(this.uuid);
+        buffer.writeString(this.name);
     }
 
-    public String a() {
-        return this.n;
+    public String getName() {
+        return this.name;
     }
 }
 

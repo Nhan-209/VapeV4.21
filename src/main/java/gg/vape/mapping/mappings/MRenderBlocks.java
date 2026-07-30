@@ -151,7 +151,7 @@ extends Mapping {
     }
 
     public boolean m(Object object, Object object2, int n, int n2, int n3, float f, float f2, float f3) {
-        return this.E.e(object, object2, n, n2, n3, Float.valueOf(f), Float.valueOf(f2), Float.valueOf(f3));
+        return this.E.invokeBoolean(object, object2, n, n2, n3, Float.valueOf(f), Float.valueOf(f2), Float.valueOf(f3));
     }
 
     public void A(Object object, boolean bl) {

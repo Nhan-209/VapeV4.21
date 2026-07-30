@@ -3,7 +3,6 @@ package gg.vape.mapping.mappings;
 import gg.vape.mapping.MappedClasses;
 import gg.vape.mapping.Mapping;
 import gg.vape.mapping.MappingField;
-import gg.vape.mapping.mappings.MSPacketEntityVelocity;
 import gg.vape.wrapper.Wrapper;
 import gg.vape.wrapper.impl.ForgeVersion;
 import java.util.Optional;
@@ -34,17 +33,17 @@ extends Mapping {
                 this.W = mPacketVelocityBridge.J(string, bl, clazz);
             } else {
                 Class<Float> clazz = Float.TYPE;
-                boolean bl = Wrapper.G;
+                boolean bl = Wrapper.isNativeAvailable;
                 String string = "field_149152_f";
                 MPacketVelocityBridge mPacketVelocityBridge = this;
                 this.E = mPacketVelocityBridge.J(string, bl, clazz);
                 Class<Float> clazz2 = Float.TYPE;
-                boolean bl2 = Wrapper.G;
+                boolean bl2 = Wrapper.isNativeAvailable;
                 String string2 = "field_149153_g";
                 MPacketVelocityBridge mPacketVelocityBridge2 = this;
                 this.p = this.J(string2, bl2, clazz2);
                 Class<Float> clazz3 = Float.TYPE;
-                boolean bl3 = Wrapper.G;
+                boolean bl3 = Wrapper.isNativeAvailable;
                 String string3 = "field_149159_h";
                 MPacketVelocityBridge mPacketVelocityBridge3 = this;
                 this.O = this.J(string3, bl3, clazz3);
@@ -52,7 +51,7 @@ extends Mapping {
             return;
         }
         Class<Float> clazz = Float.TYPE;
-        boolean bl = Wrapper.G;
+        boolean bl = Wrapper.isNativeAvailable;
         String string = "field_149159_h";
         MPacketVelocityBridge mPacketVelocityBridge = this;
         this.O = mPacketVelocityBridge.J(string, bl, clazz);

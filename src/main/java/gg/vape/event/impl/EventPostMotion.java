@@ -7,17 +7,17 @@ public class EventPostMotion
 extends EventMotion {
     @Override
     public boolean fire() {
-        if (V.isNull()) {
+        if (player.isNull()) {
             return false;
         }
-        boolean bl = super.fire();
-        V.T(EventMotion.access$300());
-        return bl;
+        boolean fired = super.fire();
+        player.T(EventMotion.getSavedRidingEntity());
+        return fired;
     }
 
 
-    public EventPostMotion(Object object) {
-        super(new Entity(object));
+    public EventPostMotion(Object playerHandle) {
+        super(new Entity(playerHandle));
     }
 }
 

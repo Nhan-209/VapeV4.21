@@ -16,7 +16,7 @@ extends Mapping {
     private final MappingMethod r;
 
     public Object I(Object object) {
-        return this.r.L(object, new Object[0]);
+        return this.r.invokeObject(object, new Object[0]);
     }
 
     public static int[] z() {
@@ -50,15 +50,15 @@ extends Mapping {
         Class<Integer> clazz2 = Integer.TYPE;
         String string2 = "slotNumber";
         MSlot mSlot2 = this;
-        this.Z = this.T(string2, clazz2).z();
+        this.Z = this.fieldBuilder(string2, clazz2).buildField();
         Class clazz3 = MappedClasses.l0;
         String string3 = "inventory";
         MSlot mSlot3 = this;
-        this.G = ((MappingFieldBuilder)this.T(string3, clazz3).A(ForgeVersion.MC_1_16_5.n(), "container")).z();
+        this.G = ((MappingFieldBuilder)this.fieldBuilder(string3, clazz3).setNameForVersion(ForgeVersion.MC_1_16_5.n(), "container")).buildField();
         Class<Integer> clazz4 = Integer.TYPE;
         String string4 = "slotIndex";
         MSlot mSlot4 = this;
-        this.f = ((MappingFieldBuilder)this.T(string4, clazz4).A(ForgeVersion.MC_1_16_5.n(), "index")).z();
+        this.f = ((MappingFieldBuilder)this.fieldBuilder(string4, clazz4).setNameForVersion(ForgeVersion.MC_1_16_5.n(), "index")).buildField();
     }
 
     public static int d(MSlot mSlot, Object object) {

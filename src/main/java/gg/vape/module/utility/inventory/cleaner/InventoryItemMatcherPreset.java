@@ -12,10 +12,10 @@ extends AbstractInventoryFilterPreset {
     private final List<InventoryFilterConditionGroup> conditionGroups;
     private final List<InventoryItemMatcher> matchers;
 
-    InventoryItemMatcherPreset(String string, List<InventoryFilterConditionGroup> list, List<InventoryItemMatcher> list2) {
-        super(string);
-        this.conditionGroups = list;
-        this.matchers = list2;
+    InventoryItemMatcherPreset(String name, List<InventoryFilterConditionGroup> conditionGroups, List<InventoryItemMatcher> matchers) {
+        super(name);
+        this.conditionGroups = conditionGroups;
+        this.matchers = matchers;
     }
 
     @Override

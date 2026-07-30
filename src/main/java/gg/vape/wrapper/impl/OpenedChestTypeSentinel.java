@@ -9,7 +9,7 @@ extends Wrapper {
     }
 
     public static OpenedChestTypeSentinel Y() {
-        return new OpenedChestTypeSentinel(OpenedChestTypeSentinel.c.getMappingsMapperCompat().CD.q());
+        return new OpenedChestTypeSentinel(OpenedChestTypeSentinel.vapeInstance.getMappingsMapperCompat().CD.q());
     }
 }
 

@@ -33,7 +33,7 @@ extends Frame {
                 anchoredY = Math.min(anchoredY, frameComponent.n() + frameComponent.d$src$D$ibccpu() - anchor.L());
                 anchoredY = Math.max(anchoredY, frameComponent.n() + frameComponent.j$src$Lgg_vape_ui_click_frame_FrameHeaderComponent_$175vsfc().L());
             }
-            if (anchor.G$src$D$1b2f02a() + anchor.A() + this.A() > (double)Minecraft.G().T()) {
+            if (anchor.G$src$D$1b2f02a() + anchor.A() + this.A() > (double)Minecraft.G().getScaledWidth()) {
                 this.M(anchor.G$src$D$1b2f02a() - this.A() + 13.0, anchoredY);
             } else {
                 this.M(anchor.G$src$D$1b2f02a() + anchor.A() - 13.0, anchoredY);

@@ -119,8 +119,8 @@ extends UtilityMod {
             this.itemsToThrow.sort(new ItemDataComparator(this.savedSlot));
             boolean restoreUseKey = false;
             for (ItemStackData itemToThrow : this.itemsToThrow) {
-                this.selectHotbarSlot(itemToThrow.Y());
-                if (useKey.isKeyDown() && ItemStackScoreUtil.v(itemToThrow.w().getItem())) {
+                this.selectHotbarSlot(itemToThrow.getSlot());
+                if (useKey.isKeyDown() && ItemStackScoreUtil.v(itemToThrow.getItemStack().getItem())) {
                     KeyBindingHelper.updateKeyBinding(useKey, false, false);
                     Thread.sleep(51L);
                     restoreUseKey = true;
@@ -128,7 +128,7 @@ extends UtilityMod {
                 KeyBindingHelper.setPressedAndTick(useKey, true);
                 Thread.sleep(51L);
                 KeyBindingHelper.updateKeyBinding(useKey, false, false);
-                if (this.throwBowls.getEffectiveValue().booleanValue() && ItemStackScoreUtil.v(itemToThrow.w().getItem())) {
+                if (this.throwBowls.getEffectiveValue().booleanValue() && ItemStackScoreUtil.v(itemToThrow.getItemStack().getItem())) {
                     KeyBindingHelper.setPressedAndTick(dropKey, true);
                     Thread.sleep(51L);
                     KeyBindingHelper.updateKeyBinding(dropKey, false, false);

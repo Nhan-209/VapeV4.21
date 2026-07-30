@@ -3,9 +3,7 @@ package gg.vape.wrapper.impl;
 import gg.vape.Vape;
 import gg.vape.unmap.TextComponentBase;
 import gg.vape.wrapper.Wrapper;
-import gg.vape.wrapper.impl.ForgeVersion;
-import gg.vape.wrapper.impl.ITextComponent;
-import gg.vape.wrapper.impl.StringTextComponentBase;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -20,7 +18,7 @@ extends ITextComponent {
             Vape.notifyNativeStackTrace();
             throw new UnsupportedOperationException("Unsupported");
         }
-        return new TextComponentBaseBridge(TextComponentBaseBridge.c.getMappings().Cp.X(this.getObject(), textComponentBase.getObject()));
+        return new TextComponentBaseBridge(TextComponentBaseBridge.vapeInstance.getMappings().Cp.X(this.getObject(), textComponentBase.getObject()));
     }
 
     private static UnsupportedOperationException b(UnsupportedOperationException unsupportedOperationException) {
@@ -32,7 +30,7 @@ extends ITextComponent {
             Vape.notifyNativeStackTrace();
             throw new UnsupportedOperationException("Unsupported");
         }
-        return new TextComponentBaseBridge(TextComponentBaseBridge.c.getMappings().Cp.Q(stringTextComponentBase.getObject(), list.stream().map(Wrapper::getObject).collect(Collectors.toList()), textComponentBase.getObject()));
+        return new TextComponentBaseBridge(TextComponentBaseBridge.vapeInstance.getMappings().Cp.Q(stringTextComponentBase.getObject(), list.stream().map(Wrapper::getObject).collect(Collectors.toList()), textComponentBase.getObject()));
     }
 }
 

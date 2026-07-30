@@ -21,7 +21,7 @@ extends Mod {
     private static final long MODULE_COLOR = -1033271949203766542L;
     private final ModeValue mode;
     private final SubModuleValue<DamageResponsiveAnimationsMode> predictiveMode;
-    private final SubModuleValue<AnimationsBlockingState> manualMode = new AnimationsBlockingState(this, "Manual").r$src$Lgg_vape_value_SubModuleValue_$1rfa4wx();
+    private final SubModuleValue<AnimationsBlockingState> manualMode = new AnimationsBlockingState(this, "Manual").getSelectionValue();
     private final SubModuleValue<LegacyBlockingPacketBufferedAnimationsMode> lagMode;
     public final BooleanValue requireMouseDown;
     public final BooleanValue ignoreManualBlock;
@@ -69,9 +69,9 @@ extends Mod {
 
     public Animations() {
         super("BlockHit", (int)MODULE_COLOR, Category.g, "Automatically blockhit");
-        this.predictiveMode = new DamageResponsiveAnimationsMode(this, "Predict").r$src$Lgg_vape_value_SubModuleValue_$1rfa4wx();
-        this.automaticMode = new SwordUseMouseGuardAnimationsMode(this, "Auto").r$src$Lgg_vape_value_SubModuleValue_$1rfa4wx();
-        this.lagMode = new LegacyBlockingPacketBufferedAnimationsMode(this, "Lag").r$src$Lgg_vape_value_SubModuleValue_$1rfa4wx();
+        this.predictiveMode = new DamageResponsiveAnimationsMode(this, "Predict").getSelectionValue();
+        this.automaticMode = new SwordUseMouseGuardAnimationsMode(this, "Auto").getSelectionValue();
+        this.lagMode = new LegacyBlockingPacketBufferedAnimationsMode(this, "Lag").getSelectionValue();
         this.requireMouseDown = BooleanValue.create(this, "Require mouse down", true, "Require block to be pressed to blockhit");
         this.ignoreManualBlock = BooleanValue.create(this, "Ignore manual block", true, "Prevents manually blocking, useful for holding right click to activate");
         this.targetAngle = NumberValue.createWithDescription(this, "Angle", "#", "", 0.0, 90.0, 360.0, "Max target angle to blockhit");

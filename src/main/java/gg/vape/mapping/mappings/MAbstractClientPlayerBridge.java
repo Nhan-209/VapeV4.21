@@ -32,7 +32,7 @@ extends Mapping {
                 String string = "getSkin";
                 Class clazz2 = MappedClasses.lB;
                 MAbstractClientPlayerBridge mAbstractClientPlayerBridge = this;
-                this.O = mAbstractClientPlayerBridge.W(clazz2, string, bl, clazz, classArray);
+                this.O = mAbstractClientPlayerBridge.registerInstanceMethodForOwner(clazz2, string, bl, clazz, classArray);
             } else {
                 Class[] classArray = new Class[]{};
                 Class clazz = MappedClasses.zC;
@@ -57,7 +57,7 @@ extends Mapping {
             String string = "getSkin";
             Class clazz3 = MappedClasses.lB;
             MAbstractClientPlayerBridge mAbstractClientPlayerBridge = this;
-            this.O = mAbstractClientPlayerBridge.W(clazz3, string, bl, clazz, classArray);
+            this.O = mAbstractClientPlayerBridge.registerInstanceMethodForOwner(clazz3, string, bl, clazz, classArray);
         }
         Class[] classArray = new Class[]{};
         Class clazz = MappedClasses.zC;
@@ -75,7 +75,7 @@ extends Mapping {
     }
 
     private Object b(Object object) {
-        return this.O.L(object, new Object[0]);
+        return this.O.invokeObject(object, new Object[0]);
     }
 
 

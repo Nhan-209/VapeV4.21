@@ -5,27 +5,26 @@ import gg.vape.protocol.packet.ZeusSerializablePacket;
 
 public class ShowUsernamePacket
 implements ZeusSerializablePacket {
-    private boolean Q;
+    private boolean showUsername;
 
     @Override
     public void S(ZeusPacketBuffer zeusPacketBuffer) {
-        this.Q = zeusPacketBuffer.boolean_a();
+        this.showUsername = zeusPacketBuffer.readBoolean();
     }
 
-    public ShowUsernamePacket(boolean bl) {
-        this.Q = bl;
+    public ShowUsernamePacket(boolean showUsername) {
+        this.showUsername = showUsername;
     }
 
     public ShowUsernamePacket() {
     }
 
-    public boolean p() {
-        return this.Q;
+    public boolean shouldShowUsername() {
+        return this.showUsername;
     }
 
     @Override
     public void o(ZeusPacketBuffer zeusPacketBuffer) {
-        zeusPacketBuffer.Y(this.Q);
+        zeusPacketBuffer.writeBoolean(this.showUsername);
     }
 }
-

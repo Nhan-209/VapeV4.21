@@ -154,7 +154,8 @@ public class NativeBridge {
     public static native String gat();
 
     //GetClassObjects
-    //Since our native does not depend on jvmti, gco could not be implemented right away
+    //Java Layer Unused
+    //since I hate jvmti, so I'm not going to implement this
     public static Object[] gco(Class<?> targetClass) {
         return new Object[0];
     }
@@ -233,9 +234,10 @@ public class NativeBridge {
         NativeBridge.invokeVoidInit(vape, "loadMappings");
         NativeBridge.sce("LOAD initAccountInfo");
         if (!vape.initAccountInfo()) {
-            throw new IllegalStateException("Failed to initialize account information");
+            NativeBridge.sce("WARN initAccountInfo; continuing without account information");
+        } else {
+            NativeBridge.sce("OK initAccountInfo");
         }
-        NativeBridge.sce("OK initAccountInfo");
         NativeBridge.invokeVoidInit(vape, "initializeManagers");
     }
 

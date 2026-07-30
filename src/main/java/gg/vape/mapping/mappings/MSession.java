@@ -36,7 +36,7 @@ extends Mapping {
             if (ForgeVersion.MC_1_21_10.d()) {
                 Class[] classArray = new Class[]{String.class, UUID.class, String.class, Optional.class, Optional.class};
                 MSession mSession3 = this;
-                this.D = this.g(classArray);
+                this.D = this.registerConstructor(classArray);
             } else if (ForgeVersion.MC_1_20_6.d()) {
                 Class[] classArray = new Class[]{String.class, UUID.class, String.class, Optional.class, Optional.class, MappedClasses.Z2};
                 Class<Void> clazz3 = Void.TYPE;
@@ -93,7 +93,7 @@ extends Mapping {
     }
 
     private Object t(String string, String string2, String string3, String string4) {
-        return this.D.O(string, string2, string3, string4);
+        return this.D.newInstance(string, string2, string3, string4);
     }
 
     public Object V(Object object) {
@@ -101,7 +101,7 @@ extends Mapping {
     }
 
     private Object O(String string, UUID uUID, String string2, Optional<String> optional, Optional<String> optional2, Object object) {
-        return this.D.O(string, uUID, string2, optional, optional2, object);
+        return this.D.newInstance(string, uUID, string2, optional, optional2, object);
     }
 }
 

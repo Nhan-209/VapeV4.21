@@ -9,7 +9,7 @@ public class ArmorItemMappingEntry extends ItemMappingEntry {
     private final ArmorMaterialType armorMaterial;
 
     public ArmorItemMappingEntry(ItemMappingEntry entry, ArmorMaterialType armorMaterial) {
-        this(entry.M(), entry.q(), entry.A(), armorMaterial);
+        this(entry.getResourceKey(), entry.getModernId(), entry.getLegacyIdString(), armorMaterial);
     }
 
     public ArmorItemMappingEntry(String name, String legacyName, @Nullable String modernName,

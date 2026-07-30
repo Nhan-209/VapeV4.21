@@ -6,7 +6,7 @@ import java.awt.Color;
 
 public class OnlinePlayerPreviewDividerComponent
 extends ColorDividerComponent {
-    final OnlinePlayerPreviewSettingsFrame b;
+    final OnlinePlayerPreviewSettingsFrame settingsFrame;
 
     @Override
     public void I() {
@@ -14,7 +14,6 @@ extends ColorDividerComponent {
 
     public OnlinePlayerPreviewDividerComponent(OnlinePlayerPreviewSettingsFrame onlinePlayerPreviewSettingsFrame, Color color) {
         super(color);
-        this.b = onlinePlayerPreviewSettingsFrame;
+        this.settingsFrame = onlinePlayerPreviewSettingsFrame;
     }
 }
-

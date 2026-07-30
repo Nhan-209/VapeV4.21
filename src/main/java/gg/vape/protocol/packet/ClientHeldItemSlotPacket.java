@@ -5,27 +5,26 @@ import gg.vape.protocol.packet.ZeusSerializablePacket;
 
 public class ClientHeldItemSlotPacket
 implements ZeusSerializablePacket {
-    private int B;
+    private int heldItemSlot;
 
     @Override
     public void o(ZeusPacketBuffer zeusPacketBuffer) {
-        zeusPacketBuffer.K(this.B);
+        zeusPacketBuffer.writeInt(this.heldItemSlot);
     }
 
-    public int N() {
-        return this.B;
+    public int getHeldItemSlot() {
+        return this.heldItemSlot;
     }
 
-    public ClientHeldItemSlotPacket(int n) {
-        this.B = n;
+    public ClientHeldItemSlotPacket(int heldItemSlot) {
+        this.heldItemSlot = heldItemSlot;
     }
 
     @Override
     public void S(ZeusPacketBuffer zeusPacketBuffer) {
-        this.B = zeusPacketBuffer.k();
+        this.heldItemSlot = zeusPacketBuffer.readInt();
     }
 
     public ClientHeldItemSlotPacket() {
     }
 }
-

@@ -21,7 +21,7 @@ extends JavassistMappingTask {
 
 
     @Override
-    public void c() {
+    public void transform() {
         MappingMethod mappingMethod = Vape.INSTANCE.getMappings().Rr.V;
         this.c(mappingMethod, EventPreEntityUpdate.class, "$0");
         this.k(mappingMethod, EventPostEntityUpdate.class, "$0");
@@ -32,14 +32,14 @@ extends JavassistMappingTask {
             EventInjectionSpec eventInjectionSpec;
             if (!Vape.INSTANCE.isLabyModPresent()) {
                 eventInjectionSpec = new EventInjectionSpec(Vape.INSTANCE.getMappings().Rr.jL, EventEntityRendererRayTrace.class);
-                eventInjectionSpec.d("$0, $1");
-                eventInjectionSpec.H("($r) $event.getVec();");
-                this.O(eventInjectionSpec);
+                eventInjectionSpec.setConstructorArguments("$0, $1");
+                eventInjectionSpec.setReturnExpression("($r) $event.getVec();");
+                this.registerEventInjection(eventInjectionSpec);
             }
             eventInjectionSpec = new EventInjectionSpec(Vape.INSTANCE.getMappings().hx.s, EventPotionEffectCheck.class);
-            eventInjectionSpec.d("$0, $1");
-            eventInjectionSpec.H("($r) $event.isActive();");
-            this.O(eventInjectionSpec);
+            eventInjectionSpec.setConstructorArguments("$0, $1");
+            eventInjectionSpec.setReturnExpression("($r) $event.isActive();");
+            this.registerEventInjection(eventInjectionSpec);
         }
     }
 }

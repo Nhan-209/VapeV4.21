@@ -74,7 +74,7 @@ extends Mapping {
     }
 
     public Object v(float f, float f2, float f3, boolean bl) {
-        return this.c.O(Float.valueOf(f), Float.valueOf(f2), Float.valueOf(f3), bl);
+        return this.c.newInstance(Float.valueOf(f), Float.valueOf(f2), Float.valueOf(f3), bl);
     }
 
     public float v(Object object) {
@@ -83,7 +83,7 @@ extends Mapping {
 
 
     public Object N(float f, float f2, float f3, float f4) {
-        return this.e.O(Float.valueOf(f), Float.valueOf(f2), Float.valueOf(f3), Float.valueOf(f4));
+        return this.e.newInstance(Float.valueOf(f), Float.valueOf(f2), Float.valueOf(f3), Float.valueOf(f4));
     }
 }
 

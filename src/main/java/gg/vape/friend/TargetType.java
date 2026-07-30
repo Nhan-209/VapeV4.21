@@ -4,14 +4,13 @@ public enum TargetType {
     FRIEND,
     ENEMY;
 
-    private static final TargetType[] d;
+    private static final TargetType[] VALUES_COPY;
 
     static {
-        String[] stringArray = new String[]{"ENEMY", "FRIEND"};
+        String[] declaredNames = new String[]{"ENEMY", "FRIEND"};
 
 
-        d = new TargetType[]{FRIEND, ENEMY};
+        VALUES_COPY = new TargetType[]{FRIEND, ENEMY};
     }
 
 }
-

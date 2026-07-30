@@ -10,7 +10,7 @@ import org.jetbrains.annotations.Nullable;
 public class ClientInventoryUpdatePacket
 implements ZeusSerializablePacket {
     private static final String b;
-    private Map<Integer, @Nullable ActivityItemStackPayload> h;
+    private Map<Integer, @Nullable ActivityItemStackPayload> inventoryItems;
     private static String v;
 
     public ClientInventoryUpdatePacket() {
@@ -18,20 +18,20 @@ implements ZeusSerializablePacket {
 
     @Override
     public void S(ZeusPacketBuffer zeusPacketBuffer) {
-        int n = zeusPacketBuffer.Y();
+        int n = zeusPacketBuffer.readVarInt();
         if (n > 40) {
             throw new RuntimeException(b);
         }
-        this.h = new HashMap<Integer, ActivityItemStackPayload>();
+        this.inventoryItems = new HashMap<Integer, ActivityItemStackPayload>();
         for (int i = 0; i < n; ++i) {
-            int n2 = zeusPacketBuffer.Y();
-            boolean bl = zeusPacketBuffer.a$src$Z$1c50x8d();
-            this.h.put(n2, bl ? new ActivityItemStackPayload(zeusPacketBuffer) : null);
+            int n2 = zeusPacketBuffer.readVarInt();
+            boolean bl = zeusPacketBuffer.readBoolean();
+            this.inventoryItems.put(n2, bl ? new ActivityItemStackPayload(zeusPacketBuffer) : null);
         }
     }
 
-    public Map<Integer, @Nullable ActivityItemStackPayload> P() {
-        return this.h;
+    public Map<Integer, @Nullable ActivityItemStackPayload> getInventoryItems() {
+        return this.inventoryItems;
     }
 
     public static void d(String string) {
@@ -47,8 +47,8 @@ implements ZeusSerializablePacket {
         return runtimeException;
     }
 
-    public ClientInventoryUpdatePacket(Map<Integer, @Nullable ActivityItemStackPayload> map) {
-        this.h = map;
+    public ClientInventoryUpdatePacket(Map<Integer, @Nullable ActivityItemStackPayload> inventoryItems) {
+        this.inventoryItems = inventoryItems;
     }
 
     public static String A() {
@@ -57,13 +57,12 @@ implements ZeusSerializablePacket {
 
     @Override
     public void o(ZeusPacketBuffer zeusPacketBuffer) {
-        zeusPacketBuffer.i(this.h.size());
-        for (Map.Entry<Integer, ActivityItemStackPayload> entry : this.h.entrySet()) {
-            zeusPacketBuffer.i(entry.getKey());
-            zeusPacketBuffer.Y(entry.getValue() != null);
+        zeusPacketBuffer.writeVarInt(this.inventoryItems.size());
+        for (Map.Entry<Integer, ActivityItemStackPayload> entry : this.inventoryItems.entrySet()) {
+            zeusPacketBuffer.writeVarInt(entry.getKey());
+            zeusPacketBuffer.writeBoolean(entry.getValue() != null);
             if (entry.getValue() == null) continue;
-            entry.getValue().Q(zeusPacketBuffer);
+            entry.getValue().writeTo(zeusPacketBuffer);
         }
     }
 }
-

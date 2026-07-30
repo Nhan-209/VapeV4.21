@@ -13,13 +13,13 @@ import gg.vape.ui.click.frame.impl.quickactions.QuickActionsFrame;
 
 public class OnlinePlayerPreviewSettingsFrame
 extends HudSettingsFrameBase {
-    private boolean SI;
-    private static GuiComponent[] ST;
-    private final NumberSliderComponent SB;
-    private final OnlinePlayerPreviewSettings S5 = new OnlinePlayerPreviewSettings();
-    private final NumberSliderComponent SC;
-    private final NumberSliderComponent S0;
-    private final BooleanToggleComponent S4;
+    private boolean scaleDragging;
+    private static GuiComponent[] obfuscationComponents;
+    private final NumberSliderComponent scaleSlider;
+    private final OnlinePlayerPreviewSettings settings = new OnlinePlayerPreviewSettings();
+    private final NumberSliderComponent framesPerSecondSlider;
+    private final NumberSliderComponent fieldOfViewSlider;
+    private final BooleanToggleComponent levelViewToggle;
 
     @Override
     public void t(JsonObject jsonObject) {
@@ -29,18 +29,18 @@ extends HudSettingsFrameBase {
 
     @Override
     public void Y() {
-        if (this.SB.isDragging()) {
-            if (!this.SI) {
-                this.SI = true;
+        if (this.scaleSlider.isDragging()) {
+            if (!this.scaleDragging) {
+                this.scaleDragging = true;
             }
-        } else if (this.SI) {
-            this.SI = false;
+        } else if (this.scaleDragging) {
+            this.scaleDragging = false;
             this.H(true);
         }
     }
 
-    public OnlinePlayerPreviewSettings B$src$Lgg_vape_friend_ui_OnlinePlayerPreviewSettings_$1v47p92() {
-        return this.S5;
+    public OnlinePlayerPreviewSettings getSettings() {
+        return this.settings;
     }
 
     @Override
@@ -49,31 +49,31 @@ extends HudSettingsFrameBase {
     }
 
     static {
-        OnlinePlayerPreviewSettingsFrame.i(null);
+        OnlinePlayerPreviewSettingsFrame.setObfuscationComponents(null);
     }
 
     public OnlinePlayerPreviewSettingsFrame() {
         super("newrearview", "Rearview");
-        this.SB = new NumberSliderComponent(this.S5.d);
-        this.SC = new NumberSliderComponent(this.S5.p);
-        this.S0 = new NumberSliderComponent(this.S5.W);
-        this.S4 = new BooleanToggleComponent(this.S5.A);
-        this.SB.setDisabledOverlayColor(OnlinePlayerPreviewSettingsFrame.J.r);
-        this.SC.setDisabledOverlayColor(OnlinePlayerPreviewSettingsFrame.J.r);
-        this.S0.setDisabledOverlayColor(OnlinePlayerPreviewSettingsFrame.J.r);
-        this.S4.setDisabledOverlayColor(OnlinePlayerPreviewSettingsFrame.J.r);
-        this.addSettings(this.SB, this.SC, this.S0, this.S4,
+        this.scaleSlider = new NumberSliderComponent(this.settings.scale);
+        this.framesPerSecondSlider = new NumberSliderComponent(this.settings.framesPerSecond);
+        this.fieldOfViewSlider = new NumberSliderComponent(this.settings.fieldOfView);
+        this.levelViewToggle = new BooleanToggleComponent(this.settings.levelView);
+        this.scaleSlider.setDisabledOverlayColor(OnlinePlayerPreviewSettingsFrame.J.r);
+        this.framesPerSecondSlider.setDisabledOverlayColor(OnlinePlayerPreviewSettingsFrame.J.r);
+        this.fieldOfViewSlider.setDisabledOverlayColor(OnlinePlayerPreviewSettingsFrame.J.r);
+        this.levelViewToggle.setDisabledOverlayColor(OnlinePlayerPreviewSettingsFrame.J.r);
+        this.addSettings(this.scaleSlider, this.framesPerSecondSlider, this.fieldOfViewSlider, this.levelViewToggle,
                 new OnlinePlayerPreviewDividerComponent(this, OnlinePlayerPreviewSettingsFrame.J.l));
         this.h(new OnlinePlayerPreviewComponent(this), new Object[0]);
     }
 
 
-    public static GuiComponent[] r$src$ALgg_vape_ui_click_component_GuiComponent_$1vb3zts() {
-        return ST;
+    public static GuiComponent[] getObfuscationComponents() {
+        return obfuscationComponents;
     }
 
-    public static void i(GuiComponent[] guiComponentArray) {
-        ST = guiComponentArray;
+    public static void setObfuscationComponents(GuiComponent[] components) {
+        obfuscationComponents = components;
     }
 }
 

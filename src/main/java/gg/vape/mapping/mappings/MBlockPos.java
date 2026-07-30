@@ -27,11 +27,11 @@ extends Mapping {
     }
 
     public Object H(double d, double d2, double d3) {
-        return this.T.O(d, d2, d3);
+        return this.T.newInstance(d, d2, d3);
     }
 
     private Object V(Object object) {
-        return this.m.L(object, new Object[0]);
+        return this.m.invokeObject(object, new Object[0]);
     }
 
     public static Object b(MBlockPos mBlockPos, Object object) {
@@ -43,15 +43,15 @@ extends Mapping {
     }
 
     private Object p(Object object) {
-        return this.F.L(object, new Object[0]);
+        return this.F.invokeObject(object, new Object[0]);
     }
 
     public Object offset(Object object, Object object2, int n) {
-        return this.a.L(object, object2, n);
+        return this.a.invokeObject(object, object2, n);
     }
 
     public Object D(Object object) {
-        return this.V.O(object);
+        return this.V.newInstance(object);
     }
 
     public static Object H(MBlockPos mBlockPos, Object object) {
@@ -59,7 +59,7 @@ extends Mapping {
     }
 
     private Object T(Object object) {
-        return this.Y.L(object, new Object[0]);
+        return this.Y.invokeObject(object, new Object[0]);
     }
 
 
@@ -147,43 +147,43 @@ extends Mapping {
             } else {
                 Class[] classArray10 = new Class[]{};
                 Class clazz10 = MappedClasses.lf;
-                boolean bl10 = Wrapper.G;
+                boolean bl10 = Wrapper.isNativeAvailable;
                 String string10 = "func_177977_b";
                 MBlockPos mBlockPos10 = this;
                 this.Y = this.Y(string10, bl10, clazz10, classArray10);
             }
             Class[] classArray11 = new Class[]{};
             Class clazz11 = MappedClasses.lf;
-            boolean bl11 = Wrapper.G && ForgeVersion.MC_1_20_6.v();
+            boolean bl11 = Wrapper.isNativeAvailable && ForgeVersion.MC_1_20_6.v();
             String string11 = "func_177984_a";
             MBlockPos mBlockPos11 = this;
             this.Q = this.Y(string11, bl11, clazz11, classArray11);
             Class[] classArray12 = new Class[]{};
             Class clazz12 = MappedClasses.lf;
-            boolean bl12 = Wrapper.G && ForgeVersion.MC_1_20_6.v();
+            boolean bl12 = Wrapper.isNativeAvailable && ForgeVersion.MC_1_20_6.v();
             String string12 = "func_177978_c";
             MBlockPos mBlockPos12 = this;
             this.x = this.Y(string12, bl12, clazz12, classArray12);
             Class[] classArray13 = new Class[]{};
             Class clazz13 = MappedClasses.lf;
-            boolean bl13 = Wrapper.G && ForgeVersion.MC_1_20_6.v();
+            boolean bl13 = Wrapper.isNativeAvailable && ForgeVersion.MC_1_20_6.v();
             String string13 = "func_177974_f";
             MBlockPos mBlockPos13 = this;
             this.F = this.Y(string13, bl13, clazz13, classArray13);
             Class[] classArray14 = new Class[]{};
             Class clazz14 = MappedClasses.lf;
-            boolean bl14 = Wrapper.G && ForgeVersion.MC_1_20_6.v();
+            boolean bl14 = Wrapper.isNativeAvailable && ForgeVersion.MC_1_20_6.v();
             String string14 = "func_177968_d";
             MBlockPos mBlockPos14 = this;
             this.O = this.Y(string14, bl14, clazz14, classArray14);
             Class[] classArray15 = new Class[]{};
             Class clazz15 = MappedClasses.lf;
-            boolean bl15 = Wrapper.G && ForgeVersion.MC_1_20_6.v();
+            boolean bl15 = Wrapper.isNativeAvailable && ForgeVersion.MC_1_20_6.v();
             String string15 = "func_177976_e";
             MBlockPos mBlockPos15 = this;
             this.m = this.Y(string15, bl15, clazz15, classArray15);
         }
-        if (ForgeVersion.MC_1_16_5.d() && ForgeVersion.MC_1_20_6.v() && Wrapper.G) {
+        if (ForgeVersion.MC_1_16_5.d() && ForgeVersion.MC_1_20_6.v() && Wrapper.isNativeAvailable) {
             Class[] classArray16 = new Class[]{MappedClasses.q0, Integer.TYPE};
             Class clazz16 = MappedClasses.lf;
             boolean bl16 = false;
@@ -211,11 +211,11 @@ extends Mapping {
     }
 
     public Object q(int n, int n2, int n3) {
-        return this.E.O(n, n2, n3);
+        return this.E.newInstance(n, n2, n3);
     }
 
     private Object o(Object object) {
-        return this.O.L(object, new Object[0]);
+        return this.O.invokeObject(object, new Object[0]);
     }
 
     public static Object O(MBlockPos mBlockPos, Object object) {
@@ -223,11 +223,11 @@ extends Mapping {
     }
 
     private Object S(Object object) {
-        return this.x.L(object, new Object[0]);
+        return this.x.invokeObject(object, new Object[0]);
     }
 
     private Object P(Object object) {
-        return this.Q.L(object, new Object[0]);
+        return this.Q.invokeObject(object, new Object[0]);
     }
 
     public static Object B(MBlockPos mBlockPos, Object object) {

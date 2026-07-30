@@ -6,73 +6,73 @@ import gg.vape.wrapper.impl.Entity;
 
 public class EventMotion
 extends Event {
-    private static Entity l;
-    private static boolean B;
-    public static Entity V;
-    private static final EventListeners F;
-    static boolean C;
-    private static float N;
-    private static float Z;
+    private static Entity savedRidingEntity;
+    private static boolean onGround;
+    public static Entity player;
+    private static final EventListeners EVENT_LISTENERS;
+    static boolean alwaysSend;
+    private static float rotationYaw;
+    private static float rotationPitch;
 
     public static float getRotationPitch() {
-        return Z;
+        return rotationPitch;
     }
 
-    public static void setRotationYaw(float f) {
-        N = f;
+    public static void setRotationYaw(float yaw) {
+        rotationYaw = yaw;
     }
 
-    static boolean access$202(boolean bl) {
-        B = bl;
-        return B;
+    static boolean storeOnGround(boolean value) {
+        onGround = value;
+        return onGround;
     }
 
-    public static void setRotationPitch(float f) {
-        Z = f;
+    public static void setRotationPitch(float pitch) {
+        rotationPitch = pitch;
     }
 
-    static float access$002(float f) {
-        N = f;
-        return N;
+    static float storeRotationYaw(float yaw) {
+        rotationYaw = yaw;
+        return rotationYaw;
     }
 
     @Override
     public EventListeners getListeners() {
-        return F;
+        return EVENT_LISTENERS;
     }
 
     public static float getRotationYaw() {
-        return N;
+        return rotationYaw;
     }
 
-    static float access$102(float f) {
-        Z = f;
-        return Z;
+    static float storeRotationPitch(float pitch) {
+        rotationPitch = pitch;
+        return rotationPitch;
     }
 
     public static boolean shouldAlwaysSend() {
-        return C;
+        return alwaysSend;
     }
 
     public static boolean isOnGround() {
-        return B;
+        return onGround;
     }
 
-    static Entity access$302(Entity entity) {
-        l = entity;
-        return l;
+    static Entity storeRidingEntity(Entity entity) {
+        savedRidingEntity = entity;
+        return savedRidingEntity;
     }
 
-    public static void setOnGround(boolean bl) {
-        B = bl;
+    public static void setOnGround(boolean value) {
+        onGround = value;
     }
 
     EventMotion(Entity entity) {
-        V = entity;
+        player = entity;
     }
 
-    public static void setShouldAlwaysSend(boolean bl) {
-        C = bl;
+    public static void setShouldAlwaysSend(boolean value) {
+        alwaysSend = value;
     }
 
     @Override
@@ -81,15 +81,14 @@ extends Event {
     }
 
     public static EventListeners getEventListeners() {
-        return F;
+        return EVENT_LISTENERS;
     }
 
-    static Entity access$300() {
-        return l;
+    static Entity getSavedRidingEntity() {
+        return savedRidingEntity;
     }
 
     static {
-        F = new EventListeners();
+        EVENT_LISTENERS = new EventListeners();
     }
 }
-

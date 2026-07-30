@@ -15,7 +15,7 @@ extends ZeusTrackedPacket<HandshakePacket> {
 
     @Override
     public void x(ZeusPacketBuffer gx_12) {
-        this.f = gx_12.Y(HandshakeStatus.class);
+        this.f = gx_12.readEnum(HandshakeStatus.class);
     }
 
     public HandshakeResponsePacket(HandshakePacket tz_02, HandshakeStatus eG) {
@@ -33,7 +33,7 @@ extends ZeusTrackedPacket<HandshakePacket> {
 
     @Override
     public void T(ZeusPacketBuffer gx_12) {
-        gx_12.U(this.f);
+        gx_12.writeEnum(this.f);
     }
 
     public static void i(boolean bl) {

@@ -24,7 +24,7 @@ extends Mapping {
     }
 
     private Iterable D(Object object) {
-        return (Iterable)this.U.L(object, new Object[0]);
+        return (Iterable)this.U.invokeObject(object, new Object[0]);
     }
 }
 

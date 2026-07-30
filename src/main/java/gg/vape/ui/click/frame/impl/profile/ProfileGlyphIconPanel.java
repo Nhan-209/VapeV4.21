@@ -22,7 +22,7 @@ extends GlyphIconComponent {
     private void openAsOverlay(long publicProfileId, ClickGuiFrameManager frameManager) {
         PublicProfilesFrame profilesFrame = ClientSettings.getFrame(PublicProfilesFrame.class);
         frameManager.setSidecarFrame(profilesFrame);
-        ApiServices.d().R().x(publicProfileId)
+        ApiServices.getInstance().getPublicProfileApi().viewProfile(publicProfileId)
             .whenCompleteAsync((response, error) -> handleProfileResponse(profilesFrame, response, error), (Executor)ClientSettings.UI_EXECUTOR)
             .exceptionally(ProfileGlyphIconPanel::ignoreLoadFailure);
     }
@@ -37,10 +37,10 @@ extends GlyphIconComponent {
     }
 
     private void handleClick() {
-        if (this.profile == null || this.profile.j$src$Lgg_vape_config_ProfileRemoteMetadata_$1dp9fd0() == null) {
+        if (this.profile == null || this.profile.getRemoteMetadata() == null) {
             return;
         }
-        long publicProfileId = this.profile.j$src$Lgg_vape_config_ProfileRemoteMetadata_$1dp9fd0().u();
+        long publicProfileId = this.profile.getRemoteMetadata().getPublicProfileId();
         FrameStackManager activeStack = ClientSettings.INSTANCE.getActiveStack();
         if (activeStack instanceof ClickGuiFrameManager) {
             this.openAsOverlay(publicProfileId, (ClickGuiFrameManager)activeStack);
@@ -58,20 +58,20 @@ extends GlyphIconComponent {
             Vape.logThrowable(error);
             return;
         }
-        if (!response.t()) {
-            Vape.debugLog("Failed to load public profile data: " + response.N());
+        if (!response.isSuccessful()) {
+            Vape.debugLog("Failed to load public profile data: " + response.getError());
             return;
         }
-        if (response.T() == null) {
+        if (response.getData() == null) {
             throw new AssertionError();
         }
-        profilesFrame.l((PublicProfile)response.T());
+        profilesFrame.l((PublicProfile)response.getData());
     }
 
     public void refreshVisibility() {
-        if (this.profile != null && this.profile.j$src$Lgg_vape_config_ProfileRemoteMetadata_$1dp9fd0() != null) {
+        if (this.profile != null && this.profile.getRemoteMetadata() != null) {
             this.setVisible(true);
-            String iconKey = this.profile.j$src$Lgg_vape_config_ProfileRemoteMetadata_$1dp9fd0().O()
+            String iconKey = this.profile.getRemoteMetadata().hasNewerPublishedVersion()
                 ? "external link outdated hover@2x"
                 : "external link hover@2x";
             this.setIconResource(iconKey);

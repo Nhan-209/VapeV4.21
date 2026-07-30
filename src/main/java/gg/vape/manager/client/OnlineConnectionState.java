@@ -8,33 +8,33 @@ public enum OnlineConnectionState {
     CONNECTING,
     ONLINE;
 
-    private static final /* synthetic */ OnlineConnectionState[] G;
-    private static String[] B;
+    private static final /* synthetic */ OnlineConnectionState[] cachedValues;
+    private static String[] obfuscationState;
 
-    public static void Q(String[] stringArray) {
-        B = stringArray;
+    public static void setObfuscationState(String[] state) {
+        obfuscationState = state;
     }
 
-    public boolean G() {
+    public boolean isOfflineState() {
         return this == OFFLINE || this == OUTDATED_CLIENT || this == OUTDATED_SERVER;
     }
 
     static {
-        if (OnlineConnectionState.d() == null) {
-            OnlineConnectionState.Q(new String[3]);
+        if (OnlineConnectionState.getObfuscationState() == null) {
+            OnlineConnectionState.setObfuscationState(new String[3]);
         }
-        String[] stringArray = new String[]{"OFFLINE", "OUTDATED_CLIENT", "ONLINE", "OUTDATED_SERVER", "CONNECTING"};
+        String[] obfuscationNames = new String[]{"OFFLINE", "OUTDATED_CLIENT", "ONLINE", "OUTDATED_SERVER", "CONNECTING"};
 
 
 
 
 
-        G = new OnlineConnectionState[]{OFFLINE, OUTDATED_CLIENT, OUTDATED_SERVER, CONNECTING, ONLINE};
+        cachedValues = new OnlineConnectionState[]{OFFLINE, OUTDATED_CLIENT, OUTDATED_SERVER, CONNECTING, ONLINE};
     }
 
 
-    public static String[] d() {
-        return B;
+    public static String[] getObfuscationState() {
+        return obfuscationState;
     }
 }
 

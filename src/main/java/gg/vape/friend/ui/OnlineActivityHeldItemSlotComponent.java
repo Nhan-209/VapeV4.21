@@ -6,20 +6,19 @@ import gg.vape.utils.render.GuiRenderPrimitives;
 
 public class OnlineActivityHeldItemSlotComponent
 extends ItemStackSlotComponent {
-    private int b = 0;
+    private int disabledOverlayAlpha;
 
-    public void X(int n) {
-        this.b = n;
+    public void setDisabledOverlayAlpha(int alpha) {
+        this.disabledOverlayAlpha = alpha;
     }
 
     @Override
     public void onDisable() {
         super.onDisable();
-        GuiRenderPrimitives.e(this.G$src$D$1b2f02a(), this.n(), this.A(), this.L(), new MutableColor(OnlineActivityHeldItemSlotComponent.J.Z).withAlpha(this.b), false, 1.0f, 1.0f);
+        GuiRenderPrimitives.e(this.G$src$D$1b2f02a(), this.n(), this.A(), this.L(), new MutableColor(OnlineActivityHeldItemSlotComponent.J.Z).withAlpha(this.disabledOverlayAlpha), false, 1.0f, 1.0f);
     }
 
-    public int Y$src$I$1ottky1() {
-        return this.b;
+    public int getDisabledOverlayAlpha() {
+        return this.disabledOverlayAlpha;
     }
 }
-

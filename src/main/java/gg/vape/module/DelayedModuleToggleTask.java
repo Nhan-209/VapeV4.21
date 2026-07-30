@@ -5,40 +5,40 @@ import gg.vape.module.Mod;
 
 public class DelayedModuleToggleTask
 implements Runnable {
-    private final boolean u;
-    private final Mod R;
-    private final long U;
-    private boolean Z = true;
+    private final boolean repeatUntilDisabled;
+    private final Mod module;
+    private final long delayMillis;
+    private boolean running = true;
 
-    public DelayedModuleToggleTask(Mod mod, long l, boolean bl) {
-        this.R = mod;
-        this.U = l;
-        this.u = bl;
+    public DelayedModuleToggleTask(Mod module, long delayMillis, boolean repeatUntilDisabled) {
+        this.module = module;
+        this.delayMillis = delayMillis;
+        this.repeatUntilDisabled = repeatUntilDisabled;
     }
 
-    public boolean z() {
-        return this.Z;
+    public boolean isRunning() {
+        return this.running;
     }
 
-    private static Exception a(Exception exception) {
+    private static Exception propagateException(Exception exception) {
         return exception;
     }
 
-    public void y(boolean bl) {
-        this.Z = bl;
+    public void setRunning(boolean running) {
+        this.running = running;
     }
 
     @Override
     public void run() {
         do {
             try {
-                Thread.sleep(this.U);
-                if (this.R.r$src$Z$14eylz9()) {
-                    this.R.onScheduledAction();
+                Thread.sleep(this.delayMillis);
+                if (this.module.r$src$Z$14eylz9()) {
+                    this.module.onScheduledAction();
                 }
             }
             catch (Exception ignored) {
             }
-        } while (!Vape.INSTANCE.isEnabled() && this.u && this.Z);
+        } while (!Vape.INSTANCE.isEnabled() && this.repeatUntilDisabled && this.running);
     }
 }

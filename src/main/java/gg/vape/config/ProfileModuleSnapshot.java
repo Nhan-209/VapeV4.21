@@ -14,7 +14,6 @@ import gg.vape.value.BindValue;
 import gg.vape.value.Value;
 import gg.vape.value.ValueSnapshot;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 
@@ -62,34 +61,34 @@ implements INamed {
         this.enabled = enabled;
     }
 
-    public ProfileModuleSnapshot(ProfileSnapshot profileSnapshot, Mod mod, JsonObject jsonObject) {
-        JsonArray jsonArray;
-        JsonObject jsonObject2;
-        Object object;
-        JsonArray jsonArray2;
+    public ProfileModuleSnapshot(ProfileSnapshot profileSnapshot, Mod module, JsonObject moduleJson) {
+        JsonArray keybinds;
         this.profileSnapshot = profileSnapshot;
-        this.module = mod;
+        this.module = module;
         this.valueSnapshots = new ArrayList<>();
-        LinkedHashMap<String, JsonObject> linkedHashMap = new LinkedHashMap<String, JsonObject>();
-        if (jsonObject != null) {
-            jsonArray2 = jsonObject.getAsJsonArray("values");
-            if (jsonArray2 != null) {
-                for (JsonElement object2 : jsonArray2) {
-                    if (object2.isJsonNull() || !object2.isJsonObject() || (object = ConfigJsonUtils.P(jsonObject2 = object2.getAsJsonObject(), "id")) == null) continue;
-                    linkedHashMap.put((String)object, jsonObject2);
+        LinkedHashMap<String, JsonObject> valueJsonById = new LinkedHashMap<String, JsonObject>();
+        if (moduleJson != null) {
+            JsonArray valuesJson = moduleJson.getAsJsonArray("values");
+            if (valuesJson != null) {
+                for (JsonElement valueElement : valuesJson) {
+                    if (valueElement.isJsonNull() || !valueElement.isJsonObject()) continue;
+                    JsonObject valueJson = valueElement.getAsJsonObject();
+                    String valueId = ConfigJsonUtils.getString(valueJson, "id");
+                    if (valueId == null) continue;
+                    valueJsonById.put(valueId, valueJson);
                 }
             }
-            if ((jsonArray = ConfigJsonUtils.q(jsonObject, "keybinds_2")) == null) {
-                jsonArray = new JsonArray();
+            if ((keybinds = ConfigJsonUtils.getJsonArray(moduleJson, "keybinds_2")) == null) {
+                keybinds = new JsonArray();
             }
-            Boolean visible = ConfigJsonUtils.t(jsonObject, "visible");
-            this.visible = visible != null ? visible.booleanValue() : mod.b();
+            Boolean visible = ConfigJsonUtils.getBoolean(moduleJson, "visible");
+            this.visible = visible != null ? visible.booleanValue() : module.b();
         } else {
-            jsonArray = new JsonArray();
-            this.visible = mod.b();
+            keybinds = new JsonArray();
+            this.visible = module.b();
         }
-        this.bindSnapshot = new ValueSnapshot<>(new BindValue((Object)null, "", new BindSet(ConfigJsonUtils.o(jsonArray, false), false, mod.a().supportsActivationMode())));
-        String bindMode = jsonObject == null ? null : ConfigJsonUtils.P(jsonObject, "bind_mode");
+        this.bindSnapshot = new ValueSnapshot<>(new BindValue((Object)null, "", new BindSet(ConfigJsonUtils.parseInputCodes(keybinds, false), false, module.a().supportsActivationMode())));
+        String bindMode = moduleJson == null ? null : ConfigJsonUtils.getString(moduleJson, "bind_mode");
         if (bindMode != null && this.bindSnapshot.getValue().supportsActivationMode()) {
             try {
                 this.bindSnapshot.getValue().setActivationMode(BindActivationMode.valueOf(bindMode));
@@ -98,18 +97,18 @@ implements INamed {
                 this.bindSnapshot.getValue().setActivationMode(BindActivationMode.TOGGLE);
             }
         }
-        for (Value<?, ?> value : mod.V()) {
-            jsonObject2 = (JsonObject)linkedHashMap.get(value.getId());
-            if (jsonObject2 == null) {
+        for (Value<?, ?> value : module.V()) {
+            JsonObject valueJson = valueJsonById.get(value.getId());
+            if (valueJson == null) {
                 this.valueSnapshots.add(new ValueSnapshot<>(value));
                 continue;
             }
             ValueSnapshot<?, ?> valueSnapshot = new ValueSnapshot<>(value);
-            valueSnapshot.loadJson(jsonObject2);
+            valueSnapshot.loadJson(valueJson);
             this.valueSnapshots.add(valueSnapshot);
         }
         if (this.profileSnapshot.getProfile() != null) {
-            this.enabled = this.profileSnapshot.getProfile().N$src$Ljava_util_List_$tynky5().contains(this.module);
+            this.enabled = this.profileSnapshot.getProfile().getEnabledModules().contains(this.module);
         }
     }
 
@@ -146,32 +145,32 @@ implements INamed {
     }
 
     public JsonObject toJson() {
-        JsonObject jsonObject = new JsonObject();
-        jsonObject.addProperty("name", this.module.getName());
+        JsonObject moduleJson = new JsonObject();
+        moduleJson.addProperty("name", this.module.getName());
         if (this.module.a().usesOwnKeybindStorage()) {
             if (this.hasBind()) {
-                jsonObject.add("keybinds_2", this.bindSnapshot.getValue().serializeBoundInputs());
+                moduleJson.add("keybinds_2", this.bindSnapshot.getValue().serializeBoundInputs());
             }
             if (this.bindSnapshot.getValue().supportsActivationMode() && this.bindSnapshot.getValue().getActivationMode() != BindActivationMode.TOGGLE) {
-                jsonObject.addProperty("bind_mode", this.bindSnapshot.getValue().getActivationMode().name());
+                moduleJson.addProperty("bind_mode", this.bindSnapshot.getValue().getActivationMode().name());
             }
         }
-        JsonArray jsonArray = new JsonArray();
+        JsonArray valuesJson = new JsonArray();
         for (ValueSnapshot<?, ?> valueSnapshot : this.valueSnapshots) {
-            JsonObject jsonObject2;
-            if (!((Value)valueSnapshot.getSourceValue()).isSerializable() || valueSnapshot.isDefault() || (jsonObject2 = valueSnapshot.toJson()).entrySet().size() <= 1) continue;
-            jsonArray.add(valueSnapshot.toJson());
+            JsonObject valueJson;
+            if (!((Value)valueSnapshot.getSourceValue()).isSerializable() || valueSnapshot.isDefault() || (valueJson = valueSnapshot.toJson()).entrySet().size() <= 1) continue;
+            valuesJson.add(valueSnapshot.toJson());
         }
-        if (jsonArray.size() != 0) {
-            jsonObject.add("values", (JsonElement)jsonArray);
+        if (valuesJson.size() != 0) {
+            moduleJson.add("values", (JsonElement)valuesJson);
         }
         if (this.visible != this.module.b()) {
-            jsonObject.addProperty("visible", Boolean.valueOf(this.visible));
+            moduleJson.addProperty("visible", Boolean.valueOf(this.visible));
         }
-        if (jsonObject.entrySet().size() == 1) {
+        if (moduleJson.entrySet().size() == 1) {
             return null;
         }
-        return jsonObject;
+        return moduleJson;
     }
 
     public String getBindDisplayText() {

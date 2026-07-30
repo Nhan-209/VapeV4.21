@@ -6,16 +6,16 @@ import gg.vape.ui.click.component.GuiKeyTypedListener;
 
 public class HotbarSlotRuleSearchInputKeyTypedListener
 implements GuiKeyTypedListener {
-    final HotbarSlotRuleItemPickerFrame F;
-    final HotbarSlotRuleItemSearchComponent l;
+    final HotbarSlotRuleItemPickerFrame pickerFrame;
+    final HotbarSlotRuleItemSearchComponent searchComponent;
 
     public HotbarSlotRuleSearchInputKeyTypedListener(HotbarSlotRuleItemSearchComponent hotbarSlotRuleItemSearchComponent, HotbarSlotRuleItemPickerFrame hotbarSlotRuleItemPickerFrame) {
-        this.l = hotbarSlotRuleItemSearchComponent;
-        this.F = hotbarSlotRuleItemPickerFrame;
+        this.searchComponent = hotbarSlotRuleItemSearchComponent;
+        this.pickerFrame = hotbarSlotRuleItemPickerFrame;
     }
 
     @Override
     public void onKeyTyped(char c, int n) {
-        this.F.s(HotbarSlotRuleItemSearchComponent.g(this.l).isShowEditButton());
+        this.pickerFrame.s(HotbarSlotRuleItemSearchComponent.g(this.searchComponent).isShowEditButton());
     }
 }

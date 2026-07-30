@@ -662,7 +662,7 @@ public class MappedClasses {
     }
 
     public static void p() {
-        String[] stringArray = Mapping.E$src$ALjava_lang_String_$1ja2hqz();
+        String[] stringArray = Mapping.getControlFlowState();
         MappingProfileSnapshotRegistry.Y();
         String[] stringArray2 = stringArray;
         lA = MappedClasses.m("java/lang/System");
@@ -945,7 +945,7 @@ public class MappedClasses {
             le = MappedClasses.m("net/minecraft/client/multiplayer/ChunkProviderClient");
         }
         De = MappedClasses.m("net/minecraft/world/chunk/storage/ExtendedBlockStorage");
-        F3 = DescUtils.R(De);
+        F3 = DescUtils.getReflectiveArrayType(De);
         if (ForgeVersion.MC_1_7_10.Y()) {
             lf = MappedClasses.m("net/minecraft/util/BlockPos");
             Vv = MappedClasses.m("net/minecraft/block/state/IBlockState");

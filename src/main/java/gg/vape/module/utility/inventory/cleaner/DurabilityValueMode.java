@@ -27,9 +27,9 @@ DescribedOption {
         return this.name;
     }
 
-    private DurabilityValueMode(String string2, String string3) {
-        this.name = string2;
-        this.description = string3;
+    private DurabilityValueMode(String name, String description) {
+        this.name = name;
+        this.description = description;
     }
 
     @Override
@@ -37,22 +37,22 @@ DescribedOption {
         return this.description;
     }
 
-    public static DurabilityValueMode fromNameOrDefault(String string, DurabilityValueMode durabilityValueMode) {
-        DurabilityValueMode durabilityValueMode2 = DurabilityValueMode.findByName(string);
-        return durabilityValueMode2 == null ? durabilityValueMode : durabilityValueMode2;
+    public static DurabilityValueMode fromNameOrDefault(String name, DurabilityValueMode fallback) {
+        DurabilityValueMode mode = DurabilityValueMode.findByName(name);
+        return mode == null ? fallback : mode;
     }
 
     @Nullable
-    public static DurabilityValueMode findByName(String string) {
-        for (DurabilityValueMode durabilityValueMode : VALUES) {
-            if (!durabilityValueMode.getName().equalsIgnoreCase(string)) continue;
-            return durabilityValueMode;
+    public static DurabilityValueMode findByName(String name) {
+        for (DurabilityValueMode mode : VALUES) {
+            if (!mode.getName().equalsIgnoreCase(name)) continue;
+            return mode;
         }
         return null;
     }
 
-    public static DurabilityValueMode fromName(String string) {
-        return DurabilityValueMode.fromNameOrDefault(string, PERCENTAGE);
+    public static DurabilityValueMode fromName(String name) {
+        return DurabilityValueMode.fromNameOrDefault(name, PERCENTAGE);
     }
 }
 

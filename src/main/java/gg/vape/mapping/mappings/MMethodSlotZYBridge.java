@@ -24,7 +24,7 @@ extends Mapping {
             String string = "use";
             Class clazz2 = MappedClasses.lb;
             MMethodSlotZYBridge mMethodSlotZYBridge = this;
-            this.v = mMethodSlotZYBridge.W(clazz2, string, bl, clazz, classArray);
+            this.v = mMethodSlotZYBridge.registerInstanceMethodForOwner(clazz2, string, bl, clazz, classArray);
         } else if (ForgeVersion.MC_1_16_5.d()) {
             Class[] classArray = new Class[]{MappedClasses.YU, MappedClasses.Yl, MappedClasses.Yf};
             Class clazz = MappedClasses.zU;

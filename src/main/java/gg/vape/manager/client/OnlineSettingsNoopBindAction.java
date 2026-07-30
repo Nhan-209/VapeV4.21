@@ -5,10 +5,10 @@ import gg.vape.unmap.Bendable;
 
 class OnlineSettingsNoopBindAction
 extends Bendable {
-    final OnlineSettings v;
+    final OnlineSettings settings;
 
     OnlineSettingsNoopBindAction(OnlineSettings onlineSettings) {
-        this.v = onlineSettings;
+        this.settings = onlineSettings;
     }
 
     @Override

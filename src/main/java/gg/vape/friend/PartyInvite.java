@@ -3,14 +3,13 @@ package gg.vape.friend;
 import gg.vape.friend.OnlineFriend;
 
 public class PartyInvite {
-    private final OnlineFriend b;
+    private final OnlineFriend inviter;
 
-    public PartyInvite(OnlineFriend yS) {
-        this.b = yS;
+    public PartyInvite(OnlineFriend inviter) {
+        this.inviter = inviter;
     }
 
-    public OnlineFriend x() {
-        return this.b;
+    public OnlineFriend getInviter() {
+        return this.inviter;
     }
 }
-

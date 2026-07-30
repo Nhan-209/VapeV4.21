@@ -26,356 +26,356 @@ import org.jetbrains.annotations.Nullable;
 public class Profile
 extends Bendable
 implements Comparable<Profile> {
-    private String l;
-    private static boolean N;
-    private JsonObject p;
-    private JsonObject i;
-    private JsonObject s;
-    private int e;
-    private UUID a = UUID.randomUUID();
+    private String clientVersion;
+    private static boolean runtimeState;
+    private JsonObject data;
+    private JsonObject enabledModuleStates;
+    private JsonObject publishedData;
+    private int useCount;
+    private UUID localId = UUID.randomUUID();
     @Nullable
-    private Integer O;
+    private Integer sortOrder;
     @Nullable
-    private UUID P;
-    public static final int V;
-    private boolean W;
-    private JsonObject d;
-    private boolean b;
+    private UUID onlineId;
+    public static final int SERIALIZATION_MARKER;
+    private boolean saveQueued;
+    private JsonObject legitEnabledModuleStates;
+    private boolean draft;
     @Nullable
-    private ProfileRemoteMetadata Z;
-    private long m;
-    private boolean D = true;
-    private String M;
-    private boolean K;
+    private ProfileRemoteMetadata remoteMetadata;
+    private long updatedAt;
+    private boolean visible = true;
+    private String name;
+    private boolean dirty;
     @Nullable
-    private PublicProfile n;
-    private String h;
+    private PublicProfile publicProfile;
+    private String originalUuid;
     @Deprecated
-    private boolean z;
+    private boolean publicProfileFlag;
 
-    public boolean Z() {
-        return this.b;
+    public boolean isDraft() {
+        return this.draft;
     }
 
-    public void a() {
-        this.l = "4.21";
-        this.N$src$V$1g4xz6q();
-        this.p = this.k(false);
-        this.s = this.k(true);
-        this.R();
-        this.p.add("enabled", (JsonElement)this.i);
-        this.s.add("enabled", (JsonElement)this.i);
-        this.y$src$V$1gsl4p9();
-        this.p.add("legit_enabled", (JsonElement)this.d);
-        this.s.add("legit_enabled", (JsonElement)this.d);
+    public void captureCurrentState() {
+        this.clientVersion = "4.21";
+        this.updateTimestamp();
+        this.data = this.serializeCurrentData(false);
+        this.publishedData = this.serializeCurrentData(true);
+        this.captureEnabledModuleStates();
+        this.data.add("enabled", (JsonElement)this.enabledModuleStates);
+        this.publishedData.add("enabled", (JsonElement)this.enabledModuleStates);
+        this.captureLegitEnabledModuleStates();
+        this.data.add("legit_enabled", (JsonElement)this.legitEnabledModuleStates);
+        this.publishedData.add("legit_enabled", (JsonElement)this.legitEnabledModuleStates);
     }
 
-    public void c(boolean bl) {
-        this.K = bl;
+    public void setDirty(boolean dirty) {
+        this.dirty = dirty;
     }
 
-    public JsonObject k(boolean bl) {
-        JsonObject jsonObject = new JsonObject();
-        jsonObject.add("modules", (JsonElement)Vape.INSTANCE.getModManager().toJson(bl));
-        jsonObject.add("favorites", (JsonElement)Vape.INSTANCE.getModuleProfileMetadataCodec().J());
-        jsonObject.add("values", (JsonElement)Vape.INSTANCE.getValueManager().toJson());
-        jsonObject.add("macros", (JsonElement)Vape.INSTANCE.getMacrosManager().toJson());
-        jsonObject.add("search", (JsonElement)Vape.INSTANCE.getSearch().toJson());
-        jsonObject.add("frames", (JsonElement)gg.vape.module.none.ClientSettings.INSTANCE.serializeFrameStates());
-        return jsonObject;
+    public JsonObject serializeCurrentData(boolean forPublication) {
+        JsonObject serializedData = new JsonObject();
+        serializedData.add("modules", (JsonElement)Vape.INSTANCE.getModManager().toJson(forPublication));
+        serializedData.add("favorites", (JsonElement)Vape.INSTANCE.getModuleProfileMetadataCodec().toJson());
+        serializedData.add("values", (JsonElement)Vape.INSTANCE.getValueManager().toJson());
+        serializedData.add("macros", (JsonElement)Vape.INSTANCE.getMacrosManager().toJson());
+        serializedData.add("search", (JsonElement)Vape.INSTANCE.getSearch().toJson());
+        serializedData.add("frames", (JsonElement)gg.vape.module.none.ClientSettings.INSTANCE.serializeFrameStates());
+        return serializedData;
     }
 
-    public JsonObject I() {
-        JsonObject jsonObject = (JsonObject)ApiHttpClient.Z.fromJson((JsonElement)this.s, JsonObject.class);
-        if (jsonObject != null) {
-            jsonObject.remove("sortOrder");
+    public JsonObject copyPublishedData() {
+        JsonObject publishedDataCopy = (JsonObject)ApiHttpClient.GSON.fromJson((JsonElement)this.publishedData, JsonObject.class);
+        if (publishedDataCopy != null) {
+            publishedDataCopy.remove("sortOrder");
         }
-        return jsonObject;
+        return publishedDataCopy;
     }
 
-    public Profile(String string, String string2, boolean bl) {
-        this.i = new JsonObject();
-        this.d = new JsonObject();
-        this.M = string;
-        this.l = string2;
-        this.W = bl;
-        this.N$src$V$1g4xz6q();
+    public Profile(String name, String clientVersion, boolean saveQueued) {
+        this.enabledModuleStates = new JsonObject();
+        this.legitEnabledModuleStates = new JsonObject();
+        this.name = name;
+        this.clientVersion = clientVersion;
+        this.saveQueued = saveQueued;
+        this.updateTimestamp();
     }
 
-    public void B(boolean bl) {
-        this.b = bl;
+    public void setDraft(boolean draft) {
+        this.draft = draft;
     }
 
-    public void K(@Nullable UUID uUID) {
-        this.P = uUID;
+    public void setOnlineId(@Nullable UUID onlineId) {
+        this.onlineId = onlineId;
     }
 
-    public static void D(boolean bl) {
-        N = bl;
+    public static void setRuntimeState(boolean runtimeState) {
+        Profile.runtimeState = runtimeState;
     }
 
-    public String P() {
-        return this.l;
+    public String getClientVersion() {
+        return this.clientVersion;
     }
 
-    public JsonObject r() {
-        return this.s;
+    public JsonObject getPublishedData() {
+        return this.publishedData;
     }
 
-    public JsonObject C(boolean bl) {
-        JsonObject jsonObject = new JsonObject();
-        jsonObject.addProperty("uuid", this.a.toString());
-        if (this.P != null) {
-            jsonObject.addProperty("profileId", this.P.toString());
+    public JsonObject toJson(boolean useRemoteFormat) {
+        JsonObject object = new JsonObject();
+        object.addProperty("uuid", this.localId.toString());
+        if (this.onlineId != null) {
+            object.addProperty("profileId", this.onlineId.toString());
         }
-        if (bl && (this.l == null || this.l.isEmpty())) {
-            this.l = "4.21";
+        if (useRemoteFormat && (this.clientVersion == null || this.clientVersion.isEmpty())) {
+            this.clientVersion = "4.21";
         }
-        jsonObject.addProperty("name", this.M.length() > 48 ? this.M.substring(0, 47) : this.M);
-        jsonObject.addProperty(bl ? "vapeVersion" : "version", this.l);
-        this.p.add("keybinds", (JsonElement)this.serializeBoundInputs());
-        this.p.addProperty("sortOrder", (Number)this.L$src$I$1g3udot());
-        jsonObject.add("data", (JsonElement)this.p);
-        jsonObject.addProperty("is_public", Boolean.valueOf(this.z));
-        jsonObject.addProperty("updated", (Number)this.m);
-        if (this.h != null) {
-            jsonObject.addProperty("original_uuid", this.h);
+        object.addProperty("name", this.name.length() > 48 ? this.name.substring(0, 47) : this.name);
+        object.addProperty(useRemoteFormat ? "vapeVersion" : "version", this.clientVersion);
+        this.data.add("keybinds", (JsonElement)this.serializeBoundInputs());
+        this.data.addProperty("sortOrder", (Number)this.getCurrentSortIndex());
+        object.add("data", (JsonElement)this.data);
+        object.addProperty("is_public", Boolean.valueOf(this.publicProfileFlag));
+        object.addProperty("updated", (Number)this.updatedAt);
+        if (this.originalUuid != null) {
+            object.addProperty("original_uuid", this.originalUuid);
         }
-        return jsonObject;
+        return object;
     }
 
-    public List<Mod> N$src$Ljava_util_List_$tynky5() {
-        return Vape.INSTANCE.getModManager().F(this.i);
+    public List<Mod> getEnabledModules() {
+        return Vape.INSTANCE.getModManager().getProfileModules(this.enabledModuleStates);
     }
 
-    public void O(int n) {
-        this.e = n;
+    public void setUseCount(int useCount) {
+        this.useCount = useCount;
     }
 
     @Nullable
-    public UUID P$src$Ljava_util_UUID_$kdhg08() {
-        return this.P;
+    public UUID getOnlineId() {
+        return this.onlineId;
     }
 
     @Override
     public boolean isActive() {
-        return Vape.INSTANCE.getProfilesManager().M().equals(this);
+        return Vape.INSTANCE.getProfilesManager().getActiveProfile().equals(this);
     }
 
-    private void N$src$V$1g4xz6q() {
-        this.m = System.currentTimeMillis();
+    private void updateTimestamp() {
+        this.updatedAt = System.currentTimeMillis();
     }
 
-    public void A(JsonObject jsonObject) {
-        this.s = jsonObject;
+    public void setPublishedData(JsonObject publishedData) {
+        this.publishedData = publishedData;
     }
 
     @Override
     public String getDisplayText() {
-        return String.format(" %s7[%sr%s%s7]%sr %s", ClientSettings.F, ClientSettings.F, this.getBindText(), ClientSettings.F, ClientSettings.F, this.n$src$Ljava_lang_String_$xqhelw());
+        return String.format(" %s7[%sr%s%s7]%sr %s", ClientSettings.FORMAT_CODE, ClientSettings.FORMAT_CODE, this.getBindText(), ClientSettings.FORMAT_CODE, ClientSettings.FORMAT_CODE, this.getName());
     }
 
-    public void r$src$V$1goqkjq() {
-        Vape.INSTANCE.getModManager().S(this);
+    public void applyEnabledModuleStates() {
+        Vape.INSTANCE.getModManager().applyProfileModuleStates(this);
     }
 
-    public long n() {
-        return this.m;
+    public long getUpdatedAt() {
+        return this.updatedAt;
     }
 
-    public void f(PublicProfile publicProfile) {
-        this.n = publicProfile;
+    public void setPublicProfile(PublicProfile publicProfile) {
+        this.publicProfile = publicProfile;
     }
 
-    public boolean W() {
-        return this.K;
+    public boolean isDirty() {
+        return this.dirty;
     }
 
-    public String n$src$Ljava_lang_String_$xqhelw() {
-        return this.M;
+    public String getName() {
+        return this.name;
     }
 
-    public void S(boolean bl) {
-        JsonArray jsonArray;
-        if (bl && Vape.INSTANCE.getPublicProfileSettings().u.getEffectiveValue().booleanValue()) {
-            Vape.INSTANCE.getModManager().y();
+    public void loadData(boolean applyModuleStates) {
+        JsonArray array;
+        if (applyModuleStates && Vape.INSTANCE.getPublicProfileSettings().autoLoadModuleStates.getEffectiveValue().booleanValue()) {
+            Vape.INSTANCE.getModManager().disableNonHudModules();
         }
-        if (this.p.get("values") != null && !this.p.get("values").isJsonNull()) {
-            Vape.INSTANCE.getValueManager().loadJson(this.p.get("values").getAsJsonArray());
+        if (this.data.get("values") != null && !this.data.get("values").isJsonNull()) {
+            Vape.INSTANCE.getValueManager().loadJson(this.data.get("values").getAsJsonArray());
         }
-        if (this.p.get("modules") != null && !this.p.get("modules").isJsonNull()) {
-            Vape.INSTANCE.getModManager().loadJson(this.p.get("modules").getAsJsonArray());
+        if (this.data.get("modules") != null && !this.data.get("modules").isJsonNull()) {
+            Vape.INSTANCE.getModManager().loadJson(this.data.get("modules").getAsJsonArray());
         }
-        if (this.p.get("favorites") != null && !this.p.get("favorites").isJsonNull()) {
-            Vape.INSTANCE.getModuleProfileMetadataCodec().Q(this.p.get("favorites").getAsJsonObject());
+        if (this.data.get("favorites") != null && !this.data.get("favorites").isJsonNull()) {
+            Vape.INSTANCE.getModuleProfileMetadataCodec().loadJson(this.data.get("favorites").getAsJsonObject());
         }
-        if (this.p.get("macros") != null && !this.p.get("macros").isJsonNull()) {
-            Vape.INSTANCE.getMacrosManager().loadJson(this.p.get("macros").getAsJsonArray());
+        if (this.data.get("macros") != null && !this.data.get("macros").isJsonNull()) {
+            Vape.INSTANCE.getMacrosManager().loadJson(this.data.get("macros").getAsJsonArray());
         }
-        if (this.p.get("search") != null && !this.p.get("search").isJsonNull()) {
-            jsonArray = this.p.get("search").getAsJsonArray();
-            Vape.INSTANCE.getSearch().loadJson(jsonArray);
+        if (this.data.get("search") != null && !this.data.get("search").isJsonNull()) {
+            array = this.data.get("search").getAsJsonArray();
+            Vape.INSTANCE.getSearch().loadJson(array);
         }
-        if (bl && Vape.INSTANCE.getPublicProfileSettings().u.getEffectiveValue().booleanValue()) {
-            this.r$src$V$1goqkjq();
+        if (applyModuleStates && Vape.INSTANCE.getPublicProfileSettings().autoLoadModuleStates.getEffectiveValue().booleanValue()) {
+            this.applyEnabledModuleStates();
         }
         for (Mod mod : Vape.INSTANCE.getModManager().collectMods()) {
             if (!mod.r$src$Z$14eylz9()) continue;
             mod.syncSubModuleStates(true, true);
         }
-        Vape.INSTANCE.getModManager().i();
+        Vape.INSTANCE.getModManager().disableHiddenModules();
         gg.vape.module.none.ClientSettings.refreshModuleCategoryHeaders();
         gg.vape.module.none.ClientSettings.closeListDropdowns();
-        if (this.p.get("frames") != null && !this.p.get("frames").isJsonNull() && Vape.INSTANCE.getPublicProfileSettings().Z.getEffectiveValue().booleanValue()) {
-            jsonArray = this.p.get("frames").getAsJsonArray();
+        if (this.data.get("frames") != null && !this.data.get("frames").isJsonNull() && Vape.INSTANCE.getPublicProfileSettings().framePositionsPerProfile.getEffectiveValue().booleanValue()) {
+            array = this.data.get("frames").getAsJsonArray();
             JsonArray frameGroups = new JsonArray();
-            frameGroups.add((JsonElement)jsonArray);
+            frameGroups.add((JsonElement)array);
             gg.vape.module.none.ClientSettings.INSTANCE.loadFrameStates(frameGroups);
         }
-        if (this.p.get("original_uuid") != null && !this.p.get("original_uuid").isJsonNull()) {
-            this.h = this.p.get("original_uuid").getAsString();
+        if (this.data.get("original_uuid") != null && !this.data.get("original_uuid").isJsonNull()) {
+            this.originalUuid = this.data.get("original_uuid").getAsString();
         }
     }
 
-    public void B(JsonObject jsonObject) {
-        this.N$src$V$1g4xz6q();
-        this.F(jsonObject);
+    public void updateData(JsonObject data) {
+        this.updateTimestamp();
+        this.parseData(data);
     }
 
-    public String w() {
-        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("MM/dd/yy");
-        LocalDateTime localDateTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(this.m), ZoneId.systemDefault());
-        return dateTimeFormatter.format(localDateTime);
+    public String getFormattedUpdateDate() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yy");
+        LocalDateTime updatedDateTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(this.updatedAt), ZoneId.systemDefault());
+        return formatter.format(updatedDateTime);
     }
 
-    public void f(long l) {
-        this.m = l;
+    public void setUpdatedAt(long updatedAt) {
+        this.updatedAt = updatedAt;
     }
 
     @Nullable
-    public Integer J$src$Ljava_lang_Integer_$vutkyf() {
-        return this.O;
+    public Integer getSortOrder() {
+        return this.sortOrder;
     }
 
-    public void h(String string) {
-        this.M = string;
-        this.K = true;
+    public void setName(String name) {
+        this.name = name;
+        this.dirty = true;
     }
 
     @Override
     public void onBindActivated() {
-        Vape.INSTANCE.getProfilesManager().U(this);
+        Vape.INSTANCE.getProfilesManager().switchProfile(this);
     }
 
-    public int z(@NotNull Profile profile) {
-        return Integer.compare(this.L$src$I$1g3udot(), profile.L$src$I$1g3udot());
+    public int compareSortOrder(@NotNull Profile profile) {
+        return Integer.compare(this.getCurrentSortIndex(), profile.getCurrentSortIndex());
     }
 
     @Override
     public int compareTo(Profile profile) {
-        return this.z(profile);
+        return this.compareSortOrder(profile);
     }
 
-    public void s(boolean bl) {
-        this.z = bl;
+    public void setPublicProfileFlag(boolean publicProfileFlag) {
+        this.publicProfileFlag = publicProfileFlag;
     }
 
-    public boolean U() {
-        return this.D;
+    public boolean isVisible() {
+        return this.visible;
     }
 
-    public static boolean b() {
-        boolean bl = Profile.o();
+    public static boolean isRuntimeCheckEnabled() {
+        boolean currentState = Profile.getRuntimeState();
         return true;
     }
 
-    public void e() {
-        this.S(true);
+    public void apply() {
+        this.loadData(true);
     }
 
     @Deprecated
-    public boolean z() {
-        return this.z;
+    public boolean isPublicProfileFlag() {
+        return this.publicProfileFlag;
     }
 
-    public static boolean o() {
-        return N;
+    public static boolean getRuntimeState() {
+        return runtimeState;
     }
 
-    public int L$src$I$1g3udot() {
-        return Vape.INSTANCE.getProfilesManager().b().indexOf(this);
+    public int getCurrentSortIndex() {
+        return Vape.INSTANCE.getProfilesManager().getProfiles().indexOf(this);
     }
 
-    public JsonObject V() {
-        return this.i;
+    public JsonObject getEnabledModuleStates() {
+        return this.enabledModuleStates;
     }
 
-    public void l() {
-        Vape.INSTANCE.getModManager().T(this.d);
+    public void applyLegitEnabledModuleStates() {
+        Vape.INSTANCE.getModManager().applyHudModuleStates(this.legitEnabledModuleStates);
     }
 
-    private void F(JsonObject jsonObject) {
-        Integer n;
-        JsonObject jsonObject2;
-        JsonObject jsonObject3;
-        JsonArray jsonArray;
-        this.p = jsonObject;
-        JsonArray jsonArray2 = ConfigJsonUtils.q(jsonObject, "values");
-        if (jsonArray2 != null) {
-            this.p.add("values", (JsonElement)jsonArray2);
+    private void parseData(JsonObject data) {
+        Integer parsedSortOrder;
+        JsonObject parsedLegitEnabledStates;
+        JsonObject parsedEnabledStates;
+        JsonArray keybinds;
+        this.data = data;
+        JsonArray values = ConfigJsonUtils.getJsonArray(data, "values");
+        if (values != null) {
+            this.data.add("values", (JsonElement)values);
         }
-        if ((jsonArray = ConfigJsonUtils.q(jsonObject, "keybinds")) != null) {
-            this.loadBoundInputs(jsonArray, false);
+        if ((keybinds = ConfigJsonUtils.getJsonArray(data, "keybinds")) != null) {
+            this.loadBoundInputs(keybinds, false);
         }
-        if ((jsonObject3 = ConfigJsonUtils.E(jsonObject, "enabled")) != null) {
-            this.i = jsonObject3;
+        if ((parsedEnabledStates = ConfigJsonUtils.getJsonObject(data, "enabled")) != null) {
+            this.enabledModuleStates = parsedEnabledStates;
         }
-        if ((jsonObject2 = ConfigJsonUtils.E(jsonObject, "legit_enabled")) != null) {
-            this.d = jsonObject2;
+        if ((parsedLegitEnabledStates = ConfigJsonUtils.getJsonObject(data, "legit_enabled")) != null) {
+            this.legitEnabledModuleStates = parsedLegitEnabledStates;
         }
-        if ((n = ConfigJsonUtils.r(jsonObject, "sortOrder")) != null) {
-            this.O = n;
+        if ((parsedSortOrder = ConfigJsonUtils.getInteger(data, "sortOrder")) != null) {
+            this.sortOrder = parsedSortOrder;
         }
     }
 
-    public void T(boolean bl) {
-        this.W = bl;
+    public void setSaveQueued(boolean saveQueued) {
+        this.saveQueued = saveQueued;
     }
 
-    public void d(UUID uUID) {
-        this.a = uUID;
+    public void setLocalId(UUID localId) {
+        this.localId = localId;
     }
 
-    private void y$src$V$1gsl4p9() {
-        this.d = Vape.INSTANCE.getModManager().e();
+    private void captureLegitEnabledModuleStates() {
+        this.legitEnabledModuleStates = Vape.INSTANCE.getModManager().getEnabledHudModuleStates();
     }
 
-    public UUID u() {
-        return this.a;
+    public UUID getLocalId() {
+        return this.localId;
     }
 
     @Nullable
-    public PublicProfile N() {
-        return this.n;
+    public PublicProfile getPublicProfile() {
+        return this.publicProfile;
     }
 
-    public void R() {
-        this.i = Vape.INSTANCE.getModManager().getJsonObj();
+    public void captureEnabledModuleStates() {
+        this.enabledModuleStates = Vape.INSTANCE.getModManager().getEnabledNonHudModuleStates();
     }
 
-    public Profile(String string, String string2) {
-        this(string, string2, false);
+    public Profile(String name, String clientVersion) {
+        this(name, clientVersion, false);
     }
 
     static {
-        Profile.D(false);
-        long l = 2432912498588909616L;
-        V = (int)l;
+        Profile.setRuntimeState(false);
+        long marker = 2432912498588909616L;
+        SERIALIZATION_MARKER = (int)marker;
     }
 
     @Nullable
-    public ProfileRemoteMetadata j$src$Lgg_vape_config_ProfileRemoteMetadata_$1dp9fd0() {
-        return this.Z;
+    public ProfileRemoteMetadata getRemoteMetadata() {
+        return this.remoteMetadata;
     }
 
     @Override
@@ -389,81 +389,80 @@ implements Comparable<Profile> {
         super.setBoundInputs(validInputCodes);
     }
 
-    public int D() {
-        return this.e;
+    public int getUseCount() {
+        return this.useCount;
     }
 
-    public void Y(boolean bl) {
-        this.D = bl;
+    public void setVisible(boolean visible) {
+        this.visible = visible;
     }
 
     @Nullable
-    public ProfileSnapshot n(boolean bl) {
-        JsonObject jsonObject;
-        JsonObject jsonObject2 = jsonObject = bl && this.s != null ? this.r() : this.J$src$Lcom_google_gson_JsonObject_$16ar19y();
-        if (jsonObject.get("modules") != null && !jsonObject.get("modules").isJsonNull()) {
-            return new ProfileSnapshot(this, jsonObject.get("modules").getAsJsonArray());
+    public ProfileSnapshot createSnapshot(boolean usePublishedData) {
+        JsonObject snapshotData = usePublishedData && this.publishedData != null ? this.getPublishedData() : this.getData();
+        if (snapshotData.get("modules") != null && !snapshotData.get("modules").isJsonNull()) {
+            return new ProfileSnapshot(this, snapshotData.get("modules").getAsJsonArray());
         }
         return null;
     }
 
-    public boolean F() {
-        return this.W;
+    public boolean isSaveQueued() {
+        return this.saveQueued;
     }
 
-    public void U(@NotNull Integer n) {
-        this.O = n;
+    public void setSortOrder(@NotNull Integer sortOrder) {
+        this.sortOrder = sortOrder;
     }
 
-    public JsonObject J$src$Lcom_google_gson_JsonObject_$16ar19y() {
-        return this.p;
+    public JsonObject getData() {
+        return this.data;
     }
 
-    public Profile e(JsonObject jsonObject) {
-        String string;
-        Long l;
-        JsonObject jsonObject2;
-        Boolean bl;
-        String string2;
-        String string3;
-        String string4;
-        String string5 = ConfigJsonUtils.P(jsonObject, "uuid");
-        if (string5 != null) {
-            this.a = UUID.fromString(string5);
+    public Profile loadJson(JsonObject object) {
+        String parsedOriginalUuid;
+        Long parsedUpdatedAt;
+        JsonObject parsedData;
+        Boolean legacyPublicFlag;
+        String vapeVersion;
+        String profileId;
+        String parsedName;
+        String uuid = ConfigJsonUtils.getString(object, "uuid");
+        if (uuid != null) {
+            this.localId = UUID.fromString(uuid);
         }
-        if ((string4 = ConfigJsonUtils.P(jsonObject, "name")) != null) {
-            this.M = string4;
-            if (this.M.startsWith("b64:")) {
-                this.M = Base64Util.decodeUtf8Base64(this.M.split(":")[1]);
+        if ((parsedName = ConfigJsonUtils.getString(object, "name")) != null) {
+            this.name = parsedName;
+            if (this.name.startsWith("b64:")) {
+                this.name = Base64Util.decodeUtf8Base64(this.name.split(":")[1]);
             }
         } else {
-            this.M = "Unknown";
+            this.name = "Unknown";
         }
-        if ((string3 = ConfigJsonUtils.P(jsonObject, "profileId")) != null) {
-            this.P = UUID.fromString(string3);
+        if ((profileId = ConfigJsonUtils.getString(object, "profileId")) != null) {
+            this.onlineId = UUID.fromString(profileId);
         } else {
-            this.K = true;
+            this.dirty = true;
         }
-        String string6 = ConfigJsonUtils.P(jsonObject, "version");
-        if (string6 != null) {
-            this.l = string6;
+        String version = ConfigJsonUtils.getString(object, "version");
+        if (version != null) {
+            this.clientVersion = version;
         }
-        if ((string2 = ConfigJsonUtils.P(jsonObject, "vapeVersion")) != null) {
-            this.l = string2;
+        if ((vapeVersion = ConfigJsonUtils.getString(object, "vapeVersion")) != null) {
+            this.clientVersion = vapeVersion;
         }
-        if ((bl = ConfigJsonUtils.t(jsonObject, "version")) != null) {
-            this.z = bl;
+        if ((legacyPublicFlag = ConfigJsonUtils.getBoolean(object, "version")) != null) {
+            this.publicProfileFlag = legacyPublicFlag;
         }
-        if ((jsonObject2 = ConfigJsonUtils.E(jsonObject, "data")) != null) {
-            this.F(jsonObject2);
+        if ((parsedData = ConfigJsonUtils.getJsonObject(object, "data")) != null) {
+            this.parseData(parsedData);
         }
-        if ((l = ConfigJsonUtils.R(jsonObject, "updated")) != null) {
-            this.f(l);
+        if ((parsedUpdatedAt = ConfigJsonUtils.getLong(object, "updated")) != null) {
+            this.setUpdatedAt(parsedUpdatedAt);
         }
-        if ((string = ConfigJsonUtils.P(jsonObject, "original_uuid")) != null) {
-            this.h = string;
+        if ((parsedOriginalUuid = ConfigJsonUtils.getString(object, "original_uuid")) != null) {
+            this.originalUuid = parsedOriginalUuid;
         }
-        this.Z = ProfileRemoteMetadata.s(jsonObject.get("metadata"));
+        this.remoteMetadata = ProfileRemoteMetadata.fromJson(object.get("metadata"));
         return this;
     }
 

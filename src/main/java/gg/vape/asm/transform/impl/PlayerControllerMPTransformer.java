@@ -11,16 +11,16 @@ import gg.vape.mapping.PlayerControllerMPEventMappingTask;
 
 public class PlayerControllerMPTransformer
 extends ClassTransformer {
-    private static int D;
+    private static int opaqueState;
 
     static {
-        if (PlayerControllerMPTransformer.c$src$I$1ezlko9() != 0) {
-            PlayerControllerMPTransformer.w(19);
+        if (PlayerControllerMPTransformer.opaquePredicate() != 0) {
+            PlayerControllerMPTransformer.setOpaqueState(19);
         }
     }
 
-    public static int A() {
-        return D;
+    public static int getOpaqueState() {
+        return opaqueState;
     }
 
     public PlayerControllerMPTransformer() {
@@ -28,12 +28,12 @@ extends ClassTransformer {
     }
 
 
-    public static void w(int n) {
-        D = n;
+    public static void setOpaqueState(int state) {
+        opaqueState = state;
     }
 
     @Override
-    public void c() {
+    public void transform() {
         if (!PlayerControllerMPEventMappingTask.U) {
             return;
         }
@@ -42,9 +42,9 @@ extends ClassTransformer {
         this.injectEventAtExit(mappingMethod, EventPostAttack.class, new IndexedLocal(2).setDescriptorClass(Object.class));
     }
 
-    public static int c$src$I$1ezlko9() {
-        int n = PlayerControllerMPTransformer.A();
-        if (n == 0) {
+    public static int opaquePredicate() {
+        int state = PlayerControllerMPTransformer.getOpaqueState();
+        if (state == 0) {
             return 52;
         }
         return 0;

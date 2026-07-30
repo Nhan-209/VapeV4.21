@@ -20,11 +20,11 @@ extends Mapping {
         Class<Void> clazz = Void.TYPE;
         String string = "handleEntityTeleport";
         MNetHandlerPlayClient mNetHandlerPlayClient = this;
-        this.Q = ((MappingMethodBuilder)((MappingMethodBuilder)this.u(string, clazz, classArray).A(ForgeVersion.MC_1_16_5.n(), "handleTeleportEntity")).Q(ForgeVersion.MC_1_21_4.n(), MappedClasses.z2)).s();
+        this.Q = ((MappingMethodBuilder)((MappingMethodBuilder)this.methodBuilder(string, clazz, classArray).setNameForVersion(ForgeVersion.MC_1_16_5.n(), "handleTeleportEntity")).setOwnerClassForVersion(ForgeVersion.MC_1_21_4.n(), MappedClasses.z2)).buildMethod();
     }
 
     private void sendPacket(Object object, Object object2) {
-        this.Q.c(object, object2);
+        this.Q.invokeVoid(object, object2);
     }
 }
 

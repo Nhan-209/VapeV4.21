@@ -17,8 +17,8 @@ implements INamed {
         VALUES = Arrays.asList(InventoryFilterLogicalOperator.values());
     }
 
-    private InventoryFilterLogicalOperator(String string2) {
-        this.displayName = string2;
+    private InventoryFilterLogicalOperator(String displayName) {
+        this.displayName = displayName;
     }
 
     @Override
@@ -27,10 +27,10 @@ implements INamed {
     }
 
     @Nullable
-    public static InventoryFilterLogicalOperator findByName(String string) {
-        for (InventoryFilterLogicalOperator inventoryFilterLogicalOperator : VALUES) {
-            if (!inventoryFilterLogicalOperator.getName().equalsIgnoreCase(string)) continue;
-            return inventoryFilterLogicalOperator;
+    public static InventoryFilterLogicalOperator findByName(String name) {
+        for (InventoryFilterLogicalOperator operator : VALUES) {
+            if (!operator.getName().equalsIgnoreCase(name)) continue;
+            return operator;
         }
         return null;
     }

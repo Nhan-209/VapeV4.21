@@ -20,7 +20,7 @@ extends Mapping {
     }
 
     private void b(Object object, Object object2, float f, float f2, float f3) {
-        this.u.c(object, object2, Float.valueOf(f), Float.valueOf(f2), Float.valueOf(f3));
+        this.u.invokeVoid(object, object2, Float.valueOf(f), Float.valueOf(f2), Float.valueOf(f3));
     }
 
     public MModelBase() {
@@ -82,12 +82,12 @@ extends Mapping {
     }
 
     private void e(Object object, float f, float f2, float f3, float f4, float f5, float f6, Object object2) {
-        this.a.c(object, Float.valueOf(f), Float.valueOf(f2), Float.valueOf(f3), Float.valueOf(f4), Float.valueOf(f5), Float.valueOf(f6), object2);
+        this.a.invokeVoid(object, Float.valueOf(f), Float.valueOf(f2), Float.valueOf(f3), Float.valueOf(f4), Float.valueOf(f5), Float.valueOf(f6), object2);
     }
 
 
     private void i(Object object, Object object2, float f, float f2, float f3, float f4, float f5, float f6) {
-        this.E.c(object, object2, Float.valueOf(f), Float.valueOf(f2), Float.valueOf(f3), Float.valueOf(f4), Float.valueOf(f5), Float.valueOf(f6));
+        this.E.invokeVoid(object, object2, Float.valueOf(f), Float.valueOf(f2), Float.valueOf(f3), Float.valueOf(f4), Float.valueOf(f5), Float.valueOf(f6));
     }
 }
 

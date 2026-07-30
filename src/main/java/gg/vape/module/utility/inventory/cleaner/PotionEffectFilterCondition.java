@@ -19,8 +19,8 @@ import org.jetbrains.annotations.Nullable;
 public class PotionEffectFilterCondition
 implements NumericFilterCondition<PotionEffectFilterCondition> {
     @Override
-    public PotionEffectFilterCondition parseValue(String string) throws NumberFormatException {
-        return this.parseLevel(string);
+    public PotionEffectFilterCondition parseValue(String value) throws NumberFormatException {
+        return this.parseLevel(value);
     }
 
     @Override
@@ -80,11 +80,11 @@ implements NumericFilterCondition<PotionEffectFilterCondition> {
         if (item.isNull() || !item.isInstance(MappedClasses.Di) && !item.isInstance(MappedClasses.o)) {
             return false;
         }
-        ItemSplashPotion itemSplashPotion = new ItemSplashPotion(item);
-        List<PotionEffect> list = itemSplashPotion.getPotionEffects(itemStack);
-        for (PotionEffect potionEffect : list) {
+        ItemSplashPotion potionItem = new ItemSplashPotion(item);
+        List<PotionEffect> effects = potionItem.getPotionEffects(itemStack);
+        for (PotionEffect potionEffect : effects) {
             PotionEntry potionEntry = PotionRegistry.R(potionEffect);
-            if (potionEntry == null || potionEntry.T() != this.potionId.shortValue()) continue;
+            if (potionEntry == null || potionEntry.getLegacyId() != this.potionId.shortValue()) continue;
             switch (this.mode) {
                 case HAS: {
                     return true;
@@ -100,8 +100,8 @@ implements NumericFilterCondition<PotionEffectFilterCondition> {
         return false;
     }
 
-    public PotionEffectFilterCondition withOperator(ComparisonOperator comparisonOperator) {
-        this.operator = comparisonOperator;
+    public PotionEffectFilterCondition withOperator(ComparisonOperator operator) {
+        this.operator = operator;
         return this;
     }
 
@@ -129,10 +129,10 @@ implements NumericFilterCondition<PotionEffectFilterCondition> {
 
     public PotionEffectFilterCondition(JsonObject jsonObject) {
         this.operator = ComparisonOperator.EQUALS;
-        this.mode = PotionEffectFilterMode.fromName(ConfigJsonUtils.P(jsonObject, "mode"));
-        this.potionId = ConfigJsonUtils.f(jsonObject, "potionId");
-        Integer n = ConfigJsonUtils.r(jsonObject, "level");
-        this.level = n != null ? n : 1;
+        this.mode = PotionEffectFilterMode.fromName(ConfigJsonUtils.getString(jsonObject, "mode"));
+        this.potionId = ConfigJsonUtils.getShort(jsonObject, "potionId");
+        Integer configuredLevel = ConfigJsonUtils.getInteger(jsonObject, "level");
+        this.level = configuredLevel != null ? configuredLevel : 1;
         this.operator = ComparisonOperator.fromName(jsonObject.get("operator").getAsString());
     }
 
@@ -141,16 +141,16 @@ implements NumericFilterCondition<PotionEffectFilterCondition> {
         return this;
     }
 
-    public PotionEffectFilterCondition(PotionEffectFilterMode potionEffectFilterMode, short s, int n, ComparisonOperator comparisonOperator) {
+    public PotionEffectFilterCondition(PotionEffectFilterMode mode, short potionId, int level, ComparisonOperator operator) {
         this.operator = ComparisonOperator.EQUALS;
-        this.mode = potionEffectFilterMode;
-        this.potionId = s;
-        this.level = n;
-        this.operator = comparisonOperator;
+        this.mode = mode;
+        this.potionId = potionId;
+        this.level = level;
+        this.operator = operator;
     }
 
-    public PotionEffectFilterCondition parseLevel(String string) throws NumberFormatException {
-        this.level = Integer.parseInt(string);
+    public PotionEffectFilterCondition parseLevel(String value) throws NumberFormatException {
+        this.level = Integer.parseInt(value);
         return this;
     }
 

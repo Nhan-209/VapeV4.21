@@ -12,28 +12,28 @@ public class StringInventoryItemMatcherBuilder
 extends InventoryItemMatcherBuilderBase<StringInventoryItemMatcherBuilder> {
     private final Map<String, StringMatchOperator> operatorsByPattern = new LinkedHashMap<String, StringMatchOperator>();
 
-    private StringInventoryItemMatcherBuilder(InventoryItemMatcherBuilderBase<?> inventoryItemMatcherBuilderBase) {
-        super(inventoryItemMatcherBuilderBase);
+    private StringInventoryItemMatcherBuilder(InventoryItemMatcherBuilderBase<?> baseBuilder) {
+        super(baseBuilder);
     }
 
     public @UnmodifiableView Map<String, StringMatchOperator> getOperatorsByPattern() {
         return this.operatorsByPattern;
     }
 
-    public StringInventoryItemMatcherBuilder addPattern(String string, StringMatchOperator stringMatchOperator) {
-        this.operatorsByPattern.put(string, stringMatchOperator);
+    public StringInventoryItemMatcherBuilder addPattern(String pattern, StringMatchOperator operator) {
+        this.operatorsByPattern.put(pattern, operator);
         return this;
     }
 
-    public StringInventoryItemMatcherBuilder putPatterns(StringMatchOperator stringMatchOperator, String ... stringArray) {
-        for (String string : stringArray) {
-            this.operatorsByPattern.put(string, stringMatchOperator);
+    public StringInventoryItemMatcherBuilder putPatterns(StringMatchOperator operator, String ... patterns) {
+        for (String pattern : patterns) {
+            this.operatorsByPattern.put(pattern, operator);
         }
         return this;
     }
 
-    StringInventoryItemMatcherBuilder(InventoryItemMatcherBuilderBase inventoryItemMatcherBuilderBase, StringInventoryItemMatcherBuilderConstructorMarker stringInventoryItemMatcherBuilderConstructorMarker) {
-        this(inventoryItemMatcherBuilderBase);
+    StringInventoryItemMatcherBuilder(InventoryItemMatcherBuilderBase baseBuilder, StringInventoryItemMatcherBuilderConstructorMarker constructorMarker) {
+        this(baseBuilder);
     }
 
     public StringInventoryItemMatcher build() {

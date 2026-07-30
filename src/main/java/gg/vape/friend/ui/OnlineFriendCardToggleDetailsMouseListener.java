@@ -7,15 +7,14 @@ import java.awt.Point;
 
 class OnlineFriendCardToggleDetailsMouseListener
 implements GuiMouseListener {
-    final OnlineFriendCard c;
+    private final OnlineFriendCard card;
 
     @Override
     public void g(Point point, MouseClickButton mouseClickButton) {
-        OnlineFriendCard.a(this.c, mouseClickButton);
+        OnlineFriendCard.handleCardClick(this.card, mouseClickButton);
     }
 
     OnlineFriendCardToggleDetailsMouseListener(OnlineFriendCard onlineFriendCard) {
-        this.c = onlineFriendCard;
+        this.card = onlineFriendCard;
     }
 }
-

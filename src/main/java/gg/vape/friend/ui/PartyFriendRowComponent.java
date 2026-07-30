@@ -34,24 +34,24 @@ import gg.vape.utils.render.GuiRenderPrimitives;
 
 public class PartyFriendRowComponent
 extends PanelComponent {
-    private boolean X2;
-    protected final FlowLayoutComponent Xq;
-    protected TextLabelComponent Xj;
-    private final AnimatedCenteredTextLabelComponent X7;
-    protected final AnimatedCenteredTextLabelComponent X5;
-    private boolean XJ;
-    protected final OnlineFriend Xl;
-    private final AnimatedCenteredTextLabelComponent XL;
-    private final AnimatedCenteredTextLabelComponent XQ;
-    private final FlowLayoutComponent Xs = new FlowLayoutComponent(70.0);
-    private final boolean X4;
-    private final boolean XS;
-    private static String XY;
-    private TruncatedTextComponent Xz;
+    private boolean actionPending;
+    protected final FlowLayoutComponent actionPanel;
+    protected TextLabelComponent usernameLabel;
+    private final AnimatedCenteredTextLabelComponent kickAction;
+    protected final AnimatedCenteredTextLabelComponent revokeAction;
+    private boolean reservedState;
+    protected final OnlineFriend friend;
+    private final AnimatedCenteredTextLabelComponent promoteAction;
+    private final AnimatedCenteredTextLabelComponent addFriendAction;
+    private final FlowLayoutComponent contentPanel = new FlowLayoutComponent(70.0);
+    private final boolean limitedActions;
+    private final boolean invitedUser;
+    private static String obfuscationName;
+    private final TruncatedTextComponent nameLabel;
 
-    private void lambda$onPromote$0(PartyState partyState, ClientGroupLeaderPromoteResponsePacket clientGroupLeaderPromoteResponsePacket) {
-        if (clientGroupLeaderPromoteResponsePacket.M() == ClientGroupLeaderPromoteStatus.SUCCESS) {
-            partyState.H(this.Xl);
+    private void handlePromoteResponse(PartyState partyState, ClientGroupLeaderPromoteResponsePacket response) {
+        if (response.M() == ClientGroupLeaderPromoteStatus.SUCCESS) {
+            partyState.setLeader(this.friend);
         }
     }
 
@@ -61,181 +61,180 @@ extends PanelComponent {
         super.H();
     }
 
-    public PartyFriendRowComponent(OnlineFriend onlineFriend, boolean bl, boolean bl2) {
+    public PartyFriendRowComponent(OnlineFriend friend, boolean invitedUser, boolean limitedActions) {
         super(99.0, 20.0);
-        this.XL = new PartyFriendCompactActionLabelComponent(this, "PROMOTE", PartyFriendRowComponent.J.l);
-        this.X7 = new PartyFriendSecondaryActionLabelComponent(this, "KICK", PartyFriendRowComponent.J.l);
-        this.X5 = new PartyFriendActionLabelComponent(this, "REVOKE", PartyFriendRowComponent.J.l);
-        this.XQ = new PartyFriendTertiaryActionLabelComponent(this, "ADD", PartyFriendRowComponent.J.l);
-        this.Xq = new FlowLayoutComponent(70.0);
-        this.X2 = false;
-        this.Xl = onlineFriend;
-        this.XS = bl;
-        this.X4 = bl2;
-        this.Xz = new PartyFriendNameLabelComponent(this, onlineFriend.C(), "...", 72.0, 0.75, PartyFriendRowComponent.J.A, false);
-        this.Xj = new PartyFriendFixedTextLabelComponent(this, onlineFriend.I(), 0.55, 0.75, 0.1, 72.0, false, false, PartyFriendRowComponent.J.h);
-        this.Xs.h(this.Xz, new Object[0]);
-        this.Xq.h(this.Xj, new Object[0]);
-        if (bl) {
-            this.Xq.addChildren(this.X5);
+        this.promoteAction = new PartyFriendCompactActionLabelComponent(this, "PROMOTE", PartyFriendRowComponent.J.l);
+        this.kickAction = new PartyFriendSecondaryActionLabelComponent(this, "KICK", PartyFriendRowComponent.J.l);
+        this.revokeAction = new PartyFriendActionLabelComponent(this, "REVOKE", PartyFriendRowComponent.J.l);
+        this.addFriendAction = new PartyFriendTertiaryActionLabelComponent(this, "ADD", PartyFriendRowComponent.J.l);
+        this.actionPanel = new FlowLayoutComponent(70.0);
+        this.actionPending = false;
+        this.friend = friend;
+        this.invitedUser = invitedUser;
+        this.limitedActions = limitedActions;
+        this.nameLabel = new PartyFriendNameLabelComponent(this, friend.getDisplayName(), "...", 72.0, 0.75, PartyFriendRowComponent.J.A, false);
+        this.usernameLabel = new PartyFriendFixedTextLabelComponent(this, friend.getMinecraftUsername(), 0.55, 0.75, 0.1, 72.0, false, false, PartyFriendRowComponent.J.h);
+        this.contentPanel.h(this.nameLabel, new Object[0]);
+        this.actionPanel.h(this.usernameLabel, new Object[0]);
+        if (invitedUser) {
+            this.actionPanel.addChildren(this.revokeAction);
         } else {
-            this.Xq.addChildren(this.XQ, this.XL, new SpacerComponent(2.0, 1.0), this.X7);
+            this.actionPanel.addChildren(this.addFriendAction, this.promoteAction, new SpacerComponent(2.0, 1.0), this.kickAction);
         }
-        this.Xs.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M("wrap");
-        this.Xs.addChildren(new SpacerComponent(0.0, 9.0));
-        this.Xs.addChildren(this.Xq);
-        this.addChildren(new SpacerComponent(4.0, 1.0), new OnlineFriendAvatarComponent(onlineFriend, 8.0, 8.0), new SpacerComponent(4.0, 1.0), this.Xs);
-        this.XL.addClickListener(this::e$src$V$hles3e);
-        this.X7.addClickListener(this::d$src$V$hkuzi1);
-        this.X5.addClickListener(this::Q$src$V$haew86);
-        this.XQ.addClickListener(this::o$src$V$hqwq10);
+        this.contentPanel.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M("wrap");
+        this.contentPanel.addChildren(new SpacerComponent(0.0, 9.0));
+        this.contentPanel.addChildren(this.actionPanel);
+        this.addChildren(new SpacerComponent(4.0, 1.0), new OnlineFriendAvatarComponent(friend, 8.0, 8.0), new SpacerComponent(4.0, 1.0), this.contentPanel);
+        this.promoteAction.addClickListener(this::promoteToLeader);
+        this.kickAction.addClickListener(this::kickFromParty);
+        this.revokeAction.addClickListener(this::revokeInvite);
+        this.addFriendAction.addClickListener(this::addAsFriend);
     }
 
     public static String getName() {
-        return XY;
+        return obfuscationName;
     }
 
-    private void lambda$onRevoke$4(PartyState partyState, GroupUninviteResponsePacket groupUninviteResponsePacket) {
-        if (groupUninviteResponsePacket.H() == GroupUninviteStatus.SUCCESS) {
-            partyState.Y(this.Xl);
+    private void handleRevokeResponse(PartyState partyState, GroupUninviteResponsePacket response) {
+        if (response.getStatus() == GroupUninviteStatus.SUCCESS) {
+            partyState.removeMember(this.friend);
         }
     }
 
-    protected void b() {
-        if (!this.XS) {
-            GuiRenderPrimitives.V(this.Xj.G$src$D$1b2f02a(), this.Xj.n() + 2.0, 2.0, 1.0, OnlineFriendColorUtil.f(this.Xl.d()));
+    protected void renderRoleIndicator() {
+        if (!this.invitedUser) {
+            GuiRenderPrimitives.V(this.usernameLabel.G$src$D$1b2f02a(), this.usernameLabel.n() + 2.0, 2.0, 1.0, OnlineFriendColorUtil.getGroupRoleColor(this.friend.getGroupRole()));
         }
     }
 
     static {
-        PartyFriendRowComponent.d("yJCYxb");
+        PartyFriendRowComponent.setObfuscationName("yJCYxb");
     }
 
-    private void e$src$V$hles3e() {
-        if (this.X2) {
+    private void promoteToLeader() {
+        if (this.actionPending) {
             return;
         }
-        PartyState partyState = Vape.INSTANCE.getOnlineManager().y().j();
+        PartyState partyState = Vape.INSTANCE.getOnlineManager().getPartyManager().getCurrentParty();
         if (partyState == null) {
             return;
         }
-        this.X2 = true;
-        ZeusConnectionManager.T().u().s(this.Xl.S(), arg_0 -> this.lambda$onPromote$0(partyState, arg_0), this::lambda$onPromote$1);
+        this.actionPending = true;
+        ZeusConnectionManager.T().u().s(this.friend.getUser(), response -> this.handlePromoteResponse(partyState, response), this::handlePromoteFailure);
     }
 
     @Override
     public void c() {
-        boolean bl;
-        boolean bl2 = Vape.INSTANCE.getOnlineFriendManager().g().contains(this.Xl) || Vape.INSTANCE.getOnlineManager().D().J(this.Xl);
-        boolean bl3 = Vape.INSTANCE.getOnlineManager().r().equals(this.Xl);
-        boolean bl4 = bl = !bl2 && !bl3;
+        boolean alreadyFriendOrRequested = Vape.INSTANCE.getOnlineFriendManager().getFriends().contains(this.friend) || Vape.INSTANCE.getOnlineManager().getFriendRequestManager().hasOutgoingRequest(this.friend);
+        boolean localUser = Vape.INSTANCE.getOnlineManager().getLocalFriend().equals(this.friend);
+        boolean canAddFriend = !alreadyFriendOrRequested && !localUser;
         if (this.w$src$Z$e457mb()) {
-            if (this.X4) {
-                this.XQ.setVisible(bl);
-                this.XL.setVisible(false);
-                this.X7.setVisible(false);
-                this.X5.setVisible(false);
+            if (this.limitedActions) {
+                this.addFriendAction.setVisible(canAddFriend);
+                this.promoteAction.setVisible(false);
+                this.kickAction.setVisible(false);
+                this.revokeAction.setVisible(false);
             } else {
-                this.XQ.setVisible(bl);
-                this.XL.setVisible(true);
-                this.X7.setVisible(true);
-                this.X5.setVisible(true);
+                this.addFriendAction.setVisible(canAddFriend);
+                this.promoteAction.setVisible(true);
+                this.kickAction.setVisible(true);
+                this.revokeAction.setVisible(true);
             }
         } else {
-            this.XQ.setVisible(false);
-            this.XL.setVisible(false);
-            this.X7.setVisible(false);
-            this.X5.setVisible(false);
+            this.addFriendAction.setVisible(false);
+            this.promoteAction.setVisible(false);
+            this.kickAction.setVisible(false);
+            this.revokeAction.setVisible(false);
         }
-        this.Xj.setVisible(!this.w$src$Z$e457mb() || this.X4 && !bl);
+        this.usernameLabel.setVisible(!this.w$src$Z$e457mb() || this.limitedActions && !canAddFriend);
         this.l$src$V$1mibm4x();
-        this.Xz.setText(this.Xl.C());
-        if (this.XS) {
-            this.Xj.setText(this.Xl.I());
+        this.nameLabel.setText(this.friend.getDisplayName());
+        if (this.invitedUser) {
+            this.usernameLabel.setText(this.friend.getMinecraftUsername());
         } else {
-            this.Xj.setText("   " + this.Xl.I());
+            this.usernameLabel.setText("   " + this.friend.getMinecraftUsername());
         }
         super.c();
-        this.b();
-        this.XL.setFontScale((double)0.65f);
-        this.X7.setFontScale((double)0.65f);
-        this.X5.setFontScale((double)0.65f);
-        this.XQ.setFontScale((double)0.65f);
-        this.XL.setBorderAlpha(1.0f);
-        this.X7.setBorderAlpha(1.0f);
-        this.X5.setBorderAlpha(1.0f);
-        this.XQ.setBorderAlpha(1.0f);
-        this.Xs.setShowDisabledOverlay(false);
+        this.renderRoleIndicator();
+        this.promoteAction.setFontScale((double)0.65f);
+        this.kickAction.setFontScale((double)0.65f);
+        this.revokeAction.setFontScale((double)0.65f);
+        this.addFriendAction.setFontScale((double)0.65f);
+        this.promoteAction.setBorderAlpha(1.0f);
+        this.kickAction.setBorderAlpha(1.0f);
+        this.revokeAction.setBorderAlpha(1.0f);
+        this.addFriendAction.setBorderAlpha(1.0f);
+        this.contentPanel.setShowDisabledOverlay(false);
         this.setShowDisabledOverlay(false);
     }
 
-    private void lambda$onPromote$1() {
-        this.X2 = false;
+    private void handlePromoteFailure() {
+        this.actionPending = false;
     }
 
-    private void lambda$onKick$3() {
-        this.X2 = false;
+    private void handleKickFailure() {
+        this.actionPending = false;
     }
 
-    private void lambda$onRevoke$5() {
-        this.X2 = false;
+    private void handleRevokeFailure() {
+        this.actionPending = false;
     }
 
-    public OnlineFriend H$src$Lgg_vape_friend_OnlineFriend_$cx8nou() {
-        return this.Xl;
+    public OnlineFriend getFriend() {
+        return this.friend;
     }
 
-    private void d$src$V$hkuzi1() {
-        if (this.X2) {
+    private void kickFromParty() {
+        if (this.actionPending) {
             return;
         }
-        PartyState partyState = Vape.INSTANCE.getOnlineManager().y().j();
+        PartyState partyState = Vape.INSTANCE.getOnlineManager().getPartyManager().getCurrentParty();
         if (partyState == null) {
             return;
         }
-        this.X2 = true;
-        ZeusConnectionManager.T().u().c(this.Xl.S(), arg_0 -> this.lambda$onKick$2(partyState, arg_0), this::lambda$onKick$3);
+        this.actionPending = true;
+        ZeusConnectionManager.T().u().c(this.friend.getUser(), response -> this.handleKickResponse(partyState, response), this::handleKickFailure);
     }
 
-    private void lambda$onKick$2(PartyState partyState, ClientGroupLeaderKickResponsePacket clientGroupLeaderKickResponsePacket) {
-        if (clientGroupLeaderKickResponsePacket.P() == ClientGroupLeaderKickStatus.SUCCESS) {
-            partyState.Y(this.Xl);
+    private void handleKickResponse(PartyState partyState, ClientGroupLeaderKickResponsePacket response) {
+        if (response.P() == ClientGroupLeaderKickStatus.SUCCESS) {
+            partyState.removeMember(this.friend);
         }
     }
 
-    private void o$src$V$hqwq10() {
-        if (this.X2) {
+    private void addAsFriend() {
+        if (this.actionPending) {
             return;
         }
-        PartyState partyState = Vape.INSTANCE.getOnlineManager().y().j();
+        PartyState partyState = Vape.INSTANCE.getOnlineManager().getPartyManager().getCurrentParty();
         if (partyState == null) {
             return;
         }
-        for (FriendRequest friendRequest : Vape.INSTANCE.getOnlineManager().D().I()) {
-            if (!friendRequest.x().C().equals(this.Xl.C())) continue;
-            OnlineFriendUiHelper.P(new NotificationMessage(NotificationType.SUCCESS, "Added " + this.Xl.C() + " as a friend"));
-            Vape.INSTANCE.getOnlineManager().D().N((IncomingFriendRequest)friendRequest);
+        for (FriendRequest friendRequest : Vape.INSTANCE.getOnlineManager().getFriendRequestManager().getIncomingRequests()) {
+            if (!friendRequest.getFriend().getDisplayName().equals(this.friend.getDisplayName())) continue;
+            OnlineFriendUiHelper.showNotification(new NotificationMessage(NotificationType.SUCCESS, "Added " + this.friend.getDisplayName() + " as a friend"));
+            Vape.INSTANCE.getOnlineManager().getFriendRequestManager().acceptIncomingRequest((IncomingFriendRequest)friendRequest);
             return;
         }
-        this.X2 = true;
-        FriendRequestService.Z(this.Xl.C());
-        this.X2 = false;
+        this.actionPending = true;
+        FriendRequestService.sendFriendRequest(this.friend.getDisplayName());
+        this.actionPending = false;
     }
 
-    public static void d(String string) {
-        XY = string;
+    public static void setObfuscationName(String name) {
+        obfuscationName = name;
     }
 
-    private void Q$src$V$haew86() {
-        if (this.X2) {
+    private void revokeInvite() {
+        if (this.actionPending) {
             return;
         }
-        PartyState partyState = Vape.INSTANCE.getOnlineManager().y().j();
+        PartyState partyState = Vape.INSTANCE.getOnlineManager().getPartyManager().getCurrentParty();
         if (partyState == null) {
             return;
         }
-        this.X2 = true;
-        ZeusConnectionManager.T().u().V(this.Xl.S(), arg_0 -> this.lambda$onRevoke$4(partyState, arg_0), this::lambda$onRevoke$5);
+        this.actionPending = true;
+        ZeusConnectionManager.T().u().V(this.friend.getUser(), response -> this.handleRevokeResponse(partyState, response), this::handleRevokeFailure);
     }
 }
 

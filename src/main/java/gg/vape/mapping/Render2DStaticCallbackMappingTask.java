@@ -18,7 +18,7 @@ extends JavassistMappingTask {
     }
 
     @Override
-    public void c() {
+    public void transform() {
         if (ForgeVersion.MC_26_1.d()) {
             return;
         }
@@ -37,4 +37,3 @@ extends JavassistMappingTask {
         super(MappedClasses.Zj);
     }
 }
-

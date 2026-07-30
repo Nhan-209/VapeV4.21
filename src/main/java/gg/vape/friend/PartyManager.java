@@ -16,85 +16,85 @@ import org.jetbrains.annotations.UnmodifiableView;
 
 public class PartyManager {
     @Nullable
-    private PartyState W;
-    private static final String b;
-    private static int C;
-    private final Map<OnlineFriend, PartyInvite> T = new LinkedHashMap<OnlineFriend, PartyInvite>();
+    private PartyState currentParty;
+    private static final String INVITE_NOTIFICATION_TITLE;
+    private static int obfuscationState;
+    private final Map<OnlineFriend, PartyInvite> invites = new LinkedHashMap<OnlineFriend, PartyInvite>();
 
-    public static void K(int n) {
-        C = n;
+    public static void setObfuscationState(int state) {
+        obfuscationState = state;
     }
 
     /*
      * WARNING - Removed try catching itself - possible behaviour change.
      */
     @Nullable
-    public PartyInvite k(OnlineFriend onlineFriend) {
-        Map<OnlineFriend, PartyInvite> map = this.T;
+    public PartyInvite getInvite(OnlineFriend onlineFriend) {
+        Map<OnlineFriend, PartyInvite> map = this.invites;
         synchronized (map) {
-            return this.T.get(onlineFriend);
+            return this.invites.get(onlineFriend);
         }
     }
 
-    public static int B() {
-        return C;
+    public static int getObfuscationState() {
+        return obfuscationState;
     }
 
-    public static int S() {
-        int n = PartyManager.B();
+    public static int getObfuscationConstant() {
+        int state = PartyManager.getObfuscationState();
         return 0;
     }
 
-    public void n(@Nullable PartyState partyState) {
-        this.W = partyState;
+    public void setCurrentParty(@Nullable PartyState partyState) {
+        this.currentParty = partyState;
         ClientSettings.getFrame(OnlineFriendsFrame.class).l$src$V$1mibm4x();
-        Vape.INSTANCE.getOnlineManager().V().T();
-        Vape.INSTANCE.getOnlineManager().N().A();
+        Vape.INSTANCE.getOnlineManager().getActivityManager().resetForWorldChange();
+        Vape.INSTANCE.getOnlineManager().getInventoryTracker().reset();
     }
 
     /*
      * WARNING - Removed try catching itself - possible behaviour change.
      */
-    public void y(PartyInvite partyInvite) {
-        Map<OnlineFriend, PartyInvite> map = this.T;
+    public void removeInvite(PartyInvite partyInvite) {
+        Map<OnlineFriend, PartyInvite> map = this.invites;
         synchronized (map) {
-            this.T.remove(partyInvite.x());
+            this.invites.remove(partyInvite.getInviter());
         }
-        ClientSettings.getFrame(OnlineFriendsFrame.class).Y$src$Lgg_vape_friend_ui_PartyInvitesPanel_$1o49ve3().P(partyInvite);
+        ClientSettings.getFrame(OnlineFriendsFrame.class).getPartyInvitesPanel().removeInvite(partyInvite);
     }
 
     /*
      * WARNING - Removed try catching itself - possible behaviour change.
      */
-    public void C(PartyInvite partyInvite) {
-        Map<OnlineFriend, PartyInvite> map = this.T;
+    public void addInvite(PartyInvite partyInvite) {
+        Map<OnlineFriend, PartyInvite> map = this.invites;
         synchronized (map) {
-            this.T.put(partyInvite.x(), partyInvite);
+            this.invites.put(partyInvite.getInviter(), partyInvite);
         }
-        ClientSettings.getFrame(OnlineFriendsFrame.class).Y$src$Lgg_vape_friend_ui_PartyInvitesPanel_$1o49ve3().u(new PartyInviteRow(partyInvite));
-        Vape.INSTANCE.getNotificationManager().show(b, partyInvite.x().C(), NotificationType.FRIENDS_PARTY_INVITE, 4000L);
+        ClientSettings.getFrame(OnlineFriendsFrame.class).getPartyInvitesPanel().addInviteRow(new PartyInviteRow(partyInvite));
+        Vape.INSTANCE.getNotificationManager().show(INVITE_NOTIFICATION_TITLE, partyInvite.getInviter().getDisplayName(), NotificationType.FRIENDS_PARTY_INVITE, 4000L);
     }
 
     static {
-        PartyManager.K(117);
-        b = "Party invite";
+        PartyManager.setObfuscationState(117);
+        INVITE_NOTIFICATION_TITLE = "Party invite";
     }
 
     @Nullable
-    public PartyState j() {
-        return this.W;
+    public PartyState getCurrentParty() {
+        return this.currentParty;
     }
 
 
-    public void r() {
-        this.n(null);
-        for (PartyInvite partyInvite : this.T.values()) {
-            this.y(partyInvite);
+    public void clear() {
+        this.setCurrentParty(null);
+        for (PartyInvite partyInvite : this.invites.values()) {
+            this.removeInvite(partyInvite);
         }
     }
 
-    public @UnmodifiableView Collection<PartyInvite> n() {
-        return this.T.values();
+    public @UnmodifiableView Collection<PartyInvite> getInvites() {
+        return this.invites.values();
     }
 }
 

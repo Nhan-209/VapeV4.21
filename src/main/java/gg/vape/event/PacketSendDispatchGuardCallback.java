@@ -4,14 +4,13 @@ import gg.vape.event.impl.EventPacketSend;
 import gg.vape.utils.network.PacketDispatchGuard;
 
 public class PacketSendDispatchGuardCallback {
-    EventPacketSend I;
+    private final EventPacketSend event;
 
     public PacketSendDispatchGuardCallback(EventPacketSend eventPacketSend) {
-        this.I = eventPacketSend;
+        this.event = eventPacketSend;
     }
 
-    public void O(PacketDispatchGuard eu_02) {
-        eu_02.o(this.I);
+    public void dispatch(PacketDispatchGuard dispatchGuard) {
+        dispatchGuard.o(this.event);
     }
 }
-

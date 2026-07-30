@@ -23,7 +23,7 @@ extends Mapping {
         boolean bl = true;
         String string = b;
         MDefaultVertexFormats mDefaultVertexFormats = this;
-        this.p = this.u(string, bl, clazz);
+        this.p = this.registerStaticField(string, bl, clazz);
     }
 }
 

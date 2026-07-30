@@ -62,8 +62,8 @@ implements MacroAction {
             Minecraft.thePlayer().V$src$Lgg_vape_wrapper_impl_InventoryPlayer_$erqak6().g(targetHotbarSlot);
             this.timer.reset();
             Animations animations = Vape.INSTANCE.getModManager().getMod(Animations.class);
-            if (ClientSettings.V()) {
-                if (((Mod)animations).r$src$Z$14eylz9() && animations.requiresMouseDown() && ClientSettings.H$src$Z$9w16bz(Minecraft.gameSettings().b$src$Lgg_vape_wrapper_impl_KeyBinding_$1yi3362())) {
+            if (ClientSettings.isUseItemButtonDown()) {
+                if (((Mod)animations).r$src$Z$14eylz9() && animations.requiresMouseDown() && ClientSettings.isKeyBindingDown(Minecraft.gameSettings().b$src$Lgg_vape_wrapper_impl_KeyBinding_$1yi3362())) {
                     if (animations.getActiveMode().isBlocking() && !animations.getActiveMode().shouldBlock()) {
                         this.phase = 2;
                     }

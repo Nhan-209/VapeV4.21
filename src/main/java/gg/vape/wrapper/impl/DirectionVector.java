@@ -10,7 +10,7 @@ extends Wrapper {
     }
 
     public static DirectionVector m$src$Lgg_vape_wrapper_impl_DirectionVector_$1h73psc() {
-        return new DirectionVector(MDirectionVector.U(DirectionVector.c.getMappings().qx));
+        return new DirectionVector(MDirectionVector.U(DirectionVector.vapeInstance.getMappings().qx));
     }
 }
 

@@ -3,7 +3,6 @@ package gg.vape.mapping.mappings;
 import gg.vape.mapping.MappedClasses;
 import gg.vape.mapping.Mapping;
 import gg.vape.mapping.MappingField;
-import gg.vape.mapping.mappings.MSlot;
 import gg.vape.wrapper.Wrapper;
 import gg.vape.wrapper.impl.ForgeVersion;
 
@@ -27,7 +26,7 @@ extends Mapping {
         }
         if (ForgeVersion.MC_1_7_10.L()) {
             Class clazz = MappedClasses.YQ;
-            boolean bl = Wrapper.G;
+            boolean bl = Wrapper.isNativeAvailable;
             String string = "field_148332_b";
             MGuiContainerCreativeSlot mGuiContainerCreativeSlot = this;
             this.i = mGuiContainerCreativeSlot.J(string, bl, clazz);

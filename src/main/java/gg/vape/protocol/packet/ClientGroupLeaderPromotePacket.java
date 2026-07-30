@@ -11,11 +11,11 @@ extends ZeusTrackedPacket<ClientGroupLeaderPromoteResponsePacket> {
 
     @Override
     public void x(ZeusPacketBuffer zeusPacketBuffer) {
-        this.U = zeusPacketBuffer.long_a();
+        this.U = zeusPacketBuffer.readLong();
     }
 
     public ClientGroupLeaderPromotePacket(UserModel userModel) {
-        this.U = userModel.g();
+        this.U = userModel.getId();
     }
 
     public ClientGroupLeaderPromotePacket() {
@@ -27,7 +27,7 @@ extends ZeusTrackedPacket<ClientGroupLeaderPromoteResponsePacket> {
 
     @Override
     public void T(ZeusPacketBuffer zeusPacketBuffer) {
-        zeusPacketBuffer.v(this.U);
+        zeusPacketBuffer.writeLong(this.U);
     }
 }
 

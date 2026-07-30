@@ -16,22 +16,21 @@ extends JavassistMappingTask {
     }
 
     @Override
-    public void c() {
+    public void transform() {
         MappingMethod mappingMethod = Vape.INSTANCE.getMappings().qg.J;
         EventInjectionSpec eventInjectionSpec = new EventInjectionSpec(mappingMethod, EventBlockShouldRender.class);
-        eventInjectionSpec.d("$0");
-        eventInjectionSpec.H("true");
-        this.O(eventInjectionSpec);
+        eventInjectionSpec.setConstructorArguments("$0");
+        eventInjectionSpec.setReturnExpression("true");
+        this.registerEventInjection(eventInjectionSpec);
         MappingMethod mappingMethod2 = Vape.INSTANCE.getMappings().qg.S;
         EventInjectionSpec eventInjectionSpec2 = new EventInjectionSpec(mappingMethod2, EventBlockLayerOverride.class);
-        eventInjectionSpec2.d("$0");
-        eventInjectionSpec2.H("($r) $event.getBlockLayer()");
-        this.O(eventInjectionSpec2);
+        eventInjectionSpec2.setConstructorArguments("$0");
+        eventInjectionSpec2.setReturnExpression("($r) $event.getBlockLayer()");
+        this.registerEventInjection(eventInjectionSpec2);
         MappingMethod mappingMethod3 = Vape.INSTANCE.getMappings().qg.M;
         EventInjectionSpec eventInjectionSpec3 = new EventInjectionSpec(mappingMethod3, EventBlockRenderLayerGate.class);
-        eventInjectionSpec3.Z(true);
-        eventInjectionSpec3.H("($r) 1");
-        this.O(eventInjectionSpec3);
+        eventInjectionSpec3.setInsertBefore(true);
+        eventInjectionSpec3.setReturnExpression("($r) 1");
+        this.registerEventInjection(eventInjectionSpec3);
     }
 }
-

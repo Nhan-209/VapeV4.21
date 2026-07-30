@@ -6,11 +6,11 @@ import java.awt.Color;
 
 public class PartyFriendFixedTextLabelComponent
 extends TextLabelComponent {
-    final PartyFriendRowComponent G;
+    private final PartyFriendRowComponent row;
 
     public PartyFriendFixedTextLabelComponent(PartyFriendRowComponent partyFriendRowComponent, String string, double d, double d2, double d3, double d4, boolean bl, boolean bl2, Color color) {
         super(string, d, d2, d3, d4, bl, bl2, color);
-        this.G = partyFriendRowComponent;
+        this.row = partyFriendRowComponent;
     }
 
     @Override

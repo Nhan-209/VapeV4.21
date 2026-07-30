@@ -127,7 +127,7 @@ extends Mapping {
     }
 
     public Object a(Object object) {
-        return this.p.L(object, new Object[0]);
+        return this.p.invokeObject(object, new Object[0]);
     }
 
     public static boolean f(MMinecraft mMinecraft, Object object) {
@@ -223,7 +223,7 @@ extends Mapping {
 
     public Object U(Object object) {
         if (ForgeVersion.MC_26_2.d()) {
-            return this.n.L(this.A(object), new Object[0]);
+            return this.n.invokeObject(this.A(object), new Object[0]);
         }
         return this.L.getObject(object);
     }
@@ -234,7 +234,7 @@ extends Mapping {
 
     public boolean X$src$Z$1ecebix(Object object) {
         if (ForgeVersion.MC_26_1.d()) {
-            return this.r.e(object, new Object[0]);
+            return this.r.invokeBoolean(object, new Object[0]);
         }
         return this.h.getBoolean(object);
     }
@@ -249,9 +249,9 @@ extends Mapping {
 
     private void p(Object object, Runnable runnable) {
         if (ForgeVersion.MC_1_16_5.d()) {
-            this.OV.c(object, runnable);
+            this.OV.invokeVoid(object, runnable);
         } else {
-            this.OV.L(object, runnable);
+            this.OV.invokeObject(object, runnable);
         }
     }
 
@@ -284,7 +284,7 @@ extends Mapping {
 
     public boolean f(Object object) {
         if (ForgeVersion.MC_26_1.d()) {
-            return this.r.e(object, new Object[0]);
+            return this.r.invokeBoolean(object, new Object[0]);
         }
         return this.h.getBoolean(object);
     }
@@ -299,7 +299,7 @@ extends Mapping {
 
     public Object l(Object object) {
         if (ForgeVersion.MC_1_20_6.d()) {
-            return this.c.L(object, new Object[0]);
+            return this.c.invokeObject(object, new Object[0]);
         }
         return this.OX.getObject(object);
     }
@@ -317,7 +317,7 @@ extends Mapping {
     }
 
     public Object J() {
-        return this.o.L(null, new Object[0]);
+        return this.o.invokeObject(null, new Object[0]);
     }
 
     private Object H(Object object) {
@@ -330,7 +330,7 @@ extends Mapping {
 
 
     public Object u(Object object) {
-        return this.D.L(object, new Object[0]);
+        return this.D.invokeObject(object, new Object[0]);
     }
 
     public Object J(Object object) {
@@ -347,10 +347,10 @@ extends Mapping {
 
     public void r(Object object, Object object2) {
         if (ForgeVersion.MC_26_2.d()) {
-            this.Q.c(this.A(object), object2);
+            this.Q.invokeVoid(this.A(object), object2);
             return;
         }
-        this.OS.c(object, object2);
+        this.OS.invokeVoid(object, object2);
     }
 
     public static Object k(MMinecraft mMinecraft, Object object) {
@@ -367,7 +367,7 @@ extends Mapping {
 
     public Object h(Object object) {
         if (ForgeVersion.MC_26_1.d()) {
-            return this.OD.L(object, new Object[0]);
+            return this.OD.invokeObject(object, new Object[0]);
         }
         return this.On.getObject(object);
     }
@@ -381,7 +381,7 @@ extends Mapping {
     }
 
     public Object S(Object object) {
-        return this.m != null ? this.m.L(object, new Object[0]) : null;
+        return this.m != null ? this.m.invokeObject(object, new Object[0]) : null;
     }
 
     public static Object y$src$Ljava_lang_Object_$1igycos(MMinecraft mMinecraft, Object object) {
@@ -415,7 +415,7 @@ extends Mapping {
             this.k(object, false);
             return;
         }
-        this.x.F(object);
+        this.x.invokeVoidNoArgs(object);
     }
 
     public static void p(MMinecraft mMinecraft, Object object, Object object2) {
@@ -423,7 +423,7 @@ extends Mapping {
     }
 
     public Object R$src$Ljava_lang_Object_$11ec019(Object object) {
-        return this.B.L(object, new Object[0]);
+        return this.B.invokeObject(object, new Object[0]);
     }
 
     private void U(Object object, boolean bl) {
@@ -435,7 +435,7 @@ extends Mapping {
     }
 
     public Object c(Object object) {
-        return this.N.L(object, new Object[0]);
+        return this.N.invokeObject(object, new Object[0]);
     }
 
     public void V$src$V$9672l7(Object object) {
@@ -443,7 +443,7 @@ extends Mapping {
             this.k(object, true);
             return;
         }
-        this.OQ.F(object);
+        this.OQ.invokeVoidNoArgs(object);
     }
 
     private Object C(Object object) {
@@ -455,11 +455,11 @@ extends Mapping {
     }
 
     public Object P(Object object) {
-        return this.Oq.L(object, new Object[0]);
+        return this.Oq.invokeObject(object, new Object[0]);
     }
 
     private void y(Object object) {
-        this.g.F(object);
+        this.g.invokeVoidNoArgs(object);
     }
 
     public MMinecraft() {
@@ -507,19 +507,19 @@ extends Mapping {
                 this.y = this.J(string6, bl6, clazz6);
                 Class[] classArray = new Class[]{};
                 Class<Void> clazz7 = Void.TYPE;
-                boolean bl7 = Wrapper.G;
+                boolean bl7 = Wrapper.isNativeAvailable;
                 String string7 = "func_147116_af";
                 MMinecraft mMinecraft7 = this;
                 this.q = this.Y(string7, bl7, clazz7, classArray);
                 Class[] classArray4 = new Class[]{};
                 Class<Void> clazz8 = Void.TYPE;
-                boolean bl8 = Wrapper.G;
+                boolean bl8 = Wrapper.isNativeAvailable;
                 String string8 = "func_147121_ag";
                 MMinecraft mMinecraft8 = this;
                 this.g = this.Y(string8, bl8, clazz8, classArray4);
                 Class[] classArray5 = new Class[]{Boolean.TYPE};
                 Class<Void> clazz9 = Void.TYPE;
-                boolean bl9 = Wrapper.G;
+                boolean bl9 = Wrapper.isNativeAvailable;
                 String string9 = "func_147115_a";
                 MMinecraft mMinecraft9 = this;
                 this.Of = this.Y(string9, bl9, clazz9, classArray5);
@@ -603,12 +603,12 @@ extends Mapping {
         Class clazz = MappedClasses.Z;
         String string = "theWorld";
         MMinecraft mMinecraft = this;
-        this.F = ((MappingFieldBuilder)mMinecraft.T(string, clazz).A(ForgeVersion.MC_1_12_2.n(), "world")).z();
+        this.F = ((MappingFieldBuilder)mMinecraft.fieldBuilder(string, clazz).setNameForVersion(ForgeVersion.MC_1_12_2.n(), "world")).buildField();
         Class[] classArray = new Class[]{};
         Class clazz17 = MappedClasses.F1;
         String string17 = "getNetHandler";
         MMinecraft mMinecraft17 = this;
-        this.p = ((MappingMethodBuilder)this.u(string17, clazz17, classArray).A(ForgeVersion.MC_1_12_2.n(), "getConnection")).s();
+        this.p = ((MappingMethodBuilder)this.methodBuilder(string17, clazz17, classArray).setNameForVersion(ForgeVersion.MC_1_12_2.n(), "getConnection")).buildMethod();
         if (ForgeVersion.MC_1_16_5.d()) {
             if (ForgeVersion.MC_26_1.d()) {
                 this.h = null;
@@ -655,7 +655,7 @@ extends Mapping {
             boolean bl21 = true;
             String string25 = "getInstance";
             MMinecraft mMinecraft25 = this;
-            this.o = this.x(string25, bl21, clazz25, classArray10);
+            this.o = this.registerStaticMethod(string25, bl21, clazz25, classArray10);
             if (ForgeVersion.c() < ForgeVersion.MC_1_20_6.i()) {
                 Class[] classArray11 = new Class[]{Runnable.class};
                 Class<Void> clazz26 = Void.TYPE;
@@ -663,7 +663,7 @@ extends Mapping {
                 String string26 = "execute";
                 Class<Executor> clazz27 = Executor.class;
                 MMinecraft mMinecraft26 = this;
-                this.OV = this.W(clazz27, string26, bl22, clazz26, classArray11);
+                this.OV = this.registerInstanceMethodForOwner(clazz27, string26, bl22, clazz26, classArray11);
             }
         } else {
             Class<Boolean> clazz28 = Boolean.TYPE;
@@ -711,7 +711,7 @@ extends Mapping {
             boolean bl30 = true;
             String string35 = "getMinecraft";
             MMinecraft mMinecraft35 = this;
-            this.o = this.x(string35, bl30, clazz36, classArray12);
+            this.o = this.registerStaticMethod(string35, bl30, clazz36, classArray12);
             Class[] classArray13 = new Class[]{};
             Class<Void> clazz37 = Void.TYPE;
             boolean bl31 = true;
@@ -731,14 +731,14 @@ extends Mapping {
                 String string38 = "addScheduledTask";
                 Class clazz40 = MappedClasses.V3;
                 MMinecraft mMinecraft38 = this;
-                this.OV = this.W(clazz40, string38, bl33, clazz39, classArray15);
+                this.OV = this.registerInstanceMethodForOwner(clazz40, string38, bl33, clazz39, classArray15);
             }
         }
         Class<Integer> clazz41 = Integer.TYPE;
         boolean bl = true;
         String string39 = "debugFPS";
         MMinecraft mMinecraft39 = this;
-        this.A = this.u(string39, bl, clazz41);
+        this.A = this.registerStaticField(string39, bl, clazz41);
         if (ForgeVersion.MC_26_2.d()) {
             this.L = null;
             Class[] classArray16 = new Class[]{};
@@ -747,14 +747,14 @@ extends Mapping {
             String string40 = "screen";
             Class clazz43 = MappedClasses.uH;
             MMinecraft mMinecraft40 = this;
-            this.n = this.W(clazz43, string40, bl34, clazz42, classArray16);
+            this.n = this.registerInstanceMethodForOwner(clazz43, string40, bl34, clazz42, classArray16);
             Class[] classArray17 = new Class[]{MappedClasses.VW};
             Class<Void> clazz44 = Void.TYPE;
             boolean bl35 = true;
             String string41 = "setScreen";
             Class clazz45 = MappedClasses.uH;
             MMinecraft mMinecraft41 = this;
-            this.Q = this.W(clazz45, string41, bl35, clazz44, classArray17);
+            this.Q = this.registerInstanceMethodForOwner(clazz45, string41, bl35, clazz44, classArray17);
         } else {
             Class clazz46 = MappedClasses.VW;
             boolean bl36 = true;
@@ -806,7 +806,7 @@ extends Mapping {
         Class clazz54 = MappedClasses.YN;
         String string50 = "timer";
         MMinecraft mMinecraft50 = this;
-        this.W = ((MappingFieldBuilder)this.T(string50, clazz54).A(ForgeVersion.MC_1_21_4.n(), "deltaTracker")).z();
+        this.W = ((MappingFieldBuilder)this.fieldBuilder(string50, clazz54).setNameForVersion(ForgeVersion.MC_1_21_4.n(), "deltaTracker")).buildField();
         Class<Integer> clazz55 = Integer.TYPE;
         boolean bl44 = true;
         String string51 = "rightClickDelayTimer";
@@ -948,7 +948,7 @@ extends Mapping {
             boolean bl65 = true;
             String string72 = "saveReport";
             MMinecraft mMinecraft72 = this;
-            this.d = this.x(string72, bl65, clazz76, classArray32);
+            this.d = this.registerStaticMethod(string72, bl65, clazz76, classArray32);
         } else {
             this.d = null;
         }
@@ -1006,7 +1006,7 @@ extends Mapping {
             String string81 = "bakedItemStackModels";
             Class clazz86 = MappedClasses.l_;
             MMinecraft mMinecraft81 = this;
-            this.U = this.X(clazz86, string81, bl74, clazz85);
+            this.U = this.registerInstanceFieldForOwner(clazz86, string81, bl74, clazz85);
         }
     }
 
@@ -1023,7 +1023,7 @@ extends Mapping {
 
     public void G(Object object, Object object2) {
         if (ForgeVersion.MC_26_1.d()) {
-            this.Y.c(object, object2);
+            this.Y.invokeVoid(object, object2);
             return;
         }
         this.On.setObject(object, object2);
@@ -1046,12 +1046,12 @@ extends Mapping {
     }
 
     private void Y$src$V$1yxhxum(Object object) {
-        this.G.F(object);
+        this.G.invokeVoidNoArgs(object);
     }
 
     public void Y(Object object, Object object2) {
         if (ForgeVersion.MC_26_2.d()) {
-            this.Q.c(this.A(object), object2);
+            this.Q.invokeVoid(this.A(object), object2);
             return;
         }
         this.L.setObject(object, object2);

@@ -38,35 +38,35 @@ public class ImageParser {
         return exception;
     }
 
-    private void writeAbgrPixels(ByteBuffer byteBuffer, byte[] byArray) {
-        int n = byArray.length;
-        for (int i = 1; i < n; i += 4) {
-            byteBuffer.put(byArray[i + 3]).put(byArray[i + 2]).put(byArray[i + 1]).put(byArray[i]);
+    private void writeAbgrPixels(ByteBuffer output, byte[] scanline) {
+        int scanlineLength = scanline.length;
+        for (int index = 1; index < scanlineLength; index += 4) {
+            output.put(scanline[index + 3]).put(scanline[index + 2]).put(scanline[index + 1]).put(scanline[index]);
         }
     }
 
-    private void skipInputBytes(long l) throws IOException {
-        while (l > 0L) {
-            long l2 = this.inputStream.skip(l);
-            if (l2 < 0L) {
+    private void skipInputBytes(long remainingBytes) throws IOException {
+        while (remainingBytes > 0L) {
+            long skippedBytes = this.inputStream.skip(remainingBytes);
+            if (skippedBytes < 0L) {
                 throw new EOFException();
             }
-            l -= l2;
+            remainingBytes -= skippedBytes;
         }
     }
 
-    private boolean hasPngSignature(byte[] byArray) {
-        for (int i = 0; i < this.pngSignature.length; ++i) {
-            if (byArray[i] == this.pngSignature[i]) continue;
+    private boolean hasPngSignature(byte[] header) {
+        for (int index = 0; index < this.pngSignature.length; ++index) {
+            if (header[index] == this.pngSignature[index]) continue;
             return false;
         }
         return true;
     }
 
-    private void writeRgbPixels(ByteBuffer byteBuffer, byte[] byArray) {
-        int n = byArray.length;
-        for (int i = 1; i < n; i += 4) {
-            byteBuffer.put(byArray[i]).put(byArray[i + 1]).put(byArray[i + 2]);
+    private void writeRgbPixels(ByteBuffer output, byte[] scanline) {
+        int scanlineLength = scanline.length;
+        for (int index = 1; index < scanlineLength; index += 4) {
+            output.put(scanline[index]).put(scanline[index + 1]).put(scanline[index + 2]);
         }
     }
 
@@ -124,49 +124,48 @@ public class ImageParser {
         throw new UnsupportedOperationException("Not yet implemented");
     }
 
-    private void unfilterScanline(byte[] byArray, byte[] byArray2) throws IOException {
-        switch (byArray[0]) {
+    private void unfilterScanline(byte[] scanline, byte[] previousScanline) throws IOException {
+        switch (scanline[0]) {
             case 0: {
                 break;
             }
             case 1: {
-                this.unfilterSub(byArray);
+                this.unfilterSub(scanline);
                 break;
             }
             case 2: {
-                this.unfilterUp(byArray, byArray2);
+                this.unfilterUp(scanline, previousScanline);
                 break;
             }
             case 3: {
-                this.unfilterAverage(byArray, byArray2);
+                this.unfilterAverage(scanline, previousScanline);
                 break;
             }
             case 4: {
-                this.unfilterPaeth(byArray, byArray2);
+                this.unfilterPaeth(scanline, previousScanline);
                 break;
             }
             default: {
-                throw new IOException("invalide filter type in scanline: " + byArray[0]);
+                throw new IOException("invalide filter type in scanline: " + scanline[0]);
             }
         }
     }
 
-    private void unfilterSub(byte[] byArray) {
-        int n = this.bytesPerPixel;
-        int n2 = byArray.length;
-        for (int i = n + 1; i < n2; ++i) {
-            int n3 = i;
-            byArray[n3] = (byte)(byArray[n3] + byArray[i - n]);
+    private void unfilterSub(byte[] scanline) {
+        int pixelStride = this.bytesPerPixel;
+        int scanlineLength = scanline.length;
+        for (int index = pixelStride + 1; index < scanlineLength; ++index) {
+            scanline[index] = (byte)(scanline[index] + scanline[index - pixelStride]);
         }
     }
 
-    private int readChunkBytes(byte[] byArray, int n, int n2) throws IOException {
-        if (n2 > this.remainingChunkBytes) {
-            n2 = this.remainingChunkBytes;
+    private int readChunkBytes(byte[] destination, int offset, int length) throws IOException {
+        if (length > this.remainingChunkBytes) {
+            length = this.remainingChunkBytes;
         }
-        this.readFully(byArray, n, n2);
-        this.remainingChunkBytes -= n2;
-        return n2;
+        this.readFully(destination, offset, length);
+        this.remainingChunkBytes -= length;
+        return length;
     }
 
     private void refillInflaterInput(Inflater inflater) throws IOException {
@@ -174,8 +173,8 @@ public class ImageParser {
             this.skipToNextChunk();
             this.expectChunk(1229209940);
         }
-        int n = this.readChunkBytes(this.ioBuffer, 0, this.ioBuffer.length);
-        inflater.setInput(this.ioBuffer, 0, n);
+        int bytesRead = this.readChunkBytes(this.ioBuffer, 0, this.ioBuffer.length);
+        inflater.setInput(this.ioBuffer, 0, bytesRead);
     }
 
     public void decodeFlipped(ByteBuffer byteBuffer, int stride, ImageParser$Format outputFormat) throws IOException {
@@ -189,12 +188,10 @@ public class ImageParser {
         byteBuffer.position(byteBuffer.position() + rowOffset);
     }
 
-    private void unfilterUp(byte[] byArray, byte[] byArray2) {
-        int n = this.bytesPerPixel;
-        int n2 = byArray.length;
-        for (int i = 1; i < n2; ++i) {
-            int n3 = i;
-            byArray[n3] = (byte)(byArray[n3] + byArray2[i]);
+    private void unfilterUp(byte[] scanline, byte[] previousScanline) {
+        int scanlineLength = scanline.length;
+        for (int index = 1; index < scanlineLength; ++index) {
+            scanline[index] = (byte)(scanline[index] + previousScanline[index]);
         }
     }
 
@@ -249,11 +246,11 @@ public class ImageParser {
         return this.imageWidth;
     }
 
-    private void inflateFully(Inflater inflater, byte[] byArray, int n, int n2) throws IOException {
+    private void inflateFully(Inflater inflater, byte[] destination, int offset, int length) throws IOException {
         try {
             do {
-                int n3;
-                if ((n3 = inflater.inflate(byArray, n, n2)) <= 0) {
+                int inflatedBytes;
+                if ((inflatedBytes = inflater.inflate(destination, offset, length)) <= 0) {
                     if (inflater.finished()) {
                         throw new EOFException();
                     }
@@ -261,67 +258,67 @@ public class ImageParser {
                         this.refillInflaterInput(inflater);
                         continue;
                     }
-                    throw new IOException("Can't inflate " + n2 + " bytes");
+                    throw new IOException("Can't inflate " + length + " bytes");
                 }
-                n += n3;
-                n2 -= n3;
-            } while (n2 > 0);
+                offset += inflatedBytes;
+                length -= inflatedBytes;
+            } while (length > 0);
         }
         catch (Exception exception) {
             throw new IOException("inflate error", exception);
         }
     }
 
-    private void writeBgraPalettePixels(ByteBuffer byteBuffer, byte[] byArray) {
+    private void writeBgraPalettePixels(ByteBuffer output, byte[] scanline) {
         if (this.paletteAlpha != null) {
-            int n = byArray.length;
-            for (int i = 1; i < n; ++i) {
-                int n2 = byArray[i] & 0xFF;
-                byte by = this.palette[n2 * 3 + 0];
-                byte by2 = this.palette[n2 * 3 + 1];
-                byte by3 = this.palette[n2 * 3 + 2];
-                byte by4 = this.paletteAlpha[n2];
-                byteBuffer.put(by3).put(by2).put(by).put(by4);
+            int scanlineLength = scanline.length;
+            for (int index = 1; index < scanlineLength; ++index) {
+                int paletteIndex = scanline[index] & 0xFF;
+                byte red = this.palette[paletteIndex * 3];
+                byte green = this.palette[paletteIndex * 3 + 1];
+                byte blue = this.palette[paletteIndex * 3 + 2];
+                byte alpha = this.paletteAlpha[paletteIndex];
+                output.put(blue).put(green).put(red).put(alpha);
             }
         } else {
-            int n = byArray.length;
-            for (int i = 1; i < n; ++i) {
-                int n3 = byArray[i] & 0xFF;
-                byte by = this.palette[n3 * 3 + 0];
-                byte by5 = this.palette[n3 * 3 + 1];
-                byte by6 = this.palette[n3 * 3 + 2];
-                byte by7 = -1;
-                byteBuffer.put(by6).put(by5).put(by).put(by7);
+            int scanlineLength = scanline.length;
+            for (int index = 1; index < scanlineLength; ++index) {
+                int paletteIndex = scanline[index] & 0xFF;
+                byte red = this.palette[paletteIndex * 3];
+                byte green = this.palette[paletteIndex * 3 + 1];
+                byte blue = this.palette[paletteIndex * 3 + 2];
+                byte alpha = -1;
+                output.put(blue).put(green).put(red).put(alpha);
             }
         }
     }
 
-    private void requireChunkLength(int n) throws IOException {
-        if (this.currentChunkLength != n) {
+    private void requireChunkLength(int expectedLength) throws IOException {
+        if (this.currentChunkLength != expectedLength) {
             throw new IOException("Chunk has wrong size");
         }
     }
 
-    private void writeAbgrPalettePixels(ByteBuffer byteBuffer, byte[] byArray) {
+    private void writeAbgrPalettePixels(ByteBuffer output, byte[] scanline) {
         if (this.paletteAlpha != null) {
-            int n = byArray.length;
-            for (int i = 1; i < n; ++i) {
-                int n2 = byArray[i] & 0xFF;
-                byte by = this.palette[n2 * 3 + 0];
-                byte by2 = this.palette[n2 * 3 + 1];
-                byte by3 = this.palette[n2 * 3 + 2];
-                byte by4 = this.paletteAlpha[n2];
-                byteBuffer.put(by4).put(by3).put(by2).put(by);
+            int scanlineLength = scanline.length;
+            for (int index = 1; index < scanlineLength; ++index) {
+                int paletteIndex = scanline[index] & 0xFF;
+                byte red = this.palette[paletteIndex * 3];
+                byte green = this.palette[paletteIndex * 3 + 1];
+                byte blue = this.palette[paletteIndex * 3 + 2];
+                byte alpha = this.paletteAlpha[paletteIndex];
+                output.put(alpha).put(blue).put(green).put(red);
             }
         } else {
-            int n = byArray.length;
-            for (int i = 1; i < n; ++i) {
-                int n3 = byArray[i] & 0xFF;
-                byte by = this.palette[n3 * 3 + 0];
-                byte by5 = this.palette[n3 * 3 + 1];
-                byte by6 = this.palette[n3 * 3 + 2];
-                byte by7 = -1;
-                byteBuffer.put(by7).put(by6).put(by5).put(by);
+            int scanlineLength = scanline.length;
+            for (int index = 1; index < scanlineLength; ++index) {
+                int paletteIndex = scanline[index] & 0xFF;
+                byte red = this.palette[paletteIndex * 3];
+                byte green = this.palette[paletteIndex * 3 + 1];
+                byte blue = this.palette[paletteIndex * 3 + 2];
+                byte alpha = -1;
+                output.put(alpha).put(blue).put(green).put(red);
             }
         }
     }
@@ -329,35 +326,35 @@ public class ImageParser {
     /*
      * WARNING - Removed try catching itself - possible behaviour change.
      */
-    public void decode(ByteBuffer byteBuffer, int stride, ImageParser$Format outputFormat) throws IOException {
-        int n2 = byteBuffer.position();
-        int n3 = (this.imageWidth * this.bitDepth + 7) / 8 * this.bytesPerPixel;
-        byte[] byArray = new byte[n3 + 1];
-        byte[] byArray2 = new byte[n3 + 1];
-        byte[] byArray3 = this.bitDepth < 8 ? new byte[this.imageWidth + 1] : null;
+    public void decode(ByteBuffer output, int stride, ImageParser$Format outputFormat) throws IOException {
+        int initialPosition = output.position();
+        int scanlineByteCount = (this.imageWidth * this.bitDepth + 7) / 8 * this.bytesPerPixel;
+        byte[] currentScanline = new byte[scanlineByteCount + 1];
+        byte[] previousScanline = new byte[scanlineByteCount + 1];
+        byte[] unpackedScanline = this.bitDepth < 8 ? new byte[this.imageWidth + 1] : null;
         Inflater inflater = new Inflater();
         try {
-            for (int i = 0; i < this.imageHeight; ++i) {
-                this.inflateFully(inflater, byArray, 0, byArray.length);
-                this.unfilterScanline(byArray, byArray2);
-                byteBuffer.position(n2 + i * stride);
+            for (int row = 0; row < this.imageHeight; ++row) {
+                this.inflateFully(inflater, currentScanline, 0, currentScanline.length);
+                this.unfilterScanline(currentScanline, previousScanline);
+                output.position(initialPosition + row * stride);
                 block1 : switch (this.colorType) {
                     case 2: {
                         switch (outputFormat) {
                             case ABGR: {
-                                this.writeAbgrPixelsWithTransparency(byteBuffer, byArray);
+                                this.writeAbgrPixelsWithTransparency(output, currentScanline);
                                 break block1;
                             }
                             case RGBA: {
-                                this.writeRgbaPixelsWithTransparency(byteBuffer, byArray);
+                                this.writeRgbaPixelsWithTransparency(output, currentScanline);
                                 break block1;
                             }
                             case BGRA: {
-                                this.writeBgraPixelsWithTransparency(byteBuffer, byArray);
+                                this.writeBgraPixelsWithTransparency(output, currentScanline);
                                 break block1;
                             }
                             case RGB: {
-                                this.writeRawPixels(byteBuffer, byArray);
+                                this.writeRawPixels(output, currentScanline);
                                 break block1;
                             }
                         }
@@ -366,23 +363,23 @@ public class ImageParser {
                     case 6: {
                         switch (outputFormat) {
                             case ABGR: {
-                                this.writeAbgrPixels(byteBuffer, byArray);
+                                this.writeAbgrPixels(output, currentScanline);
                                 break block1;
                             }
                             case RGBA: {
-                                this.writeRawPixels(byteBuffer, byArray);
+                                this.writeRawPixels(output, currentScanline);
                                 break block1;
                             }
                             case WHITE: {
-                                this.writeWhitePixels(byteBuffer, byArray);
+                                this.writeWhitePixels(output, currentScanline);
                                 break block1;
                             }
                             case BGRA: {
-                                this.writeBgraPixels(byteBuffer, byArray);
+                                this.writeBgraPixels(output, currentScanline);
                                 break block1;
                             }
                             case RGB: {
-                                this.writeRgbPixels(byteBuffer, byArray);
+                                this.writeRgbPixels(output, currentScanline);
                                 break block1;
                             }
                         }
@@ -392,7 +389,7 @@ public class ImageParser {
                         switch (outputFormat) {
                             case LUMINANCE: 
                             case ALPHA: {
-                                this.writeRawPixels(byteBuffer, byArray);
+                                this.writeRawPixels(output, currentScanline);
                                 break block1;
                             }
                         }
@@ -401,7 +398,7 @@ public class ImageParser {
                     case 4: {
                         switch (outputFormat) {
                             case LUMINANCE_ALPHA: {
-                                this.writeRawPixels(byteBuffer, byArray);
+                                this.writeRawPixels(output, currentScanline);
                                 break block1;
                             }
                         }
@@ -410,19 +407,19 @@ public class ImageParser {
                     case 3: {
                         switch (this.bitDepth) {
                             case 8: {
-                                byArray3 = byArray;
+                                unpackedScanline = currentScanline;
                                 break;
                             }
                             case 4: {
-                                this.unpack4BitSamples(byArray, byArray3);
+                                this.unpack4BitSamples(currentScanline, unpackedScanline);
                                 break;
                             }
                             case 2: {
-                                this.unpack2BitSamples(byArray, byArray3);
+                                this.unpack2BitSamples(currentScanline, unpackedScanline);
                                 break;
                             }
                             case 1: {
-                                this.unpack1BitSamples(byArray, byArray3);
+                                this.unpack1BitSamples(currentScanline, unpackedScanline);
                                 break;
                             }
                             default: {
@@ -431,15 +428,15 @@ public class ImageParser {
                         }
                         switch (outputFormat) {
                             case ABGR: {
-                                this.writeAbgrPalettePixels(byteBuffer, byArray3);
+                                this.writeAbgrPalettePixels(output, unpackedScanline);
                                 break block1;
                             }
                             case RGBA: {
-                                this.writeRgbaPalettePixels(byteBuffer, byArray3);
+                                this.writeRgbaPalettePixels(output, unpackedScanline);
                                 break block1;
                             }
                             case BGRA: {
-                                this.writeBgraPalettePixels(byteBuffer, byArray3);
+                                this.writeBgraPalettePixels(output, unpackedScanline);
                                 break block1;
                             }
                         }
@@ -449,9 +446,9 @@ public class ImageParser {
                         throw new UnsupportedOperationException("Not yet implemented");
                     }
                 }
-                byte[] byArray4 = byArray;
-                byArray = byArray2;
-                byArray2 = byArray4;
+                byte[] completedScanline = currentScanline;
+                currentScanline = previousScanline;
+                previousScanline = completedScanline;
             }
         }
         finally {
@@ -459,10 +456,10 @@ public class ImageParser {
         }
     }
 
-    private void writeWhitePixels(ByteBuffer byteBuffer, byte[] byArray) {
-        int n = byArray.length;
-        for (int i = 1; i < n; i += 4) {
-            byteBuffer.put((byte)-1).put((byte)-1).put((byte)-1).put(byArray[i + 3]);
+    private void writeWhitePixels(ByteBuffer output, byte[] scanline) {
+        int scanlineLength = scanline.length;
+        for (int index = 1; index < scanlineLength; index += 4) {
+            output.put((byte)-1).put((byte)-1).put((byte)-1).put(scanline[index + 3]);
         }
     }
 
@@ -529,119 +526,117 @@ public class ImageParser {
         }
     }
 
-    private void writeRgbaPalettePixels(ByteBuffer byteBuffer, byte[] byArray) {
+    private void writeRgbaPalettePixels(ByteBuffer output, byte[] scanline) {
         if (this.paletteAlpha != null) {
-            int n = byArray.length;
-            for (int i = 1; i < n; ++i) {
-                int n2 = byArray[i] & 0xFF;
-                byte by = this.palette[n2 * 3 + 0];
-                byte by2 = this.palette[n2 * 3 + 1];
-                byte by3 = this.palette[n2 * 3 + 2];
-                byte by4 = this.paletteAlpha[n2];
-                byteBuffer.put(by).put(by2).put(by3).put(by4);
+            int scanlineLength = scanline.length;
+            for (int index = 1; index < scanlineLength; ++index) {
+                int paletteIndex = scanline[index] & 0xFF;
+                byte red = this.palette[paletteIndex * 3];
+                byte green = this.palette[paletteIndex * 3 + 1];
+                byte blue = this.palette[paletteIndex * 3 + 2];
+                byte alpha = this.paletteAlpha[paletteIndex];
+                output.put(red).put(green).put(blue).put(alpha);
             }
         } else {
-            int n = byArray.length;
-            for (int i = 1; i < n; ++i) {
-                int n3 = byArray[i] & 0xFF;
-                byte by = this.palette[n3 * 3 + 0];
-                byte by5 = this.palette[n3 * 3 + 1];
-                byte by6 = this.palette[n3 * 3 + 2];
-                byte by7 = -1;
-                byteBuffer.put(by).put(by5).put(by6).put(by7);
+            int scanlineLength = scanline.length;
+            for (int index = 1; index < scanlineLength; ++index) {
+                int paletteIndex = scanline[index] & 0xFF;
+                byte red = this.palette[paletteIndex * 3];
+                byte green = this.palette[paletteIndex * 3 + 1];
+                byte blue = this.palette[paletteIndex * 3 + 2];
+                byte alpha = -1;
+                output.put(red).put(green).put(blue).put(alpha);
             }
         }
     }
 
-    private void unpack4BitSamples(byte[] byArray, byte[] byArray2) {
-        int n = byArray2.length;
-        for (int i = 1; i < n; i += 2) {
-            int n2 = byArray[1 + (i >> 1)] & 0xFF;
-            switch (n - i) {
+    private void unpack4BitSamples(byte[] packedScanline, byte[] unpackedScanline) {
+        int outputLength = unpackedScanline.length;
+        for (int outputIndex = 1; outputIndex < outputLength; outputIndex += 2) {
+            int packedByte = packedScanline[1 + (outputIndex >> 1)] & 0xFF;
+            switch (outputLength - outputIndex) {
                 default: {
-                    byArray2[i + 1] = (byte)(n2 & 0xF);
+                    unpackedScanline[outputIndex + 1] = (byte)(packedByte & 0xF);
                 }
                 case 1: 
             }
-            byArray2[i] = (byte)(n2 >> 4);
+            unpackedScanline[outputIndex] = (byte)(packedByte >> 4);
         }
     }
 
-    private void unfilterAverage(byte[] byArray, byte[] byArray2) {
-        int n;
-        int n2 = this.bytesPerPixel;
-        for (n = 1; n <= n2; ++n) {
-            int n3 = n;
-            byArray[n3] = (byte)(byArray[n3] + (byte)((byArray2[n] & 0xFF) >>> 1));
+    private void unfilterAverage(byte[] scanline, byte[] previousScanline) {
+        int index;
+        int pixelStride = this.bytesPerPixel;
+        for (index = 1; index <= pixelStride; ++index) {
+            scanline[index] = (byte)(scanline[index] + (byte)((previousScanline[index] & 0xFF) >>> 1));
         }
-        int n4 = byArray.length;
-        while (n < n4) {
-            int n5 = n;
-            byArray[n5] = (byte)(byArray[n5] + (byte)((byArray2[n] & 0xFF) + (byArray[n - n2] & 0xFF) >>> 1));
-            ++n;
+        int scanlineLength = scanline.length;
+        while (index < scanlineLength) {
+            scanline[index] = (byte)(scanline[index] + (byte)((previousScanline[index] & 0xFF) + (scanline[index - pixelStride] & 0xFF) >>> 1));
+            ++index;
         }
     }
 
-    private void writeAbgrPixelsWithTransparency(ByteBuffer byteBuffer, byte[] byArray) {
+    private void writeAbgrPixelsWithTransparency(ByteBuffer output, byte[] scanline) {
         if (this.transparencyData != null) {
-            byte by = this.transparencyData[1];
-            byte by2 = this.transparencyData[3];
-            byte by3 = this.transparencyData[5];
-            int n = byArray.length;
-            for (int i = 1; i < n; i += 3) {
-                byte by4 = byArray[i];
-                byte by5 = byArray[i + 1];
-                byte by6 = byArray[i + 2];
-                byte by7 = -1;
-                if (by4 == by && by5 == by2 && by6 == by3) {
-                    by7 = 0;
+            byte transparentRed = this.transparencyData[1];
+            byte transparentGreen = this.transparencyData[3];
+            byte transparentBlue = this.transparencyData[5];
+            int scanlineLength = scanline.length;
+            for (int index = 1; index < scanlineLength; index += 3) {
+                byte red = scanline[index];
+                byte green = scanline[index + 1];
+                byte blue = scanline[index + 2];
+                byte alpha = -1;
+                if (red == transparentRed && green == transparentGreen && blue == transparentBlue) {
+                    alpha = 0;
                 }
-                byteBuffer.put(by7).put(by6).put(by5).put(by4);
+                output.put(alpha).put(blue).put(green).put(red);
             }
         } else {
-            int n = byArray.length;
-            for (int i = 1; i < n; i += 3) {
-                byteBuffer.put((byte)-1).put(byArray[i + 2]).put(byArray[i + 1]).put(byArray[i]);
+            int scanlineLength = scanline.length;
+            for (int index = 1; index < scanlineLength; index += 3) {
+                output.put((byte)-1).put(scanline[index + 2]).put(scanline[index + 1]).put(scanline[index]);
             }
         }
     }
 
-    private void expectChunk(int n) throws IOException {
+    private void expectChunk(int expectedChunkType) throws IOException {
         this.readChunkHeader();
-        if (this.currentChunkType != n) {
-            throw new IOException("Expected chunk: " + Integer.toHexString(n));
+        if (this.currentChunkType != expectedChunkType) {
+            throw new IOException("Expected chunk: " + Integer.toHexString(expectedChunkType));
         }
     }
 
-    private void unpack1BitSamples(byte[] byArray, byte[] byArray2) {
-        int n = byArray2.length;
-        for (int i = 1; i < n; i += 8) {
-            int n2 = byArray[1 + (i >> 3)] & 0xFF;
-            switch (n - i) {
+    private void unpack1BitSamples(byte[] packedScanline, byte[] unpackedScanline) {
+        int outputLength = unpackedScanline.length;
+        for (int outputIndex = 1; outputIndex < outputLength; outputIndex += 8) {
+            int packedByte = packedScanline[1 + (outputIndex >> 3)] & 0xFF;
+            switch (outputLength - outputIndex) {
                 default: {
-                    byArray2[i + 7] = (byte)(n2 & 1);
+                    unpackedScanline[outputIndex + 7] = (byte)(packedByte & 1);
                 }
                 case 7: {
-                    byArray2[i + 6] = (byte)(n2 >> 1 & 1);
+                    unpackedScanline[outputIndex + 6] = (byte)(packedByte >> 1 & 1);
                 }
                 case 6: {
-                    byArray2[i + 5] = (byte)(n2 >> 2 & 1);
+                    unpackedScanline[outputIndex + 5] = (byte)(packedByte >> 2 & 1);
                 }
                 case 5: {
-                    byArray2[i + 4] = (byte)(n2 >> 3 & 1);
+                    unpackedScanline[outputIndex + 4] = (byte)(packedByte >> 3 & 1);
                 }
                 case 4: {
-                    byArray2[i + 3] = (byte)(n2 >> 4 & 1);
+                    unpackedScanline[outputIndex + 3] = (byte)(packedByte >> 4 & 1);
                 }
                 case 3: {
-                    byArray2[i + 2] = (byte)(n2 >> 5 & 1);
+                    unpackedScanline[outputIndex + 2] = (byte)(packedByte >> 5 & 1);
                 }
                 case 2: {
-                    byArray2[i + 1] = (byte)(n2 >> 6 & 1);
+                    unpackedScanline[outputIndex + 1] = (byte)(packedByte >> 6 & 1);
                 }
                 case 1: 
             }
-            byArray2[i] = (byte)(n2 >> 7);
+            unpackedScanline[outputIndex] = (byte)(packedByte >> 7);
         }
     }
 
@@ -649,48 +644,48 @@ public class ImageParser {
         return this.colorType == 6 || this.colorType == 2 || this.colorType == 3;
     }
 
-    private void writeRawPixels(ByteBuffer byteBuffer, byte[] byArray) {
-        byteBuffer.put(byArray, 1, byArray.length - 1);
+    private void writeRawPixels(ByteBuffer output, byte[] scanline) {
+        output.put(scanline, 1, scanline.length - 1);
     }
 
-    private void writeBgraPixelsWithTransparency(ByteBuffer byteBuffer, byte[] byArray) {
+    private void writeBgraPixelsWithTransparency(ByteBuffer output, byte[] scanline) {
         if (this.transparencyData != null) {
-            byte by = this.transparencyData[1];
-            byte by2 = this.transparencyData[3];
-            byte by3 = this.transparencyData[5];
-            int n = byArray.length;
-            for (int i = 1; i < n; i += 3) {
-                byte by4 = byArray[i];
-                byte by5 = byArray[i + 1];
-                byte by6 = byArray[i + 2];
-                byte by7 = -1;
-                if (by4 == by && by5 == by2 && by6 == by3) {
-                    by7 = 0;
+            byte transparentRed = this.transparencyData[1];
+            byte transparentGreen = this.transparencyData[3];
+            byte transparentBlue = this.transparencyData[5];
+            int scanlineLength = scanline.length;
+            for (int index = 1; index < scanlineLength; index += 3) {
+                byte red = scanline[index];
+                byte green = scanline[index + 1];
+                byte blue = scanline[index + 2];
+                byte alpha = -1;
+                if (red == transparentRed && green == transparentGreen && blue == transparentBlue) {
+                    alpha = 0;
                 }
-                byteBuffer.put(by6).put(by5).put(by4).put(by7);
+                output.put(blue).put(green).put(red).put(alpha);
             }
         } else {
-            int n = byArray.length;
-            for (int i = 1; i < n; i += 3) {
-                byteBuffer.put(byArray[i + 2]).put(byArray[i + 1]).put(byArray[i]).put((byte)-1);
+            int scanlineLength = scanline.length;
+            for (int index = 1; index < scanlineLength; index += 3) {
+                output.put(scanline[index + 2]).put(scanline[index + 1]).put(scanline[index]).put((byte)-1);
             }
         }
     }
 
-    private void readFully(byte[] byArray, int n, int n2) throws IOException {
-        int n3;
+    private void readFully(byte[] destination, int offset, int length) throws IOException {
+        int bytesRead;
         do {
-            if ((n3 = this.inputStream.read(byArray, n, n2)) < 0) {
+            if ((bytesRead = this.inputStream.read(destination, offset, length)) < 0) {
                 throw new EOFException();
             }
-            n += n3;
-        } while ((n2 -= n3) > 0);
+            offset += bytesRead;
+        } while ((length -= bytesRead) > 0);
     }
 
-    private void writeBgraPixels(ByteBuffer byteBuffer, byte[] byArray) {
-        int n = byArray.length;
-        for (int i = 1; i < n; i += 4) {
-            byteBuffer.put(byArray[i + 2]).put(byArray[i + 1]).put(byArray[i]).put(byArray[i + 3]);
+    private void writeBgraPixels(ByteBuffer output, byte[] scanline) {
+        int scanlineLength = scanline.length;
+        for (int index = 1; index < scanlineLength; index += 4) {
+            output.put(scanline[index + 2]).put(scanline[index + 1]).put(scanline[index]).put(scanline[index + 3]);
         }
     }
 
@@ -705,27 +700,27 @@ public class ImageParser {
         this.currentChunkType = 0;
     }
 
-    private int readInt32(byte[] byArray, int n) {
-        return byArray[n] << 24 | (byArray[n + 1] & 0xFF) << 16 | (byArray[n + 2] & 0xFF) << 8 | byArray[n + 3] & 0xFF;
+    private int readInt32(byte[] bytes, int offset) {
+        return bytes[offset] << 24 | (bytes[offset + 1] & 0xFF) << 16 | (bytes[offset + 2] & 0xFF) << 8 | bytes[offset + 3] & 0xFF;
     }
 
-    private void unpack2BitSamples(byte[] byArray, byte[] byArray2) {
-        int n = byArray2.length;
-        for (int i = 1; i < n; i += 4) {
-            int n2 = byArray[1 + (i >> 2)] & 0xFF;
-            switch (n - i) {
+    private void unpack2BitSamples(byte[] packedScanline, byte[] unpackedScanline) {
+        int outputLength = unpackedScanline.length;
+        for (int outputIndex = 1; outputIndex < outputLength; outputIndex += 4) {
+            int packedByte = packedScanline[1 + (outputIndex >> 2)] & 0xFF;
+            switch (outputLength - outputIndex) {
                 default: {
-                    byArray2[i + 3] = (byte)(n2 & 3);
+                    unpackedScanline[outputIndex + 3] = (byte)(packedByte & 3);
                 }
                 case 3: {
-                    byArray2[i + 2] = (byte)(n2 >> 2 & 3);
+                    unpackedScanline[outputIndex + 2] = (byte)(packedByte >> 2 & 3);
                 }
                 case 2: {
-                    byArray2[i + 1] = (byte)(n2 >> 4 & 3);
+                    unpackedScanline[outputIndex + 1] = (byte)(packedByte >> 4 & 3);
                 }
                 case 1: 
             }
-            byArray2[i] = (byte)(n2 >> 6);
+            unpackedScanline[outputIndex] = (byte)(packedByte >> 6);
         }
     }
 
@@ -740,53 +735,53 @@ public class ImageParser {
         if (this.hasAlphaChannel()) {
             throw new UnsupportedOperationException("image has an alpha channel");
         }
-        byte[] byArray = this.palette;
-        if (byArray == null) {
+        byte[] paletteData = this.palette;
+        if (paletteData == null) {
             this.transparencyData = new byte[]{0, red, 0, green, 0, blue};
         } else {
-            this.paletteAlpha = new byte[byArray.length / 3];
-            int n = 0;
-            int n2 = 0;
-            while (n < byArray.length) {
-                if (byArray[n] != red || byArray[n + 1] != green || byArray[n + 2] != blue) {
-                    this.paletteAlpha[n2] = -1;
+            this.paletteAlpha = new byte[paletteData.length / 3];
+            int paletteOffset = 0;
+            int paletteIndex = 0;
+            while (paletteOffset < paletteData.length) {
+                if (paletteData[paletteOffset] != red || paletteData[paletteOffset + 1] != green || paletteData[paletteOffset + 2] != blue) {
+                    this.paletteAlpha[paletteIndex] = -1;
                 }
-                n += 3;
-                ++n2;
+                paletteOffset += 3;
+                ++paletteIndex;
             }
         }
     }
 
-    private void writeRgbaPixelsWithTransparency(ByteBuffer byteBuffer, byte[] byArray) {
+    private void writeRgbaPixelsWithTransparency(ByteBuffer output, byte[] scanline) {
         if (this.transparencyData != null) {
-            byte by = this.transparencyData[1];
-            byte by2 = this.transparencyData[3];
-            byte by3 = this.transparencyData[5];
-            int n = byArray.length;
-            for (int i = 1; i < n; i += 3) {
-                byte by4 = byArray[i];
-                byte by5 = byArray[i + 1];
-                byte by6 = byArray[i + 2];
-                byte by7 = -1;
-                if (by4 == by && by5 == by2 && by6 == by3) {
-                    by7 = 0;
+            byte transparentRed = this.transparencyData[1];
+            byte transparentGreen = this.transparencyData[3];
+            byte transparentBlue = this.transparencyData[5];
+            int scanlineLength = scanline.length;
+            for (int index = 1; index < scanlineLength; index += 3) {
+                byte red = scanline[index];
+                byte green = scanline[index + 1];
+                byte blue = scanline[index + 2];
+                byte alpha = -1;
+                if (red == transparentRed && green == transparentGreen && blue == transparentBlue) {
+                    alpha = 0;
                 }
-                byteBuffer.put(by4).put(by5).put(by6).put(by7);
+                output.put(red).put(green).put(blue).put(alpha);
             }
         } else {
-            int n = byArray.length;
-            for (int i = 1; i < n; i += 3) {
-                byteBuffer.put(byArray[i]).put(byArray[i + 1]).put(byArray[i + 2]).put((byte)-1);
+            int scanlineLength = scanline.length;
+            for (int index = 1; index < scanlineLength; index += 3) {
+                output.put(scanline[index]).put(scanline[index + 1]).put(scanline[index + 2]).put((byte)-1);
             }
         }
     }
 
     private void readPaletteChunk() throws IOException {
-        int n = this.currentChunkLength / 3;
-        if (n < 1 || n > 256 || this.currentChunkLength % 3 != 0) {
+        int colorCount = this.currentChunkLength / 3;
+        if (colorCount < 1 || colorCount > 256 || this.currentChunkLength % 3 != 0) {
             throw new IOException("PLTE chunk has wrong length");
         }
-        this.palette = new byte[n * 3];
+        this.palette = new byte[colorCount * 3];
         this.readChunkBytes(this.palette, 0, this.palette.length);
     }
 
@@ -815,38 +810,38 @@ public class ImageParser {
         }
     }
 
-    private void unfilterPaeth(byte[] byArray, byte[] byArray2) {
-        int n;
-        int n2 = this.bytesPerPixel;
-        for (n = 1; n <= n2; ++n) {
-            int n3 = n;
-            byArray[n3] = (byte)(byArray[n3] + byArray2[n]);
+    private void unfilterPaeth(byte[] scanline, byte[] previousScanline) {
+        int index;
+        int pixelStride = this.bytesPerPixel;
+        for (index = 1; index <= pixelStride; ++index) {
+            scanline[index] = (byte)(scanline[index] + previousScanline[index]);
         }
-        int n4 = byArray.length;
-        while (n < n4) {
-            int n5;
-            int n6;
-            int n7 = byArray[n - n2] & 0xFF;
-            int n8 = byArray2[n] & 0xFF;
-            int n9 = byArray2[n - n2] & 0xFF;
-            int n10 = n7 + n8 - n9;
-            int n11 = n10 - n7;
-            if (n11 < 0) {
-                n11 = -n11;
+        int scanlineLength = scanline.length;
+        while (index < scanlineLength) {
+            int left = scanline[index - pixelStride] & 0xFF;
+            int above = previousScanline[index] & 0xFF;
+            int upperLeft = previousScanline[index - pixelStride] & 0xFF;
+            int predictor = left + above - upperLeft;
+            int distanceFromLeft = predictor - left;
+            if (distanceFromLeft < 0) {
+                distanceFromLeft = -distanceFromLeft;
             }
-            if ((n6 = n10 - n8) < 0) {
-                n6 = -n6;
+            int distanceFromAbove = predictor - above;
+            if (distanceFromAbove < 0) {
+                distanceFromAbove = -distanceFromAbove;
             }
-            if ((n5 = n10 - n9) < 0) {
-                n5 = -n5;
+            int distanceFromUpperLeft = predictor - upperLeft;
+            if (distanceFromUpperLeft < 0) {
+                distanceFromUpperLeft = -distanceFromUpperLeft;
             }
-            if (n11 <= n6 && n11 <= n5) {
-                n9 = n7;
-            } else if (n6 <= n5) {
-                n9 = n8;
+            int selectedPredictor = upperLeft;
+            if (distanceFromLeft <= distanceFromAbove && distanceFromLeft <= distanceFromUpperLeft) {
+                selectedPredictor = left;
+            } else if (distanceFromAbove <= distanceFromUpperLeft) {
+                selectedPredictor = above;
             }
-            int n12 = n++;
-            byArray[n12] = (byte)(byArray[n12] + (byte)n9);
+            scanline[index] = (byte)(scanline[index] + (byte)selectedPredictor);
+            ++index;
         }
     }
 }

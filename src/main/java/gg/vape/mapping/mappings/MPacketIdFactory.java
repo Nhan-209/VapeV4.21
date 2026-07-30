@@ -25,14 +25,14 @@ extends Mapping {
     }
 
     public Object F(int n) {
-        return this.v.O(n);
+        return this.v.newInstance(n);
     }
 
     public MPacketIdFactory() {
         super(MappedClasses.Yq);
         Class[] classArray = new Class[]{Integer.TYPE};
         MPacketIdFactory mPacketIdFactory = this;
-        this.v = this.g(classArray);
+        this.v = this.registerConstructor(classArray);
     }
 }
 

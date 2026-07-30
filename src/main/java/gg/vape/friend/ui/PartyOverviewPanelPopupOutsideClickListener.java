@@ -6,16 +6,16 @@ import java.awt.Point;
 
 public class PartyOverviewPanelPopupOutsideClickListener
 implements GuiMouseListener {
-    final PartyDetailsPanel O;
+    private final PartyDetailsPanel detailsPanel;
 
     public PartyOverviewPanelPopupOutsideClickListener(PartyDetailsPanel partyDetailsPanel) {
-        this.O = partyDetailsPanel;
+        this.detailsPanel = partyDetailsPanel;
     }
 
     @Override
     public boolean Q(Point point) {
-        if (!PartyDetailsPanel.P(this.O).getBounds().R(point) && !PartyDetailsPanel.b(this.O).getBounds().R(point)) {
-            PartyDetailsPanel.H(this.O);
+        if (!PartyDetailsPanel.getSettingsPopup(this.detailsPanel).getBounds().R(point) && !PartyDetailsPanel.getSettingsPanel(this.detailsPanel).getBounds().R(point)) {
+            PartyDetailsPanel.closeSettingsPopup(this.detailsPanel);
             return true;
         }
         return GuiMouseListener.super.Q(point);

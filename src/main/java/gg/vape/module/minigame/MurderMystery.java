@@ -51,11 +51,11 @@ extends Mod {
             ScaledResolution scaledResolution = new ScaledResolution();
             int textY = 25;
             FontRenderer fontRenderer = event.getFontRenderer();
-            fontRenderer.drawStringWithShadow("\u00a7nMurderer List", (double)(scaledResolution.T() / 2 - 20), 15.0, -1);
+            fontRenderer.drawStringWithShadow("\u00a7nMurderer List", (double)(scaledResolution.getScaledWidth() / 2 - 20), 15.0, -1);
             for (Object e : Minecraft.theWorld().z()) {
                 EntityPlayer entityPlayer;
                 if (!MappedClasses.Yl.isAssignableFrom(e.getClass()) || MappedClasses.z5.isAssignableFrom(e.getClass()) || !this.murdererIds.contains((entityPlayer = new EntityPlayer(e)).S())) continue;
-                fontRenderer.drawStringWithShadow(entityPlayer.getName(), (double)(scaledResolution.T() / 2 - 20), (double)textY, -1);
+                fontRenderer.drawStringWithShadow(entityPlayer.getName(), (double)(scaledResolution.getScaledWidth() / 2 - 20), (double)textY, -1);
                 textY += 10;
             }
         }

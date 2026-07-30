@@ -17,16 +17,16 @@ import gg.vape.ui.click.frame.FrameHeaderComponent;
 public class EnemySettingsFrame
 extends Frame
 implements CollapsibleFrame {
-    private BooleanToggleComponent XH;
-    private BooleanToggleComponent Xg;
-    private ColorValueEditorComponent XR;
-    private BooleanToggleComponent X9;
-    private ColorDividerComponent X5;
-    private BooleanToggleComponent X0;
-    private boolean Xj = true;
+    private BooleanToggleComponent spoofAliasToggle;
+    private BooleanToggleComponent recolorVisualsToggle;
+    private ColorValueEditorComponent enemyColorEditor;
+    private BooleanToggleComponent useAliasToggle;
+    private ColorDividerComponent colorDivider;
+    private BooleanToggleComponent useEnemiesToggle;
+    private boolean expanded = true;
 
-    static ColorValueEditorComponent Q(EnemySettingsFrame enemySettingsFrame) {
-        return enemySettingsFrame.XR;
+    static ColorValueEditorComponent getEnemyColorEditor(EnemySettingsFrame frame) {
+        return frame.enemyColorEditor;
     }
 
     @Override
@@ -35,11 +35,11 @@ implements CollapsibleFrame {
 
     @Override
     public boolean q() {
-        return this.Xj;
+        return this.expanded;
     }
 
     public EnemySettingsFrame() {
-        this.X5 = new ColorDividerComponent(EnemySettingsFrame.J.l);
+        this.colorDivider = new ColorDividerComponent(EnemySettingsFrame.J.l);
         this.setDisabledOverlayColor(EnemySettingsFrame.J.i);
         this.K(300.0);
         this.S(100.0);
@@ -47,36 +47,36 @@ implements CollapsibleFrame {
         this.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M(false);
         this.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M("wrap");
         this.Y(new EnemySettingsFrameToggleHeaderComponent(this, this, "newfriends", "Enemies"));
-        this.XR = new ColorValueEditorComponent(Vape.INSTANCE.getEnemyManager().i);
-        this.Xg = new BooleanToggleComponent(Vape.INSTANCE.getFriendManager().q);
-        this.X0 = new BooleanToggleComponent(Vape.INSTANCE.getEnemyManager().L);
-        this.X9 = new BooleanToggleComponent(Vape.INSTANCE.getFriendManager().J);
-        this.XH = new BooleanToggleComponent(Vape.INSTANCE.getFriendManager().C);
-        this.XR.setDisabledOverlayColor(EnemySettingsFrame.J.r);
-        this.Xg.setDisabledOverlayColor(EnemySettingsFrame.J.r);
-        this.X0.setDisabledOverlayColor(EnemySettingsFrame.J.r);
-        this.X9.setDisabledOverlayColor(EnemySettingsFrame.J.r);
-        this.XH.setDisabledOverlayColor(EnemySettingsFrame.J.r);
-        this.XR.setVisible(false);
-        this.Xg.setVisible(false);
-        this.X0.setVisible(false);
-        this.X9.setVisible(false);
-        this.XH.setVisible(false);
-        this.X5.setVisible(false);
+        this.enemyColorEditor = new ColorValueEditorComponent(Vape.INSTANCE.getEnemyManager().enemyColor);
+        this.recolorVisualsToggle = new BooleanToggleComponent(Vape.INSTANCE.getFriendManager().recolorVisuals);
+        this.useEnemiesToggle = new BooleanToggleComponent(Vape.INSTANCE.getEnemyManager().useEnemies);
+        this.useAliasToggle = new BooleanToggleComponent(Vape.INSTANCE.getFriendManager().useAlias);
+        this.spoofAliasToggle = new BooleanToggleComponent(Vape.INSTANCE.getFriendManager().spoofAlias);
+        this.enemyColorEditor.setDisabledOverlayColor(EnemySettingsFrame.J.r);
+        this.recolorVisualsToggle.setDisabledOverlayColor(EnemySettingsFrame.J.r);
+        this.useEnemiesToggle.setDisabledOverlayColor(EnemySettingsFrame.J.r);
+        this.useAliasToggle.setDisabledOverlayColor(EnemySettingsFrame.J.r);
+        this.spoofAliasToggle.setDisabledOverlayColor(EnemySettingsFrame.J.r);
+        this.enemyColorEditor.setVisible(false);
+        this.recolorVisualsToggle.setVisible(false);
+        this.useEnemiesToggle.setVisible(false);
+        this.useAliasToggle.setVisible(false);
+        this.spoofAliasToggle.setVisible(false);
+        this.colorDivider.setVisible(false);
     }
 
-    public void Q$src$V$1u5tkk5() {
+    public void refreshEntries() {
         this.removeMarkedChildren();
-        this.addChildren(this.XR, this.Xg, this.X0, this.X9, this.XH, this.X5);
+        this.addChildren(this.enemyColorEditor, this.recolorVisualsToggle, this.useEnemiesToggle, this.useAliasToggle, this.spoofAliasToggle, this.colorDivider);
         this.h(new EnemySettingsAddEnemyInputComponent("Username / Alias"), new Object[0]);
-        for (Enemy enemy : Vape.INSTANCE.getEnemyManager().y()) {
+        for (Enemy enemy : Vape.INSTANCE.getEnemyManager().getEnemies()) {
             this.h(new EnemySettingsEntryRow(enemy).setDeleteActionListener(new EnemySettingsRemoveEntryClickHandler(this, enemy)), new Object[0]);
         }
         this.l$src$V$1mibm4x();
     }
 
-    static BooleanToggleComponent W(EnemySettingsFrame enemySettingsFrame) {
-        return enemySettingsFrame.X0;
+    static BooleanToggleComponent getUseEnemiesToggle(EnemySettingsFrame frame) {
+        return frame.useEnemiesToggle;
     }
 
     @Override
@@ -85,29 +85,29 @@ implements CollapsibleFrame {
 
     @Override
     public void w() {
-        this.Xj = !this.Xj;
+        this.expanded = !this.expanded;
         for (GuiComponent guiComponent : this.f()) {
             if (guiComponent instanceof FrameHeaderComponent) continue;
-            guiComponent.setVisible(this.Xj);
+            guiComponent.setVisible(this.expanded);
         }
         this.l$src$V$1mibm4x();
     }
 
-    static BooleanToggleComponent N(EnemySettingsFrame enemySettingsFrame) {
-        return enemySettingsFrame.Xg;
+    static BooleanToggleComponent getRecolorVisualsToggle(EnemySettingsFrame frame) {
+        return frame.recolorVisualsToggle;
     }
 
-    static ColorDividerComponent g(EnemySettingsFrame enemySettingsFrame) {
-        return enemySettingsFrame.X5;
+    static ColorDividerComponent getColorDivider(EnemySettingsFrame frame) {
+        return frame.colorDivider;
     }
 
 
-    static BooleanToggleComponent a(EnemySettingsFrame enemySettingsFrame) {
-        return enemySettingsFrame.XH;
+    static BooleanToggleComponent getSpoofAliasToggle(EnemySettingsFrame frame) {
+        return frame.spoofAliasToggle;
     }
 
-    static BooleanToggleComponent B(EnemySettingsFrame enemySettingsFrame) {
-        return enemySettingsFrame.X9;
+    static BooleanToggleComponent getUseAliasToggle(EnemySettingsFrame frame) {
+        return frame.useAliasToggle;
     }
 
     @Override

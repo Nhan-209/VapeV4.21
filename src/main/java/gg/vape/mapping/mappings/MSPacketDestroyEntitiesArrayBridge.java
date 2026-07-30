@@ -3,7 +3,6 @@ package gg.vape.mapping.mappings;
 import gg.vape.mapping.MappedClasses;
 import gg.vape.mapping.Mapping;
 import gg.vape.mapping.MappingField;
-import gg.vape.mapping.mappings.MSPacketEntityVelocity;
 import gg.vape.wrapper.Wrapper;
 import gg.vape.wrapper.impl.ForgeVersion;
 
@@ -24,7 +23,7 @@ extends Mapping {
         if (nArray != null) {
             if (ForgeVersion.MC_1_7_10.L()) {
                 Class<int[]> clazz = int[].class;
-                boolean bl = Wrapper.G;
+                boolean bl = Wrapper.isNativeAvailable;
                 String string = "field_149100_a";
                 MSPacketDestroyEntitiesArrayBridge mSPacketDestroyEntitiesArrayBridge = this;
                 this.l = mSPacketDestroyEntitiesArrayBridge.J(string, bl, clazz);

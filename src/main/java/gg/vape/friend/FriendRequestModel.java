@@ -4,55 +4,54 @@ import gg.vape.friend.UserModel;
 import gg.vape.protocol.ZeusPacketBuffer;
 
 public class FriendRequestModel {
-    private final UserModel h;
-    private final UserModel L;
-    private final long c;
+    private final UserModel requester;
+    private final UserModel recipient;
+    private final long id;
 
     public int hashCode() {
-        return (int)(this.c ^ this.c >>> 32);
+        return (int)(this.id ^ this.id >>> 32);
     }
 
-    public void l(ZeusPacketBuffer zeusPacketBuffer) {
-        zeusPacketBuffer.v(this.c);
-        this.h.a(zeusPacketBuffer);
-        this.L.a(zeusPacketBuffer);
+    public void writeTo(ZeusPacketBuffer buffer) {
+        buffer.writeLong(this.id);
+        this.requester.writeTo(buffer);
+        this.recipient.writeTo(buffer);
     }
 
-    public FriendRequestModel(ZeusPacketBuffer zeusPacketBuffer) {
-        this.c = zeusPacketBuffer.long_a();
-        this.h = new UserModel(zeusPacketBuffer);
-        this.L = new UserModel(zeusPacketBuffer);
+    public FriendRequestModel(ZeusPacketBuffer buffer) {
+        this.id = buffer.readLong();
+        this.requester = new UserModel(buffer);
+        this.recipient = new UserModel(buffer);
     }
 
-    public UserModel U() {
-        return this.L;
+    public UserModel getRecipient() {
+        return this.recipient;
     }
 
-    public UserModel J() {
-        return this.h;
+    public UserModel getRequester() {
+        return this.requester;
     }
 
-    public FriendRequestModel(long l, UserModel userModel, UserModel userModel2) {
-        this.c = l;
-        this.h = userModel;
-        this.L = userModel2;
+    public FriendRequestModel(long id, UserModel requester, UserModel recipient) {
+        this.id = id;
+        this.requester = requester;
+        this.recipient = recipient;
     }
 
-    public boolean equals(Object object) {
-        if (this == object) {
+    public boolean equals(Object other) {
+        if (this == other) {
             return true;
         }
-        if (object == null || this.getClass() != object.getClass()) {
+        if (other == null || this.getClass() != other.getClass()) {
             return false;
         }
-        FriendRequestModel friendRequestModel = (FriendRequestModel)object;
-        boolean bl = this.c == friendRequestModel.c;
-        return bl;
+        FriendRequestModel friendRequestModel = (FriendRequestModel)other;
+        return this.id == friendRequestModel.id;
     }
 
 
-    public long b() {
-        return this.c;
+    public long getId() {
+        return this.id;
     }
 }
 

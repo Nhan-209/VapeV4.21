@@ -7,45 +7,44 @@ import java.util.List;
 public class LicenseStatusResponse {
     @Expose
     @SerializedName(value="skin")
-    private String v;
+    private String skin;
     @Expose
     @SerializedName(value="limit")
-    private boolean Y;
+    private boolean limited;
     @Expose
     @SerializedName(value="info")
-    private List<String> Q;
+    private List<String> info;
     @Expose
     @SerializedName(value="token")
-    private String e;
+    private String token;
     @Expose
     @SerializedName(value="username")
-    private String i;
+    private String username;
     @Expose
     @SerializedName(value="password")
-    private String f;
+    private String password;
 
-    public String e() {
-        return this.e;
+    public String getToken() {
+        return this.token;
     }
 
-    public String u() {
-        return this.v;
+    public String getSkin() {
+        return this.skin;
     }
 
-    public String f() {
-        return this.i;
+    public String getUsername() {
+        return this.username;
     }
 
-    public String Y() {
-        return this.f;
+    public String getPassword() {
+        return this.password;
     }
 
-    public boolean P() {
-        return this.Y;
+    public boolean isLimited() {
+        return this.limited;
     }
 
-    public List<String> W() {
-        return this.Q;
+    public List<String> getInfo() {
+        return this.info;
     }
 }
-

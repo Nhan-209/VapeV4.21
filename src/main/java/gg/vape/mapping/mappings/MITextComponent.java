@@ -19,15 +19,15 @@ extends Mapping {
     private MappingMethod l;
 
     private String H(Object object) {
-        return (String)this.Q.L(object, new Object[0]);
+        return (String)this.Q.invokeObject(object, new Object[0]);
     }
 
     private String y(Object object) {
-        return (String)this.g.L(object, new Object[0]);
+        return (String)this.g.invokeObject(object, new Object[0]);
     }
 
     private Object O(Object object) {
-        return this.C.L(object, new Object[0]);
+        return this.C.invokeObject(object, new Object[0]);
     }
 
     public static Object y(MITextComponent mITextComponent, Object object) {
@@ -39,7 +39,7 @@ extends Mapping {
     }
 
     private Object A(String string) {
-        return this.S.L(null, string);
+        return this.S.invokeObject(null, string);
     }
 
     public static String b(MITextComponent mITextComponent, Object object) {
@@ -55,7 +55,7 @@ extends Mapping {
     }
 
     private Object l(Object object) {
-        return this.H.L(object, new Object[0]);
+        return this.H.invokeObject(object, new Object[0]);
     }
 
     public static Object f(MITextComponent mITextComponent, String string) {
@@ -64,7 +64,7 @@ extends Mapping {
 
 
     private List<Object> B(Object object) {
-        return (List)this.v.L(object, new Object[0]);
+        return (List)this.v.invokeObject(object, new Object[0]);
     }
 
     public MITextComponent() {
@@ -80,7 +80,7 @@ extends Mapping {
             boolean bl = true;
             String string = "translatable";
             MITextComponent mITextComponent = this;
-            this.l = mITextComponent.x(string, bl, clazz, classArray);
+            this.l = mITextComponent.registerStaticMethod(string, bl, clazz, classArray);
         }
         if (ForgeVersion.MC_1_20_6.d()) {
             Class[] classArray = new Class[]{};
@@ -100,7 +100,7 @@ extends Mapping {
             boolean bl3 = true;
             String string3 = "literal";
             MITextComponent mITextComponent3 = this;
-            this.S = this.x(string3, bl3, clazz3, classArray3);
+            this.S = this.registerStaticMethod(string3, bl3, clazz3, classArray3);
         }
         if (ForgeVersion.MC_1_16_5.d()) {
             Class[] classArray = new Class[]{};
@@ -155,11 +155,11 @@ extends Mapping {
     }
 
     private Object o(Object object) {
-        return this.L.L(object, new Object[0]);
+        return this.L.invokeObject(object, new Object[0]);
     }
 
     private Object w(String string) {
-        return this.l.L(null, string);
+        return this.l.invokeObject(null, string);
     }
 
     public static List V(MITextComponent mITextComponent, Object object) {

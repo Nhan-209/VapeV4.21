@@ -9,93 +9,93 @@ import java.util.Map;
 import org.jetbrains.annotations.Nullable;
 
 public class ActivityItemStack {
-    private final int S;
-    private final Map<Short, Short> J;
-    private final int g;
-    private final int q;
+    private final int count;
+    private final Map<Short, Short> enchantments;
+    private final int itemId;
+    private final int metadata;
 
-    public ActivityItemStack(int n, int n2, int n3, Map<Short, Short> map) {
-        this.g = n;
-        this.S = n2;
-        this.q = n3;
-        this.J = map;
+    public ActivityItemStack(int itemId, int count, int metadata, Map<Short, Short> enchantments) {
+        this.itemId = itemId;
+        this.count = count;
+        this.metadata = metadata;
+        this.enchantments = enchantments;
     }
 
-    public boolean O() {
-        boolean bl = !this.J.isEmpty();
-        return bl;
+    public boolean hasEnchantments() {
+        boolean hasEnchantments = !this.enchantments.isEmpty();
+        return hasEnchantments;
     }
 
 
-    public int I() {
-        return this.g;
+    public int getItemId() {
+        return this.itemId;
     }
 
-    public int k() {
-        return this.q;
+    public int getMetadata() {
+        return this.metadata;
     }
 
-    public boolean equals(Object object) {
-        if (this == object) {
+    public boolean equals(Object other) {
+        if (this == other) {
             return true;
         }
-        if (object == null || this.getClass() != object.getClass()) {
+        if (other == null || this.getClass() != other.getClass()) {
             return false;
         }
-        ActivityItemStack activityItemStack = (ActivityItemStack)object;
-        if (this.g != activityItemStack.g) {
+        ActivityItemStack activityItemStack = (ActivityItemStack)other;
+        if (this.itemId != activityItemStack.itemId) {
             return false;
         }
-        if (this.S != activityItemStack.S) {
+        if (this.count != activityItemStack.count) {
             return false;
         }
-        if (this.q != activityItemStack.q) {
+        if (this.metadata != activityItemStack.metadata) {
             return false;
         }
-        boolean bl = this.J.size() == activityItemStack.J.size() && this.J.equals(activityItemStack.J);
-        return bl;
+        boolean equalEnchantments = this.enchantments.size() == activityItemStack.enchantments.size() && this.enchantments.equals(activityItemStack.enchantments);
+        return equalEnchantments;
     }
 
-    public int n() {
-        return this.S;
+    public int getCount() {
+        return this.count;
     }
 
-    public Map<Short, Short> E() {
-        return this.J;
+    public Map<Short, Short> getEnchantments() {
+        return this.enchantments;
     }
 
-    public ActivityItemStackPayload W() {
-        return new ActivityItemStackPayload(this.g, this.S, this.q, this.J);
+    public ActivityItemStackPayload toPayload() {
+        return new ActivityItemStackPayload(this.itemId, this.count, this.metadata, this.enchantments);
     }
 
     public int hashCode() {
-        int n = this.g;
-        n = 31 * n + this.S;
-        n = 31 * n + this.q;
-        n = 31 * n + this.J.hashCode();
-        return n;
+        int result = this.itemId;
+        result = 31 * result + this.count;
+        result = 31 * result + this.metadata;
+        result = 31 * result + this.enchantments.hashCode();
+        return result;
     }
 
     @Nullable
-    public static ActivityItemStack C(@Nullable ActivityItemStackPayload activityItemStackPayload) {
-        if (activityItemStackPayload == null || activityItemStackPayload.E() == 0) {
+    public static ActivityItemStack fromPayload(@Nullable ActivityItemStackPayload activityItemStackPayload) {
+        if (activityItemStackPayload == null || activityItemStackPayload.getItemId() == 0) {
             return null;
         }
-        return new ActivityItemStack(activityItemStackPayload.E(), activityItemStackPayload.P(), activityItemStackPayload.n(), activityItemStackPayload.p());
+        return new ActivityItemStack(activityItemStackPayload.getItemId(), activityItemStackPayload.getCount(), activityItemStackPayload.getMetadata(), activityItemStackPayload.getEnchantments());
     }
 
     @Nullable
-    public ItemStack T() {
-        if (this.g == 0) {
+    public ItemStack toItemStack() {
+        if (this.itemId == 0) {
             return null;
         }
-        Item item = Item.T(this.g);
+        Item item = Item.T(this.itemId);
         if (item.isNotNull()) {
             ItemStack itemStack = ItemStack.S(item);
-            itemStack.s(this.q);
-            itemStack.Y(this.S);
-            if (!this.J.isEmpty()) {
-                for (Map.Entry<Short, Short> entry : this.J.entrySet()) {
+            itemStack.s(this.metadata);
+            itemStack.Y(this.count);
+            if (!this.enchantments.isEmpty()) {
+                for (Map.Entry<Short, Short> entry : this.enchantments.entrySet()) {
                     Enchantment enchantment = EnchantmentUtil.k(entry.getKey());
                     if (enchantment == null) continue;
                     itemStack.v(enchantment, entry.getValue().shortValue());

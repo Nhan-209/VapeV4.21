@@ -10,8 +10,8 @@ import java.util.List;
 
 public class HotbarSlotRuleSlotSelectorComponent
 extends GuiComponent {
-    private List<ItemStackIconButtonComponent> K = new ArrayList<ItemStackIconButtonComponent>();
-    private HotbarSlotRuleItemPickerFrame v;
+    private List<ItemStackIconButtonComponent> slotButtons = new ArrayList<ItemStackIconButtonComponent>();
+    private HotbarSlotRuleItemPickerFrame itemPickerFrame;
 
 
     @Override
@@ -44,25 +44,25 @@ extends GuiComponent {
     public void c() {
         double d = this.n() + 10.0;
         double d2 = this.G$src$D$1b2f02a() + 5.0;
-        for (int i = 0; i < this.K.size(); ++i) {
-            ItemStackIconButtonComponent itemStackIconButtonComponent = this.K.get(i);
+        for (int i = 0; i < this.slotButtons.size(); ++i) {
+            ItemStackIconButtonComponent itemStackIconButtonComponent = this.slotButtons.get(i);
             itemStackIconButtonComponent.K(d2);
             itemStackIconButtonComponent.S(d);
-            itemStackIconButtonComponent.h(this.v.N$src$Lgg_vape_module_utility_inventory_HotbarSlotRule$xa58f().u$src$Ljava_util_List_$1u5n2i3().get(i).createItemStack());
+            itemStackIconButtonComponent.h(this.itemPickerFrame.getGroupComponent().getRules().get(i).createItemStack());
             d2 += itemStackIconButtonComponent.A();
-            itemStackIconButtonComponent.c(this.v.X$src$I$7rbe5s() == i);
+            itemStackIconButtonComponent.c(this.itemPickerFrame.getSelectedSlot() == i);
         }
         super.c();
     }
 
     public HotbarSlotRuleSlotSelectorComponent(HotbarSlotRuleItemPickerFrame hotbarSlotRuleItemPickerFrame) {
-        this.v = hotbarSlotRuleItemPickerFrame;
+        this.itemPickerFrame = hotbarSlotRuleItemPickerFrame;
         int n = 0;
         while (n < 9) {
             ItemStackIconButtonComponent itemStackIconButtonComponent = new ItemStackIconButtonComponent(HotbarSlotRuleSlotSelectorComponent.J.r, HotbarSlotRuleSlotSelectorComponent.J.m, 0);
             int n2 = n++;
             itemStackIconButtonComponent.addClickListener(new HotbarSlotRuleSlotSelectClickHandler(this, hotbarSlotRuleItemPickerFrame, n2));
-            this.K.add(itemStackIconButtonComponent);
+            this.slotButtons.add(itemStackIconButtonComponent);
             this.addChildren(itemStackIconButtonComponent);
         }
     }

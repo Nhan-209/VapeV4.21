@@ -24,7 +24,7 @@ extends Mapping {
     }
 
     private Object V(Object object) {
-        return this.x.L(object, new Object[0]);
+        return this.x.invokeObject(object, new Object[0]);
     }
 
     public MVertexFormatElement() {
@@ -53,7 +53,7 @@ extends Mapping {
     }
 
     private int w(Object object) {
-        return this.U.Z(object, new Object[0]);
+        return this.U.invokeInt(object, new Object[0]);
     }
 
     public static Object d(MVertexFormatElement mVertexFormatElement, Object object) {

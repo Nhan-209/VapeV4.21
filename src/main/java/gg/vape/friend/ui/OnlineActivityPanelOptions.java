@@ -18,59 +18,59 @@ import java.util.List;
 
 public class OnlineActivityPanelOptions
 implements EventListener {
-    public static final OnlineActivityPanelOptions p = new OnlineActivityPanelOptions();
-    private final BooleanValue H;
-    private final BooleanValue D = BooleanValue.create(this, "Render Background", true);
+    public static final OnlineActivityPanelOptions INSTANCE = new OnlineActivityPanelOptions();
+    private final BooleanValue cpsDisplay;
+    private final BooleanValue renderBackground = BooleanValue.create(this, "Render Background", true);
 
-    public BooleanValue i() {
-        return this.H;
+    public BooleanValue getCpsDisplay() {
+        return this.cpsDisplay;
     }
 
     @EventHandler
-    public void K(EventPreAttack eventPreAttack) {
-        OnlineActivitySettingsFrame onlineActivitySettingsFrame = ClientSettings.getFrame(OnlineActivitySettingsFrame.class);
-        if (onlineActivitySettingsFrame == null) {
+    public void onPreAttack(EventPreAttack event) {
+        OnlineActivitySettingsFrame settingsFrame = ClientSettings.getFrame(OnlineActivitySettingsFrame.class);
+        if (settingsFrame == null) {
             return;
         }
         if (Minecraft.currentScreen().isNotNull()) {
             return;
         }
-        if (eventPreAttack.getTarget().isInstance(MappedClasses.zc)) {
-            Vape.INSTANCE.getOnlineManager().r().E().P(eventPreAttack.getTarget().S());
+        if (event.getTarget().isInstance(MappedClasses.zc)) {
+            Vape.INSTANCE.getOnlineManager().getLocalFriend().getActivityState().recordAttack(event.getTarget().S());
         }
     }
 
 
     public OnlineActivityPanelOptions() {
-        this.H = BooleanValue.create(this, "CPS Display", true);
+        this.cpsDisplay = BooleanValue.create(this, "CPS Display", true);
     }
 
-    public BooleanValue P() {
-        return this.D;
+    public BooleanValue getRenderBackground() {
+        return this.renderBackground;
     }
 
-    public List<OnlineFriendActivityState> D() {
-        PartyState partyState = Vape.INSTANCE.getOnlineManager().y().j();
+    public List<OnlineFriendActivityState> getPartyActivities() {
+        PartyState partyState = Vape.INSTANCE.getOnlineManager().getPartyManager().getCurrentParty();
         if (partyState == null) {
             return new ArrayList<OnlineFriendActivityState>();
         }
-        ArrayList<OnlineFriendActivityState> arrayList = new ArrayList<OnlineFriendActivityState>();
-        for (OnlineFriendActivityState onlineFriendActivityState : Vape.INSTANCE.getOnlineManager().V().X()) {
-            if (!onlineFriendActivityState.k() || !partyState.c().contains(onlineFriendActivityState.a())) continue;
-            arrayList.add(onlineFriendActivityState);
+        ArrayList<OnlineFriendActivityState> partyActivities = new ArrayList<OnlineFriendActivityState>();
+        for (OnlineFriendActivityState activityState : Vape.INSTANCE.getOnlineManager().getActivityManager().getActivityStates()) {
+            if (!activityState.hasData() || !partyState.getMembers().contains(activityState.getFriend())) continue;
+            partyActivities.add(activityState);
         }
-        return arrayList;
+        return partyActivities;
     }
 
     @EventHandler
-    public void v(EventMouseButton eventMouseButton) {
-        OnlineActivitySettingsFrame onlineActivitySettingsFrame = ClientSettings.getFrame(OnlineActivitySettingsFrame.class);
-        if (onlineActivitySettingsFrame == null) {
+    public void onMouseButton(EventMouseButton event) {
+        OnlineActivitySettingsFrame settingsFrame = ClientSettings.getFrame(OnlineActivitySettingsFrame.class);
+        if (settingsFrame == null) {
             return;
         }
-        if (eventMouseButton.getButtonState()) {
-            Vape.INSTANCE.getOnlineManager().r().E().n(0);
-            if (eventMouseButton.getButton() == 0 && Minecraft.currentScreen().isNull()) {
+        if (event.getButtonState()) {
+            Vape.INSTANCE.getOnlineManager().getLocalFriend().getActivityState().setAfkTicks(0);
+            if (event.getButton() == 0 && Minecraft.currentScreen().isNull()) {
                 MouseClickRateTracker.recordClick();
             }
         }

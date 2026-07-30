@@ -22,8 +22,8 @@ extends HudModuleConfigFrameBase {
     public void renderHudContent() {
         Vec3d vec3d = this.scoreboardModule.renderScoreboard(
                 this.G$src$D$1b2f02a(), this.n(), this.shouldDrawBackground());
-        this.o(vec3d.H + 2.0);
-        this.Y(vec3d.B);
+        this.o(vec3d.getX() + 2.0);
+        this.Y(vec3d.getY());
     }
 
     @Override

@@ -17,7 +17,7 @@ extends JavassistMappingTask {
     }
 
     @Override
-    public void c() {
+    public void transform() {
         LegacyRenderStringHookMappingTask.p(LegacyRenderStringEventRender3DCallback.class);
         MappingMethod mappingMethod = Vape.INSTANCE.getMappings().C5.A;
         CtBehavior ctBehavior = this.F(mappingMethod);
@@ -29,4 +29,3 @@ extends JavassistMappingTask {
         }
     }
 }
-

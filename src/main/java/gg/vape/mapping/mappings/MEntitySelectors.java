@@ -12,7 +12,7 @@ extends Mapping {
     private final MappingMethod u;
 
     private Object N(Object object) {
-        return this.u.L(null, object);
+        return this.u.invokeObject(null, object);
     }
 
     public MEntitySelectors() {
@@ -21,7 +21,7 @@ extends Mapping {
         Class<Predicate> clazz = Predicate.class;
         String string = "getTeamCollisionPredicate";
         MEntitySelectors mEntitySelectors = this;
-        this.u = ((MappingMethodBuilder)((MappingMethodBuilder)((MappingMethodBuilder)this.u(string, clazz, classArray).X(ForgeVersion.MC_1_16_5.n(), java.util.function.Predicate.class)).A(ForgeVersion.MC_1_16_5.n(), "pushableBy")).H(true)).s();
+        this.u = ((MappingMethodBuilder)((MappingMethodBuilder)((MappingMethodBuilder)this.methodBuilder(string, clazz, classArray).setTypeForVersion(ForgeVersion.MC_1_16_5.n(), java.util.function.Predicate.class)).setNameForVersion(ForgeVersion.MC_1_16_5.n(), "pushableBy")).setStaticMember(true)).buildMethod();
     }
 
     public static Object f(MEntitySelectors mEntitySelectors, Object object) {

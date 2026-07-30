@@ -6,20 +6,20 @@ import gg.vape.ui.click.frame.impl.hud.HudModuleListEntry;
 
 public class HudTutorialKeystrokesHudModuleRowSelector
 extends TutorialTargetSelector<HudModuleListEntry> {
-    final HudTutorialPage q;
-    private static final String b = "Keystrokes";
+    private final HudTutorialPage tutorialPage;
+    private static final String targetModuleName = "Keystrokes";
 
     public HudTutorialKeystrokesHudModuleRowSelector(HudTutorialPage hudTutorialPage, Class clazz) {
         super(clazz);
-        this.q = hudTutorialPage;
+        this.tutorialPage = hudTutorialPage;
     }
 
-    public boolean W(HudModuleListEntry hudModuleListEntry) {
-        return hudModuleListEntry.getModule().getName().equals(b);
+    private boolean matchesTargetName(HudModuleListEntry hudModuleListEntry) {
+        return hudModuleListEntry.getModule().getName().equals(targetModuleName);
     }
 
     @Override
-    public boolean X(HudModuleListEntry hudModuleListEntry) {
-        return this.W(hudModuleListEntry);
+    public boolean matches(HudModuleListEntry hudModuleListEntry) {
+        return this.matchesTargetName(hudModuleListEntry);
     }
 }

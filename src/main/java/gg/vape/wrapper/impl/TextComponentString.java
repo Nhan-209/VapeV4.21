@@ -1,7 +1,6 @@
 package gg.vape.wrapper.impl;
 
 import gg.vape.mapping.mappings.MTextComponentString;
-import gg.vape.wrapper.impl.ITextComponent;
 
 public class TextComponentString
 extends ITextComponent {
@@ -10,15 +9,15 @@ extends ITextComponent {
     }
 
     public String getText() {
-        return MTextComponentString.E(TextComponentString.c.getMappingsMapperCompat().Dd, this.getObject());
+        return MTextComponentString.E(TextComponentString.vapeInstance.getMappingsMapperCompat().Dd, this.getObject());
     }
 
     public static TextComponentString create(String string) {
-        return new TextComponentString(MTextComponentString.q(TextComponentString.c.getMappingsMapperCompat().Dd, string));
+        return new TextComponentString(MTextComponentString.q(TextComponentString.vapeInstance.getMappingsMapperCompat().Dd, string));
     }
 
     public void setText(String string) {
-        MTextComponentString.T(TextComponentString.c.getMappingsMapperCompat().Dd, this.getObject(), string);
+        MTextComponentString.T(TextComponentString.vapeInstance.getMappingsMapperCompat().Dd, this.getObject(), string);
     }
 }
 

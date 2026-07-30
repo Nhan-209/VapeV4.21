@@ -10,7 +10,7 @@ extends Mapping {
     private MappingMethod G;
 
     private Object j(Object object) {
-        return this.G.L(object, new Object[0]);
+        return this.G.invokeObject(object, new Object[0]);
     }
 
     public MVoxelShapeBridge() {

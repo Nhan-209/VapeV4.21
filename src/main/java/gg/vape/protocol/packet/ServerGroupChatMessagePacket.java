@@ -5,33 +5,33 @@ import gg.vape.protocol.packet.ZeusSerializablePacket;
 
 public class ServerGroupChatMessagePacket
 implements ZeusSerializablePacket {
-    private String c;
-    private long D;
-    private long N;
+    private String message;
+    private long messageTimestamp;
+    private long senderUserId;
 
-    public long E() {
-        return this.N;
+    public long getSenderUserId() {
+        return this.senderUserId;
     }
 
-    public ServerGroupChatMessagePacket(long l, String string) {
-        this.N = l;
-        this.c = string;
-        this.D = System.currentTimeMillis();
+    public ServerGroupChatMessagePacket(long senderUserId, String message) {
+        this.senderUserId = senderUserId;
+        this.message = message;
+        this.messageTimestamp = System.currentTimeMillis();
     }
 
-    public long F() {
-        return this.D;
+    public long getMessageTimestamp() {
+        return this.messageTimestamp;
     }
 
     @Override
     public void o(ZeusPacketBuffer zeusPacketBuffer) {
-        zeusPacketBuffer.v(this.N);
-        zeusPacketBuffer.y(this.c);
-        zeusPacketBuffer.v(this.D);
+        zeusPacketBuffer.writeLong(this.senderUserId);
+        zeusPacketBuffer.writeString(this.message);
+        zeusPacketBuffer.writeLong(this.messageTimestamp);
     }
 
-    public String z() {
-        return this.c;
+    public String getMessage() {
+        return this.message;
     }
 
     public ServerGroupChatMessagePacket() {
@@ -39,9 +39,8 @@ implements ZeusSerializablePacket {
 
     @Override
     public void S(ZeusPacketBuffer zeusPacketBuffer) {
-        this.N = zeusPacketBuffer.long_a();
-        this.c = zeusPacketBuffer.v(255);
-        this.D = zeusPacketBuffer.long_a();
+        this.senderUserId = zeusPacketBuffer.readLong();
+        this.message = zeusPacketBuffer.readString(255);
+        this.messageTimestamp = zeusPacketBuffer.readLong();
     }
 }
-

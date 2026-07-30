@@ -15,12 +15,12 @@ extends Mapping {
         boolean bl = true;
         String string = "TRANSLUCENT";
         MEnumWorldBlockLayer mEnumWorldBlockLayer = this;
-        this.H = this.u(string, bl, clazz);
+        this.H = this.registerStaticField(string, bl, clazz);
         Class clazz2 = MappedClasses.E;
         boolean bl2 = true;
         String string2 = "SOLID";
         MEnumWorldBlockLayer mEnumWorldBlockLayer2 = this;
-        this.d = this.u(string2, bl2, clazz2);
+        this.d = this.registerStaticField(string2, bl2, clazz2);
     }
 
     private Object P() {

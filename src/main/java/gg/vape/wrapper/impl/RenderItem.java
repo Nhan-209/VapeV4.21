@@ -3,21 +3,7 @@ package gg.vape.wrapper.impl;
 import gg.vape.mapping.mappings.MRenderItem;
 import gg.vape.utils.render.BufferedGuiRenderPrimitives;
 import gg.vape.wrapper.Wrapper;
-import gg.vape.wrapper.impl.Channel;
-import gg.vape.wrapper.impl.EntityPlayerSP;
-import gg.vape.wrapper.impl.FontRenderer;
-import gg.vape.wrapper.impl.ForgeVersion;
-import gg.vape.wrapper.impl.ItemStack;
-import gg.vape.wrapper.impl.MatrixStack;
-import gg.vape.wrapper.impl.Minecraft;
-import gg.vape.wrapper.impl.RenderHelper;
-import gg.vape.wrapper.impl.RenderItemContext;
-import gg.vape.wrapper.impl.RenderItemFontBridge;
-import gg.vape.wrapper.impl.RenderItemTextBridge;
-import gg.vape.wrapper.impl.RenderSystem;
-import gg.vape.wrapper.impl.TextureAtlas;
-import gg.vape.wrapper.impl.TextureManager;
-import gg.vape.wrapper.impl.World;
+
 import java.lang.invoke.CallSite;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
@@ -40,14 +26,14 @@ extends Wrapper {
     private static final long[] b;
 
     public static RenderItem d() {
-        if (h == null && MRenderItem.V(RenderItem.c.getMappings().DI) == null && ForgeVersion.MC_1_7_10.L() && G) {
-            h = MRenderItem.F(RenderItem.c.getMappings().DI).O(new Object[0]);
+        if (h == null && MRenderItem.V(RenderItem.vapeInstance.getMappings().DI) == null && ForgeVersion.MC_1_7_10.L() && isNativeAvailable) {
+            h = MRenderItem.F(RenderItem.vapeInstance.getMappings().DI).newInstance(new Object[0]);
         }
-        return new RenderItem(h != null ? h : MRenderItem.a(RenderItem.c.getMappings().DI));
+        return new RenderItem(h != null ? h : MRenderItem.a(RenderItem.vapeInstance.getMappings().DI));
     }
 
     public void z(float f) {
-        MRenderItem.l(RenderItem.c.getMappings().DI, this.I, f);
+        MRenderItem.l(RenderItem.vapeInstance.getMappings().DI, this.I, f);
     }
 
     private static int a(MethodHandles.Lookup lookup, MutableCallSite mutableCallSite, String string, Object[] objectArray) {
@@ -105,7 +91,7 @@ extends Wrapper {
     }
 
     public float b() {
-        return MRenderItem.I(RenderItem.c.getMappings().DI, this.I);
+        return MRenderItem.I(RenderItem.vapeInstance.getMappings().DI, this.I);
     }
 
     static {
@@ -116,31 +102,31 @@ extends Wrapper {
     }
 
     public void I(ItemStack itemStack, RenderItemContext renderItemContext, boolean bl, MatrixStack matrixStack, RenderItemFontBridge renderItemFontBridge, int n, int n2, Channel channel) {
-        MRenderItem.x(RenderItem.c.getMappings().DI, this.I, itemStack.getObject(), renderItemContext.getObject(), bl, matrixStack.getObject(), renderItemFontBridge.getObject(), n, n2, channel.getObject());
+        MRenderItem.x(RenderItem.vapeInstance.getMappings().DI, this.I, itemStack.getObject(), renderItemContext.getObject(), bl, matrixStack.getObject(), renderItemFontBridge.getObject(), n, n2, channel.getObject());
     }
 
     public void e(float f) {
         if (ForgeVersion.MC_1_20_6.d()) {
             return;
         }
-        MRenderItem.G(RenderItem.c.getMappings().DI, this.I, f);
+        MRenderItem.G(RenderItem.vapeInstance.getMappings().DI, this.I, f);
     }
 
     public Channel f(ItemStack itemStack, World world, Object object, int n) {
         Object object2 = world == null ? null : world.getObject();
-        return new Channel(MRenderItem.A(RenderItem.c.getMappings().DI, this.I, itemStack.getObject(), object2, object, n));
+        return new Channel(MRenderItem.A(RenderItem.vapeInstance.getMappings().DI, this.I, itemStack.getObject(), object2, object, n));
     }
 
     public void c(FontRenderer fontRenderer, TextureManager textureManager, ItemStack itemStack, int n, int n2) {
         if (ForgeVersion.MC_1_7_10.L()) {
-            MRenderItem.z(RenderItem.c.getMappings().DI, this.I, fontRenderer.getObject(), textureManager.getObject(), itemStack.getObject(), n, n2);
+            MRenderItem.z(RenderItem.vapeInstance.getMappings().DI, this.I, fontRenderer.getObject(), textureManager.getObject(), itemStack.getObject(), n, n2);
         } else if (ForgeVersion.MC_1_20_6.d()) {
             MatrixStack matrixStack = MatrixStack.A();
             matrixStack.H();
             matrixStack.i(BufferedGuiRenderPrimitives.matrixStack.peek().toMinecraftMatrix());
             this.o(RenderItemTextBridge.t(matrixStack), itemStack, n, n2);
         } else {
-            RenderItem.c.getMappings().DI.M(this.I, itemStack.getObject(), n, n2);
+            RenderItem.vapeInstance.getMappings().DI.M(this.I, itemStack.getObject(), n, n2);
         }
     }
 
@@ -188,18 +174,18 @@ extends Wrapper {
         if (ForgeVersion.MC_1_20_6.d()) {
             return 100.0f;
         }
-        return MRenderItem.x(RenderItem.c.getMappings().DI, this.I);
+        return MRenderItem.x(RenderItem.vapeInstance.getMappings().DI, this.I);
     }
 
     public void o(RenderItemTextBridge renderItemTextBridge, ItemStack itemStack, int n, int n2) {
-        RenderItem.c.getMappings().DI.M(renderItemTextBridge.getObject(), itemStack.getObject(), n, n2);
+        RenderItem.vapeInstance.getMappings().DI.M(renderItemTextBridge.getObject(), itemStack.getObject(), n, n2);
     }
 
     public void P(FontRenderer fontRenderer, TextureManager textureManager, ItemStack itemStack, int n, int n2) {
         if (ForgeVersion.MC_1_7_10.L()) {
-            MRenderItem.P(RenderItem.c.getMappings().DI, this.I, fontRenderer.getObject(), textureManager.getObject(), itemStack.getObject(), n, n2);
+            MRenderItem.P(RenderItem.vapeInstance.getMappings().DI, this.I, fontRenderer.getObject(), textureManager.getObject(), itemStack.getObject(), n, n2);
         } else {
-            MRenderItem.Y(RenderItem.c.getMappings().DI, this.I, fontRenderer.getObject(), itemStack.getObject(), n, n2);
+            MRenderItem.Y(RenderItem.vapeInstance.getMappings().DI, this.I, fontRenderer.getObject(), itemStack.getObject(), n, n2);
         }
     }
 

@@ -7,34 +7,33 @@ import org.jetbrains.annotations.Nullable;
 
 public class EventWorldChange
 extends Event {
-    private static final EventListeners O = new EventListeners();
+    private static final EventListeners EVENT_LISTENERS = new EventListeners();
     @Nullable
-    private final WorldClient B;
+    private final WorldClient newWorld;
     @Nullable
-    private final WorldClient y;
+    private final WorldClient previousWorld;
 
     @Nullable
     public WorldClient getNewWorld() {
-        return this.B;
+        return this.newWorld;
     }
 
     @Nullable
     public WorldClient getPreviousWorld() {
-        return this.y;
+        return this.previousWorld;
     }
 
     public static EventListeners getEventListeners() {
-        return O;
+        return EVENT_LISTENERS;
     }
 
     @Override
     public EventListeners getListeners() {
-        return O;
+        return EVENT_LISTENERS;
     }
 
-    public EventWorldChange(@Nullable WorldClient worldClient, @Nullable WorldClient worldClient2) {
-        this.y = worldClient;
-        this.B = worldClient2;
+    public EventWorldChange(@Nullable WorldClient previousWorld, @Nullable WorldClient newWorld) {
+        this.previousWorld = previousWorld;
+        this.newWorld = newWorld;
     }
 }
-

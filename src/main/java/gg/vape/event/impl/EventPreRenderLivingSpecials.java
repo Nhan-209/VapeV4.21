@@ -9,27 +9,27 @@ import gg.vape.wrapper.impl.ResourceLocationName;
 
 public class EventPreRenderLivingSpecials
 extends Event {
-    private static final EventListeners O = new EventListeners();
-    private final Object t;
+    private static final EventListeners EVENT_LISTENERS = new EventListeners();
+    private final Object resourceLocationHandle;
 
     public static EventListeners getEventListeners() {
-        return O;
+        return EVENT_LISTENERS;
     }
 
-    public EventPreRenderLivingSpecials(Object object) {
-        this.t = object;
+    public EventPreRenderLivingSpecials(Object resourceLocationHandle) {
+        this.resourceLocationHandle = resourceLocationHandle;
     }
 
     @Override
     public EventListeners getListeners() {
-        return O;
+        return EVENT_LISTENERS;
     }
 
     @Override
     public boolean fire() {
         try {
-            String string = ForgeVersion.c() == ForgeVersion.MC_1_8_9.i() ? new ResourceLocationName(this.t).n() : new ResourceLocationName(this.t).b(ResourceLocationKey.L());
-            Vape.logError(string);
+            String resourceName = ForgeVersion.c() == ForgeVersion.MC_1_8_9.i() ? new ResourceLocationName(this.resourceLocationHandle).n() : new ResourceLocationName(this.resourceLocationHandle).b(ResourceLocationKey.L());
+            Vape.logError(resourceName);
         }
         catch (Throwable throwable) {
             // empty catch block
@@ -37,4 +37,3 @@ extends Event {
         return super.fire();
     }
 }
-

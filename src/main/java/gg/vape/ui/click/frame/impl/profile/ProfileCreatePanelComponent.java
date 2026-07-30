@@ -42,10 +42,10 @@ extends GuiComponent {
         if (error != null) {
             return;
         }
-        if (!response.t()) {
+        if (!response.isSuccessful()) {
             return;
         }
-        profile.K((UUID)response.T());
+        profile.setOnlineId((UUID)response.getData());
     }
 
     @Override
@@ -65,19 +65,19 @@ extends GuiComponent {
     }
 
     private void startProfileCreation() {
-        Profile activeProfile = Vape.INSTANCE.getProfilesManager().M();
-        activeProfile.a();
+        Profile activeProfile = Vape.INSTANCE.getProfilesManager().getActiveProfile();
+        activeProfile.captureCurrentState();
         this.pendingProfile = activeProfile;
-        Profile draftProfile = new Profile(activeProfile.n$src$Ljava_lang_String_$xqhelw(), "4.21");
-        draftProfile.e(activeProfile.C(true));
-        draftProfile.d(UUID.randomUUID());
-        draftProfile.K(null);
-        draftProfile.s(false);
-        draftProfile.B(true);
-        ApiServices.d().c().u()
+        Profile draftProfile = new Profile(activeProfile.getName(), "4.21");
+        draftProfile.loadJson(activeProfile.toJson(true));
+        draftProfile.setLocalId(UUID.randomUUID());
+        draftProfile.setOnlineId(null);
+        draftProfile.setPublicProfileFlag(false);
+        draftProfile.setDraft(true);
+        ApiServices.getInstance().getUserDataApi().reserveProfileId()
             .whenCompleteAsync((response, error) -> handleProfileIdResponse(draftProfile, response, error), (Executor)ClientSettings.UI_EXECUTOR)
             .exceptionally(ProfileCreatePanelComponent::ignoreProfileIdFailure);
-        Vape.INSTANCE.getProfilesManager().U(draftProfile);
+        Vape.INSTANCE.getProfilesManager().switchProfile(draftProfile);
         PanelComponent popupContent = new PanelComponent(this.settingsFrame.A(), this.settingsFrame.getContentLayout().L());
         popupContent.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M("wrap");
         ProfileCreateSubmitNameInputComponent submitNameInput = new ProfileCreateSubmitNameInputComponent(this, "Type name", draftProfile);

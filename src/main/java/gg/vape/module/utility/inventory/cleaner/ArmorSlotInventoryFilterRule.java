@@ -9,7 +9,7 @@ extends SlotInventoryFilterRule {
         return 5 + super.getSlot();
     }
 
-    public ArmorSlotInventoryFilterRule(int n) {
-        super(n);
+    public ArmorSlotInventoryFilterRule(int armorSlot) {
+        super(armorSlot);
     }
 }

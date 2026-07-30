@@ -4,65 +4,52 @@ import gg.vape.tutorial.TutorialActionComponent;
 import gg.vape.tutorial.TutorialPage;
 
 public abstract class TutorialAction {
-    private static String[] o;
-    private TutorialPage j;
-    private final TutorialActionComponent M;
+    private static String[] obfuscationState;
+    private TutorialPage page;
+    private final TutorialActionComponent component;
 
-    public TutorialActionComponent I() {
-        return this.M;
+    public TutorialActionComponent getComponent() {
+        return this.component;
     }
 
-    public boolean a() {
+    public boolean canAdvance() {
         return true;
     }
 
-    public void G(TutorialPage tutorialPage) {
-        this.j = tutorialPage;
+    public void setPage(TutorialPage tutorialPage) {
+        this.page = tutorialPage;
     }
 
-    public abstract boolean boolean_X();
+    public abstract boolean isTargetReady();
 
-    public void S() {
+    public void cleanup() {
     }
 
     public TutorialAction(TutorialActionComponent tutorialActionComponent) {
-        this.M = tutorialActionComponent;
+        this.component = tutorialActionComponent;
     }
 
-    public void void_X() {
+    public void start() {
     }
 
-    public void void_w() {
+    public void render() {
     }
 
-    public TutorialPage T() {
-        return this.j;
+    public TutorialPage getPage() {
+        return this.page;
     }
 
-    public static void Q(String[] stringArray) {
-        o = stringArray;
+    public static void setObfuscationState(String[] stringArray) {
+        obfuscationState = stringArray;
     }
 
-    public static String[] java_lang_String_arr_w() {
-        return o;
+    public static String[] getObfuscationState() {
+        return obfuscationState;
     }
 
     static {
-        if (TutorialAction.java_lang_String_arr_w() == null) {
-            TutorialAction.Q(new String[2]);
+        if (TutorialAction.getObfuscationState() == null) {
+            TutorialAction.setObfuscationState(new String[2]);
         }
     }
-
-    public /* synthetic */ void X$src$V$d06mc() {
-        this.void_X();
-    }
-
-    public /* synthetic */ boolean X() {
-        return this.boolean_X();
-    }
-
-    public /* synthetic */ void w() {
-        this.void_w();
-    }
 }
-

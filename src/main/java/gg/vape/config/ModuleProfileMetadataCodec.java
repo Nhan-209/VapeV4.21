@@ -16,79 +16,79 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ModuleProfileMetadataCodec {
-    private final List<Mod> o = new ArrayList<Mod>();
+    private final List<Mod> selectedModules = new ArrayList<Mod>();
 
-    public void a(Mod mod) {
-        if (this.o.contains(mod)) {
+    public void addModule(Mod module) {
+        if (this.selectedModules.contains(module)) {
             return;
         }
-        this.o.add(mod);
-        mod.M(true);
+        this.selectedModules.add(module);
+        module.M(true);
         VisibleModuleListFrame.e();
         Vape.INSTANCE.saveAndStop();
     }
 
-    public int S() {
-        int n = 0;
-        for (Mod mod : this.o) {
-            if (!mod.r$src$Z$14eylz9()) continue;
-            ++n;
+    public int getVisibleModuleCount() {
+        int visibleCount = 0;
+        for (Mod module : this.selectedModules) {
+            if (!module.r$src$Z$14eylz9()) continue;
+            ++visibleCount;
         }
-        return n;
+        return visibleCount;
     }
 
-    public List<Mod> k() {
-        return this.o;
+    public List<Mod> getSelectedModules() {
+        return this.selectedModules;
     }
 
 
-    public void v(Mod mod) {
-        if (!this.o.contains(mod)) {
+    public void removeModule(Mod module) {
+        if (!this.selectedModules.contains(module)) {
             return;
         }
-        this.o.remove(mod);
-        mod.M(false);
+        this.selectedModules.remove(module);
+        module.M(false);
         VisibleModuleListFrame.e();
         Vape.INSTANCE.saveAndStop();
     }
 
-    public void Q(JsonObject jsonObject) {
-        if (jsonObject.has("modules")) {
-            this.o.clear();
-            JsonArray jsonArray = jsonObject.get("modules").getAsJsonArray();
-            for (JsonElement jsonElement : jsonArray) {
-                Mod mod = Vape.INSTANCE.getModManager().getMod(jsonElement.getAsString());
-                if (mod == null) continue;
-                this.C(mod);
+    public void loadJson(JsonObject object) {
+        if (object.has("modules")) {
+            this.selectedModules.clear();
+            JsonArray modulesJson = object.get("modules").getAsJsonArray();
+            for (JsonElement moduleElement : modulesJson) {
+                Mod module = Vape.INSTANCE.getModManager().getMod(moduleElement.getAsString());
+                if (module == null) continue;
+                this.addModuleWithoutSaving(module);
             }
             VisibleModuleListFrame.e();
         }
     }
 
-    private void C(Mod mod) {
-        if (this.o.contains(mod)) {
+    private void addModuleWithoutSaving(Mod module) {
+        if (this.selectedModules.contains(module)) {
             return;
         }
-        this.o.add(mod);
-        mod.M(true);
+        this.selectedModules.add(module);
+        module.M(true);
     }
 
     public ModuleProfileMetadataCodec() {
         ModManager modManager = Vape.INSTANCE.getModManager();
-        this.C(modManager.getMod(LeftClicker.class));
-        this.C(modManager.getMod(AimAssist.class));
-        this.C(modManager.getMod(Reach.class));
-        this.C(modManager.getMod(Velocity.class));
+        this.addModuleWithoutSaving(modManager.getMod(LeftClicker.class));
+        this.addModuleWithoutSaving(modManager.getMod(AimAssist.class));
+        this.addModuleWithoutSaving(modManager.getMod(Reach.class));
+        this.addModuleWithoutSaving(modManager.getMod(Velocity.class));
     }
 
-    public JsonObject J() {
-        JsonObject jsonObject = new JsonObject();
-        JsonArray jsonArray = new JsonArray();
-        for (Mod mod : this.o) {
-            jsonArray.add((JsonElement)new JsonPrimitive(mod.getName()));
+    public JsonObject toJson() {
+        JsonObject object = new JsonObject();
+        JsonArray modulesJson = new JsonArray();
+        for (Mod module : this.selectedModules) {
+            modulesJson.add((JsonElement)new JsonPrimitive(module.getName()));
         }
-        jsonObject.add("modules", (JsonElement)jsonArray);
-        return jsonObject;
+        object.add("modules", (JsonElement)modulesJson);
+        return object;
     }
 }
 

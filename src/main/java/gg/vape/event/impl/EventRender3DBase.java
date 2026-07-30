@@ -8,44 +8,44 @@ import gg.vape.wrapper.impl.MatrixStack;
 
 public abstract class EventRender3DBase
 extends Event {
-    private final float V;
-    private final MatrixStack B;
-    private static GuiComponent[] U;
+    private final float partialTicks;
+    private final MatrixStack matrixStack;
+    private static GuiComponent[] obfuscationState;
 
-    EventRender3DBase(MatrixStack bm_02, float f) {
-        this.B = bm_02;
-        this.V = f;
+    EventRender3DBase(MatrixStack matrixStack, float partialTicks) {
+        this.matrixStack = matrixStack;
+        this.partialTicks = partialTicks;
     }
 
-    public static GuiComponent[] v() {
-        return U;
+    public static GuiComponent[] getRender3DObfuscationState() {
+        return obfuscationState;
     }
 
     public float getTicks() {
-        return this.V;
+        return this.partialTicks;
     }
 
     public MatrixStack getMatrixStack() {
-        return this.B;
+        return this.matrixStack;
     }
 
     @Override
     public boolean fire() {
-        boolean bl = super.fire();
+        boolean fired = super.fire();
         if (GuiRenderPrimitives.d()) {
-            RenderBatchManager.getInstance().flushWorldBatches(this.V);
+            RenderBatchManager.getInstance().flushWorldBatches(this.partialTicks);
         }
-        return bl;
+        return fired;
     }
 
 
-    public static void t(GuiComponent[] upArray) {
-        U = upArray;
+    public static void setRender3DObfuscationState(GuiComponent[] state) {
+        obfuscationState = state;
     }
 
     static {
-        if (EventRender3DBase.v() == null) {
-            EventRender3DBase.t(new GuiComponent[5]);
+        if (EventRender3DBase.getRender3DObfuscationState() == null) {
+            EventRender3DBase.setRender3DObfuscationState(new GuiComponent[5]);
         }
     }
 }

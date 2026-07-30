@@ -77,7 +77,7 @@ extends ClickerMod {
             return true;
         }
         if (!this.shouldAllowClick(player)) {
-            if (gg.vape.config.ClientSettings.M()) {
+            if (gg.vape.config.ClientSettings.isAttackButtonDown()) {
                 if (!Minecraft.gameSettings().F().isKeyDown()) {
                     // empty if block
                 }
@@ -98,7 +98,7 @@ extends ClickerMod {
     }
 
     public boolean shouldAllowClick(EntityPlayerSP player) {
-        if (!gg.vape.config.ClientSettings.M()) {
+        if (!gg.vape.config.ClientSettings.isAttackButtonDown()) {
             this.breakBlockTimer.reset();
         }
         if (this.breakBlocks.getEffectiveValue().booleanValue() && this.breakBlockTimer.hasTimeElapsed((long)this.breakBlocksDelay.getRandomValue())) {

@@ -62,7 +62,7 @@ extends Mapping {
         this.A = this.J(string7, bl7, clazz7);
         Class[] classArray = new Class[]{Boolean.TYPE, Boolean.TYPE, Boolean.TYPE, Boolean.TYPE, Boolean.TYPE, Boolean.TYPE, Boolean.TYPE};
         MFreecamMovementInputBridge mFreecamMovementInputBridge8 = this;
-        this.l = this.g(classArray);
+        this.l = this.registerConstructor(classArray);
     }
 
     public boolean Y(Object object) {
@@ -110,7 +110,7 @@ extends Mapping {
     }
 
     public Object z(boolean bl, boolean bl2, boolean bl3, boolean bl4, boolean bl5, boolean bl6, boolean bl7) {
-        return this.l.O(bl, bl2, bl3, bl4, bl5, bl6, bl7);
+        return this.l.newInstance(bl, bl2, bl3, bl4, bl5, bl6, bl7);
     }
 
     public boolean p(Object object) {

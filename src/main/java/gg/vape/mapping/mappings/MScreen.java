@@ -11,7 +11,7 @@ extends Mapping {
     private MappingMethod Y;
 
     private Object m(Object object) {
-        return this.Y.L(null, object);
+        return this.Y.invokeObject(null, object);
     }
 
     public MScreen() {
@@ -29,14 +29,14 @@ extends Mapping {
                     String string = "getMobEffectSprite";
                     Class clazz2 = MappedClasses.zK;
                     MScreen mScreen = this;
-                    this.Y = mScreen.K(clazz2, string, bl, clazz, classArray);
+                    this.Y = mScreen.registerStaticMethodForOwner(clazz2, string, bl, clazz, classArray);
                 } else {
                     Class[] classArray = new Class[]{MappedClasses.Vo};
                     Class clazz = MappedClasses.zC;
                     boolean bl = true;
                     String string = "getMobEffectSprite";
                     MScreen mScreen = this;
-                    this.Y = mScreen.x(string, bl, clazz, classArray);
+                    this.Y = mScreen.registerStaticMethod(string, bl, clazz, classArray);
                 }
             }
             return;
@@ -48,14 +48,14 @@ extends Mapping {
             String string = "getMobEffectSprite";
             Class clazz3 = MappedClasses.zK;
             MScreen mScreen = this;
-            this.Y = mScreen.K(clazz3, string, bl, clazz, classArray);
+            this.Y = mScreen.registerStaticMethodForOwner(clazz3, string, bl, clazz, classArray);
         }
         Class[] classArray = new Class[]{MappedClasses.Vo};
         Class clazz = MappedClasses.zC;
         boolean bl = true;
         String string = "getMobEffectSprite";
         MScreen mScreen = this;
-        this.Y = mScreen.x(string, bl, clazz, classArray);
+        this.Y = mScreen.registerStaticMethod(string, bl, clazz, classArray);
     }
 
 

@@ -70,9 +70,9 @@ extends Frame {
 
     private void applyChanges() {
         this.snapshot.applyToProfile();
-        Profile profile = Vape.INSTANCE.getProfilesManager().o();
+        Profile profile = Vape.INSTANCE.getProfilesManager().getActiveProfileOrNull();
         if (this.snapshot.getProfile() != null && this.snapshot.getProfile().equals(profile)) {
-            Vape.INSTANCE.getProfilesManager().L(this.snapshot.getProfile());
+            Vape.INSTANCE.getProfilesManager().setActiveProfile(this.snapshot.getProfile());
         }
     }
 

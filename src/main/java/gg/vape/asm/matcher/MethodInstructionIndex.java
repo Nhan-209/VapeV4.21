@@ -13,48 +13,48 @@ import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 
 public class MethodInstructionIndex {
-    private List<InstructionPattern> v = new ArrayList<InstructionPattern>();
-    private MethodNode z;
-    private static String[] c;
+    private List<InstructionPattern> patterns = new ArrayList<InstructionPattern>();
+    private MethodNode methodNode;
+    private static String[] opaqueStringSlots;
 
 
-    public void s$src$V$s4j71d() {
-        InsnList insnList = this.z.instructions;
-        ListIterator<AbstractInsnNode> listIterator = insnList.iterator();
-        while (listIterator.hasNext()) {
-            AbstractInsnNode abstractInsnNode = (AbstractInsnNode)listIterator.next();
-            this.C(abstractInsnNode);
+    public void buildIndex() {
+        InsnList instructions = this.methodNode.instructions;
+        ListIterator<AbstractInsnNode> iterator = instructions.iterator();
+        while (iterator.hasNext()) {
+            AbstractInsnNode instruction = iterator.next();
+            this.addInstruction(instruction);
         }
     }
 
     static {
-        if (MethodInstructionIndex.k() == null) {
-            MethodInstructionIndex.J(new String[2]);
+        if (MethodInstructionIndex.getOpaqueStringSlots() == null) {
+            MethodInstructionIndex.setOpaqueStringSlots(new String[2]);
         }
     }
 
-    public static String[] k() {
-        return c;
+    public static String[] getOpaqueStringSlots() {
+        return opaqueStringSlots;
     }
 
-    public List<InstructionPattern> s() {
-        return this.v;
+    public List<InstructionPattern> getPatterns() {
+        return this.patterns;
     }
 
-    public static void J(String[] stringArray) {
-        c = stringArray;
+    public static void setOpaqueStringSlots(String[] slots) {
+        opaqueStringSlots = slots;
     }
 
     public MethodInstructionIndex(MethodNode methodNode) {
-        this.z = methodNode;
+        this.methodNode = methodNode;
     }
 
-    private void C(AbstractInsnNode abstractInsnNode) {
-        if (abstractInsnNode instanceof MethodInsnNode) {
-            this.v.add(MethodInsnPattern.u((MethodInsnNode)abstractInsnNode));
+    private void addInstruction(AbstractInsnNode instruction) {
+        if (instruction instanceof MethodInsnNode) {
+            this.patterns.add(MethodInsnPattern.fromNode((MethodInsnNode)instruction));
         }
-        if (abstractInsnNode instanceof FieldInsnNode) {
-            this.v.add(FieldInsnPattern.o((FieldInsnNode)abstractInsnNode));
+        if (instruction instanceof FieldInsnNode) {
+            this.patterns.add(FieldInsnPattern.fromNode((FieldInsnNode)instruction));
         }
     }
 }

@@ -2,7 +2,6 @@ package gg.vape.wrapper.impl;
 
 import gg.vape.mapping.mappings.MCPacketUseEntity;
 import gg.vape.wrapper.Wrapper;
-import gg.vape.wrapper.impl.CPacketUseEntityActionConstructorMarker;
 
 public class CPacketUseEntity
 extends Wrapper {
@@ -11,15 +10,15 @@ extends Wrapper {
     }
 
     public static CPacketUseEntity T() {
-        return new CPacketUseEntity(MCPacketUseEntity.L(CPacketUseEntity.c.getMappingsMapperCompat().Ra));
+        return new CPacketUseEntity(MCPacketUseEntity.L(CPacketUseEntity.vapeInstance.getMappingsMapperCompat().Ra));
     }
 
     public static CPacketUseEntity o() {
-        return new CPacketUseEntity(MCPacketUseEntity.x(CPacketUseEntity.c.getMappingsMapperCompat().Ra));
+        return new CPacketUseEntity(MCPacketUseEntity.x(CPacketUseEntity.vapeInstance.getMappingsMapperCompat().Ra));
     }
 
     public static CPacketUseEntity M() {
-        return new CPacketUseEntity(MCPacketUseEntity.W(CPacketUseEntity.c.getMappingsMapperCompat().Ra));
+        return new CPacketUseEntity(MCPacketUseEntity.W(CPacketUseEntity.vapeInstance.getMappingsMapperCompat().Ra));
     }
 
     public CPacketUseEntity(Object object, CPacketUseEntityActionConstructorMarker fv_02) {

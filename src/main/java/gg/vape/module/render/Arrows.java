@@ -155,13 +155,13 @@ extends Mod {
             return false;
         }
         EntityPlayer player = new EntityPlayer(entity.getObject());
-        if (Vape.INSTANCE.getClientSettings().J(player)) {
+        if (Vape.INSTANCE.getClientSettings().isBot(player)) {
             return false;
         }
-        if (Vape.INSTANCE.getClientSettings().S(player)) {
+        if (Vape.INSTANCE.getClientSettings().isTeammate(player)) {
             return false;
         }
-        return !Vape.INSTANCE.getFriendManager().E(player.getName());
+        return !Vape.INSTANCE.getFriendManager().isFriend(player.getName());
     }
 
     public Arrows() {

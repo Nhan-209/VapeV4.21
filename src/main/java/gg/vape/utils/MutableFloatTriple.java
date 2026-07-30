@@ -1,38 +1,37 @@
 package gg.vape.utils;
 
 public class MutableFloatTriple {
-    public float G;
-    public float B;
-    public float E;
+    public float x;
+    public float y;
+    public float z;
 
-    public void i(float f) {
-        this.E = f;
+    public void setZ(float z) {
+        this.z = z;
     }
 
-    public float D() {
-        return this.B;
+    public float getX() {
+        return this.x;
     }
 
-    public float H() {
-        return this.G;
+    public float getY() {
+        return this.y;
     }
 
-    public MutableFloatTriple(float f, float f2, float f3) {
-        this.B = f;
-        this.G = f2;
-        this.E = f3;
+    public MutableFloatTriple(float x, float y, float z) {
+        this.x = x;
+        this.y = y;
+        this.z = z;
     }
 
-    public void C(float f) {
-        this.B = f;
+    public void setX(float x) {
+        this.x = x;
     }
 
-    public float Q() {
-        return this.E;
+    public float getZ() {
+        return this.z;
     }
 
-    public void T(float f) {
-        this.G = f;
+    public void setY(float y) {
+        this.y = y;
     }
 }
-

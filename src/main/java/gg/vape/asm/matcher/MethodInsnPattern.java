@@ -5,11 +5,11 @@ import org.objectweb.asm.tree.MethodInsnNode;
 
 public class MethodInsnPattern
 extends InstructionPattern {
-    public MethodInsnPattern(int n, String string, String string2, String string3) {
-        super(n, string, string2, string3);
+    public MethodInsnPattern(int opcode, String owner, String name, String descriptor) {
+        super(opcode, owner, name, descriptor);
     }
 
-    public static MethodInsnPattern u(MethodInsnNode methodInsnNode) {
-        return new MethodInsnPattern(methodInsnNode.getOpcode(), methodInsnNode.owner, methodInsnNode.name, methodInsnNode.desc);
+    public static MethodInsnPattern fromNode(MethodInsnNode methodInstruction) {
+        return new MethodInsnPattern(methodInstruction.getOpcode(), methodInstruction.owner, methodInstruction.name, methodInstruction.desc);
     }
 }

@@ -85,7 +85,7 @@ extends Mapping {
                 String string5 = "get";
                 Class clazz6 = MappedClasses.uS;
                 MItemStack mItemStack5 = this;
-                this.M = this.W(clazz6, string5, bl5, clazz5, classArray5);
+                this.M = this.registerInstanceMethodForOwner(clazz6, string5, bl5, clazz5, classArray5);
             } else {
                 Class[] classArray6 = new Class[]{MappedClasses.Fz};
                 Class<Object> clazz7 = Object.class;
@@ -93,7 +93,7 @@ extends Mapping {
                 String string6 = "get";
                 Class clazz8 = MappedClasses.qu;
                 MItemStack mItemStack6 = this;
-                this.M = this.W(clazz8, string6, bl6, clazz7, classArray6);
+                this.M = this.registerInstanceMethodForOwner(clazz8, string6, bl6, clazz7, classArray6);
             }
             Class[] classArray7 = new Class[]{MappedClasses.FY, BiConsumer.class};
             Class<Void> clazz9 = Void.TYPE;
@@ -137,14 +137,14 @@ extends Mapping {
                 this.K = this.Y(string12, bl12, clazz14, classArray12);
                 Class[] classArray13 = new Class[]{MappedClasses.Yl, MappedClasses.Zx};
                 Class<List> clazz15 = List.class;
-                boolean bl13 = Wrapper.G;
+                boolean bl13 = Wrapper.isNativeAvailable;
                 String string13 = "func_82840_a";
                 MItemStack mItemStack13 = this;
                 this.J = this.Y(string13, bl13, clazz15, classArray13);
             } else {
                 Class[] classArray14 = new Class[]{MappedClasses.Vv};
                 Class<Float> clazz16 = Float.TYPE;
-                boolean bl14 = Wrapper.G;
+                boolean bl14 = Wrapper.isNativeAvailable;
                 String string14 = "func_150997_a";
                 MItemStack mItemStack14 = this;
                 this.K = this.Y(string14, bl14, clazz16, classArray14);
@@ -174,7 +174,7 @@ extends Mapping {
             } else {
                 Class[] classArray18 = new Class[]{MappedClasses.Zk};
                 Class<Float> clazz20 = Float.TYPE;
-                boolean bl18 = Wrapper.G;
+                boolean bl18 = Wrapper.isNativeAvailable;
                 String string18 = "func_150997_a";
                 MItemStack mItemStack18 = this;
                 this.K = this.Y(string18, bl18, clazz20, classArray18);
@@ -278,7 +278,7 @@ extends Mapping {
             String string34 = "getDisplayName";
             MItemStack mItemStack34 = this;
             this.v = this.Y(string34, bl34, clazz36, classArray30);
-            if (ForgeVersion.MC_1_7_10.L() && Wrapper.c.isVanillaMinecraftPresent()) {
+            if (ForgeVersion.MC_1_7_10.L() && Wrapper.vapeInstance.isVanillaMinecraftPresent()) {
                 Class[] classArray31 = new Class[]{};
                 Class<Integer> clazz37 = Integer.TYPE;
                 boolean bl35 = true;
@@ -339,7 +339,7 @@ extends Mapping {
     }
 
     public boolean Y(Object object, Object object2) {
-        return this.Q.e(object, object2);
+        return this.Q.invokeBoolean(object, object2);
     }
 
     public static Object X(MItemStack mItemStack, Object object, Object object2, boolean bl) {
@@ -347,11 +347,11 @@ extends Mapping {
     }
 
     private void r(Object object, Object object2, BiConsumer biConsumer) {
-        this.N.c(object, object2, biConsumer);
+        this.N.invokeVoid(object, object2, biConsumer);
     }
 
     private int E(Object object) {
-        return this.X.Z(object, new Object[0]);
+        return this.X.invokeInt(object, new Object[0]);
     }
 
     public static Object g(MItemStack mItemStack, Object object, Object object2) {
@@ -363,14 +363,14 @@ extends Mapping {
     }
 
     public Object p(Object object) {
-        return this.A.O(object);
+        return this.A.newInstance(object);
     }
 
     private Object f(Object object) {
         if (this.H == null) {
             return null;
         }
-        return this.H.L(object, new Object[0]);
+        return this.H.invokeObject(object, new Object[0]);
     }
 
     public static void b(MItemStack mItemStack, Object object, int n) {
@@ -378,14 +378,14 @@ extends Mapping {
     }
 
     public Object n(Object object, Object object2, Object object3, Object object4) {
-        return this.O.L(object, object2, object3, object4);
+        return this.O.invokeObject(object, object2, object3, object4);
     }
 
     private String a$src$Ljava_lang_String_$12fy1ag(Object object) {
         if (object == null) {
             return "";
         }
-        return (String)this.v.L(object, new Object[0]);
+        return (String)this.v.invokeObject(object, new Object[0]);
     }
 
     public Object r(Object object) {
@@ -397,7 +397,7 @@ extends Mapping {
     }
 
     private float p(Object object, Object object2) {
-        return this.K.s(object, object2);
+        return this.K.invokeFloat(object, object2);
     }
 
     public static Object g(MItemStack mItemStack, Object object, Object object2, Object object3) {
@@ -417,36 +417,36 @@ extends Mapping {
     }
 
     public String F(Object object) {
-        return this.Y.L(object, new Object[0]).toString();
+        return this.Y.invokeObject(object, new Object[0]).toString();
     }
 
     private Object l(Object object, Object object2, boolean bl) {
-        return this.J.L(object, object2, bl);
+        return this.J.invokeObject(object, object2, bl);
     }
 
 
     private void S(Object object, Object object2, int n) {
-        this.i.c(object, object2, n);
+        this.i.invokeVoid(object, object2, n);
     }
 
     private Object b(Object object, Object object2, Object object3) {
-        return this.J.L(object, object2, object3);
+        return this.J.invokeObject(object, object2, object3);
     }
 
     private Object L(Object object, Object object2) {
-        return this.M.L(object, object2);
+        return this.M.invokeObject(object, object2);
     }
 
     private Object Y(Object object) {
-        return this.P.L(object, new Object[0]);
+        return this.P.invokeObject(object, new Object[0]);
     }
 
     private int a(Object object) {
-        return this.B.Z(object, new Object[0]);
+        return this.B.invokeInt(object, new Object[0]);
     }
 
     public Object j(Object object, int n, Object object2) {
-        return this.V.O(object, n, object2);
+        return this.V.newInstance(object, n, object2);
     }
 
     public static int f() {
@@ -458,7 +458,7 @@ extends Mapping {
     }
 
     private Object P(Object object) {
-        return this.r.L(object, new Object[0]);
+        return this.r.invokeObject(object, new Object[0]);
     }
 
     static {
@@ -466,11 +466,11 @@ extends Mapping {
     }
 
     private int k(Object object) {
-        return this.G.Z(object, new Object[0]);
+        return this.G.invokeInt(object, new Object[0]);
     }
 
     private void s(Object object, int n) {
-        this.e.c(object, n);
+        this.e.invokeVoid(object, n);
     }
 
     public static Object H(MItemStack mItemStack, Object object) {
@@ -482,7 +482,7 @@ extends Mapping {
     }
 
     private Object U(Object object) {
-        return this.v.L(object, new Object[0]);
+        return this.v.invokeObject(object, new Object[0]);
     }
 
     public static void Q(MItemStack mItemStack, Object object, Object object2, BiConsumer biConsumer) {
@@ -494,7 +494,7 @@ extends Mapping {
     }
 
     public Object O(Object object, int n) {
-        return this.x.O(object, n);
+        return this.x.newInstance(object, n);
     }
 
     public static int v(MItemStack mItemStack, Object object) {
@@ -507,13 +507,13 @@ extends Mapping {
 
     public boolean e(Object object, Object object2) {
         if (ForgeVersion.MC_26_1.d()) {
-            return this.U.L(object, new Object[0]) == object2;
+            return this.U.invokeObject(object, new Object[0]) == object2;
         }
-        return this.z.e(object, object2);
+        return this.z.invokeBoolean(object, object2);
     }
 
     public boolean j(Object object) {
-        return this.o.e(object, new Object[0]);
+        return this.o.invokeBoolean(object, new Object[0]);
     }
 
     public static Object A$src$Ljava_lang_Object_$2ove6c(MItemStack mItemStack, Object object) {
@@ -521,11 +521,11 @@ extends Mapping {
     }
 
     public Object V(Object object) {
-        return this.U.L(object, new Object[0]);
+        return this.U.invokeObject(object, new Object[0]);
     }
 
     private Object D$src$Ljava_lang_Object_$i3u5lb(Object object, Object object2) {
-        return this.T.L(object, object2);
+        return this.T.invokeObject(object, object2);
     }
 
     public void D(Object object, Object object2) {
@@ -553,7 +553,7 @@ extends Mapping {
     }
 
     private Object k$src$Ljava_lang_Object_$12vnjos(Object object) {
-        return this.T.L(object, new Object[0]);
+        return this.T.invokeObject(object, new Object[0]);
     }
 }
 

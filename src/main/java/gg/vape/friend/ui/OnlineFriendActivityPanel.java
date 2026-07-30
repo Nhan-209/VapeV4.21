@@ -38,405 +38,297 @@ import org.jetbrains.annotations.NotNull;
 
 public class OnlineFriendActivityPanel
 extends AnimatedPanelComponent {
-    private float p_ = 0.0f;
-    int ps = 0;
-    TimerUtil pg;
-    TimerUtil pk;
-    private OnlineActivityHeldItemSlotComponent pA;
-    private static final List<Integer> pQ = Arrays.asList(1, 2, 3, 0);
-    private boolean pW = false;
-    private ItemStackSlotComponent[] pb;
-    private final TextLabelComponent pw;
-    private EntityPlayer p6 = null;
-    private final TextLabelComponent p5;
-    private ArrayList<ItemStackSlotComponent> pn;
-    private PanelComponent py;
-    float p3;
-    private final OnlineActivityPanelOptions pP;
-    private PanelComponent pZ;
+    private float displayedHealth = 0.0f;
+    int pendingSwingAnimations = 0;
+    TimerUtil swingAnimationTimer;
+    TimerUtil clickTimer;
+    private OnlineActivityHeldItemSlotComponent heldItemSlot;
+    private static final List<Integer> INVENTORY_ROW_ORDER = Arrays.asList(1, 2, 3, 0);
+    private boolean inventoryVisible = false;
+    private ItemStackSlotComponent[] armorSlots;
+    private final TextLabelComponent usernameLabel;
+    private EntityPlayer trackedPlayer = null;
+    private final TextLabelComponent displayNameLabel;
+    private ArrayList<ItemStackSlotComponent> inventorySlots;
+    private PanelComponent inventoryPanel;
+    float swingAnimationProgress;
+    private final OnlineActivityPanelOptions options;
+    private PanelComponent summaryPanel;
     @NotNull
-    private final OnlineFriendActivityState pV;
-    private final Color pv = new Color(-2130728448);
-    private boolean pm;
+    private final OnlineFriendActivityState activityState;
+    private final Color absorptionColor = new Color(-2130728448);
+    private boolean localActivity;
 
-    private void l(boolean bl) {
-        boolean bl2;
-        OnlineActivityHeldItemSlotComponent onlineActivityHeldItemSlotComponent;
-        int n;
-        block9: {
-            block8: {
-                OnlineActivityHeldItemSlotComponent onlineActivityHeldItemSlotComponent2;
-                block7: {
-                    OnlineActivityHeldItemSlotComponent onlineActivityHeldItemSlotComponent3;
-                    ItemStack itemStack;
-                    OnlineActivityHeldItemSlotComponent onlineActivityHeldItemSlotComponent4;
-                    OnlineActivityHeldItemSlotComponent onlineActivityHeldItemSlotComponent5;
-                    this.pZ.setShowDisabledOverlay(false);
-                    this.pZ.setDisabledOverlayColor(OnlineFriendActivityPanel.J.d);
-                    this.n$src$V$naoy1s();
-                    float f = this.c$src$F$n4n751();
-                    n = (int)(f * 255.0f);
-                    boolean bl3 = this.a$src$Z$n3jmfj();
-                    if (bl3) {
-                        ActivityItemStack activityItemStack = this.pV.N$src$ALgg_vape_friend_activity_ActivityItemStack_$1nvfl9h()[this.pV.N()];
-                        ItemStack itemStack2 = this.p6 != null && this.p6.isNotNull() ? (this.p6.B$src$Lgg_vape_wrapper_impl_ItemStack_$impdvt().isNotNull() ? this.p6.B$src$Lgg_vape_wrapper_impl_ItemStack_$impdvt() : null) : null;
-                        OnlineActivityHeldItemSlotComponent onlineActivityHeldItemSlotComponent6 = this.pA;
-                        onlineActivityHeldItemSlotComponent6.setItemStack(itemStack2);
-                        OnlineActivityHeldItemSlotComponent onlineActivityHeldItemSlotComponent7 = this.pA;
-                        onlineActivityHeldItemSlotComponent7.setSelected(itemStack2 != null && EnchantmentUtil.A(itemStack2).size() > 0);
-                        this.pA.X(n);
-                        this.pA.setShowDisabledOverlay(bl);
-                        for (int i = 0; i < this.pb.length; ++i) {
-                            ItemStackSlotComponent itemStackSlotComponent = this.pb[i];
-                            ItemStack itemStack3 = new ItemStack(Minecraft.thePlayer().V$src$Lgg_vape_wrapper_impl_InventoryPlayer_$erqak6().i()[3 - i]);
-                            itemStackSlotComponent.setItemStack(itemStack3.isNotNull() ? itemStack3 : null);
-                            itemStackSlotComponent.setSelected(itemStack3.isNotNull() && EnchantmentUtil.A(itemStack3).size() > 0);
-                            itemStackSlotComponent.setShowDisabledOverlay(bl);
-                        }
-                        return;
-                    }
-                    ActivityItemStack activityItemStack = this.pV.N$src$ALgg_vape_friend_activity_ActivityItemStack_$1nvfl9h()[this.pV.N()];
-                    ItemStack itemStack4 = this.p6 != null && this.p6.isNotNull() ? (this.p6.B$src$Lgg_vape_wrapper_impl_ItemStack_$impdvt().isNotNull() ? this.p6.B$src$Lgg_vape_wrapper_impl_ItemStack_$impdvt() : null) : null;
-                    OnlineActivityHeldItemSlotComponent onlineActivityHeldItemSlotComponent8 = onlineActivityHeldItemSlotComponent5 = this.pA;
-                    if (activityItemStack != null) {
-                        onlineActivityHeldItemSlotComponent4 = onlineActivityHeldItemSlotComponent8;
-                        itemStack = activityItemStack.T();
-                    } else {
-                        onlineActivityHeldItemSlotComponent4 = onlineActivityHeldItemSlotComponent8;
-                        itemStack = null;
-                    }
-                    onlineActivityHeldItemSlotComponent4.setItemStack(itemStack);
-                    onlineActivityHeldItemSlotComponent2 = onlineActivityHeldItemSlotComponent3 = this.pA;
-                    if (activityItemStack == null) break block7;
-                    onlineActivityHeldItemSlotComponent = onlineActivityHeldItemSlotComponent2;
-                    if (!activityItemStack.O()) break block8;
-                    bl2 = true;
-                    break block9;
-                }
-                onlineActivityHeldItemSlotComponent = onlineActivityHeldItemSlotComponent2;
+    private void updateEquipmentSlots(boolean showOverlay) {
+        this.summaryPanel.setShowDisabledOverlay(false);
+        this.summaryPanel.setDisabledOverlayColor(OnlineFriendActivityPanel.J.d);
+        this.queueSwingAnimations();
+        int overlayAlpha = (int)(this.updateSwingAnimationProgress() * 255.0f);
+        if (this.shouldUseLivePlayerData()) {
+            ItemStack heldItem = this.trackedPlayer != null && this.trackedPlayer.isNotNull()
+                    && this.trackedPlayer.B$src$Lgg_vape_wrapper_impl_ItemStack_$impdvt().isNotNull()
+                    ? this.trackedPlayer.B$src$Lgg_vape_wrapper_impl_ItemStack_$impdvt() : null;
+            this.heldItemSlot.setItemStack(heldItem);
+            this.heldItemSlot.setSelected(heldItem != null && EnchantmentUtil.A(heldItem).size() > 0);
+            this.heldItemSlot.setDisabledOverlayAlpha(overlayAlpha);
+            this.heldItemSlot.setShowDisabledOverlay(showOverlay);
+            for (int index = 0; index < this.armorSlots.length; ++index) {
+                ItemStackSlotComponent armorSlot = this.armorSlots[index];
+                ItemStack armorItem = new ItemStack(Minecraft.thePlayer().V$src$Lgg_vape_wrapper_impl_InventoryPlayer_$erqak6().i()[3 - index]);
+                armorSlot.setItemStack(armorItem.isNotNull() ? armorItem : null);
+                armorSlot.setSelected(armorItem.isNotNull() && EnchantmentUtil.A(armorItem).size() > 0);
+                armorSlot.setShowDisabledOverlay(showOverlay);
             }
-            bl2 = false;
+            return;
         }
-        onlineActivityHeldItemSlotComponent.setSelected(bl2);
-        this.pA.X(n);
-        this.pA.setShowDisabledOverlay(bl);
-        for (int i = 0; i < this.pb.length; ++i) {
-            ItemStackSlotComponent itemStackSlotComponent = this.pb[i];
-            ActivityItemStack activityItemStack = this.pV.I()[3 - i];
-            if (activityItemStack != null && activityItemStack.I() != 0) {
-                itemStackSlotComponent.setItemStack(activityItemStack.T());
-                itemStackSlotComponent.setSelected(activityItemStack.O());
+        ActivityItemStack heldItem = this.activityState.getInventory()[this.activityState.getHeldItemSlot()];
+        this.heldItemSlot.setItemStack(heldItem != null ? heldItem.toItemStack() : null);
+        this.heldItemSlot.setSelected(heldItem != null && heldItem.hasEnchantments());
+        this.heldItemSlot.setDisabledOverlayAlpha(overlayAlpha);
+        this.heldItemSlot.setShowDisabledOverlay(showOverlay);
+        for (int i = 0; i < this.armorSlots.length; ++i) {
+            ItemStackSlotComponent armorSlot = this.armorSlots[i];
+            ActivityItemStack armorItem = this.activityState.getArmor()[3 - i];
+            if (armorItem != null && armorItem.getItemId() != 0) {
+                armorSlot.setItemStack(armorItem.toItemStack());
+                armorSlot.setSelected(armorItem.hasEnchantments());
             } else {
-                itemStackSlotComponent.setItemStack(null);
+                armorSlot.setItemStack(null);
             }
-            itemStackSlotComponent.setShowDisabledOverlay(bl);
+            armorSlot.setShowDisabledOverlay(showOverlay);
         }
     }
 
-    public void w(double d, double d2, double d3, double d4) {
-        double d5 = d3 / 2.0;
-        double d6 = d + d5;
-        double d7 = d2 + d5;
-        double d8 = Math.toRadians(d4);
-        double d9 = Math.toRadians(d4 - 12.0);
-        double d10 = Math.toRadians(d4 + 12.0);
-        double d11 = d6 + (d5 + 4.0) * Math.sin(d8);
-        double d12 = d7 - (d5 + 4.0) * Math.cos(d8);
-        double d13 = d6 + (d5 + 2.0) * Math.sin(d9);
-        double d14 = d7 - (d5 + 2.0) * Math.cos(d9);
-        double d15 = d6 + (d5 + 2.0) * Math.sin(d10);
-        double d16 = d7 - (d5 + 2.0) * Math.cos(d10);
-        GuiRenderPrimitives.U(d13, d14, d11, d12, d15, d16, OnlineFriendActivityPanel.J.f);
+    public void drawDirectionArrow(double x, double y, double size, double angleDegrees) {
+        double radius = size / 2.0;
+        double centerX = x + radius;
+        double centerY = y + radius;
+        double tipAngle = Math.toRadians(angleDegrees);
+        double leftAngle = Math.toRadians(angleDegrees - 12.0);
+        double rightAngle = Math.toRadians(angleDegrees + 12.0);
+        double tipX = centerX + (radius + 4.0) * Math.sin(tipAngle);
+        double tipY = centerY - (radius + 4.0) * Math.cos(tipAngle);
+        double leftX = centerX + (radius + 2.0) * Math.sin(leftAngle);
+        double leftY = centerY - (radius + 2.0) * Math.cos(leftAngle);
+        double rightX = centerX + (radius + 2.0) * Math.sin(rightAngle);
+        double rightY = centerY - (radius + 2.0) * Math.cos(rightAngle);
+        GuiRenderPrimitives.U(leftX, leftY, tipX, tipY, rightX, rightY, OnlineFriendActivityPanel.J.f);
     }
 
-    private double K(double d, double d2, double d3, double d4) {
-        double d5 = 0.0;
-        double d6 = d3 - d;
-        double d7 = d4 - d2;
-        if (d7 > 0.0 && d6 > 0.0) {
-            d5 = Math.toDegrees(-Math.atan(d6 / d7));
-        } else if (d7 > 0.0 && d6 < 0.0) {
-            d5 = Math.toDegrees(-Math.atan(d6 / d7));
-        } else if (d7 < 0.0 && d6 > 0.0) {
-            d5 = -90.0 + Math.toDegrees(Math.atan(d7 / d6));
-        } else if (d7 < 0.0 && d6 < 0.0) {
-            d5 = 90.0 + Math.toDegrees(Math.atan(d7 / d6));
+    private double getRelativeDirection(double sourceX, double sourceZ, double targetX, double targetZ) {
+        double direction = 0.0;
+        double deltaX = targetX - sourceX;
+        double deltaZ = targetZ - sourceZ;
+        if (deltaZ > 0.0 && deltaX > 0.0) {
+            direction = Math.toDegrees(-Math.atan(deltaX / deltaZ));
+        } else if (deltaZ > 0.0 && deltaX < 0.0) {
+            direction = Math.toDegrees(-Math.atan(deltaX / deltaZ));
+        } else if (deltaZ < 0.0 && deltaX > 0.0) {
+            direction = -90.0 + Math.toDegrees(Math.atan(deltaZ / deltaX));
+        } else if (deltaZ < 0.0 && deltaX < 0.0) {
+            direction = 90.0 + Math.toDegrees(Math.atan(deltaZ / deltaX));
         }
-        double d8 = MathUtil.wrapAngleTo180((float)d5);
-        return MathUtil.wrapAngleTo180((float)(d8 -= (double)MathUtil.wrapAngleTo180(Minecraft.thePlayer().J())));
+        double wrappedDirection = MathUtil.wrapAngleTo180((float)direction);
+        return MathUtil.wrapAngleTo180((float)(wrappedDirection -= (double)MathUtil.wrapAngleTo180(Minecraft.thePlayer().J())));
     }
 
-    private void k(double d, double d2, boolean bl) {
-        SmoothFontRenderer smoothFontRenderer = this.getFontRenderer(0.75);
-        String string = this.pV.L() + "";
-        if (bl) {
-            // empty if block
-        }
-        smoothFontRenderer.v(string, d - smoothFontRenderer.N(string) / 2.0, d2 - smoothFontRenderer.d(string) / 2.0, Color.white);
+    private void renderClicksPerSecond(double centerX, double centerY) {
+        SmoothFontRenderer fontRenderer = this.getFontRenderer(0.75);
+        String clicksPerSecond = Integer.toString(this.activityState.getClicksPerSecond());
+        fontRenderer.v(clicksPerSecond, centerX - fontRenderer.N(clicksPerSecond) / 2.0, centerY - fontRenderer.d(clicksPerSecond) / 2.0, Color.white);
     }
 
     public OnlineFriendActivityPanel(LocalOnlineFriend localOnlineFriend) {
-        this(localOnlineFriend.E());
-        this.pm = true;
+        this(localOnlineFriend.getActivityState());
+        this.localActivity = true;
     }
 
-    public void l(OnlineActivitySettingsFrame onlineActivitySettingsFrame) {
-        Entity entity;
-        if (this.p6 != null && !this.p6.equals(Minecraft.thePlayer())) {
-            entity = Minecraft.theWorld().V(this.p6.S());
-            this.p6 = entity.isNotNull() ? new EntityPlayer(entity) : null;
+    public void renderSummary(OnlineActivitySettingsFrame settingsFrame) {
+        Entity localPlayer;
+        if (this.trackedPlayer != null && !this.trackedPlayer.equals(Minecraft.thePlayer())) {
+            Entity refreshedPlayer = Minecraft.theWorld().V(this.trackedPlayer.S());
+            this.trackedPlayer = refreshedPlayer.isNotNull() ? new EntityPlayer(refreshedPlayer) : null;
         }
-        entity = Minecraft.thePlayer();
-        double d = this.pV.v(this.p6);
-        double d2 = this.pV.X(this.p6);
-        double d3 = this.pV.W(this.p6);
-        float f = this.pV.l(this.p6);
-        float f2 = this.pV.I(this.p6);
-        float f3 = this.pV.F(this.p6);
-        if (this.A$src$Z$mly7fz()) {
+        localPlayer = Minecraft.thePlayer();
+        double playerX = this.activityState.getPositionX(this.trackedPlayer);
+        double playerY = this.activityState.getPositionY(this.trackedPlayer);
+        double playerZ = this.activityState.getPositionZ(this.trackedPlayer);
+        float health = this.activityState.getHealth(this.trackedPlayer);
+        float maxHealth = this.activityState.getMaxHealth(this.trackedPlayer);
+        float absorption = this.activityState.getAbsorptionAmount(this.trackedPlayer);
+        if (this.shouldRenderBackground()) {
             GuiRenderPrimitives.d(this.G$src$D$1b2f02a(), this.n(), this.A(), this.L(), new Color(26, 25, 26, 150));
         }
-        double d4 = this.G$src$D$1b2f02a() + 6.0;
-        double d5 = this.n() + 10.0;
-        double d6 = 22.0;
-        GlImageTexture glImageTexture = RemoteImageTextureManager.getInstance().getTexture(this.pV.a().I(), 32);
-        if (glImageTexture != null) {
-            GuiRenderPrimitives.V((float)(d4 - 0.5), (float)(d5 - 0.5), (float)(d6 + 1.0), 1.0, new Color(50, 50, 50, 255));
-            GuiRenderPrimitives.u((float)d4, (float)d5, (float)d6, 1.0f, Color.WHITE, glImageTexture);
+        double avatarX = this.G$src$D$1b2f02a() + 6.0;
+        double avatarY = this.n() + 10.0;
+        double avatarSize = 22.0;
+        GlImageTexture avatarTexture = RemoteImageTextureManager.getInstance().getTexture(this.activityState.getFriend().getMinecraftUsername(), 32);
+        if (avatarTexture != null) {
+            GuiRenderPrimitives.V((float)(avatarX - 0.5), (float)(avatarY - 0.5), (float)(avatarSize + 1.0), 1.0, new Color(50, 50, 50, 255));
+            GuiRenderPrimitives.u((float)avatarX, (float)avatarY, (float)avatarSize, 1.0f, Color.WHITE, avatarTexture);
         }
-        double d7 = d4 + d6 + 6.0;
-        this.pw.setText(this.pV != null ? this.pV.a().I() : "N/A");
-        double d8 = d5 + 4.0;
-        this.pw.renderAt(d7, d8 - this.pw.getTextHeight() / 2.0);
-        this.p5.setText(this.pV != null ? this.pV.a().C() : "N/A");
-        this.p5.renderAt(d7, d8 + 10.0 - this.p5.getTextHeight() / 2.0);
-        double d9 = d5 + 18.0;
-        this.O(d7, d9, f, f2, f3);
-        this.b$src$V$n43exg();
-        this.u(f);
+        double textX = avatarX + avatarSize + 6.0;
+        this.usernameLabel.setText(this.activityState != null ? this.activityState.getFriend().getMinecraftUsername() : "N/A");
+        double nameCenterY = avatarY + 4.0;
+        this.usernameLabel.renderAt(textX, nameCenterY - this.usernameLabel.getTextHeight() / 2.0);
+        this.displayNameLabel.setText(this.activityState != null ? this.activityState.getFriend().getDisplayName() : "N/A");
+        this.displayNameLabel.renderAt(textX, nameCenterY + 10.0 - this.displayNameLabel.getTextHeight() / 2.0);
+        double healthBarY = avatarY + 18.0;
+        this.renderHealthBar(textX, healthBarY, health, maxHealth, absorption);
+        this.renderHurtOverlay();
+        this.renderDeathIndicator(health);
         GuiRenderPrimitives.V(this.G$src$D$1b2f02a() + this.A() - 8.0, this.n() + 4.0, 4.0, 1.0, new Color(0, 0, 0, 255));
-        GuiRenderPrimitives.V(this.G$src$D$1b2f02a() + this.A() - 8.0, this.n() + 4.0, 4.0, 1.0, OnlineFriendColorUtil.f(this.pV.a().d()));
-        if (!this.pm) {
-            this.w(d4, d5, d6, this.C(Minecraft.thePlayer(), d, d3));
-            int n = (int)RotationUtil.y(entity.c(), entity.A(), entity.Z(), d, d2, d3);
-            String string = n > 1000000000 ? "very far away" : n + "m";
-            SmoothFontRenderer smoothFontRenderer = this.h(n);
-            double d10 = Math.max(d4 + d6 / 2.0 - smoothFontRenderer.N(string) / 2.0, this.G$src$D$1b2f02a() + 2.0);
-            double d11 = d5 + d6 + 6.0 + (this.n() + this.L() - 2.0 - (d5 + 4.0 + d6 + 4.0) - smoothFontRenderer.d(string)) / 2.0;
-            smoothFontRenderer.v(string, d10, d11, OnlineFriendActivityPanel.J.A);
+        GuiRenderPrimitives.V(this.G$src$D$1b2f02a() + this.A() - 8.0, this.n() + 4.0, 4.0, 1.0, OnlineFriendColorUtil.getGroupRoleColor(this.activityState.getFriend().getGroupRole()));
+        if (!this.localActivity) {
+            this.drawDirectionArrow(avatarX, avatarY, avatarSize, this.getDirectionFromEntity(Minecraft.thePlayer(), playerX, playerZ));
+            int distance = (int)RotationUtil.y(localPlayer.c(), localPlayer.A(), localPlayer.Z(), playerX, playerY, playerZ);
+            String distanceText = distance > 1000000000 ? "very far away" : distance + "m";
+            SmoothFontRenderer distanceFont = this.getDistanceFontRenderer(distance);
+            double distanceX = Math.max(avatarX + avatarSize / 2.0 - distanceFont.N(distanceText) / 2.0, this.G$src$D$1b2f02a() + 2.0);
+            double distanceY = avatarY + avatarSize + 6.0 + (this.n() + this.L() - 2.0 - (avatarY + 4.0 + avatarSize + 4.0) - distanceFont.d(distanceText)) / 2.0;
+            distanceFont.v(distanceText, distanceX, distanceY, OnlineFriendActivityPanel.J.A);
         }
     }
 
-    private void h() {
-        block8: {
-            boolean bl = this.a$src$Z$n3jmfj();
-            if (!bl) break block8;
-            int n = 0;
-            for (int n2 : pQ) {
-                for (int i = 0; i < 9; ++i) {
-                    boolean bl2;
-                    ItemStackSlotComponent itemStackSlotComponent;
-                    block11: {
-                        block10: {
-                            ItemStackSlotComponent itemStackSlotComponent2;
-                            block9: {
-                                ItemStackSlotComponent itemStackSlotComponent3;
-                                ItemStack itemStack;
-                                ItemStackSlotComponent itemStackSlotComponent4;
-                                ItemStackSlotComponent itemStackSlotComponent5;
-                                int n3 = n2 * 9 + i;
-                                ActivityItemStack activityItemStack = this.pV.N$src$ALgg_vape_friend_activity_ActivityItemStack_$1nvfl9h()[n3];
-                                ItemStack itemStack2 = this.p6 != null && this.p6.isNotNull() ? this.p6.V$src$Lgg_vape_wrapper_impl_InventoryPlayer_$erqak6().c(n3) : null;
-                                ItemStackSlotComponent itemStackSlotComponent6 = this.pn.get(n);
-                                boolean bl3 = itemStack2 != null && itemStack2.isNotNull();
-                                ItemStackSlotComponent itemStackSlotComponent7 = itemStackSlotComponent5 = itemStackSlotComponent6;
-                                if (bl3) {
-                                    itemStackSlotComponent4 = itemStackSlotComponent7;
-                                    itemStack = itemStack2;
-                                } else {
-                                    itemStackSlotComponent4 = itemStackSlotComponent7;
-                                    itemStack = null;
-                                }
-                                itemStackSlotComponent4.setItemStack(itemStack);
-                                itemStackSlotComponent2 = itemStackSlotComponent3 = itemStackSlotComponent6;
-                                if (!bl3) break block9;
-                                itemStackSlotComponent = itemStackSlotComponent2;
-                                if (EnchantmentUtil.A(itemStack2).size() <= 0) break block10;
-                                bl2 = true;
-                                break block11;
-                            }
-                            itemStackSlotComponent = itemStackSlotComponent2;
-                        }
-                        bl2 = false;
-                    }
-                    itemStackSlotComponent.setSelected(bl2);
-                    ++n;
+    private void refreshInventorySlots() {
+        boolean useLivePlayerData = this.shouldUseLivePlayerData();
+        int displayIndex = 0;
+        for (int inventoryRow : INVENTORY_ROW_ORDER) {
+            for (int column = 0; column < 9; ++column) {
+                int inventoryIndex = inventoryRow * 9 + column;
+                ItemStackSlotComponent slot = this.inventorySlots.get(displayIndex++);
+                if (useLivePlayerData) {
+                    ItemStack item = this.trackedPlayer != null && this.trackedPlayer.isNotNull()
+                            ? this.trackedPlayer.V$src$Lgg_vape_wrapper_impl_InventoryPlayer_$erqak6().c(inventoryIndex) : null;
+                    boolean present = item != null && item.isNotNull();
+                    slot.setItemStack(present ? item : null);
+                    slot.setSelected(present && EnchantmentUtil.A(item).size() > 0);
+                } else {
+                    ActivityItemStack item = this.activityState.getInventory()[inventoryIndex];
+                    slot.setItemStack(item != null ? item.toItemStack() : null);
+                    slot.setSelected(item != null && item.hasEnchantments());
                 }
+            }
+        }
+    }
+
+    private boolean shouldRenderBackground() {
+        return this.options.getRenderBackground().getEffectiveValue();
+    }
+
+    public OnlineFriendActivityState getActivityState() {
+        return this.activityState;
+    }
+
+    private boolean shouldDisplayClicksPerSecond() {
+        return this.options.getCpsDisplay().getEffectiveValue();
+    }
+
+
+    public void setInventoryVisible(boolean visible) {
+        if (visible == this.inventoryVisible) {
+            if (this.inventoryVisible) {
+                this.refreshInventorySlots();
             }
             return;
         }
-        int n = 0;
-        for (int n4 : pQ) {
-            for (int i = 0; i < 9; ++i) {
-                boolean bl;
-                ItemStackSlotComponent itemStackSlotComponent;
-                block14: {
-                    block13: {
-                        ItemStackSlotComponent itemStackSlotComponent8;
-                        block12: {
-                            ItemStackSlotComponent itemStackSlotComponent9;
-                            ItemStack itemStack;
-                            ItemStackSlotComponent itemStackSlotComponent10;
-                            ItemStackSlotComponent itemStackSlotComponent11;
-                            int n5 = n4 * 9 + i;
-                            ActivityItemStack activityItemStack = this.pV.N$src$ALgg_vape_friend_activity_ActivityItemStack_$1nvfl9h()[n5];
-                            ItemStack itemStack3 = this.p6 != null && this.p6.isNotNull() ? this.p6.V$src$Lgg_vape_wrapper_impl_InventoryPlayer_$erqak6().c(n5) : null;
-                            ItemStackSlotComponent itemStackSlotComponent12 = this.pn.get(n);
-                            boolean bl4 = itemStack3 != null && itemStack3.isNotNull();
-                            ItemStackSlotComponent itemStackSlotComponent13 = itemStackSlotComponent11 = itemStackSlotComponent12;
-                            if (activityItemStack != null) {
-                                itemStackSlotComponent10 = itemStackSlotComponent13;
-                                itemStack = activityItemStack.T();
-                            } else {
-                                itemStackSlotComponent10 = itemStackSlotComponent13;
-                                itemStack = null;
-                            }
-                            itemStackSlotComponent10.setItemStack(itemStack);
-                            itemStackSlotComponent8 = itemStackSlotComponent9 = itemStackSlotComponent12;
-                            if (activityItemStack == null) break block12;
-                            itemStackSlotComponent = itemStackSlotComponent8;
-                            if (!activityItemStack.O()) break block13;
-                            bl = true;
-                            break block14;
-                        }
-                        itemStackSlotComponent = itemStackSlotComponent8;
-                    }
-                    bl = false;
-                }
-                itemStackSlotComponent.setSelected(bl);
-                ++n;
-            }
-        }
-    }
-
-    private boolean A$src$Z$mly7fz() {
-        return this.pP.P().getEffectiveValue();
-    }
-
-    public OnlineFriendActivityState y$src$Lgg_vape_friend_OnlineFriendActivityState_$6vxj8m() {
-        return this.pV;
-    }
-
-    private boolean P$src$Z$mu74ce() {
-        return this.pP.i().getEffectiveValue();
-    }
-
-
-    public void U(boolean bl) {
-        if (bl == this.pW) {
-            if (this.pW) {
-                this.h();
-            }
-            return;
-        }
-        this.pW = bl;
-        if (bl) {
-            this.h();
-            this.pZ.setVisible(false);
-            this.py.setVisible(true);
+        this.inventoryVisible = visible;
+        if (visible) {
+            this.refreshInventorySlots();
+            this.summaryPanel.setVisible(false);
+            this.inventoryPanel.setVisible(true);
         } else {
-            this.py.setVisible(false);
-            this.pZ.setVisible(true);
-            this.pZ.l$src$V$1mibm4x();
+            this.inventoryPanel.setVisible(false);
+            this.summaryPanel.setVisible(true);
+            this.summaryPanel.l$src$V$1mibm4x();
         }
     }
 
-    private SmoothFontRenderer h(double d) {
-        int n = (d + "m").length();
-        if (n < 10) {
+    private SmoothFontRenderer getDistanceFontRenderer(double distance) {
+        int textLength = (distance + "m").length();
+        if (textLength < 10) {
             return this.getFontRenderer(0.8);
         }
         return this.getFontRenderer(0.7);
     }
 
-    private void n$src$V$naoy1s() {
-        boolean bl;
-        int n = this.pV.L();
-        int n2 = this.pV.f(this.p6);
-        boolean bl2 = bl = this.p6 == null || n > 4 && n2 != 0;
-        if (bl) {
-            if (n != 0 && this.pk.hasTimeElapsed(1000 / n)) {
-                this.pk.reset();
-                ++this.ps;
+    private void queueSwingAnimations() {
+        int clicksPerSecond = this.activityState.getClicksPerSecond();
+        int swingProgressTicks = this.activityState.getSwingProgressTicks(this.trackedPlayer);
+        boolean synthesizeFromCps = this.trackedPlayer == null || clicksPerSecond > 4 && swingProgressTicks != 0;
+        if (synthesizeFromCps) {
+            if (clicksPerSecond != 0 && this.clickTimer.hasTimeElapsed(1000 / clicksPerSecond)) {
+                this.clickTimer.reset();
+                ++this.pendingSwingAnimations;
             }
-        } else if (n2 == 1 && this.pV.j() > 1) {
-            this.pk.reset();
-            ++this.ps;
+        } else if (swingProgressTicks == 1 && this.activityState.getBuildingTicks() > 1) {
+            this.clickTimer.reset();
+            ++this.pendingSwingAnimations;
         }
     }
 
-    private double C(Entity entity, double d, double d2) {
-        return this.K(entity.c(), entity.Z(), d, d2);
+    private double getDirectionFromEntity(Entity entity, double targetX, double targetZ) {
+        return this.getRelativeDirection(entity.c(), entity.Z(), targetX, targetZ);
     }
 
-    private void e$src$V$n5qspj() {
-        this.pn.clear();
-        this.py.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M("wrap");
-        this.py.setShowDisabledOverlay(false);
-        this.py.t$src$V$zbu1jn();
-        this.py.h(new SpacerComponent(110.0, 1.5), new Object[0]);
+    private void buildInventoryPanel() {
+        this.inventorySlots.clear();
+        this.inventoryPanel.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M("wrap");
+        this.inventoryPanel.setShowDisabledOverlay(false);
+        this.inventoryPanel.t$src$V$zbu1jn();
+        this.inventoryPanel.h(new SpacerComponent(110.0, 1.5), new Object[0]);
         PanelComponent panelComponent = new PanelComponent(110.0, 6.0);
         panelComponent.addChildren(new SpacerComponent(110.0, 1.0), new SpacerComponent(93.0, 6.0));
-        this.py.h(panelComponent, new Object[0]);
+        this.inventoryPanel.h(panelComponent, new Object[0]);
         panelComponent.setShowDisabledOverlay(false);
-        for (int n : pQ) {
-            PanelComponent panelComponent2 = new PanelComponent(110.0, 11.0);
-            panelComponent2.setShowDisabledOverlay(false);
-            panelComponent2.h(new SpacerComponent(8.0, 10.0), new Object[0]);
-            for (int i = 0; i < 9; ++i) {
-                ItemStackSlotComponent itemStackSlotComponent = new ItemStackSlotComponent(10.0, 10.0, 8);
-                ActivityItemStack activityItemStack = this.pV.N$src$ALgg_vape_friend_activity_ActivityItemStack_$1nvfl9h()[n * 9 + i];
-                itemStackSlotComponent.setItemStack(activityItemStack != null ? activityItemStack.T() : null);
-                this.pn.add(itemStackSlotComponent);
-                if (i != 0) {
-                    panelComponent2.h(new SpacerComponent(1.0, 11.0), new Object[0]);
+        for (int inventoryRow : INVENTORY_ROW_ORDER) {
+            PanelComponent rowPanel = new PanelComponent(110.0, 11.0);
+            rowPanel.setShowDisabledOverlay(false);
+            rowPanel.h(new SpacerComponent(8.0, 10.0), new Object[0]);
+            for (int column = 0; column < 9; ++column) {
+                ItemStackSlotComponent slot = new ItemStackSlotComponent(10.0, 10.0, 8);
+                ActivityItemStack item = this.activityState.getInventory()[inventoryRow * 9 + column];
+                slot.setItemStack(item != null ? item.toItemStack() : null);
+                this.inventorySlots.add(slot);
+                if (column != 0) {
+                    rowPanel.h(new SpacerComponent(1.0, 11.0), new Object[0]);
                 }
-                panelComponent2.h(itemStackSlotComponent, new Object[0]);
+                rowPanel.h(slot, new Object[0]);
             }
-            this.py.h(panelComponent2, new Object[0]);
+            this.inventoryPanel.h(rowPanel, new Object[0]);
         }
     }
 
     public OnlineFriendActivityPanel(@NotNull OnlineFriendActivityState onlineFriendActivityState) {
         super(114.0, 52.0);
-        this.pA = new OnlineActivityHeldItemSlotComponent();
-        this.pb = new ItemStackSlotComponent[]{new ItemStackSlotComponent(), new ItemStackSlotComponent(), new ItemStackSlotComponent(), new ItemStackSlotComponent()};
-        this.pn = new ArrayList();
-        this.py = new PanelComponent(110.0, 45.0);
-        this.pZ = new PanelComponent(110.0, 58.0);
-        this.pk = new TimerUtil();
-        this.pg = new TimerUtil();
-        this.pV = onlineFriendActivityState;
+        this.heldItemSlot = new OnlineActivityHeldItemSlotComponent();
+        this.armorSlots = new ItemStackSlotComponent[]{new ItemStackSlotComponent(), new ItemStackSlotComponent(), new ItemStackSlotComponent(), new ItemStackSlotComponent()};
+        this.inventorySlots = new ArrayList();
+        this.inventoryPanel = new PanelComponent(110.0, 45.0);
+        this.summaryPanel = new PanelComponent(110.0, 58.0);
+        this.clickTimer = new TimerUtil();
+        this.swingAnimationTimer = new TimerUtil();
+        this.activityState = onlineFriendActivityState;
         this.setShowDisabledOverlay(false);
-        this.pw = new TextLabelComponent(onlineFriendActivityState.a().I(), 0.7, 1.0, 0.1, 74.0, false, true, Color.white);
-        this.p5 = new TextLabelComponent(onlineFriendActivityState.a().C(), 0.6, 0.9, 0.1, 74.0, false, true, OnlineFriendActivityPanel.J.A);
-        this.pZ.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M("wrap");
-        this.pZ.addChildren(new SpacerComponent(110.0, 36.0));
+        this.usernameLabel = new TextLabelComponent(onlineFriendActivityState.getFriend().getMinecraftUsername(), 0.7, 1.0, 0.1, 74.0, false, true, Color.white);
+        this.displayNameLabel = new TextLabelComponent(onlineFriendActivityState.getFriend().getDisplayName(), 0.6, 0.9, 0.1, 74.0, false, true, OnlineFriendActivityPanel.J.A);
+        this.summaryPanel.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M("wrap");
+        this.summaryPanel.addChildren(new SpacerComponent(110.0, 36.0));
         PanelComponent panelComponent = new PanelComponent(110.0, 23.0);
         panelComponent.setShowDisabledOverlay(false);
         panelComponent.h(new SpacerComponent(34.0, 1.0), new Object[0]);
-        panelComponent.h(this.pA, new Object[0]);
-        for (ItemStackSlotComponent itemStackSlotComponent : this.pb) {
+        panelComponent.h(this.heldItemSlot, new Object[0]);
+        for (ItemStackSlotComponent itemStackSlotComponent : this.armorSlots) {
             panelComponent.addChildren(new SpacerComponent(1.0, 0.0), itemStackSlotComponent);
         }
-        this.pZ.h(panelComponent, new Object[0]);
-        this.pZ.setShowDisabledOverlay(false);
-        this.h(this.pZ, new Object[0]);
-        this.py.setShowDisabledOverlay(false);
-        this.e$src$V$n5qspj();
-        this.py.setVisible(false);
-        this.h(this.py, new Object[0]);
-        this.pP = OnlineActivityPanelOptions.p;
+        this.summaryPanel.h(panelComponent, new Object[0]);
+        this.summaryPanel.setShowDisabledOverlay(false);
+        this.h(this.summaryPanel, new Object[0]);
+        this.inventoryPanel.setShowDisabledOverlay(false);
+        this.buildInventoryPanel();
+        this.inventoryPanel.setVisible(false);
+        this.h(this.inventoryPanel, new Object[0]);
+        this.options = OnlineActivityPanelOptions.INSTANCE;
     }
 
     @Override
@@ -445,59 +337,57 @@ extends AnimatedPanelComponent {
         if (Minecraft.thePlayer().isNull()) {
             return;
         }
-        this.l(this.A$src$Z$mly7fz());
+        this.updateEquipmentSlots(this.shouldRenderBackground());
     }
 
-    private void O(double d, double d2, float f, float f2, float f3) {
-        float f4;
-        float f5;
-        float f6 = 0.5f;
-        if (this.p_ < f) {
-            f5 = this.p_ / f;
-            f4 = 1.0f - f5;
-            this.p_ += f6 * f4;
+    private void renderHealthBar(double x, double y, float health, float maxHealth, float absorption) {
+        float interpolationDelta;
+        float healthRatio;
+        float interpolationSpeed = 0.5f;
+        if (this.displayedHealth < health) {
+            healthRatio = this.displayedHealth / health;
+            interpolationDelta = 1.0f - healthRatio;
+            this.displayedHealth += interpolationSpeed * interpolationDelta;
         }
-        if (this.p_ > f) {
-            f5 = f / this.p_;
-            if (this.p_ == 0.0f) {
-                f5 = 0.0f;
+        if (this.displayedHealth > health) {
+            healthRatio = health / this.displayedHealth;
+            if (this.displayedHealth == 0.0f) {
+                healthRatio = 0.0f;
             }
-            f4 = 1.0f - f5;
-            this.p_ -= f6 * f4;
+            interpolationDelta = 1.0f - healthRatio;
+            this.displayedHealth -= interpolationSpeed * interpolationDelta;
         }
-        if (Float.isNaN(this.p_) || !Float.isFinite(this.p_)) {
-            this.p_ = f;
+        if (Float.isNaN(this.displayedHealth) || !Float.isFinite(this.displayedHealth)) {
+            this.displayedHealth = health;
         }
-        f = Math.max(f, 0.0f);
-        double d3 = d;
-        double d4 = d2;
-        double d5 = 75.0;
-        double d6 = 2.0;
-        float f7 = 0.6f;
-        float f8 = f / Math.max(f2, 1.0f);
-        float f9 = f / Math.max(f2, 1.0f);
-        GuiRenderPrimitives.I(d3, d4, d5, d6, new Color(54, 54, 54, 255), true, f7, 1.0f, 4.0f, new Color(0, 0, 0, 152));
-        if (this.p6 == null) {
-            f9 = 1.0f;
+        health = Math.max(health, 0.0f);
+        double barWidth = 75.0;
+        double barHeight = 2.0;
+        float cornerRadius = 0.6f;
+        float barFillRatio = health / Math.max(maxHealth, 1.0f);
+        float colorRatio = health / Math.max(maxHealth, 1.0f);
+        GuiRenderPrimitives.I(x, y, barWidth, barHeight, new Color(54, 54, 54, 255), true, cornerRadius, 1.0f, 4.0f, new Color(0, 0, 0, 152));
+        if (this.trackedPlayer == null) {
+            colorRatio = 1.0f;
         }
-        Color color = f > 0.0f ? RenderUtils.q(f9, true) : Color.RED;
-        GuiRenderPrimitives.e(d3, d4, Math.min(d5 * (double)f8, d5), d6, color, false, f7, 1.0f);
-        if (f3 > 0.0f) {
-            f3 = Math.min(10.0f, f3);
-            double d7 = Math.max(d3, d3 + d5 * (double)f8 - 2.0);
-            double d8 = d3 + d5;
-            double d9 = d3 + d5 * (double)f8;
-            double d10 = 10.0f * (f3 / 2.0f);
-            double d11 = d8 - (d9 - 2.0 + d10);
-            if (d11 < 0.0) {
-                d7 -= Math.abs(d11);
+        Color healthColor = health > 0.0f ? RenderUtils.q(colorRatio, true) : Color.RED;
+        GuiRenderPrimitives.e(x, y, Math.min(barWidth * (double)barFillRatio, barWidth), barHeight, healthColor, false, cornerRadius, 1.0f);
+        if (absorption > 0.0f) {
+            absorption = Math.min(10.0f, absorption);
+            double absorptionX = Math.max(x, x + barWidth * (double)barFillRatio - 2.0);
+            double barRight = x + barWidth;
+            double healthRight = x + barWidth * (double)barFillRatio;
+            double absorptionWidth = 10.0f * (absorption / 2.0f);
+            double overflow = barRight - (healthRight - 2.0 + absorptionWidth);
+            if (overflow < 0.0) {
+                absorptionX -= Math.abs(overflow);
             }
-            GuiRenderPrimitives.e(d7, d4, d10, d6, this.pv, true, f7, 1.0f);
+            GuiRenderPrimitives.e(absorptionX, y, absorptionWidth, barHeight, this.absorptionColor, true, cornerRadius, 1.0f);
         }
     }
 
-    private void u(float f) {
-        if (f <= 0.0f) {
+    private void renderDeathIndicator(float health) {
+        if (health <= 0.0f) {
             GuiRenderPrimitives.V(this.G$src$D$1b2f02a() + 5.0, this.n() + 7.0, 24.0, 1.0, new Color(0, 0, 0, 200));
             ImageRenderer.drawImage(new Color(197, 49, 49, 255), (float)this.G$src$D$1b2f02a() + 5.0f + 12.0f - 4.0f, (float)this.n() + 9.0f + 13.0f - 6.0f, "newblatant", 8.0f, 8.0f, true);
         }
@@ -507,106 +397,106 @@ extends AnimatedPanelComponent {
     public void c() {
         OnlineActivitySettingsFrame onlineActivitySettingsFrame = (OnlineActivitySettingsFrame)this.L$src$Lgg_vape_ui_click_frame_Frame_$1djx6sa();
         this.l$src$V$1mibm4x();
-        if (this.pW) {
-            ItemStackSlotComponent itemStackSlotComponent = this.Y(onlineActivitySettingsFrame);
+        if (this.inventoryVisible) {
+            ItemStackSlotComponent itemStackSlotComponent = this.renderInventory(onlineActivitySettingsFrame);
             super.c();
             GuiRenderPrimitives.P(itemStackSlotComponent.G$src$D$1b2f02a(), itemStackSlotComponent.n(), itemStackSlotComponent.A(), itemStackSlotComponent.L(), Color.white, 1.6f, 0.8f, 1.0f);
             return;
         }
-        this.l(onlineActivitySettingsFrame);
+        this.renderSummary(onlineActivitySettingsFrame);
         super.c();
-        if (this.P$src$Z$mu74ce()) {
-            this.k(this.G$src$D$1b2f02a() + 30.0, this.n() + this.L() - 10.0, this.A$src$Z$mly7fz());
+        if (this.shouldDisplayClicksPerSecond()) {
+            this.renderClicksPerSecond(this.G$src$D$1b2f02a() + 30.0, this.n() + this.L() - 10.0);
         }
-        if (this.pg.hasTimeElapsed(50L)) {
-            this.pg.reset();
+        if (this.swingAnimationTimer.hasTimeElapsed(50L)) {
+            this.swingAnimationTimer.reset();
         }
-        this.c$src$F$n4n751();
+        this.updateSwingAnimationProgress();
     }
 
-    public void s$src$V$ndfx0l() {
+    public void resolveTrackedPlayer() {
         WorldClient worldClient = Minecraft.theWorld();
         if (worldClient.isNull()) {
             return;
         }
-        if (this.pV.a() instanceof LocalOnlineFriend) {
-            this.p6 = Minecraft.thePlayer();
+        if (this.activityState.getFriend() instanceof LocalOnlineFriend) {
+            this.trackedPlayer = Minecraft.thePlayer();
             return;
         }
-        if (this.p6 != null && ((World)worldClient).V(this.p6.S()).isNull()) {
-            this.p6 = null;
+        if (this.trackedPlayer != null && ((World)worldClient).V(this.trackedPlayer.S()).isNull()) {
+            this.trackedPlayer = null;
         }
-        if (this.p6 != null) {
+        if (this.trackedPlayer != null) {
             return;
         }
-        for (Object e : worldClient.X()) {
-            EntityPlayer entityPlayer = new EntityPlayer(e);
-            if (!entityPlayer.getName().equalsIgnoreCase(this.pV.a().I())) continue;
-            this.p6 = entityPlayer;
+        for (Object playerObject : worldClient.X()) {
+            EntityPlayer player = new EntityPlayer(playerObject);
+            if (!player.getName().equalsIgnoreCase(this.activityState.getFriend().getMinecraftUsername())) continue;
+            this.trackedPlayer = player;
             break;
         }
     }
 
-    private void b$src$V$n43exg() {
-        int n = this.pV.e(this.p6);
-        if (n > 0) {
-            double d = (double)n / 20.0;
-            int n2 = (int)(255.0 * d);
-            GuiRenderPrimitives.V(this.G$src$D$1b2f02a() + 6.0, this.n() + 10.0, 22.0, 1.0, new Color(255, 0, 0, n2));
+    private void renderHurtOverlay() {
+        int hurtTime = this.activityState.getHurtTime(this.trackedPlayer);
+        if (hurtTime > 0) {
+            double hurtProgress = (double)hurtTime / 20.0;
+            int alpha = (int)(255.0 * hurtProgress);
+            GuiRenderPrimitives.V(this.G$src$D$1b2f02a() + 6.0, this.n() + 10.0, 22.0, 1.0, new Color(255, 0, 0, alpha));
         }
     }
 
-    private boolean a$src$Z$n3jmfj() {
-        List<OnlineFriendActivityState> list = this.pP.D();
-        return list.size() == 0;
+    private boolean shouldUseLivePlayerData() {
+        List<OnlineFriendActivityState> partyActivities = this.options.getPartyActivities();
+        return partyActivities.size() == 0;
     }
 
-    private void O(double d, double d2) {
-        if (!this.pV.Q()) {
+    private void renderTargetAvatar(double x, double y) {
+        if (!this.activityState.hasTarget()) {
             return;
         }
-        GlImageTexture glImageTexture = RemoteImageTextureManager.getInstance().getTexture(this.pV.m() + "", 32);
-        if (glImageTexture != null) {
-            GuiRenderPrimitives.V((float)(d - 0.5), (float)(d2 - 0.5), 11.0, 1.0, OnlineFriendActivityPanel.J.d);
-            GuiRenderPrimitives.u((float)d, (float)d2, 10.0f, 1.0f, Color.WHITE, glImageTexture);
+        GlImageTexture targetTexture = RemoteImageTextureManager.getInstance().getTexture(this.activityState.getTargetUuid() + "", 32);
+        if (targetTexture != null) {
+            GuiRenderPrimitives.V((float)(x - 0.5), (float)(y - 0.5), 11.0, 1.0, OnlineFriendActivityPanel.J.d);
+            GuiRenderPrimitives.u((float)x, (float)y, 10.0f, 1.0f, Color.WHITE, targetTexture);
         }
     }
 
-    private ItemStackSlotComponent Y(OnlineActivitySettingsFrame onlineActivitySettingsFrame) {
-        boolean bl = this.a$src$Z$n3jmfj();
-        this.py.K(this.G$src$D$1b2f02a());
-        this.py.S(this.n());
-        this.py.l$src$V$1mibm4x();
-        String string = "";
-        for (Mod object : Vape.INSTANCE.getModManager().collectMods()) {
-            if (!object.r$src$Z$14eylz9() || object.h() == 0) continue;
-            string = string + object.getName() + "\n";
+    private ItemStackSlotComponent renderInventory(OnlineActivitySettingsFrame settingsFrame) {
+        boolean useLivePlayerData = this.shouldUseLivePlayerData();
+        this.inventoryPanel.K(this.G$src$D$1b2f02a());
+        this.inventoryPanel.S(this.n());
+        this.inventoryPanel.l$src$V$1mibm4x();
+        String enabledModules = "";
+        for (Mod mod : Vape.INSTANCE.getModManager().collectMods()) {
+            if (!mod.r$src$Z$14eylz9() || mod.h() == 0) continue;
+            enabledModules = enabledModules + mod.getName() + "\n";
         }
-        for (ItemStackSlotComponent itemStackSlotComponent : this.pn) {
-            itemStackSlotComponent.setDisabledOverlayColor(this.A$src$Z$mly7fz() ? OnlineFriendActivityPanel.J.i : new Color(26, 25, 26, 150));
+        for (ItemStackSlotComponent itemStackSlotComponent : this.inventorySlots) {
+            itemStackSlotComponent.setDisabledOverlayColor(this.shouldRenderBackground() ? OnlineFriendActivityPanel.J.i : new Color(26, 25, 26, 150));
         }
-        if (this.A$src$Z$mly7fz()) {
+        if (this.shouldRenderBackground()) {
             GuiRenderPrimitives.d(this.G$src$D$1b2f02a(), this.n(), this.A(), this.L(), new Color(26, 25, 26, 150));
         }
         SmoothFontRenderer smoothFontRenderer = this.getFontRenderer(0.75);
-        smoothFontRenderer.v(this.pV.a().I(), this.G$src$D$1b2f02a() + 8.0, this.n() + 4.0 - smoothFontRenderer.d(this.pV.a().I()) / 2.0, this.A$src$Z$mly7fz() ? OnlineFriendActivityPanel.J.A : Color.white);
-        return this.pn.get(bl ? this.p6.V$src$Lgg_vape_wrapper_impl_InventoryPlayer_$erqak6().v() + 27 : this.pV.N() + 27);
+        smoothFontRenderer.v(this.activityState.getFriend().getMinecraftUsername(), this.G$src$D$1b2f02a() + 8.0, this.n() + 4.0 - smoothFontRenderer.d(this.activityState.getFriend().getMinecraftUsername()) / 2.0, this.shouldRenderBackground() ? OnlineFriendActivityPanel.J.A : Color.white);
+        return this.inventorySlots.get(useLivePlayerData ? this.trackedPlayer.V$src$Lgg_vape_wrapper_impl_InventoryPlayer_$erqak6().v() + 27 : this.activityState.getHeldItemSlot() + 27);
     }
 
-    private float c$src$F$n4n751() {
-        if (this.p3 > 0.0f) {
-            this.p3 = (float)this.pg.getLastMS() / 50.0f;
-            this.p3 = Math.max(this.p3, 0.0f);
+    private float updateSwingAnimationProgress() {
+        if (this.swingAnimationProgress > 0.0f) {
+            this.swingAnimationProgress = (float)this.swingAnimationTimer.getLastMS() / 50.0f;
+            this.swingAnimationProgress = Math.max(this.swingAnimationProgress, 0.0f);
         }
-        if (this.ps > 0 && this.p3 <= 0.0f) {
-            this.p3 = 1.0f;
-            --this.ps;
+        if (this.pendingSwingAnimations > 0 && this.swingAnimationProgress <= 0.0f) {
+            this.swingAnimationProgress = 1.0f;
+            --this.pendingSwingAnimations;
         }
-        return this.p3;
+        return this.swingAnimationProgress;
     }
 
-    public EntityPlayer D$src$Lgg_vape_wrapper_impl_EntityPlayer_$1f3pcbg() {
-        return this.p6;
+    public EntityPlayer getTrackedPlayer() {
+        return this.trackedPlayer;
     }
 }
 

@@ -258,15 +258,15 @@ extends Mod {
         if (ForgeVersion.MC_1_12_2.d()) {
             Vec3d vec3d = new Vec3d(0.0, 0.0, 1.0);
             if (ForgeVersion.MC_1_16_5.d()) {
-                vec3d.k((float)(-Math.toRadians(Minecraft.D().getPlayerViewY())));
-                vec3d.Y((float)(-Math.toRadians(Minecraft.D().getPlayerViewX())));
+                vec3d.rotateAroundXAxis((float)(-Math.toRadians(Minecraft.D().getPlayerViewY())));
+                vec3d.rotateAroundYAxis((float)(-Math.toRadians(Minecraft.D().getPlayerViewX())));
             } else {
-                vec3d.k((float)(-Math.toRadians(entityPlayerSP.V())));
-                vec3d.Y((float)(-Math.toRadians(entityPlayerSP.J())));
+                vec3d.rotateAroundXAxis((float)(-Math.toRadians(entityPlayerSP.V())));
+                vec3d.rotateAroundYAxis((float)(-Math.toRadians(entityPlayerSP.J())));
             }
-            startX = vec3d.Y();
-            startY += ForgeVersion.MC_1_16_5.d() ? vec3d.t() - (double)entityPlayerSP.X() : vec3d.t();
-            startZ = vec3d.o();
+            startX = vec3d.getX();
+            startY += ForgeVersion.MC_1_16_5.d() ? vec3d.getY() - (double)entityPlayerSP.X() : vec3d.getY();
+            startZ = vec3d.getZ();
             if (ForgeVersion.MC_1_16_5.d() && Minecraft.gameSettings().x() != 0) {
                 ActiveRenderInfo activeRenderInfo = Minecraft.m$src$Lgg_vape_wrapper_impl_EntityRenderer_$13begmf().l();
                 targetX += RenderManager.getInterpolatedRenderPosX() - activeRenderInfo.o().getX();

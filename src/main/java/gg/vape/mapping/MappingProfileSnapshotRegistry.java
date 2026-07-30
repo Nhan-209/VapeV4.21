@@ -30,7 +30,7 @@ public class MappingProfileSnapshotRegistry {
         if (!Vape.INSTANCE.isMappingsRemapped() && !Vape.INSTANCE.isForgeRemapInactive()) {
             return;
         }
-        MappingMemberSnapshot mappingMemberSnapshot = new MappingMemberSnapshot(mappingMethod.Z(), mappingMethod.O(), mappingMethod.B(), mappingMethod.R$src$Ljava_lang_Class_$n2d0qz(), mappingMethod.D(), mappingMethod.V(), mappingMethod.P(), mappingMethod.T(), mappingMethod.s());
+        MappingMemberSnapshot mappingMemberSnapshot = new MappingMemberSnapshot(mappingMethod.getMappingOwner(), mappingMethod.getOwnerClass(), mappingMethod.getOriginalName(), mappingMethod.getDeclaredReturnType(), mappingMethod.getDeclaredParameterTypes(), mappingMethod.getRuntimeName(), mappingMethod.getResolvedReturnType(), mappingMethod.getResolvedParameterTypes(), mappingMethod.isMappedMember());
         k.add(mappingMemberSnapshot);
         ++H;
     }
@@ -75,7 +75,7 @@ public class MappingProfileSnapshotRegistry {
         if (!Vape.INSTANCE.isMappingsRemapped() && !Vape.INSTANCE.isForgeRemapInactive()) {
             return;
         }
-        MappingMemberSnapshot mappingMemberSnapshot = new MappingMemberSnapshot(mappingField.U(), mappingField.L(), mappingField.n$src$Ljava_lang_String_$19qhmir(), mappingField.n(), null, mappingField.M(), mappingField.H(), null, mappingField.R());
+        MappingMemberSnapshot mappingMemberSnapshot = new MappingMemberSnapshot(mappingField.getMappingOwner(), mappingField.getOwnerClass(), mappingField.getOriginalName(), mappingField.getDeclaredFieldType(), null, mappingField.getRuntimeName(), mappingField.getResolvedFieldType(), null, mappingField.isMappedMember());
         y.add(mappingMemberSnapshot);
         ++p;
     }

@@ -6,19 +6,19 @@ import gg.vape.utils.render.GuiRenderPrimitives;
 
 public class HotbarSlotRuleAddButton
 extends InteractiveComponent {
-    private ColorAnimation b;
+    private ColorAnimation colorAnimation;
     private static final String I = "newadd";
 
     @Override
     public void onEnable() {
-        this.b.J();
+        this.colorAnimation.J();
         super.onEnable();
     }
 
     @Override
     public void F() {
         if (!this.w$src$Z$e457mb()) {
-            this.b.J();
+            this.colorAnimation.J();
         }
         super.F();
     }
@@ -29,7 +29,7 @@ extends InteractiveComponent {
 
     @Override
     public void H() {
-        GuiRenderPrimitives.d(this.G$src$D$1b2f02a() + 5.0, this.n() + 2.5, this.A() - 10.0, this.L() - 5.0, this.b.getInterpolatedColor());
+        GuiRenderPrimitives.d(this.G$src$D$1b2f02a() + 5.0, this.n() + 2.5, this.A() - 10.0, this.L() - 5.0, this.colorAnimation.getInterpolatedColor());
         GuiRenderPrimitives.d(this.G$src$D$1b2f02a() + 5.0 + 0.5, this.n() + 2.5 + 0.5, this.A() - 10.0 - 1.0, this.L() - 1.0 - 5.0, HotbarSlotRuleAddButton.J.i);
         GuiRenderPrimitives.F(I, this.G$src$D$1b2f02a() + this.A() / 2.0, this.n() + this.L() / 2.0, 6.0, 6.0, HotbarSlotRuleAddButton.J.B);
     }
@@ -45,7 +45,7 @@ extends InteractiveComponent {
     }
 
     public HotbarSlotRuleAddButton() {
-        this.b = new ColorAnimation(0.15, HotbarSlotRuleAddButton.J.l, HotbarSlotRuleAddButton.J.h);
+        this.colorAnimation = new ColorAnimation(0.15, HotbarSlotRuleAddButton.J.l, HotbarSlotRuleAddButton.J.h);
     }
 
 }

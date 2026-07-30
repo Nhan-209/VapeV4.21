@@ -9,7 +9,7 @@ extends OnlineEventPayloadBase {
     private final FriendModel P;
 
     public FriendModelUpdateEvent(ZeusClient zeusClient, FriendModel friendModel) {
-        super(zeusClient, friendModel.L());
+        super(zeusClient, friendModel.getUser());
         this.P = friendModel;
     }
 
@@ -17,4 +17,3 @@ extends OnlineEventPayloadBase {
         return this.P;
     }
 }
-

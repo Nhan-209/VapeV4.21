@@ -27,12 +27,12 @@ extends ModBendable {
 
     @Override
     public List<Integer> getBoundInputs() {
-        return ImmutableList.copyOf(((BindSet)Vape.INSTANCE.getPublicProfileSettings().Y.getValue()).getBoundInputs());
+        return ImmutableList.copyOf(((BindSet)Vape.INSTANCE.getPublicProfileSettings().guiBind.getValue()).getBoundInputs());
     }
 
     @Override
     public void setBoundInputs(List<Integer> inputCodes) {
-        ((BindSet)Vape.INSTANCE.getPublicProfileSettings().Y.getValue()).setBoundInputs(inputCodes);
+        ((BindSet)Vape.INSTANCE.getPublicProfileSettings().guiBind.getValue()).setBoundInputs(inputCodes);
         if (!this.hasValidBinding()) {
             this.setBoundInputs(Collections.singletonList(161));
         }

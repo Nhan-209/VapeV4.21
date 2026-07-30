@@ -8,16 +8,16 @@ import gg.vape.ui.click.component.GuiComponent;
 
 public class GroupInviteResponsePacket
 extends ZeusTrackedPacket<GroupInvitePacket> {
-    private GroupInviteStatus f;
+    private GroupInviteStatus status;
     private static GuiComponent[] S;
 
     @Override
     public void x(ZeusPacketBuffer zeusPacketBuffer) {
-        this.f = zeusPacketBuffer.Y(GroupInviteStatus.class);
+        this.status = zeusPacketBuffer.readEnum(GroupInviteStatus.class);
     }
 
-    public GroupInviteStatus a() {
-        return this.f;
+    public GroupInviteStatus getStatus() {
+        return this.status;
     }
 
     public GroupInviteResponsePacket() {
@@ -29,16 +29,16 @@ extends ZeusTrackedPacket<GroupInvitePacket> {
 
     @Override
     public void T(ZeusPacketBuffer zeusPacketBuffer) {
-        zeusPacketBuffer.U(this.f);
+        zeusPacketBuffer.writeEnum(this.status);
     }
 
     public static void E(GuiComponent[] guiComponentArray) {
         S = guiComponentArray;
     }
 
-    public GroupInviteResponsePacket(GroupInvitePacket groupInvitePacket, GroupInviteStatus groupInviteStatus) {
+    public GroupInviteResponsePacket(GroupInvitePacket groupInvitePacket, GroupInviteStatus status) {
         super(groupInvitePacket);
-        this.f = groupInviteStatus;
+        this.status = status;
     }
 
     static {
@@ -47,4 +47,3 @@ extends ZeusTrackedPacket<GroupInvitePacket> {
         }
     }
 }
-

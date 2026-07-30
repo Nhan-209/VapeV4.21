@@ -12,9 +12,9 @@ extends Packet {
 
     public int[] getDestroyedEntityIds() {
         if (ForgeVersion.MC_1_21_4.d()) {
-            SPacketDestroyEntities destroyPacket = new SPacketDestroyEntities(BacktrackPacketReplayState.c.getMappingsMapperCompat().Rt.M(this.I));
+            SPacketDestroyEntities destroyPacket = new SPacketDestroyEntities(BacktrackPacketReplayState.vapeInstance.getMappingsMapperCompat().Rt.M(this.I));
             return destroyPacket.W();
         }
-        return BacktrackPacketReplayState.c.getMappingsMapperCompat().Rt.Y(this.I);
+        return BacktrackPacketReplayState.vapeInstance.getMappingsMapperCompat().Rt.Y(this.I);
     }
 }

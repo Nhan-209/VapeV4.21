@@ -1,7 +1,6 @@
 package gg.vape.wrapper.impl;
 
 import gg.vape.wrapper.Wrapper;
-import gg.vape.wrapper.impl.GlStateManager$BooleanState;
 
 public class GlStateManager_BlendState
 extends Wrapper {
@@ -10,7 +9,7 @@ extends Wrapper {
 
     public GlStateManager$BooleanState q() {
         if (this.f == null) {
-            this.f = new GlStateManager$BooleanState(GlStateManager_BlendState.c.getMappingsMapperCompat().qG.F(this.I));
+            this.f = new GlStateManager$BooleanState(GlStateManager_BlendState.vapeInstance.getMappingsMapperCompat().qG.F(this.I));
         }
         return this.f;
     }

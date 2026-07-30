@@ -7,39 +7,39 @@ import gg.vape.wrapper.impl.RenderStateBridge;
 
 public class EventEntityRenderState
 extends Event {
-    private final Object Z;
-    private Entity V;
-    private static final EventListeners N = new EventListeners();
-    private RenderStateBridge x;
-    private final Object F;
+    private final Object renderStateHandle;
+    private Entity entity;
+    private static final EventListeners EVENT_LISTENERS = new EventListeners();
+    private RenderStateBridge renderState;
+    private final Object entityHandle;
 
 
-    public EventEntityRenderState(Object object, Object object2) {
-        this.F = object;
-        this.Z = object2;
+    public EventEntityRenderState(Object entityHandle, Object renderStateHandle) {
+        this.entityHandle = entityHandle;
+        this.renderStateHandle = renderStateHandle;
     }
 
     @Override
     public EventListeners getListeners() {
-        return N;
+        return EVENT_LISTENERS;
     }
 
     public static EventListeners getEventListeners() {
-        return N;
+        return EVENT_LISTENERS;
     }
 
     public Entity getEntity() {
-        if (this.V == null) {
-            this.V = new Entity(this.F);
+        if (this.entity == null) {
+            this.entity = new Entity(this.entityHandle);
         }
-        return this.V;
+        return this.entity;
     }
 
     public RenderStateBridge getEntityRenderState() {
-        if (this.x == null) {
-            this.x = new RenderStateBridge(this.Z);
+        if (this.renderState == null) {
+            this.renderState = new RenderStateBridge(this.renderStateHandle);
         }
-        return this.x;
+        return this.renderState;
     }
 }
 

@@ -17,43 +17,43 @@ import gg.vape.ui.notification.NotificationType;
 
 public class FriendRequestsPanel
 extends PanelComponent {
-    private final FriendRequestListPanel L4;
-    private final TextInputComponentBase LG;
-    private final UsernameEditorPanel L6 = new UsernameEditorPanel();
+    private final FriendRequestListPanel requestListPanel;
+    private final TextInputComponentBase usernameInput;
+    private final UsernameEditorPanel usernameEditor = new UsernameEditorPanel();
 
-    static void I(FriendRequestsPanel friendRequestsPanel, String string) {
-        friendRequestsPanel.G(string);
+    static void submitUsername(FriendRequestsPanel panel, String username) {
+        panel.handleUsernameSubmission(username);
     }
 
-    public FriendRequestListPanel k$src$Lgg_vape_friend_ui_FriendRequestListPanel_$1poeaqd() {
-        return this.L4;
+    public FriendRequestListPanel getRequestListPanel() {
+        return this.requestListPanel;
     }
 
     public FriendRequestsPanel() {
         super(105.0, 150.0);
-        this.LG = new FriendRequestUsernameInputComponent(this, "Add Vape friend...");
+        this.usernameInput = new FriendRequestUsernameInputComponent(this, "Add Vape friend...");
         this.setDisabledOverlayColor(FriendRequestsPanel.J.i);
         this.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M("wrap");
-        this.LG.setVisible(true);
-        this.h(this.L6, new Object[0]);
+        this.usernameInput.setVisible(true);
+        this.h(this.usernameEditor, new Object[0]);
         this.h(new SpacerComponent(1.0, 2.0), new Object[0]);
-        this.h(this.LG, new Object[0]);
-        this.L4 = new FriendRequestListPanel();
-        this.h(new PaddedComponent(3.0, this.L4), new Object[0]);
+        this.h(this.usernameInput, new Object[0]);
+        this.requestListPanel = new FriendRequestListPanel();
+        this.h(new PaddedComponent(3.0, this.requestListPanel), new Object[0]);
     }
 
-    private void G(String string) {
-        String string2 = string;
-        if (string2.isEmpty()) {
+    private void handleUsernameSubmission(String username) {
+        String submittedUsername = username;
+        if (submittedUsername.isEmpty()) {
             return;
         }
-        for (FriendRequest friendRequest : Vape.INSTANCE.getOnlineManager().D().I()) {
-            if (!friendRequest.x().C().equals(string2)) continue;
-            OnlineFriendUiHelper.P(new NotificationMessage(NotificationType.SUCCESS, "Added " + string2 + " as a friend"));
-            Vape.INSTANCE.getOnlineManager().D().N((IncomingFriendRequest)friendRequest);
+        for (FriendRequest friendRequest : Vape.INSTANCE.getOnlineManager().getFriendRequestManager().getIncomingRequests()) {
+            if (!friendRequest.getFriend().getDisplayName().equals(submittedUsername)) continue;
+            OnlineFriendUiHelper.showNotification(new NotificationMessage(NotificationType.SUCCESS, "Added " + submittedUsername + " as a friend"));
+            Vape.INSTANCE.getOnlineManager().getFriendRequestManager().acceptIncomingRequest((IncomingFriendRequest)friendRequest);
             return;
         }
-        FriendRequestService.Z(string2);
+        FriendRequestService.sendFriendRequest(submittedUsername);
     }
 
     @Override

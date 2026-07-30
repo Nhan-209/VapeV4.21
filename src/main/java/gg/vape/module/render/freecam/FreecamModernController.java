@@ -74,23 +74,23 @@ extends FreecamController<Freecam> {
         if (Minecraft.currentScreen().isNotNull()) {
             return;
         }
-        forward = ClientSettings.B(Minecraft.gameSettings().Y()) ? 1.0 : 0.0;
-        if (ClientSettings.B(Minecraft.gameSettings().s())) {
+        forward = ClientSettings.isPhysicalKeyDown(Minecraft.gameSettings().Y()) ? 1.0 : 0.0;
+        if (ClientSettings.isPhysicalKeyDown(Minecraft.gameSettings().s())) {
             forward -= 1.0;
         }
-        strafe = ClientSettings.B(Minecraft.gameSettings().x$src$Lgg_vape_wrapper_impl_KeyBinding_$1cf7isg()) ? 1.0 : 0.0;
-        if (ClientSettings.B(Minecraft.gameSettings().g$src$Lgg_vape_wrapper_impl_KeyBinding_$qqn5n3())) {
+        strafe = ClientSettings.isPhysicalKeyDown(Minecraft.gameSettings().x$src$Lgg_vape_wrapper_impl_KeyBinding_$1cf7isg()) ? 1.0 : 0.0;
+        if (ClientSettings.isPhysicalKeyDown(Minecraft.gameSettings().g$src$Lgg_vape_wrapper_impl_KeyBinding_$qqn5n3())) {
             strafe -= 1.0;
         }
-        vertical = ClientSettings.B(Minecraft.gameSettings().O()) ? 1.0 : 0.0;
-        if (ClientSettings.B(Minecraft.gameSettings().d$src$Lgg_vape_wrapper_impl_KeyBinding_$adn2z0())) {
+        vertical = ClientSettings.isPhysicalKeyDown(Minecraft.gameSettings().O()) ? 1.0 : 0.0;
+        if (ClientSettings.isPhysicalKeyDown(Minecraft.gameSettings().d$src$Lgg_vape_wrapper_impl_KeyBinding_$adn2z0())) {
             vertical -= 1.0;
         }
         if ((magnitude = Math.sqrt(forward * forward + strafe * strafe)) > 0.0) {
             forward /= magnitude;
             strafe /= magnitude;
             speed = (Double)this.module.horizontalSpeed.getValue() / 5.0;
-            if (ClientSettings.B(Minecraft.gameSettings().r())) {
+            if (ClientSettings.isPhysicalKeyDown(Minecraft.gameSettings().r())) {
                 speed *= 2.0;
             }
             double yawRadians = Math.toRadians(this.cameraYaw + 90.0f);
@@ -99,7 +99,7 @@ extends FreecamController<Freecam> {
         }
         if (vertical != 0.0) {
             speed = (Double)this.module.verticalSpeed.getValue() / 5.0 * 0.42;
-            if (ClientSettings.B(Minecraft.gameSettings().r())) {
+            if (ClientSettings.isPhysicalKeyDown(Minecraft.gameSettings().r())) {
                 speed *= 2.0;
             }
             this.posY += vertical * speed;
@@ -117,7 +117,7 @@ extends FreecamController<Freecam> {
             return;
         }
         if (this.module.fakePlayer != null && (this.module.fakePlayer.M$src$Z$ff28xj() || this.module.fakeEntityId == 0 || Minecraft.theWorld().V(this.module.fakeEntityId).isNull())) {
-            ClientSettings.I(this.module.fakeEntityId);
+            ClientSettings.releaseReservedEntityId(this.module.fakeEntityId);
             this.module.fakeEntityId = 0;
             this.module.fakePlayer = null;
         }
@@ -228,7 +228,7 @@ extends FreecamController<Freecam> {
         GameProfile profile = GameProfile.create(UUID.randomUUID(), player.getName());
         EntityOtherPlayerMP fakePlayer = EntityOtherPlayerMP.create(Minecraft.theWorld(), profile);
         fakePlayer.M(player, true);
-        this.module.fakeEntityId = ClientSettings.f();
+        this.module.fakeEntityId = ClientSettings.reserveEntityId();
         fakePlayer.Q(this.module.fakeEntityId);
         fakePlayer.y(UUID.randomUUID());
         fakePlayer.t(player.z(), player.N(), player.h(), player.J(), player.V());

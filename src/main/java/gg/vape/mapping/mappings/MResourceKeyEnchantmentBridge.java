@@ -40,7 +40,7 @@ extends Mapping {
         boolean bl = true;
         String string = b;
         MResourceKeyEnchantmentBridge mResourceKeyEnchantmentBridge = this;
-        this.O = this.u(string, bl, clazz);
+        this.O = this.registerStaticField(string, bl, clazz);
         if (MResourceKeyEnchantmentBridge.O()) {
             GuiComponent.setLegacyComponentState(new GuiComponent[1]);
             return;

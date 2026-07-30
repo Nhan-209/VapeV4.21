@@ -9,76 +9,76 @@ import java.util.List;
 import org.jetbrains.annotations.Nullable;
 
 public class PublicProfileSummary {
-    private final long S;
-    private final String B;
+    private final long version;
+    private final String name;
     @Nullable
-    private final PublicProfileUser A;
-    private final List<String> C;
-    private final long w;
-    private final long y;
-    private final long Y;
+    private final PublicProfileUser owner;
+    private final List<String> tags;
+    private final long likes;
+    private final long dislikes;
+    private final long profileId;
     @Nullable
-    private String L;
+    private String shareCode;
 
-    public List<String> y() {
-        return this.C;
+    public List<String> getTags() {
+        return this.tags;
     }
 
     public String toString() {
-        return "SimplePublicProfile{profileId=" + this.Y + ", owner=" + this.A + ", name='" + this.B + '\'' + ", version=" + this.S + ", likes=" + this.w + ", dislikes=" + this.y + ", tags=" + this.C + '}';
+        return "SimplePublicProfile{profileId=" + this.profileId + ", owner=" + this.owner + ", name='" + this.name + '\'' + ", version=" + this.version + ", likes=" + this.likes + ", dislikes=" + this.dislikes + ", tags=" + this.tags + '}';
     }
 
     @Nullable
-    public PublicProfileUser l() {
-        return this.A;
+    public PublicProfileUser getOwner() {
+        return this.owner;
     }
 
     @Nullable
-    public String n() {
-        if (this.L == null) {
+    public String getUppercaseShareCode() {
+        if (this.shareCode == null) {
             return null;
         }
-        return this.L.toUpperCase();
+        return this.shareCode.toUpperCase();
     }
 
-    public static PublicProfileSummary g(JsonObject jsonObject) {
-        ArrayList<String> arrayList = new ArrayList<String>();
-        for (JsonElement jsonElement : jsonObject.get("tags").getAsJsonArray()) {
-            arrayList.add(jsonElement.getAsString());
+    public static PublicProfileSummary fromJson(JsonObject object) {
+        ArrayList<String> tags = new ArrayList<String>();
+        for (JsonElement tagElement : object.get("tags").getAsJsonArray()) {
+            tags.add(tagElement.getAsString());
         }
-        return new PublicProfileSummary(jsonObject.get("profileId").getAsLong(), PublicProfileUser.K(jsonObject.get("owner")), jsonObject.get("name").getAsString(), jsonObject.get("version").getAsLong(), jsonObject.get("likes").getAsLong(), jsonObject.get("dislikes").getAsLong(), arrayList, ConfigJsonUtils.P(jsonObject, "shareCode"));
+        return new PublicProfileSummary(object.get("profileId").getAsLong(), PublicProfileUser.fromJson(object.get("owner")), object.get("name").getAsString(), object.get("version").getAsLong(), object.get("likes").getAsLong(), object.get("dislikes").getAsLong(), tags, ConfigJsonUtils.getString(object, "shareCode"));
     }
 
-    public long v() {
-        return this.w;
+    public long getLikes() {
+        return this.likes;
     }
 
-    PublicProfileSummary(long l, @Nullable PublicProfileUser publicProfileUser, String string, long l2, long l3, long l4, List<String> list, @Nullable String string2) {
-        this.Y = l;
-        this.A = publicProfileUser;
-        this.B = string;
-        this.S = l2;
-        this.w = l3;
-        this.y = l4;
-        this.C = list;
-        this.L = string2;
+    PublicProfileSummary(long profileId, @Nullable PublicProfileUser owner, String name, long version, long likes, long dislikes, List<String> tags, @Nullable String shareCode) {
+        this.profileId = profileId;
+        this.owner = owner;
+        this.name = name;
+        this.version = version;
+        this.likes = likes;
+        this.dislikes = dislikes;
+        this.tags = tags;
+        this.shareCode = shareCode;
     }
 
 
-    public String h$src$Ljava_lang_String_$1lo47nn() {
-        return this.B;
+    public String getName() {
+        return this.name;
     }
 
-    public long s() {
-        return this.y;
+    public long getDislikes() {
+        return this.dislikes;
     }
 
-    public long h() {
-        return this.Y;
+    public long getProfileId() {
+        return this.profileId;
     }
 
-    public long p() {
-        return this.S;
+    public long getVersion() {
+        return this.version;
     }
 }
 

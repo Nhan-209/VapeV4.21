@@ -9,11 +9,11 @@ extends Wrapper {
     }
 
     public int G() {
-        return SPacketChunkDataExtracted.c.getMappings().b.S(this.I);
+        return SPacketChunkDataExtracted.vapeInstance.getMappings().b.S(this.I);
     }
 
     public byte[] m$src$AB$7svbyb() {
-        return SPacketChunkDataExtracted.c.getMappings().b.G(this.I);
+        return SPacketChunkDataExtracted.vapeInstance.getMappings().b.G(this.I);
     }
 }
 

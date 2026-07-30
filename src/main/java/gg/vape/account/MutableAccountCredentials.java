@@ -4,40 +4,39 @@ import gg.vape.account.AccountCredentials;
 
 public class MutableAccountCredentials
 implements AccountCredentials {
-    private String q;
-    private String o;
-    private String S;
-    private String L;
+    private String password;
+    private String profileName;
+    private String profileId;
+    private String username;
 
-    public String T() {
-        return this.o;
+    public String getProfileName() {
+        return this.profileName;
     }
 
-    public void T(String string) {
-        this.S = string;
+    public void setProfileId(String profileId) {
+        this.profileId = profileId;
     }
 
-    public MutableAccountCredentials(String string, String string2) {
-        this.L = string;
-        this.q = string2;
-    }
-
-    @Override
-    public String U() {
-        return this.q;
-    }
-
-    public String F() {
-        return this.S;
+    public MutableAccountCredentials(String username, String password) {
+        this.username = username;
+        this.password = password;
     }
 
     @Override
-    public String y() {
-        return this.L;
+    public String getPassword() {
+        return this.password;
     }
 
-    public void X(String string) {
-        this.o = string;
+    public String getProfileId() {
+        return this.profileId;
+    }
+
+    @Override
+    public String getUsername() {
+        return this.username;
+    }
+
+    public void setProfileName(String profileName) {
+        this.profileName = profileName;
     }
 }
-

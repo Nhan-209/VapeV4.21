@@ -78,7 +78,7 @@ public class FontManager {
 
     public SmoothFontRenderer W(double d, boolean bl) {
         int n = (int)(16.0 * d);
-        double d2 = Vape.INSTANCE.getClientSettings().s();
+        double d2 = Vape.INSTANCE.getClientSettings().getGuiScaleFactor();
         n = (int)((double)n * d2);
         return this.D(n, true);
     }
@@ -130,7 +130,7 @@ public class FontManager {
 
     public SmoothFontRenderer p(double d) {
         int n = (int)(16.0 * d);
-        double d2 = Vape.INSTANCE.getClientSettings().s();
+        double d2 = Vape.INSTANCE.getClientSettings().getGuiScaleFactor();
         n = (int)((double)n * d2);
         return this.x(n);
     }
@@ -149,7 +149,7 @@ public class FontManager {
 
     public SmoothFontRenderer b(FontFamily fontFamily, float f, boolean bl) {
         int n = (int)(16.0f * f);
-        double d = Vape.INSTANCE.getClientSettings().s();
+        double d = Vape.INSTANCE.getClientSettings().getGuiScaleFactor();
         n = (int)((double)n * d);
         return this.n(fontFamily, n, bl);
     }
@@ -183,7 +183,7 @@ public class FontManager {
 
     public SmoothFontRenderer K(double d, boolean bl) {
         int n = (int)(16.0 * d);
-        double d2 = Vape.INSTANCE.getClientSettings().s();
+        double d2 = Vape.INSTANCE.getClientSettings().getGuiScaleFactor();
         SmoothFontRenderer smoothFontRenderer = (SmoothFontRenderer)this.P.get(n = (int)((double)n * d2));
         if (smoothFontRenderer != null) {
             return smoothFontRenderer;
@@ -195,7 +195,7 @@ public class FontManager {
 
     public SmoothFontRenderer E(double d, boolean bl) {
         int n = (int)(16.0 * d);
-        double d2 = Vape.INSTANCE.getClientSettings().s();
+        double d2 = Vape.INSTANCE.getClientSettings().getGuiScaleFactor();
         n = (int)((double)n * d2);
         return this.D(n, false);
     }

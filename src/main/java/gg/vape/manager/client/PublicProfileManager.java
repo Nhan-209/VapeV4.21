@@ -20,119 +20,119 @@ import java.util.concurrent.CompletableFuture;
 import org.jetbrains.annotations.UnmodifiableView;
 
 public class PublicProfileManager {
-    private final Map<String, String> a = new LinkedHashMap<String, String>();
-    public static final int v;
-    private final Map<Long, PublicProfile> g = new LinkedHashMap<Long, PublicProfile>();
-    static final boolean m;
+    private final Map<String, String> tagsByLowercase = new LinkedHashMap<String, String>();
+    public static final int reservedConstant;
+    private final Map<Long, PublicProfile> profilesById = new LinkedHashMap<Long, PublicProfile>();
+    static final boolean assertionsDisabled;
 
 
-    private static ApiResponse lambda$new$1(Throwable throwable) {
+    private static ApiResponse handlePopularTagsFailure(Throwable throwable) {
         Vape.logThrowable(throwable);
         return null;
     }
 
-    private void lambda$new$0(ApiResponse apiResponse, Throwable throwable) {
+    private void handlePopularTagsResponse(ApiResponse apiResponse, Throwable throwable) {
         if (throwable != null) {
             Vape.logThrowable(throwable);
             return;
         }
-        if (!apiResponse.t()) {
+        if (!apiResponse.isSuccessful()) {
             return;
         }
-        if (!m && apiResponse.T() == null) {
+        if (!assertionsDisabled && apiResponse.getData() == null) {
             throw new AssertionError();
         }
-        this.K((Collection)apiResponse.T());
+        this.replaceTags((Collection)apiResponse.getData());
     }
 
-    public List<Profile> T() {
-        ArrayList<Profile> arrayList = new ArrayList<Profile>();
-        for (PublicProfile publicProfile : this.g.values()) {
+    public List<Profile> getDerivedProfiles() {
+        ArrayList<Profile> derivedProfiles = new ArrayList<Profile>();
+        for (PublicProfile publicProfile : this.profilesById.values()) {
             Profile profile;
-            PublicProfileShareInfo publicProfileShareInfo = publicProfile.c();
-            if (publicProfileShareInfo == null || publicProfileShareInfo.v() == null || (profile = Vape.INSTANCE.getProfilesManager().H(publicProfileShareInfo.v())) == null) continue;
-            arrayList.add(profile);
+            PublicProfileShareInfo publicProfileShareInfo = publicProfile.getShareInfo();
+            if (publicProfileShareInfo == null || publicProfileShareInfo.getDerivedFrom() == null || (profile = Vape.INSTANCE.getProfilesManager().getProfileByOnlineId(publicProfileShareInfo.getDerivedFrom())) == null) continue;
+            derivedProfiles.add(profile);
         }
-        return arrayList;
+        return derivedProfiles;
     }
 
-    public void Z(PublicProfile publicProfile) {
-        this.l(publicProfile.X());
+    public void addProfileTags(PublicProfile publicProfile) {
+        this.addTags(publicProfile.getTags());
     }
 
-    public void K(Collection<String> collection) {
-        this.a.clear();
-        this.l(collection);
+    public void replaceTags(Collection<String> tags) {
+        this.tagsByLowercase.clear();
+        this.addTags(tags);
     }
 
-    public void I(PublicProfile publicProfile) {
-        this.g.put(publicProfile.w(), publicProfile);
-        if (!publicProfile.X().isEmpty()) {
-            this.l(publicProfile.X());
+    public void addProfile(PublicProfile publicProfile) {
+        this.profilesById.put(publicProfile.getProfileId(), publicProfile);
+        if (!publicProfile.getTags().isEmpty()) {
+            this.addTags(publicProfile.getTags());
         }
         new PublicProfileCreatedEvent(publicProfile).fire();
     }
 
     public PublicProfileManager() {
-        ApiServices.d().R().F().whenCompleteAsync(this::lambda$new$0).exceptionally(PublicProfileManager::lambda$new$1);
+        ApiServices.getInstance().getPublicProfileApi().getMostPopularTags().whenCompleteAsync(this::handlePopularTagsResponse).exceptionally(PublicProfileManager::handlePopularTagsFailure);
     }
 
-    public Collection<String> f() {
-        return this.a.values();
+    public Collection<String> getTags() {
+        return this.tagsByLowercase.values();
     }
 
-    public static void M(String string) {
-        Vape.INSTANCE.getNotificationManager().show("Public Profiles", string, NotificationType.INFO, 5000L, true);
+    public static void showInfo(String message) {
+        Vape.INSTANCE.getNotificationManager().show("Public Profiles", message, NotificationType.INFO, 5000L, true);
     }
 
-    public void l(Collection<String> collection) {
-        for (String string : collection) {
-            if (this.a.containsKey(string.toLowerCase())) continue;
-            this.a.put(string.toLowerCase(), string);
+    public void addTags(Collection<String> tags) {
+        for (String tag : tags) {
+            if (this.tagsByLowercase.containsKey(tag.toLowerCase())) continue;
+            this.tagsByLowercase.put(tag.toLowerCase(), tag);
         }
-        new PublicProfileTagsUpdatedEvent(collection).fire();
+        new PublicProfileTagsUpdatedEvent(tags).fire();
     }
 
     static {
-        long l = 2496869938925404163L;
-        v = (int)l;
-        m = !PublicProfileManager.class.desiredAssertionStatus();
+        long reservedSeed = 2496869938925404163L;
+        reservedConstant = (int)reservedSeed;
+        assertionsDisabled = !PublicProfileManager.class.desiredAssertionStatus();
     }
 
-    public void y(PublicProfileSummary publicProfileSummary) {
-        this.l(publicProfileSummary.y());
+    public void addSummaryTags(PublicProfileSummary summary) {
+        this.addTags(summary.getTags());
     }
 
-    public void m(PublicProfile publicProfile, PublicProfile publicProfile2) {
-        PublicProfile publicProfile3 = this.g.put(publicProfile2.w(), publicProfile2);
-        if (publicProfile3 == null) {
-            this.I(publicProfile2);
+    public void replaceProfile(PublicProfile previousProfile, PublicProfile replacement) {
+        PublicProfile existingProfile = this.profilesById.put(replacement.getProfileId(), replacement);
+        if (existingProfile == null) {
+            this.addProfile(replacement);
             return;
         }
-        if (!publicProfile2.X().isEmpty()) {
-            this.l(publicProfile2.X());
+        if (!replacement.getTags().isEmpty()) {
+            this.addTags(replacement.getTags());
         }
+        new PublicProfileDeletedEvent(previousProfile).fire();
+        new PublicProfileCreatedEvent(replacement).fire();
+    }
+
+    public void removeProfile(PublicProfile publicProfile) {
+        this.profilesById.remove(publicProfile.getProfileId());
         new PublicProfileDeletedEvent(publicProfile).fire();
-        new PublicProfileCreatedEvent(publicProfile2).fire();
     }
 
-    public void Q(PublicProfile publicProfile) {
-        this.g.remove(publicProfile.w());
-        new PublicProfileDeletedEvent(publicProfile).fire();
+    public static void showWarning(String message) {
+        Vape.INSTANCE.getNotificationManager().show("Public Profiles", message, NotificationType.WARNING, 5000L, true);
     }
 
-    public static void b(String string) {
-        Vape.INSTANCE.getNotificationManager().show("Public Profiles", string, NotificationType.WARNING, 5000L, true);
-    }
-
-    public void j(Collection<PublicProfile> collection) {
-        this.g.clear();
-        for (PublicProfile publicProfile : collection) {
-            this.g.put(publicProfile.w(), publicProfile);
+    public void replaceProfiles(Collection<PublicProfile> profiles) {
+        this.profilesById.clear();
+        for (PublicProfile publicProfile : profiles) {
+            this.profilesById.put(publicProfile.getProfileId(), publicProfile);
         }
     }
 
-    public @UnmodifiableView Map<Long, PublicProfile> A() {
-        return this.g;
+    public @UnmodifiableView Map<Long, PublicProfile> getProfilesById() {
+        return this.profilesById;
     }
 }

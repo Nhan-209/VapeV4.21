@@ -24,7 +24,7 @@ extends JavassistMappingTask {
     }
 
     @Override
-    public void c() {
+    public void transform() {
         try {
             MappingMethod mappingMethod = Vape.INSTANCE.getMappings().U.a;
             CtBehavior ctBehavior = this.F(Vape.INSTANCE.getMappings().U.v);
@@ -37,7 +37,7 @@ extends JavassistMappingTask {
             if (ForgeVersion.MC_1_20_6.d()) {
                 MappingMethod mappingMethod2 = Vape.INSTANCE.getMappings().U.q;
                 this.O(mappingMethod2, EventClickMouse.class, "", "false");
-                if (ForgeVersion.MC_26_1.d() && Vape.INSTANCE.getMappings().U.i != null && !Vape.INSTANCE.getMappings().U.i.h()) {
+                if (ForgeVersion.MC_26_1.d() && Vape.INSTANCE.getMappings().U.i != null && !Vape.INSTANCE.getMappings().U.i.hasResolutionFailed()) {
                     this.k(Vape.INSTANCE.getMappings().U.i, EventMouseOverUpdate.class, "$1");
                 }
             }
@@ -51,4 +51,3 @@ extends JavassistMappingTask {
         return MinecraftTickEventMappingTask.c(methodCall, mappingMethod);
     }
 }
-

@@ -1,8 +1,6 @@
 package gg.vape.wrapper.impl;
 
 import gg.vape.mapping.mappings.MEntityArrow;
-import gg.vape.wrapper.impl.Entity;
-import gg.vape.wrapper.impl.ForgeVersion;
 
 public class EntityArrow
 extends Entity {
@@ -11,18 +9,18 @@ extends Entity {
         if (ForgeVersion.MC_1_21_0.d()) {
             return this.P$src$D$xovcst();
         }
-        return MEntityArrow.g(EntityArrow.c.getMappings().qo, this.I);
+        return MEntityArrow.g(EntityArrow.vapeInstance.getMappings().qo, this.I);
     }
 
     public double L() {
         if (ForgeVersion.MC_1_21_0.d()) {
             return this.P$src$D$xovcst();
         }
-        return MEntityArrow.d(EntityArrow.c.getMappings().qo, this.I);
+        return MEntityArrow.d(EntityArrow.vapeInstance.getMappings().qo, this.I);
     }
 
     public double P$src$D$xovcst() {
-        return MEntityArrow.t(EntityArrow.c.getMappings().qo, this.I);
+        return MEntityArrow.t(EntityArrow.vapeInstance.getMappings().qo, this.I);
     }
 
     public EntityArrow(Object object) {
@@ -33,7 +31,7 @@ extends Entity {
         if (ForgeVersion.MC_1_21_0.d()) {
             return this.P$src$D$xovcst();
         }
-        return MEntityArrow.D(EntityArrow.c.getMappings().qo, this.I);
+        return MEntityArrow.D(EntityArrow.vapeInstance.getMappings().qo, this.I);
     }
 }
 

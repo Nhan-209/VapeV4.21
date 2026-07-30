@@ -37,7 +37,7 @@ extends Mapping {
                 String string2 = "clientLevelData";
                 Class clazz3 = MappedClasses.Z;
                 MWorldClient mWorldClient2 = this;
-                this.D = this.X(clazz3, string2, bl2, clazz2);
+                this.D = this.registerInstanceFieldForOwner(clazz3, string2, bl2, clazz2);
             }
             Class[] classArray = new Class[]{Integer.TYPE, MappedClasses.zc};
             Class<Void> clazz = Void.TYPE;
@@ -57,13 +57,13 @@ extends Mapping {
             String string = "clientChunkProvider";
             Class clazz4 = MappedClasses.Z;
             MWorldClient mWorldClient = this;
-            this.x = mWorldClient.X(clazz4, string, bl, clazz);
+            this.x = mWorldClient.registerInstanceFieldForOwner(clazz4, string, bl, clazz);
         }
         Class[] classArray = new Class[]{Integer.TYPE};
         Class clazz = MappedClasses.zc;
         String string = "getEntityByID";
         MWorldClient mWorldClient = this;
-        this.u = ((MappingMethodBuilder)((MappingMethodBuilder)mWorldClient.u(string, clazz, classArray).A(ForgeVersion.MC_1_16_5.n(), "getEntity")).Q(ForgeVersion.MC_1_21_4.n(), MappedClasses.YU)).s();
+        this.u = ((MappingMethodBuilder)((MappingMethodBuilder)mWorldClient.methodBuilder(string, clazz, classArray).setNameForVersion(ForgeVersion.MC_1_16_5.n(), "getEntity")).setOwnerClassForVersion(ForgeVersion.MC_1_21_4.n(), MappedClasses.YU)).buildMethod();
         if (ForgeVersion.MC_1_16_5.d()) {
             Class[] classArray2 = new Class[]{Integer.TYPE, MappedClasses.zc};
             Class<Void> clazz5 = Void.TYPE;
@@ -76,7 +76,7 @@ extends Mapping {
             String string4 = "clientLevelData";
             Class clazz7 = MappedClasses.Z;
             MWorldClient mWorldClient4 = this;
-            this.D = this.X(clazz7, string4, bl3, clazz6);
+            this.D = this.registerInstanceFieldForOwner(clazz7, string4, bl3, clazz6);
         } else {
             Class[] classArray3 = new Class[]{Integer.TYPE, MappedClasses.zc};
             Class<Void> clazz8 = Void.TYPE;
@@ -92,14 +92,14 @@ extends Mapping {
 
     public void Z(Object object, int n, Entity entity) {
         if (ForgeVersion.MC_1_20_6.d()) {
-            this.s.c(object, entity.getObject());
+            this.s.invokeVoid(object, entity.getObject());
             return;
         }
-        this.s.c(object, n, entity.getObject());
+        this.s.invokeVoid(object, n, entity.getObject());
     }
 
     public Object t(Object object, int n) {
-        return this.u.L(object, n);
+        return this.u.invokeObject(object, n);
     }
 
     public Object u(Object object) {

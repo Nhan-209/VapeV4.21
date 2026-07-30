@@ -43,14 +43,14 @@ implements ZeusSerializablePacket {
 
     @Override
     public void o(ZeusPacketBuffer gx_12) {
-        gx_12.U(this.p);
+        gx_12.writeEnum(this.p);
         if (this.p == GroupInviteUpdateStatus.SENT) {
             if (!K && this.u == null) {
                 throw new AssertionError();
             }
-            this.u.a(gx_12);
+            this.u.writeTo(gx_12);
         }
-        this.x.a(gx_12);
+        this.x.writeTo(gx_12);
     }
 
     public ServerGroupInviteUpdatePacket() {
@@ -64,7 +64,7 @@ implements ZeusSerializablePacket {
 
     @Override
     public void S(ZeusPacketBuffer gx_12) {
-        this.p = gx_12.Y(GroupInviteUpdateStatus.class);
+        this.p = gx_12.readEnum(GroupInviteUpdateStatus.class);
         if (this.p == GroupInviteUpdateStatus.SENT) {
             this.u = new UserModel(gx_12);
         }

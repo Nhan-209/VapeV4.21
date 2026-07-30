@@ -39,7 +39,7 @@ extends Mapping {
     }
 
     private void T(Object object) {
-        this.H.F(object);
+        this.H.invokeVoidNoArgs(object);
     }
 
 
@@ -141,10 +141,10 @@ extends Mapping {
 
     public void o(Object object, Object object2) {
         if (ForgeVersion.MC_26_2.d()) {
-            this.z.F(object);
+            this.z.invokeVoidNoArgs(object);
             return;
         }
-        this.z.c(object, object2);
+        this.z.invokeVoid(object, object2);
     }
 
     public static Object V(MRenderBufferBridge mRenderBufferBridge, Object object) {
@@ -161,7 +161,7 @@ extends Mapping {
             BlockStateBridge blockStateBridge = blockStateContainerBridge.C();
             return blockStateBridge.isNull() ? 0 : blockStateBridge.h(0);
         }
-        return this.e.Z(object, n);
+        return this.e.invokeInt(object, n);
     }
 
     private Map o(Object object) {

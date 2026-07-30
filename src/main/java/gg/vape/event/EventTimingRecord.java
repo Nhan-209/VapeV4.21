@@ -3,32 +3,31 @@ package gg.vape.event;
 import gg.vape.event.IEvent;
 
 public class EventTimingRecord {
-    private final int K;
-    private final long t;
-    private final Class<? extends IEvent> b;
-    private final long R;
+    private final int count;
+    private final long startNanos;
+    private final Class<? extends IEvent> eventType;
+    private final long durationNanos;
 
-    public EventTimingRecord(Class<? extends IEvent> clazz, long l, long l2, int n) {
-        this.b = clazz;
-        this.t = l;
-        this.R = l2;
-        this.K = n;
+    public EventTimingRecord(Class<? extends IEvent> eventType, long startNanos, long durationNanos, int count) {
+        this.eventType = eventType;
+        this.startNanos = startNanos;
+        this.durationNanos = durationNanos;
+        this.count = count;
     }
 
     public int getCount() {
-        return this.K;
+        return this.count;
     }
 
-    public long W() {
-        return this.t;
+    public long getStartNanos() {
+        return this.startNanos;
     }
 
     public Class<? extends IEvent> getEventType() {
-        return this.b;
+        return this.eventType;
     }
 
-    public long m() {
-        return this.R;
+    public long getDurationNanos() {
+        return this.durationNanos;
     }
 }
-

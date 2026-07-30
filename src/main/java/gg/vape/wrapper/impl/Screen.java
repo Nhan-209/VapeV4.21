@@ -2,8 +2,6 @@ package gg.vape.wrapper.impl;
 
 import gg.vape.mapping.mappings.MScreen;
 import gg.vape.wrapper.Wrapper;
-import gg.vape.wrapper.impl.Holder;
-import gg.vape.wrapper.impl.ResourceLocation;
 
 public class Screen
 extends Wrapper {
@@ -28,7 +26,7 @@ extends Wrapper {
     }
 
     public static ResourceLocation k(Holder holder) {
-        return new ResourceLocation(MScreen.i(Screen.c.getMappings().RT, holder.getObject()));
+        return new ResourceLocation(MScreen.i(Screen.vapeInstance.getMappings().RT, holder.getObject()));
     }
 }
 

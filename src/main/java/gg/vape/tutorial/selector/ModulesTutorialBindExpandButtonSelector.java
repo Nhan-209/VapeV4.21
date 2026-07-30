@@ -9,29 +9,29 @@ import java.util.Arrays;
 
 public class ModulesTutorialBindExpandButtonSelector
 extends TutorialTargetSelector<ModuleComponent> {
-    ModuleComponent e;
-    private static final String b = "AutoClicker";
-    final ModulesTutorialPage T;
+    private ModuleComponent selectedModule;
+    private static final String targetModuleName = "AutoClicker";
+    private final ModulesTutorialPage tutorialPage;
 
-    public boolean K(ModuleComponent moduleComponent) {
-        if (moduleComponent.getModule().getName().equals(b)) {
-            this.e = moduleComponent;
+    private boolean matchesModule(ModuleComponent moduleComponent) {
+        if (moduleComponent.getModule().getName().equals(targetModuleName)) {
+            this.selectedModule = moduleComponent;
             return true;
         }
         return false;
     }
 
     @Override
-    public boolean X(ModuleComponent moduleComponent) {
-        return this.K(moduleComponent);
+    public boolean matches(ModuleComponent moduleComponent) {
+        return this.matchesModule(moduleComponent);
     }
 
     @Override
-    public ArrayList<GuiComponent> v(GuiComponent guiComponent) {
-        if (this.o().isInstance(guiComponent)) {
-            ArrayList<GuiComponent> arrayList = super.v(guiComponent);
-            if (arrayList != null && this.e != null && this.e.equals(guiComponent)) {
-                return new ArrayList<GuiComponent>(Arrays.asList(this.e.getSettingsButton()));
+    public ArrayList<GuiComponent> findTargets(GuiComponent guiComponent) {
+        if (this.getTargetType().isInstance(guiComponent)) {
+            ArrayList<GuiComponent> arrayList = super.findTargets(guiComponent);
+            if (arrayList != null && this.selectedModule != null && this.selectedModule.equals(guiComponent)) {
+                return new ArrayList<GuiComponent>(Arrays.asList(this.selectedModule.getSettingsButton()));
             }
             return arrayList;
         }
@@ -40,8 +40,8 @@ extends TutorialTargetSelector<ModuleComponent> {
 
     public ModulesTutorialBindExpandButtonSelector(ModulesTutorialPage modulesTutorialPage, Class clazz) {
         super(clazz);
-        this.T = modulesTutorialPage;
-        this.e = null;
+        this.tutorialPage = modulesTutorialPage;
+        this.selectedModule = null;
     }
 
 }

@@ -148,7 +148,7 @@ public class Vape {
     private static int[] supportedVersionIds;
 
     public boolean isOnlineConnected() {
-        return OnlineConnectionManager.T.g().A();
+        return OnlineConnectionManager.INSTANCE.getGlobalSettingsController().isFirstRun();
     }
 
     public boolean isMappingsRemapped() {
@@ -158,23 +158,23 @@ public class Vape {
     public void loadConfigData(JsonObject configRoot, boolean useNewOtherDataKey) {
         JsonObject profilesData;
         JsonObject profilesElement;
-        JsonArray friendsArray = ConfigJsonUtils.q(configRoot, "friends");
+        JsonArray friendsArray = ConfigJsonUtils.getJsonArray(configRoot, "friends");
         if (friendsArray != null) {
             this.friendManager.loadFriends(friendsArray);
         }
-        if ((profilesElement = ConfigJsonUtils.E(configRoot, "profiles")) != null) {
+        if ((profilesElement = ConfigJsonUtils.getJsonObject(configRoot, "profiles")) != null) {
             profilesData = configRoot.get("profiles").getAsJsonObject();
-            this.profilesManager.C(profilesData);
+            this.profilesManager.loadJson(profilesData);
         } else {
             Vape.debugLog("profilesData is NULL!");
         }
-        JsonArray otherData = ConfigJsonUtils.q(configRoot, useNewOtherDataKey ? "otherData" : "otherdata");
+        JsonArray otherData = ConfigJsonUtils.getJsonArray(configRoot, useNewOtherDataKey ? "otherData" : "otherdata");
         if (otherData != null && otherData.size() > 0) {
             this.independentSettingsManager.loadIndependentSettings(otherData);
         } else {
             Vape.debugLog("otherData is NULL!");
         }
-        INSTANCE.getProfilesManager().T();
+        INSTANCE.getProfilesManager().updatePublicProfileLinks();
     }
 
     public MacroManager getMacrosManager() {
@@ -212,7 +212,7 @@ public class Vape {
             }
             MappingProfileSnapshotRegistry.h();
             this.traceStep(22);
-            NativeBridge.su(Minecraft.Q$src$Lgg_vape_account_MinecraftSessionWrapper_$1ftnn3u().M());
+            NativeBridge.su(Minecraft.Q$src$Lgg_vape_account_MinecraftSessionWrapper_$1ftnn3u().getUsername());
             if (GuiComponent.getLegacyComponentState() == null) {
                 Vape.setOpaqueState(++opaqueBranch);
             }
@@ -226,7 +226,7 @@ public class Vape {
         this.mappingsRemapped = false;
         MappingProfileSnapshotRegistry.h();
         this.traceStep(22);
-        NativeBridge.su(Minecraft.Q$src$Lgg_vape_account_MinecraftSessionWrapper_$1ftnn3u().M());
+        NativeBridge.su(Minecraft.Q$src$Lgg_vape_account_MinecraftSessionWrapper_$1ftnn3u().getUsername());
         if (GuiComponent.getLegacyComponentState() == null) {
             Vape.setOpaqueState(++opaqueBranch);
         }
@@ -329,15 +329,15 @@ public class Vape {
     }
 
     public boolean initAccountInfo() {
-        ApiAccessTokenProvider.i();
+        ApiAccessTokenProvider.getAccessToken();
         try {
-            ApiResponse<AccountInfoResponse> response = ApiServices.d().G().join();
-            if (response == null || !response.t() || response.T() == null) {
-                String error = response == null ? "empty response" : response.N();
+            ApiResponse<AccountInfoResponse> response = ApiServices.getInstance().getAccountInfo().join();
+            if (response == null || !response.isSuccessful() || response.getData() == null) {
+                String error = response == null ? "empty response" : response.getError();
                 Vape.logError("Failed to initialize account details1: " + error);
                 return false;
             }
-            AccountInfo initializedAccount = AccountInfo.O(response.T());
+            AccountInfo initializedAccount = AccountInfo.fromResponse(response.getData());
             if (initializedAccount == null) {
                 Vape.logError("Failed to initialize account details1: empty account data");
                 return false;
@@ -381,7 +381,7 @@ public class Vape {
         this.publicProfileSettings = new PublicProfileSettings();
         this.modManager = new ModManager();
         this.modManager.init();
-        this.clientSettings.q = this.modManager.getMod(AntiBot.class);
+        this.clientSettings.antiBot = this.modManager.getMod(AntiBot.class);
         this.moduleProfileMetadataCodec = new ModuleProfileMetadataCodec();
         this.traceStep(23);
         this.initPrimaryMappingTasks();
@@ -397,21 +397,21 @@ public class Vape {
         PotionRegistry.d();
         this.inventoryFilterPresetRegistry = new InventoryFilterPresetRegistry();
         this.profilesManager = new ProfilesManager();
-        this.modManager.A();
+        this.modManager.initializeAllModules();
         this.notificationManager = new NotificationManager();
         this.syncThread.loadConfig();
         this.traceStep(25);
-        this.modManager.m();
-        if (this.publicProfileSettings.t() != null) {
-            this.getProfilesManager().L(this.publicProfileSettings.t());
+        this.modManager.finishModuleInitialization();
+        if (this.publicProfileSettings.getSelectedProfile() != null) {
+            this.getProfilesManager().setActiveProfile(this.publicProfileSettings.getSelectedProfile());
         } else {
-            this.getProfilesManager().M();
+            this.getProfilesManager().getActiveProfile();
         }
-        if (this.profilesManager.M() != null) {
-            if (Vape.INSTANCE.getPublicProfileSettings().u.getEffectiveValue().booleanValue()) {
-                this.profilesManager.M().r$src$V$1goqkjq();
+        if (this.profilesManager.getActiveProfile() != null) {
+            if (Vape.INSTANCE.getPublicProfileSettings().autoLoadModuleStates.getEffectiveValue().booleanValue()) {
+                this.profilesManager.getActiveProfile().applyEnabledModuleStates();
             }
-            this.profilesManager.M().l();
+            this.profilesManager.getActiveProfile().applyLegitEnabledModuleStates();
         }
         this.traceStep(26);
         this.onlineManager = new OnlineManager();
@@ -421,13 +421,13 @@ public class Vape {
         this.initClientListeners();
         this.showLoadCompleteNotification();
         this.syncThread.clearPendingSave();
-        this.getFontSelector().N((FontOption)Vape.INSTANCE.getPublicProfileSettings().k.getValue());
+        this.getFontSelector().N((FontOption)Vape.INSTANCE.getPublicProfileSettings().language.getValue());
         this.syncThread.start();
         this.traceStep(28);
         NativeBridge.dc();
         this.registerEventListeners();
         try {
-            OnlineConnectionManager.T.E();
+            OnlineConnectionManager.INSTANCE.initialize();
         }
         catch (Exception exception) {
             Vape.logThrowable(exception);
@@ -492,7 +492,7 @@ public class Vape {
         if (this.accountInfo == null) {
             return 0;
         }
-        return (int)this.accountInfo.i();
+        return (int)this.accountInfo.getUserId();
     }
 
     public NotificationManager getNotificationManager() {
@@ -522,14 +522,14 @@ public class Vape {
     public void saveAndStop() {
         Profile activeProfile;
         this.syncThread.markDirty();
-        if (this.profilesManager != null && (activeProfile = this.profilesManager.o()) != null) {
-            activeProfile.c(true);
+        if (this.profilesManager != null && (activeProfile = this.profilesManager.getActiveProfileOrNull()) != null) {
+            activeProfile.setDirty(true);
         }
     }
 
     public void exportFramesConfig(String filePath) {
         try {
-            String output = this.modManager.T();
+            String output = this.modManager.buildTranslationTemplate();
             for (Frame frame : ClientSettings.getAllFrames()) {
                 if (frame instanceof FloatingValueDropdownLayer || !frame.J$src$Z$1eqdghz()) continue;
                 String frameLine = "frame." + frame.getName().toLowerCase().replace(" ", "_") + "=" + frame.getName();
@@ -565,7 +565,7 @@ public class Vape {
     }
 
     private static boolean lambda$registerListeners$1(IEvent event) {
-        return EventBus.y;
+        return EventBus.timingEnabled;
     }
 
     public void initClientListeners() {
@@ -579,18 +579,18 @@ public class Vape {
         EventBus.getInstance().registerListener(PacketDispatchGuard.b, new Predicate[0]);
         EventBus.getInstance().registerListener(new BendableInputDispatcher(), new Predicate[0]);
         EventBus.getInstance().registerListener(AttackPacketTimingTracker.INSTANCE, new Predicate[0]);
-        EventBus.getInstance().registerListener(PingManager.B, new Predicate[0]);
+        EventBus.getInstance().registerListener(PingManager.INSTANCE, new Predicate[0]);
         EventBus.getInstance().registerListener(RotationManager.INSTANCE, new Predicate[0]);
         EventBus.getInstance().registerListener(PlayerMovementTaskManager.INSTANCE, new Predicate[0]);
-        EventBus.getInstance().registerListener(OnlineFriendActivityListener.X, new Predicate[0]);
-        EventBus.getInstance().registerListener(OnlineActivityPanelOptions.p, new Predicate[0]);
+        EventBus.getInstance().registerListener(OnlineFriendActivityListener.INSTANCE, new Predicate[0]);
+        EventBus.getInstance().registerListener(OnlineActivityPanelOptions.INSTANCE, new Predicate[0]);
         EventBus.getInstance().registerListener(AttackStrengthTracker.INSTANCE, Vape::lambda$registerListeners$0);
         EventBus.getInstance().registerListener(new ClientSettingsEventForwarder(), new Predicate[0]);
         EventBus.getInstance().registerListener(new WorldChangeEventDispatcher(), new Predicate[0]);
         EventBus.getInstance().registerListener(new RenderEntityContextCacheListener(), new Predicate[0]);
         EventBus.getInstance().registerListener(new MacroEventListener(), new Predicate[0]);
         EventBus.getInstance().registerListener(new InventoryCleanerProfileValueRefreshListener(), new Predicate[0]);
-        EventBus.getInstance().registerListener(EventTimingOverlayListener.e, Vape::lambda$registerListeners$1);
+        EventBus.getInstance().registerListener(EventTimingOverlayListener.INSTANCE, Vape::lambda$registerListeners$1);
         EventBus.getInstance().registerListener(new VapeShutdownEventListener(), new Predicate[0]);
         EventBus.getInstance().registerListener(NameTagsRenderStateTracker.INSTANCE, new Predicate[0]);
         EventBus.getInstance().registerListener(this.notificationManager, new Predicate[0]);
@@ -720,7 +720,7 @@ public class Vape {
         this.primaryMappingTaskSet.L();
         this.primaryMappingTaskSet.d();
         int opaqueBranch = opaqueSeed;
-        EventRenderWorldPassExecutorDrain.E.execute(ClientSettings::initializeFrames);
+        EventRenderWorldPassExecutorDrain.EXECUTOR.execute(ClientSettings::initializeFrames);
         try {
             while (!ClientSettings.framesInitialized) {
                 try {

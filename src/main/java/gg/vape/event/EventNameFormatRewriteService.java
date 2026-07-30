@@ -24,211 +24,211 @@ import java.util.Set;
 
 public final class EventNameFormatRewriteService
 extends FriendAliasDisplayNameListener {
-    private static String[] E;
+    private static String[] obfuscationState;
 
-    private ITextComponent m(ITextComponent iTextComponent) {
+    private ITextComponent rewriteComponent(ITextComponent component) {
         if (ForgeVersion.MC_1_20_6.d()) {
-            return this.P(iTextComponent);
+            return this.rewriteComponentTree(component);
         }
         if (ForgeVersion.MC_1_16_5.d()) {
-            this.J(iTextComponent);
-            return iTextComponent;
+            this.rewriteLegacyStringComponents(component);
+            return component;
         }
         Vape.notifyNativeStackTrace();
-        return iTextComponent;
+        return component;
     }
 
-    private Set<TextComponentString> a(ITextComponent iTextComponent, Set<TextComponentString> set) {
+    private Set<TextComponentString> collectStringComponents(ITextComponent component, Set<TextComponentString> components) {
         if (ForgeVersion.MC_1_16_5_ACTUAL.Y()) {
             throw new UnsupportedOperationException("getTextComponents should only be called on versions <= 1.16.5");
         }
-        if (iTextComponent.isInstance(MappedClasses.ux)) {
-            ChestStealInventoryState chestStealInventoryState = new ChestStealInventoryState(iTextComponent.getObject());
-            for (Object object : chestStealInventoryState.getSiblings()) {
-                ITextComponent iTextComponent2 = new ITextComponent(object);
-                if (iTextComponent2.isNull() || !iTextComponent2.isInstance(MappedClasses.Yr)) continue;
-                this.a(iTextComponent2, set);
+        if (component.isInstance(MappedClasses.ux)) {
+            ChestStealInventoryState translationComponent = new ChestStealInventoryState(component.getObject());
+            for (Object siblingHandle : translationComponent.getSiblings()) {
+                ITextComponent sibling = new ITextComponent(siblingHandle);
+                if (sibling.isNull() || !sibling.isInstance(MappedClasses.Yr)) continue;
+                this.collectStringComponents(sibling, components);
             }
         }
-        for (ITextComponent iTextComponent3 : iTextComponent.G()) {
-            Object object;
-            if (iTextComponent3.isNull() || !iTextComponent3.isInstance(MappedClasses.z9)) continue;
-            object = new TextComponentString(iTextComponent3.getObject());
-            this.a((ITextComponent)object, set);
+        for (ITextComponent sibling : component.G()) {
+            TextComponentString stringComponent;
+            if (sibling.isNull() || !sibling.isInstance(MappedClasses.z9)) continue;
+            stringComponent = new TextComponentString(sibling.getObject());
+            this.collectStringComponents(stringComponent, components);
         }
-        if (iTextComponent.isInstance(MappedClasses.z9)) {
-            set.add(new TextComponentString(iTextComponent.getObject()));
+        if (component.isInstance(MappedClasses.z9)) {
+            components.add(new TextComponentString(component.getObject()));
         }
-        return set;
+        return components;
     }
 
     @EventHandler
-    public void K(EventNameFormat eventNameFormat) {
-        ITextComponent iTextComponent;
-        if (!(this.N() && this.u() && this.S())) {
+    public void onNameFormat(EventNameFormat event) {
+        ITextComponent rewrittenComponent;
+        if (!(this.isAliasEnabled() && this.isAliasSpoofEnabled() && this.hasFriends())) {
             return;
         }
-        ITextComponent iTextComponent2 = eventNameFormat.getDisplayName();
-        if (EventNameFormatRewriteService.S(iTextComponent2, iTextComponent = this.m(iTextComponent2))) {
-            eventNameFormat.setDisplayName(iTextComponent);
+        ITextComponent originalComponent = event.getDisplayName();
+        if (EventNameFormatRewriteService.shouldReplace(originalComponent, rewrittenComponent = this.rewriteComponent(originalComponent))) {
+            event.setDisplayName(rewrittenComponent);
         }
     }
 
     static {
-        EventNameFormatRewriteService.w(null);
+        EventNameFormatRewriteService.setObfuscationState(null);
     }
 
     @EventHandler
-    public void G(EventPlayerTabOverlayDisplayName eventPlayerTabOverlayDisplayName) {
-        ITextComponent iTextComponent;
-        if (!(this.N() && this.u() && this.S())) {
+    public void onPlayerTabDisplayName(EventPlayerTabOverlayDisplayName event) {
+        ITextComponent rewrittenComponent;
+        if (!(this.isAliasEnabled() && this.isAliasSpoofEnabled() && this.hasFriends())) {
             return;
         }
-        ITextComponent iTextComponent2 = eventPlayerTabOverlayDisplayName.getDisplayName();
-        if (EventNameFormatRewriteService.S(iTextComponent2, iTextComponent = this.m(iTextComponent2))) {
-            eventPlayerTabOverlayDisplayName.setDisplayName(iTextComponent);
+        ITextComponent originalComponent = event.getDisplayName();
+        if (EventNameFormatRewriteService.shouldReplace(originalComponent, rewrittenComponent = this.rewriteComponent(originalComponent))) {
+            event.setDisplayName(rewrittenComponent);
         }
     }
 
-    private static boolean S(ITextComponent iTextComponent, ITextComponent iTextComponent2) {
-        return iTextComponent.isNotNull() && iTextComponent2.isNotNull() && (ForgeVersion.MC_1_20_6.v() || !iTextComponent.equals(iTextComponent2));
+    private static boolean shouldReplace(ITextComponent original, ITextComponent rewritten) {
+        return original.isNotNull() && rewritten.isNotNull() && (ForgeVersion.MC_1_20_6.v() || !original.equals(rewritten));
     }
 
-    public static String[] x() {
-        return E;
+    public static String[] getObfuscationState() {
+        return obfuscationState;
     }
 
-    private StringTextComponentBase O(StringTextComponentBase stringTextComponentBase) {
-        ITextComponent iTextComponent;
-        ITextComponent iTextComponent2;
-        if (stringTextComponentBase.isInstance(MappedClasses.qT) && !(iTextComponent2 = new ScorePlayerTeamTextComponent(stringTextComponentBase.getObject())).equals(iTextComponent = this.a((ScorePlayerTeamTextComponent)iTextComponent2))) {
-            return new StringTextComponentBase(iTextComponent.getObject());
+    private StringTextComponentBase rewriteStringPayload(StringTextComponentBase payload) {
+        ITextComponent rewrittenComponent;
+        ITextComponent originalComponent;
+        if (payload.isInstance(MappedClasses.qT) && !(originalComponent = new ScorePlayerTeamTextComponent(payload.getObject())).equals(rewrittenComponent = this.rewriteLiteralComponent((ScorePlayerTeamTextComponent)originalComponent))) {
+            return new StringTextComponentBase(rewrittenComponent.getObject());
         }
-        if (stringTextComponentBase.isInstance(MappedClasses.ux) && !(iTextComponent2 = new ChestStealInventoryState(stringTextComponentBase.getObject())).equals(iTextComponent = this.B((ChestStealInventoryState)iTextComponent2))) {
-            return new StringTextComponentBase(iTextComponent.getObject());
+        if (payload.isInstance(MappedClasses.ux) && !(originalComponent = new ChestStealInventoryState(payload.getObject())).equals(rewrittenComponent = this.rewriteTranslationComponent((ChestStealInventoryState)originalComponent))) {
+            return new StringTextComponentBase(rewrittenComponent.getObject());
         }
-        return stringTextComponentBase;
+        return payload;
     }
 
     @EventHandler
-    public void Z(EventChat eventChat) {
-        ITextComponent iTextComponent;
-        if (ForgeVersion.MC_1_16_5_ACTUAL.Y() || !this.u() || !this.S()) {
+    public void onChat(EventChat event) {
+        ITextComponent rewrittenComponent;
+        if (ForgeVersion.MC_1_16_5_ACTUAL.Y() || !this.isAliasSpoofEnabled() || !this.hasFriends()) {
             return;
         }
-        ITextComponent iTextComponent2 = eventChat.getMessage();
-        if (EventNameFormatRewriteService.S(iTextComponent2, iTextComponent = this.m(iTextComponent2))) {
-            eventChat.setMessage(iTextComponent);
+        ITextComponent originalComponent = event.getMessage();
+        if (EventNameFormatRewriteService.shouldReplace(originalComponent, rewrittenComponent = this.rewriteComponent(originalComponent))) {
+            event.setMessage(rewrittenComponent);
         }
     }
 
-    private ITextComponent P(ITextComponent iTextComponent) {
-        StringTextComponentBase stringTextComponentBase;
-        StringTextComponentBase stringTextComponentBase2 = iTextComponent.F();
-        boolean bl = !stringTextComponentBase2.equals(stringTextComponentBase = this.O(stringTextComponentBase2));
-        List<ITextComponent> list = iTextComponent.G();
-        ArrayList<ITextComponent> arrayList = new ArrayList<ITextComponent>();
-        for (ITextComponent iTextComponent2 : list) {
-            ITextComponent iTextComponent3 = this.m(iTextComponent2);
-            arrayList.add(iTextComponent3);
-            if (bl || iTextComponent3.equals(iTextComponent2)) continue;
-            bl = true;
+    private ITextComponent rewriteComponentTree(ITextComponent component) {
+        StringTextComponentBase rewrittenPayload;
+        StringTextComponentBase originalPayload = component.F();
+        boolean changed = !originalPayload.equals(rewrittenPayload = this.rewriteStringPayload(originalPayload));
+        List<ITextComponent> siblings = component.G();
+        ArrayList<ITextComponent> rewrittenSiblings = new ArrayList<ITextComponent>();
+        for (ITextComponent sibling : siblings) {
+            ITextComponent rewrittenSibling = this.rewriteComponent(sibling);
+            rewrittenSiblings.add(rewrittenSibling);
+            if (changed || rewrittenSibling.equals(sibling)) continue;
+            changed = true;
         }
-        return bl ? TextComponentBaseBridge.l(stringTextComponentBase, arrayList, iTextComponent.J()) : iTextComponent;
+        return changed ? TextComponentBaseBridge.l(rewrittenPayload, rewrittenSiblings, component.J()) : component;
     }
 
     @EventHandler
-    public void H(EventChatMessageRender eventChatMessageRender) {
-        ITextComponent iTextComponent;
-        ITextComponent iTextComponent2 = eventChatMessageRender.getContentComponent();
-        if (EventNameFormatRewriteService.S(iTextComponent2, iTextComponent = this.m(iTextComponent2))) {
-            eventChatMessageRender.setOutputContentComponent(iTextComponent);
+    public void onChatMessageRender(EventChatMessageRender event) {
+        ITextComponent rewrittenComponent;
+        ITextComponent originalComponent = event.getContentComponent();
+        if (EventNameFormatRewriteService.shouldReplace(originalComponent, rewrittenComponent = this.rewriteComponent(originalComponent))) {
+            event.setOutputContentComponent(rewrittenComponent);
         }
     }
 
-    private static UnsupportedOperationException a(UnsupportedOperationException unsupportedOperationException) {
-        return unsupportedOperationException;
+    private static UnsupportedOperationException identityException(UnsupportedOperationException exception) {
+        return exception;
     }
 
-    private ScorePlayerTeamTextComponent a(ScorePlayerTeamTextComponent scorePlayerTeamTextComponent) {
+    private ScorePlayerTeamTextComponent rewriteLiteralComponent(ScorePlayerTeamTextComponent component) {
         if (ForgeVersion.MC_1_16_5_ACTUAL.B()) {
             throw new UnsupportedOperationException("processStringTextComponent should only be called on versions >= 1.16.6");
         }
-        if (scorePlayerTeamTextComponent.isNull()) {
-            return scorePlayerTeamTextComponent;
+        if (component.isNull()) {
+            return component;
         }
-        String string = scorePlayerTeamTextComponent.Y();
-        if (string == null) {
-            return scorePlayerTeamTextComponent;
+        String text = component.Y();
+        if (text == null) {
+            return component;
         }
-        String string2 = this.G(string, this.e());
-        if (string2 == null) {
-            return scorePlayerTeamTextComponent;
+        String rewrittenText = this.getReplacedDisplayName(text, this.getTargetedFriends());
+        if (rewrittenText == null) {
+            return component;
         }
-        return string.equalsIgnoreCase(string2) ? scorePlayerTeamTextComponent : (ForgeVersion.MC_1_20_6.d() ? ScorePlayerTeamTextComponent.P(string2) : ScorePlayerTeamTextComponent.B(string2));
+        return text.equalsIgnoreCase(rewrittenText) ? component : (ForgeVersion.MC_1_20_6.d() ? ScorePlayerTeamTextComponent.P(rewrittenText) : ScorePlayerTeamTextComponent.B(rewrittenText));
     }
 
-    private ChestStealInventoryState B(ChestStealInventoryState chestStealInventoryState) {
-        Object[] objectArray;
+    private ChestStealInventoryState rewriteTranslationComponent(ChestStealInventoryState component) {
+        Object[] formatArguments;
         if (ForgeVersion.MC_1_20_6.v()) {
             throw new UnsupportedOperationException("processChatComponentTranslation should only be called on versions >= 1.20.6");
         }
-        boolean bl = false;
-        ArrayList<Object> arrayList = new ArrayList<Object>();
-        for (Object object : objectArray = chestStealInventoryState.getFormatArguments()) {
-            Object object2;
-            Object object3;
-            if (object == null) {
-                arrayList.add(null);
+        boolean changed = false;
+        ArrayList<Object> rewrittenArguments = new ArrayList<Object>();
+        for (Object argument : formatArguments = component.getFormatArguments()) {
+            Object rewrittenArgument;
+            Object originalArgument;
+            if (argument == null) {
+                rewrittenArguments.add(null);
                 continue;
             }
-            if (MappedClasses.Yr.isInstance(object)) {
-                object3 = new ITextComponent(object);
-                object2 = this.m((ITextComponent)object3);
-                arrayList.add(((Wrapper)object2).getObject());
-                if (bl || ((Wrapper)object3).equals(object2)) continue;
-                bl = true;
+            if (MappedClasses.Yr.isInstance(argument)) {
+                originalArgument = new ITextComponent(argument);
+                rewrittenArgument = this.rewriteComponent((ITextComponent)originalArgument);
+                rewrittenArguments.add(((Wrapper)rewrittenArgument).getObject());
+                if (changed || ((Wrapper)originalArgument).equals(rewrittenArgument)) continue;
+                changed = true;
                 continue;
             }
-            if (object instanceof String) {
-                object3 = (String)object;
-                object2 = this.G((String)object3, this.e());
-                arrayList.add(object2);
-                if (bl || ((String)object3).equalsIgnoreCase((String)object2)) continue;
-                bl = true;
+            if (argument instanceof String) {
+                originalArgument = (String)argument;
+                rewrittenArgument = this.getReplacedDisplayName((String)originalArgument, this.getTargetedFriends());
+                rewrittenArguments.add(rewrittenArgument);
+                if (changed || ((String)originalArgument).equalsIgnoreCase((String)rewrittenArgument)) continue;
+                changed = true;
                 continue;
             }
-            arrayList.add(object);
+            rewrittenArguments.add(argument);
         }
-        return !bl ? chestStealInventoryState : (ForgeVersion.MC_1_20_6.d() ? ChestStealInventoryState.createTranslationWithFallback(chestStealInventoryState.getTranslationKey(), chestStealInventoryState.getFallback(), arrayList.toArray()) : ChestStealInventoryState.createTranslation(chestStealInventoryState.getTranslationKey(), arrayList.toArray()));
+        return !changed ? component : (ForgeVersion.MC_1_20_6.d() ? ChestStealInventoryState.createTranslationWithFallback(component.getTranslationKey(), component.getFallback(), rewrittenArguments.toArray()) : ChestStealInventoryState.createTranslation(component.getTranslationKey(), rewrittenArguments.toArray()));
     }
 
-    public static void w(String[] stringArray) {
-        E = stringArray;
+    public static void setObfuscationState(String[] state) {
+        obfuscationState = state;
     }
 
     @EventHandler
-    public void g(EventEntityRenderState eventEntityRenderState) {
-        if (!(this.N() && this.u() && this.S())) {
+    public void onEntityRenderState(EventEntityRenderState event) {
+        if (!(this.isAliasEnabled() && this.isAliasSpoofEnabled() && this.hasFriends())) {
             return;
         }
-        ITextComponent iTextComponent = eventEntityRenderState.getEntityRenderState().d();
-        if (iTextComponent.isNull()) {
+        ITextComponent displayName = event.getEntityRenderState().d();
+        if (displayName.isNull()) {
             return;
         }
-        ITextComponent iTextComponent2 = this.m(iTextComponent);
-        if (EventNameFormatRewriteService.S(iTextComponent, iTextComponent2)) {
-            eventEntityRenderState.getEntityRenderState().Z(iTextComponent2);
+        ITextComponent rewrittenDisplayName = this.rewriteComponent(displayName);
+        if (EventNameFormatRewriteService.shouldReplace(displayName, rewrittenDisplayName)) {
+            event.getEntityRenderState().Z(rewrittenDisplayName);
         }
     }
 
-    private void J(ITextComponent iTextComponent) {
-        Set<TextComponentString> set = this.a(iTextComponent, new HashSet<TextComponentString>());
-        for (TextComponentString textComponentString : set) {
-            String string = textComponentString.getText();
-            String string2 = this.G(string, this.e());
-            if (string2 == null || string.equalsIgnoreCase(string2)) continue;
-            textComponentString.setText(string2);
+    private void rewriteLegacyStringComponents(ITextComponent component) {
+        Set<TextComponentString> stringComponents = this.collectStringComponents(component, new HashSet<TextComponentString>());
+        for (TextComponentString stringComponent : stringComponents) {
+            String text = stringComponent.getText();
+            String rewrittenText = this.getReplacedDisplayName(text, this.getTargetedFriends());
+            if (rewrittenText == null || text.equalsIgnoreCase(rewrittenText)) continue;
+            stringComponent.setText(rewrittenText);
         }
     }
 }

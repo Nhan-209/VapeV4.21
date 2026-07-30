@@ -1,7 +1,5 @@
 package gg.vape.wrapper.impl;
 
-import gg.vape.wrapper.impl.Packet;
-
 public class ByteStatePacketBridge
 extends Packet {
     public ByteStatePacketBridge(Object object) {
@@ -9,7 +7,7 @@ extends Packet {
     }
 
     public byte r() {
-        return ByteStatePacketBridge.c.getMappingsMapperCompat().hy.L(this.I);
+        return ByteStatePacketBridge.vapeInstance.getMappingsMapperCompat().hy.L(this.I);
     }
 }
 

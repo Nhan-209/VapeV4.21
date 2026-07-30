@@ -29,7 +29,7 @@ extends InsetFrameBase {
     public void refreshModules() {
         this.removeMarkedChildren();
         int moduleIndex = 0;
-        ArrayList<Mod> mods = Vape.INSTANCE.getModManager().l();
+        ArrayList<Mod> mods = Vape.INSTANCE.getModManager().getActiveModuleList();
         this.setVisible(true);
         for (Mod mod : mods) {
             if (!(mod instanceof HudModule)) continue;

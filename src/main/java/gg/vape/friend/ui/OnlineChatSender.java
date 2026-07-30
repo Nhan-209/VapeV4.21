@@ -4,6 +4,5 @@ import gg.vape.friend.OnlineFriend;
 import java.util.function.BiConsumer;
 
 public interface OnlineChatSender {
-    public void W(String var1, BiConsumer<OnlineFriend, String> var2);
+    void sendChatMessage(String message, BiConsumer<OnlineFriend, String> responseConsumer);
 }
-

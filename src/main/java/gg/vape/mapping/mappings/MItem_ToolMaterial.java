@@ -3,7 +3,6 @@ package gg.vape.mapping.mappings;
 import gg.vape.mapping.MappedClasses;
 import gg.vape.mapping.Mapping;
 import gg.vape.mapping.MappingField;
-import gg.vape.mapping.mappings.MItemStack;
 import gg.vape.wrapper.Wrapper;
 import gg.vape.wrapper.impl.ForgeVersion;
 
@@ -36,25 +35,25 @@ extends Mapping {
             MItem_ToolMaterial mItem_ToolMaterial = this;
             this.r = mItem_ToolMaterial.J(string, bl, clazz);
             Class clazz2 = MappedClasses.F5;
-            boolean bl2 = Wrapper.G;
+            boolean bl2 = Wrapper.isNativeAvailable;
             String string2 = "WOOD";
             MItem_ToolMaterial mItem_ToolMaterial2 = this;
-            this.h = this.u(string2, bl2, clazz2);
+            this.h = this.registerStaticField(string2, bl2, clazz2);
             Class clazz3 = MappedClasses.F5;
-            boolean bl3 = Wrapper.G;
+            boolean bl3 = Wrapper.isNativeAvailable;
             String string3 = "STONE";
             MItem_ToolMaterial mItem_ToolMaterial3 = this;
-            this.U = this.u(string3, bl3, clazz3);
+            this.U = this.registerStaticField(string3, bl3, clazz3);
             Class clazz4 = MappedClasses.F5;
-            boolean bl4 = Wrapper.G;
+            boolean bl4 = Wrapper.isNativeAvailable;
             String string4 = "IRON";
             MItem_ToolMaterial mItem_ToolMaterial4 = this;
-            this.n = this.u(string4, bl4, clazz4);
+            this.n = this.registerStaticField(string4, bl4, clazz4);
             Class clazz5 = MappedClasses.F5;
-            boolean bl5 = Wrapper.G;
+            boolean bl5 = Wrapper.isNativeAvailable;
             String string5 = "GOLD";
             MItem_ToolMaterial mItem_ToolMaterial5 = this;
-            this.q = this.u(string5, bl5, clazz5);
+            this.q = this.registerStaticField(string5, bl5, clazz5);
             return;
         }
         if (ForgeVersion.MC_1_16_5.d()) {
@@ -71,25 +70,25 @@ extends Mapping {
             this.r = mItem_ToolMaterial.J(string, bl, clazz);
         }
         Class clazz = MappedClasses.F5;
-        boolean bl = Wrapper.G;
+        boolean bl = Wrapper.isNativeAvailable;
         String string = "WOOD";
         MItem_ToolMaterial mItem_ToolMaterial = this;
-        this.h = mItem_ToolMaterial.u(string, bl, clazz); 
+        this.h = mItem_ToolMaterial.registerStaticField(string, bl, clazz);
         Class clazz6 = MappedClasses.F5;
-        boolean bl6 = Wrapper.G;
+        boolean bl6 = Wrapper.isNativeAvailable;
         String string6 = "STONE";
         MItem_ToolMaterial mItem_ToolMaterial6 = this;
-        this.U = this.u(string6, bl6, clazz6);
+        this.U = this.registerStaticField(string6, bl6, clazz6);
         Class clazz7 = MappedClasses.F5;
-        boolean bl7 = Wrapper.G;
+        boolean bl7 = Wrapper.isNativeAvailable;
         String string7 = "IRON";
         MItem_ToolMaterial mItem_ToolMaterial7 = this;
-        this.n = this.u(string7, bl7, clazz7);
+        this.n = this.registerStaticField(string7, bl7, clazz7);
         Class clazz8 = MappedClasses.F5;
-        boolean bl8 = Wrapper.G;
+        boolean bl8 = Wrapper.isNativeAvailable;
         String string8 = "GOLD";
         MItem_ToolMaterial mItem_ToolMaterial8 = this;
-        this.q = this.u(string8, bl8, clazz8);
+        this.q = this.registerStaticField(string8, bl8, clazz8);
     }
 
     private Object C() {

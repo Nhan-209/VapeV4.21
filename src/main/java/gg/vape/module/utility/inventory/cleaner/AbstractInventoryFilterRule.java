@@ -85,7 +85,7 @@ implements InventoryFilterRule {
         if (jsonObject.has("customRule")) {
             JsonElement jsonElement = jsonObject.get("customRule");
             if (jsonElement.isJsonPrimitive()) {
-                this.sharedPresetId = ConfigJsonUtils.u(jsonObject, "customRule");
+                this.sharedPresetId = ConfigJsonUtils.getUuid(jsonObject, "customRule");
             } else {
                 this.inlinePreset = new InventoryFilterPreset(jsonObject.getAsJsonObject("customRule"));
             }

@@ -15,212 +15,212 @@ import java.util.UUID;
 import org.jetbrains.annotations.Nullable;
 
 public class OnlineFriend {
-    private int B = -1;
-    private UUID p;
-    private static boolean I;
-    private boolean k;
-    private ExternalFriend Q;
-    private boolean o;
-    private boolean D;
-    protected UserModel q;
+    private int groupRole = -1;
+    private UUID minecraftUuid;
+    private static boolean obfuscationState;
+    private boolean syncWithFriends;
+    private ExternalFriend externalFriend;
+    private boolean unreadMessage;
+    private boolean hasChatHistory;
+    protected UserModel user;
     @Nullable
-    private String P;
-    private OnlineStatus n = OnlineStatus.OFFLINE;
-    private String y = "";
-    private boolean g = true;
-    protected String K;
+    private String minecraftServer;
+    private OnlineStatus status = OnlineStatus.OFFLINE;
+    private String minecraftUsername = "";
+    private boolean visible = true;
+    protected String displayName;
 
-    public void W(String string) {
-        this.y = string;
+    public void setMinecraftUsername(String minecraftUsername) {
+        this.minecraftUsername = minecraftUsername;
     }
 
-    public void J(boolean bl) {
-        this.o = bl;
+    public void setUnreadMessage(boolean unreadMessage) {
+        this.unreadMessage = unreadMessage;
     }
 
-    public void K(int n) {
-        this.B = n;
+    public void setGroupRole(int groupRole) {
+        this.groupRole = groupRole;
     }
 
-    public void O(boolean bl) {
-        this.k = bl;
-        if (bl) {
-            if (this.n != OnlineStatus.OFFLINE) {
-                Vape.INSTANCE.getFriendManager().u(this.Q);
-                OnlineFriendUiHelper.U();
+    public void setSyncWithFriends(boolean syncWithFriends) {
+        this.syncWithFriends = syncWithFriends;
+        if (syncWithFriends) {
+            if (this.status != OnlineStatus.OFFLINE) {
+                Vape.INSTANCE.getFriendManager().addFriend(this.externalFriend);
+                OnlineFriendUiHelper.refreshMinecraftFriends();
             }
         } else {
-            Vape.INSTANCE.getFriendManager().E(this.Q);
-            OnlineFriendUiHelper.U();
+            Vape.INSTANCE.getFriendManager().removeFriend(this.externalFriend);
+            OnlineFriendUiHelper.refreshMinecraftFriends();
         }
     }
 
-    public void F(boolean bl) {
-        this.D = bl;
+    public void setHasChatHistory(boolean hasChatHistory) {
+        this.hasChatHistory = hasChatHistory;
     }
 
     public OnlineFriend(GroupUserModel groupUserModel) {
-        this(groupUserModel.j());
-        this.n = OnlineStatus.ONLINE;
-        this.p = groupUserModel.N();
-        this.y = groupUserModel.i();
-        this.B = groupUserModel.e();
+        this(groupUserModel.getUser());
+        this.status = OnlineStatus.ONLINE;
+        this.minecraftUuid = groupUserModel.getMinecraftUuid();
+        this.minecraftUsername = groupUserModel.getMinecraftUsername();
+        this.groupRole = groupUserModel.getGroupRole();
     }
 
-    public static boolean I$src$Z$1kta3hb() {
-        return I;
+    public static boolean getObfuscationState() {
+        return obfuscationState;
     }
 
 
-    public OnlineFriend(String string) {
-        this(null, string);
+    public OnlineFriend(String displayName) {
+        this(null, displayName);
     }
 
-    public void d(UUID uUID, String string) {
-        this.p = uUID;
-        this.y = string;
+    public void updateMinecraftProfile(UUID minecraftUuid, String minecraftUsername) {
+        this.minecraftUuid = minecraftUuid;
+        this.minecraftUsername = minecraftUsername;
     }
 
-    public boolean r() {
-        return this.o;
+    public boolean hasUnreadMessage() {
+        return this.unreadMessage;
     }
 
     public OnlineFriend(FriendModel friendModel) {
-        this(friendModel.L());
-        this.n = OnlineStatus.f(friendModel.L$src$Lgg_vape_protocol_PresenceState_$o2vkpe());
-        this.p = friendModel.R();
-        this.y = friendModel.k();
-        this.g = friendModel.B();
-        this.P = friendModel.u();
+        this(friendModel.getUser());
+        this.status = OnlineStatus.fromPresenceState(friendModel.getPresenceState());
+        this.minecraftUuid = friendModel.getMinecraftUuid();
+        this.minecraftUsername = friendModel.getMinecraftUsername();
+        this.visible = friendModel.isVisible();
+        this.minecraftServer = friendModel.getMinecraftServer();
     }
 
-    public UserModel S() {
-        return this.q;
+    public UserModel getUser() {
+        return this.user;
     }
 
     static {
-        OnlineFriend.q(false);
+        OnlineFriend.setObfuscationState(false);
     }
 
-    public boolean equals(Object object) {
-        if (this == object) {
+    public boolean equals(Object other) {
+        if (this == other) {
             return true;
         }
-        if (!(object instanceof OnlineFriend)) {
+        if (!(other instanceof OnlineFriend)) {
             return false;
         }
-        OnlineFriend onlineFriend = (OnlineFriend)object;
-        return this.q.g() == onlineFriend.q.g();
+        OnlineFriend onlineFriend = (OnlineFriend)other;
+        return this.user.getId() == onlineFriend.user.getId();
     }
 
     @Nullable
-    public UUID k() {
-        return this.p;
+    public UUID getMinecraftUuid() {
+        return this.minecraftUuid;
     }
 
-    public static void q(boolean bl) {
-        I = bl;
+    public static void setObfuscationState(boolean state) {
+        obfuscationState = state;
     }
 
-    public void X(boolean bl) {
-        this.g = bl;
+    public void setVisible(boolean visible) {
+        this.visible = visible;
     }
 
-    public ExternalFriend q() {
-        return this.Q;
+    public ExternalFriend getExternalFriend() {
+        return this.externalFriend;
     }
 
-    public void V(@Nullable String string) {
-        this.P = string;
+    public void setMinecraftServer(@Nullable String minecraftServer) {
+        this.minecraftServer = minecraftServer;
     }
 
-    public OnlineStatus F() {
-        return this.n;
+    public OnlineStatus getStatus() {
+        return this.status;
     }
 
     public int hashCode() {
-        return this.q.hashCode();
+        return this.user.hashCode();
     }
 
-    public String I() {
-        return this.y;
+    public String getMinecraftUsername() {
+        return this.minecraftUsername;
     }
 
     @Nullable
-    public String v() {
-        return this.P;
+    public String getMinecraftServer() {
+        return this.minecraftServer;
     }
 
-    public void i(String string) {
-        this.K = string;
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
     }
 
-    public String C() {
-        return this.K;
+    public String getDisplayName() {
+        return this.displayName;
     }
 
-    public int d() {
-        return this.B;
+    public int getGroupRole() {
+        return this.groupRole;
     }
 
-    public boolean B() {
-        return this.D;
+    public boolean hasChatHistory() {
+        return this.hasChatHistory;
     }
 
-    public void g(OnlineStatus onlineStatus) {
-        this.n = onlineStatus;
+    public void setStatus(OnlineStatus onlineStatus) {
+        this.status = onlineStatus;
         if (onlineStatus.equals((Object)OnlineStatus.ONLINE)) {
-            Notification notification = new Notification(NotificationType.FRIENDS_ONLINE, "\u00a7f" + this.C() + " \u00a77is online", new TextNotificationContent("", NotificationType.FRIENDS_ONLINE), 0.0, 0.0, 4000L);
-            boolean bl = true;
+            Notification notification = new Notification(NotificationType.FRIENDS_ONLINE, "\u00a7f" + this.getDisplayName() + " \u00a77is online", new TextNotificationContent("", NotificationType.FRIENDS_ONLINE), 0.0, 0.0, 4000L);
+            boolean shouldNotify = true;
             for (INotification iNotification : Vape.INSTANCE.getNotificationManager().getNotifications()) {
                 if (!(iNotification instanceof Notification)
                         || !((Notification)iNotification).getTitle().equals(notification.getTitle())) continue;
-                bl = false;
+                shouldNotify = false;
                 break;
             }
-            if (bl) {
+            if (shouldNotify) {
                 Vape.INSTANCE.getNotificationManager().show(notification);
             }
         }
-        if (this.k) {
+        if (this.syncWithFriends) {
             if (onlineStatus == OnlineStatus.ONLINE) {
-                Vape.INSTANCE.getFriendManager().u(this.Q);
-                OnlineFriendUiHelper.U();
+                Vape.INSTANCE.getFriendManager().addFriend(this.externalFriend);
+                OnlineFriendUiHelper.refreshMinecraftFriends();
             } else if (onlineStatus == OnlineStatus.OFFLINE) {
-                Vape.INSTANCE.getFriendManager().E(this.Q);
-                OnlineFriendUiHelper.U();
+                Vape.INSTANCE.getFriendManager().removeFriend(this.externalFriend);
+                OnlineFriendUiHelper.refreshMinecraftFriends();
             }
         }
     }
 
-    public boolean u() {
-        return this.g;
+    public boolean isVisible() {
+        return this.visible;
     }
 
-    public static boolean k$src$Z$1lbz3nl() {
-        boolean bl = OnlineFriend.I$src$Z$1kta3hb();
+    public static boolean getObfuscationConstant() {
+        boolean state = OnlineFriend.getObfuscationState();
         return true;
     }
 
-    public OnlineFriend(UserModel userModel, String string) {
-        this.q = userModel;
-        this.i(string);
-        this.Q = new ExternalFriend(this);
+    public OnlineFriend(UserModel userModel, String displayName) {
+        this.user = userModel;
+        this.setDisplayName(displayName);
+        this.externalFriend = new ExternalFriend(this);
     }
 
     public OnlineFriend(UserModel userModel) {
-        this(userModel, userModel.T());
+        this(userModel, userModel.getDisplayName());
     }
 
-    public boolean y() {
-        return this.k;
+    public boolean isSyncWithFriends() {
+        return this.syncWithFriends;
     }
 
-    public void f(FriendModel friendModel) {
-        this.n = OnlineStatus.f(friendModel.L$src$Lgg_vape_protocol_PresenceState_$o2vkpe());
-        this.y = friendModel.k();
-        this.p = friendModel.R();
-        this.P = friendModel.u();
+    public void updateFrom(FriendModel friendModel) {
+        this.status = OnlineStatus.fromPresenceState(friendModel.getPresenceState());
+        this.minecraftUsername = friendModel.getMinecraftUsername();
+        this.minecraftUuid = friendModel.getMinecraftUuid();
+        this.minecraftServer = friendModel.getMinecraftServer();
     }
 }
 

@@ -9,11 +9,10 @@ import java.util.function.BiConsumer;
 public class PartyChatSender
 implements OnlineChatSender {
     @Override
-    public void W(String string, BiConsumer<OnlineFriend, String> biConsumer) {
-        ZeusConnectionManager.T().u().L(string, PartyChatSender::lambda$sendChatMessage$0);
+    public void sendChatMessage(String message, BiConsumer<OnlineFriend, String> responseConsumer) {
+        ZeusConnectionManager.T().u().L(message, PartyChatSender::handleChatResponse);
     }
 
-    private static void lambda$sendChatMessage$0(GroupChatResponsePacket groupChatResponsePacket) {
+    private static void handleChatResponse(GroupChatResponsePacket response) {
     }
 }
-

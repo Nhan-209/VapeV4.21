@@ -31,7 +31,7 @@ extends Mapping {
         boolean bl = true;
         String string = b;
         MEnumHandBridge mEnumHandBridge = this;
-        this.s = this.u(string, bl, clazz);
+        this.s = this.registerStaticField(string, bl, clazz);
         if (GuiComponent.getLegacyComponentState() == null) {
             MEnumHandBridge.q(++n2);
         }

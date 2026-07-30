@@ -8,35 +8,34 @@ import java.lang.reflect.Method;
 
 public class ReflectiveEventHandlerInvoker
 implements EventHandlerInvoker {
-    private final MappingMethod H;
-    private final EventListener m;
-    private final Class<? extends IEvent> p;
-    private static String[] V;
+    private final MappingMethod handlerMethod;
+    private final EventListener listener;
+    private final Class<? extends IEvent> eventType;
+    private static String[] obfuscationState;
 
-    public static String[] c() {
-        return V;
+    public static String[] getObfuscationState() {
+        return obfuscationState;
     }
 
-    public static void u(String[] stringArray) {
-        V = stringArray;
+    public static void setObfuscationState(String[] state) {
+        obfuscationState = state;
     }
 
     static {
-        if (ReflectiveEventHandlerInvoker.c() != null) {
-            ReflectiveEventHandlerInvoker.u(new String[5]);
+        if (ReflectiveEventHandlerInvoker.getObfuscationState() != null) {
+            ReflectiveEventHandlerInvoker.setObfuscationState(new String[5]);
         }
     }
 
     @Override
-    public <T extends IEvent> void B(T t) {
-        this.H.c(this.m, t);
+    public <T extends IEvent> void invoke(T event) {
+        this.handlerMethod.invokeVoid(this.listener, event);
     }
 
-    public ReflectiveEventHandlerInvoker(EventListener eventListener, Class<? extends IEvent> clazz, Method method) {
-        this.m = eventListener;
-        this.p = clazz;
-        MappingMethod mappingMethod = new MappingMethod(null, eventListener.getClass(), method.getName(), false, false, false, Void.TYPE, clazz);
-        this.H = mappingMethod.g();
+    public ReflectiveEventHandlerInvoker(EventListener listener, Class<? extends IEvent> eventType, Method method) {
+        this.listener = listener;
+        this.eventType = eventType;
+        MappingMethod mappingMethod = new MappingMethod(null, listener.getClass(), method.getName(), false, false, false, Void.TYPE, eventType);
+        this.handlerMethod = mappingMethod.register();
     }
 }
-

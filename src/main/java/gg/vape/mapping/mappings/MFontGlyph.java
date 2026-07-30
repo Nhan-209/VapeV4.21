@@ -20,7 +20,7 @@ extends Mapping {
     }
 
     public Object M(Object object) {
-        return this.E.L(object, new Object[0]);
+        return this.E.invokeObject(object, new Object[0]);
     }
 }
 

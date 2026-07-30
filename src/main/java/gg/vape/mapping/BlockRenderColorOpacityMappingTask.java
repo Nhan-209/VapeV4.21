@@ -16,12 +16,11 @@ extends JavassistMappingTask {
     }
 
     @Override
-    public void c() {
+    public void transform() {
         MappingMethod mappingMethod = Vape.INSTANCE.getMappings().qZ.b;
         EventInjectionSpec eventInjectionSpec = new EventInjectionSpec(mappingMethod, EventBlockRenderColorOpacity.class);
-        eventInjectionSpec.Z(false);
-        eventInjectionSpec.d(c);
-        this.O(eventInjectionSpec);
+        eventInjectionSpec.setInsertBefore(false);
+        eventInjectionSpec.setConstructorArguments(c);
+        this.registerEventInjection(eventInjectionSpec);
     }
 }
-

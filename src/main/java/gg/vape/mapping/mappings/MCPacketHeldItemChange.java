@@ -4,7 +4,6 @@ import gg.vape.mapping.MappedClasses;
 import gg.vape.mapping.Mapping;
 import gg.vape.mapping.MappingField;
 import gg.vape.mapping.MappingMethod;
-import gg.vape.mapping.mappings.MPacketIdFactory;
 import gg.vape.ui.click.component.GuiComponent;
 import gg.vape.wrapper.Wrapper;
 import gg.vape.wrapper.impl.ForgeVersion;
@@ -27,7 +26,7 @@ extends Mapping {
             String string = "slotId";
             MCPacketHeldItemChange mCPacketHeldItemChange = this;
             this.Q = mCPacketHeldItemChange.J(string, bl, clazz);
-        } else if (ForgeVersion.MC_1_7_10.L() && Wrapper.c.isVanillaMinecraftPresent()) {
+        } else if (ForgeVersion.MC_1_7_10.L() && Wrapper.vapeInstance.isVanillaMinecraftPresent()) {
             Class<Integer> clazz = Integer.TYPE;
             boolean bl = true;
             String string = "slotId";
@@ -35,7 +34,7 @@ extends Mapping {
             this.Q = mCPacketHeldItemChange.J(string, bl, clazz);
         } else {
             Class<Integer> clazz = Integer.TYPE;
-            boolean bl = Wrapper.G;
+            boolean bl = Wrapper.isNativeAvailable;
             String string = "field_149615_a";
             MCPacketHeldItemChange mCPacketHeldItemChange = this;
             this.Q = mCPacketHeldItemChange.J(string, bl, clazz);
@@ -58,6 +57,6 @@ extends Mapping {
 
 
     public Object l(int n) {
-        return this.q.O(n);
+        return this.q.newInstance(n);
     }
 }

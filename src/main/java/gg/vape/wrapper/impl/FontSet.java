@@ -1,9 +1,6 @@
 package gg.vape.wrapper.impl;
 
 import gg.vape.wrapper.Wrapper;
-import gg.vape.wrapper.impl.FontGlyph;
-import gg.vape.wrapper.impl.GlyphInfo;
-import gg.vape.wrapper.impl.GlyphProvider;
 
 public class FontSet
 extends Wrapper {
@@ -18,7 +15,7 @@ extends Wrapper {
     }
 
     public FontGlyph P() {
-        Object object = FontSet.c.getMappingsMapperCompat().Z.v(this.I);
+        Object object = FontSet.vapeInstance.getMappingsMapperCompat().Z.v(this.I);
         FontGlyph fontGlyph = object != null ? new FontGlyph(object) : null;
         return fontGlyph;
     }
@@ -28,7 +25,7 @@ extends Wrapper {
     }
 
     public GlyphProvider v(boolean bl) {
-        return new GlyphProvider(FontSet.c.getMappingsMapperCompat().Z.t(this.I, bl));
+        return new GlyphProvider(FontSet.vapeInstance.getMappingsMapperCompat().Z.t(this.I, bl));
     }
 
     public GlyphInfo T(char c2) {

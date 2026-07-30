@@ -46,10 +46,10 @@ extends Mapping {
 
 
     public Object u(Object object, int n) {
-        return this.N.O(object, n);
+        return this.N.newInstance(object, n);
     }
 
     public Object k(Object object, Object object2) {
-        return this.Q.O(object, object2);
+        return this.Q.newInstance(object, object2);
     }
 }

@@ -7,11 +7,10 @@ import gg.vape.mapping.MappedClasses;
 public class DeprecatedNoopMappingTask
 extends JavassistMappingTask {
     @Override
-    public void c() {
+    public void transform() {
     }
 
     public DeprecatedNoopMappingTask() {
         super(MappedClasses.DC);
     }
 }
-

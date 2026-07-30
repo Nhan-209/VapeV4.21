@@ -108,7 +108,7 @@ public class ThemeColors {
     }
 
     public Color B() {
-        if (Vape.INSTANCE.getClientSettings().w.isRainbowEnabled()) {
+        if (Vape.INSTANCE.getClientSettings().guiColor.isRainbowEnabled()) {
             return new Color(45, 45, 45);
         }
         if (this.z().equals(this.x)) {

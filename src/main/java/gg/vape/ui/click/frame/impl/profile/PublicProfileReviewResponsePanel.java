@@ -33,10 +33,10 @@ extends PanelComponent {
 
     private CompletableFuture submitReport(PublicProfileReview publicProfileReview, SmallTextInputComponent reasonInput, PublicProfileReviewResponse publicProfileReviewResponse) {
         if (publicProfileReview != null) {
-            return ApiServices.d().R().Y(publicProfileReview.M(), reasonInput.getText()).whenCompleteAsync(this::handleReportComplete, (Executor)ClientSettings.UI_EXECUTOR).exceptionally(this::handleReportFailure);
+            return ApiServices.getInstance().getPublicProfileApi().reportReview(publicProfileReview.getCommentId(), reasonInput.getText()).whenCompleteAsync(this::handleReportComplete, (Executor)ClientSettings.UI_EXECUTOR).exceptionally(this::handleReportFailure);
         }
         if (publicProfileReviewResponse != null) {
-            return ApiServices.d().R().h(publicProfileReviewResponse.c(), reasonInput.getText()).whenCompleteAsync(this::handleReportComplete, (Executor)ClientSettings.UI_EXECUTOR).exceptionally(this::handleReportFailure);
+            return ApiServices.getInstance().getPublicProfileApi().reportReviewResponse(publicProfileReviewResponse.getId(), reasonInput.getText()).whenCompleteAsync(this::handleReportComplete, (Executor)ClientSettings.UI_EXECUTOR).exceptionally(this::handleReportFailure);
         }
         return null;
     }
@@ -54,15 +54,15 @@ extends PanelComponent {
         this.closePopup();
         if (throwable != null) {
             Vape.logThrowable(throwable);
-            PublicProfileManager.b("Failed to create report.");
+            PublicProfileManager.showWarning("Failed to create report.");
             return;
         }
-        if (!apiResponse.t()) {
-            Vape.debugLog("Failed to create report: " + apiResponse.N());
-            PublicProfileManager.b("Failed to create report: " + apiResponse.N());
+        if (!apiResponse.isSuccessful()) {
+            Vape.debugLog("Failed to create report: " + apiResponse.getError());
+            PublicProfileManager.showWarning("Failed to create report: " + apiResponse.getError());
             return;
         }
-        PublicProfileManager.M("Successfully created report.");
+        PublicProfileManager.showInfo("Successfully created report.");
     }
 
     public PublicProfileReviewResponsePanel(PublicProfile publicProfile, PublicProfileReviewResponse publicProfileReviewResponse) {
@@ -87,7 +87,7 @@ extends PanelComponent {
         }
         this.setShowDisabledOverlay(false);
         this.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M("wrap");
-        String userName = publicProfileReview != null ? publicProfileReview.F().o() : this.publicProfile.S() != null ? this.publicProfile.S().o() : "Anonymous";
+        String userName = publicProfileReview != null ? publicProfileReview.getCommenter().getUsername() : this.publicProfile.getOwner() != null ? this.publicProfile.getOwner().getUsername() : "Anonymous";
         String reportType = publicProfileReview != null ? "review" : "response";
         WrappingTextLabelComponent wrappingTextLabelComponent10 = new WrappingTextLabelComponent("Report " + userName + "'s " + reportType, 1.0);
         wrappingTextLabelComponent10.o(this.A());

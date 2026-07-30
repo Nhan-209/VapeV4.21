@@ -6,7 +6,7 @@ import gg.vape.wrapper.Wrapper;
 public class RenderItemContext
 extends Wrapper {
     public static RenderItemContext d() {
-        return new RenderItemContext(MRenderItemContext.r(RenderItemContext.c.getMappingsMapperCompat().A));
+        return new RenderItemContext(MRenderItemContext.r(RenderItemContext.vapeInstance.getMappingsMapperCompat().A));
     }
 
     public RenderItemContext(Object object) {

@@ -6,17 +6,17 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Wrapper {
-    private static final Map<String, Integer> O;
-    public static boolean D;
-    private static final String l;
-    private static GuiComponent[] V;
-    public static boolean G;
+    private static final Map<String, Integer> wrapperIdCache;
+    public static boolean nativeDisabled;
+    private static final String nullInstanceText;
+    private static GuiComponent[] obfuscationState;
+    public static boolean isNativeAvailable;
     protected Object I;
-    public static Vape c;
+    public static Vape vapeInstance;
 
     public String toString() {
         if (this.I == null) {
-            return l;
+            return nullInstanceText;
         }
         try {
             return this.I.toString();
@@ -24,10 +24,6 @@ public class Wrapper {
         catch (Exception exception) {
             return "";
         }
-    }
-
-    private static Exception a(Exception exception) {
-        return exception;
     }
 
     public boolean isInstance(Class clazz) {
@@ -52,24 +48,24 @@ public class Wrapper {
     }
 
     static {
-        Wrapper.p(null);
-        l = "Null instance";
-        c = Vape.INSTANCE;
-        G = c.isNativeAvailable();
-        D = false;
-        O = new HashMap<String, Integer>();
+        Wrapper.setObfuscationState(null);
+        nullInstanceText = "Null instance";
+        vapeInstance = Vape.INSTANCE;
+        isNativeAvailable = vapeInstance.isNativeAvailable();
+        nativeDisabled = false;
+        wrapperIdCache = new HashMap<String, Integer>();
     }
 
-    public static GuiComponent[] m() {
-        return V;
+    public static GuiComponent[] getObfuscationState() {
+        return obfuscationState;
     }
 
     public boolean isNotNull() {
         return !this.isNull();
     }
 
-    public static void p(GuiComponent[] guiComponentArray) {
-        V = guiComponentArray;
+    public static void setObfuscationState(GuiComponent[] state) {
+        obfuscationState = state;
     }
 
     public boolean equals(Object object) {
@@ -83,4 +79,3 @@ public class Wrapper {
         return super.equals(object);
     }
 }
-

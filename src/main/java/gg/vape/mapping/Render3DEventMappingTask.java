@@ -15,9 +15,8 @@ extends JavassistMappingTask {
     }
 
     @Override
-    public void c() {
+    public void transform() {
         MappingMethod mappingMethod = Vape.INSTANCE.getMappings().Df.T;
         this.k(mappingMethod, EventRender3DCallback.class, c);
     }
 }
-

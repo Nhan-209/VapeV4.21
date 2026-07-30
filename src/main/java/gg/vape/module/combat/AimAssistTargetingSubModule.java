@@ -93,10 +93,10 @@ extends SubModule<AimAssist> {
         targetY = Math.max(targetMinY + 0.01, Math.min(targetMaxY - 0.01, targetY));
         if (aimAssist.targetArea.getValue() == aimAssist.closestAreaMode) {
             Vec3d closestPoint = RotationUtil.T(player, target.R$src$Lgg_vape_wrapper_impl_AxisAlignedBB_$r19dfl(), 0.0, 0.0, 0.0);
-            double closestY = Math.max(targetMinY + 0.01, Math.min(targetMaxY - 0.01, closestPoint.t() - eyeOffset));
+            double closestY = Math.max(targetMinY + 0.01, Math.min(targetMaxY - 0.01, closestPoint.getY() - eyeOffset));
             closestY += (targetCenterY - closestY) * centerBlend;
             closestY = Math.max(targetMinY + 0.01, Math.min(targetMaxY - 0.01, closestY));
-            return new double[]{closestPoint.Y(), closestY, closestPoint.o()};
+            return new double[]{closestPoint.getX(), closestY, closestPoint.getZ()};
         }
         return new double[]{target.c(), targetY, target.Z()};
     }
@@ -518,7 +518,7 @@ extends SubModule<AimAssist> {
         if (this.target != null && this.target.isNull()) {
             this.target = null;
         }
-        if (aimAssist.getRequireMouseDown().getEffectiveValue().booleanValue() && !gg.vape.config.ClientSettings.M()) {
+        if (aimAssist.getRequireMouseDown().getEffectiveValue().booleanValue() && !gg.vape.config.ClientSettings.isAttackButtonDown()) {
             this.target = null;
             this.reset();
             return;
@@ -527,7 +527,7 @@ extends SubModule<AimAssist> {
             this.reset();
             this.target = null;
         }
-        if (aimAssist.getRequireMouseDown().getEffectiveValue().booleanValue() && gg.vape.config.ClientSettings.M() && this.target == null || !aimAssist.getRequireMouseDown().getEffectiveValue().booleanValue()) {
+        if (aimAssist.getRequireMouseDown().getEffectiveValue().booleanValue() && gg.vape.config.ClientSettings.isAttackButtonDown() && this.target == null || !aimAssist.getRequireMouseDown().getEffectiveValue().booleanValue()) {
             EntityLivingBase candidateTarget = aimAssist.findBestTarget();
             if (!aimAssist.getRequireMouseDown().getEffectiveValue().booleanValue()) {
                 ++this.targetSwitchTicks;
@@ -665,12 +665,12 @@ extends SubModule<AimAssist> {
         targetY = Math.max(targetMinY + 0.01, Math.min(targetMaxY - 0.01, targetY));
         if (aimAssist.targetArea.getValue() == aimAssist.closestAreaMode) {
             Vec3d closestPoint = RotationUtil.T(player, target.R$src$Lgg_vape_wrapper_impl_AxisAlignedBB_$r19dfl(), 0.0, 0.0, 0.0);
-            double closestY = Math.max(targetMinY + 0.01, Math.min(targetMaxY - 0.01, closestPoint.t() - eyeOffset));
+            double closestY = Math.max(targetMinY + 0.01, Math.min(targetMaxY - 0.01, closestPoint.getY() - eyeOffset));
             closestY += (targetCenterY - closestY) * centerBlend;
             closestY = Math.max(targetMinY + 0.01, Math.min(targetMaxY - 0.01, closestY));
-            double resolvedX = closestPoint.Y();
+            double resolvedX = closestPoint.getX();
             double resolvedY = closestY;
-            double resolvedZ = closestPoint.o();
+            double resolvedZ = closestPoint.getZ();
             if (this.predictionInitialized) {
                 double smoothingFactor = 0.35;
                 resolvedX = this.predictedX + (resolvedX - this.predictedX) * smoothingFactor;

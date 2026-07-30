@@ -7,23 +7,23 @@ import gg.vape.wrapper.impl.DeltaTracker;
 
 public class EventRenderWorldPassExecutorDrain
 extends Event {
-    private static final EventListeners s;
-    private final float e;
-    public static final ThreadBoundExecutor E;
-    private static String[] W;
+    private static final EventListeners EVENT_LISTENERS;
+    private final float partialTicks;
+    public static final ThreadBoundExecutor EXECUTOR;
+    private static String[] obfuscationState;
 
-    public EventRenderWorldPassExecutorDrain(float f) {
-        this.e = f;
+    public EventRenderWorldPassExecutorDrain(float partialTicks) {
+        this.partialTicks = partialTicks;
     }
 
-    public static String[] I() {
-        return W;
+    public static String[] getWorldPassObfuscationState() {
+        return obfuscationState;
     }
 
     @Override
     public boolean fire() {
         try {
-            E.runPending();
+            EXECUTOR.runPending();
         }
         catch (Throwable throwable) {
             // empty catch block
@@ -31,28 +31,28 @@ extends Event {
         return false;
     }
 
-    public static void n(String[] stringArray) {
-        W = stringArray;
+    public static void setWorldPassObfuscationState(String[] state) {
+        obfuscationState = state;
     }
 
     @Override
     public EventListeners getListeners() {
-        return s;
+        return EVENT_LISTENERS;
     }
 
-    public EventRenderWorldPassExecutorDrain(Object object) {
-        DeltaTracker p__02 = new DeltaTracker(object);
-        this.e = p__02.r();
+    public EventRenderWorldPassExecutorDrain(Object deltaTrackerHandle) {
+        DeltaTracker deltaTracker = new DeltaTracker(deltaTrackerHandle);
+        this.partialTicks = deltaTracker.r();
     }
 
     public static EventListeners getEventListeners() {
-        return s;
+        return EVENT_LISTENERS;
     }
 
     static {
-        E = new ThreadBoundExecutor();
-        s = new EventListeners();
-        EventRenderWorldPassExecutorDrain.n(null);
+        EXECUTOR = new ThreadBoundExecutor();
+        EVENT_LISTENERS = new EventListeners();
+        EventRenderWorldPassExecutorDrain.setWorldPassObfuscationState(null);
     }
 }
 

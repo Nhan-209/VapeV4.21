@@ -3,7 +3,6 @@ package gg.vape.mapping.mappings;
 import gg.vape.mapping.MappedClasses;
 import gg.vape.mapping.Mapping;
 import gg.vape.mapping.MappingField;
-import gg.vape.mapping.mappings.MPacketIdFactory;
 import gg.vape.ui.click.component.GuiComponent;
 import gg.vape.wrapper.Wrapper;
 import gg.vape.wrapper.impl.ForgeVersion;
@@ -55,7 +54,7 @@ extends Mapping {
             String string = "entityId";
             MCPacketUseEntityPacket mCPacketUseEntityPacket = this;
             this.g = mCPacketUseEntityPacket.J(string, bl, clazz);
-        } else if (Wrapper.c.isVanillaMinecraftPresent()) {
+        } else if (Wrapper.vapeInstance.isVanillaMinecraftPresent()) {
             Class clazz = MappedClasses.D5;
             boolean bl = true;
             String string = "action";
@@ -68,12 +67,12 @@ extends Mapping {
             this.g = this.J(string2, bl2, clazz2);
         } else {
             Class clazz = MappedClasses.D5;
-            boolean bl = Wrapper.G;
+            boolean bl = Wrapper.isNativeAvailable;
             String string = "field_149566_b";
             MCPacketUseEntityPacket mCPacketUseEntityPacket = this;
             this.w = mCPacketUseEntityPacket.J(string, bl, clazz);
             Class<Integer> clazz3 = Integer.TYPE;
-            boolean bl3 = Wrapper.G;
+            boolean bl3 = Wrapper.isNativeAvailable;
             String string3 = "field_149567_a";
             MCPacketUseEntityPacket mCPacketUseEntityPacket3 = this;
             this.g = this.J(string3, bl3, clazz3);
@@ -84,7 +83,7 @@ extends Mapping {
             String string = "entityId";
             Class clazz4 = MappedClasses.ZW;
             MCPacketUseEntityPacket mCPacketUseEntityPacket = this;
-            this.u = mCPacketUseEntityPacket.X(clazz4, string, bl, clazz);
+            this.u = mCPacketUseEntityPacket.registerInstanceFieldForOwner(clazz4, string, bl, clazz);
         } else {
             this.u = null;
         }
@@ -95,7 +94,7 @@ extends Mapping {
                 boolean bl4 = true;
                 String string = "location";
                 MCPacketUseEntityPacket mCPacketUseEntityPacket = this;
-                this.I = mCPacketUseEntityPacket.z(string, bl4, bl, clazz);
+                this.I = mCPacketUseEntityPacket.registerInstanceFieldWithSecondaryFlag(string, bl4, bl, clazz);
             } else if (ForgeVersion.MC_1_20_6.v()) {
                 Class clazz = MappedClasses.qP;
                 boolean bl = true;

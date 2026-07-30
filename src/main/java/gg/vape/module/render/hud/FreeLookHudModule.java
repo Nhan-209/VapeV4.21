@@ -71,7 +71,7 @@ extends HudModule {
         this.restorePlayerView();
     }
 
-    @EventHandler(A=EventPriority.LOWEST)
+    @EventHandler(priority=EventPriority.LOWEST)
     public void onPreRenderWorldPass(EventPreRenderWorldPass event) {
         this.applyWorldRotation();
     }
@@ -87,7 +87,7 @@ extends HudModule {
         if (!this.enabled) {
             return;
         }
-        if (RotationManager.INSTANCE.hasAdaptiveController() && Vape.INSTANCE.getClientSettings().c.getEffectiveValue().booleanValue()) {
+        if (RotationManager.INSTANCE.hasAdaptiveController() && Vape.INSTANCE.getClientSettings().thirdPersonAimView.getEffectiveValue().booleanValue()) {
             return;
         }
         this.applyCameraRotation();
@@ -103,11 +103,11 @@ extends HudModule {
             this.mouseLastY = Minecraft.s().b();
         }
         if (this.activationMode.getValue() == this.toggleMode) {
-            EventTickBase.p.execute(this::toggleFreelook);
+            EventTickBase.POST_TICK_EXECUTOR.execute(this::toggleFreelook);
         }
     }
 
-    @EventHandler(A=EventPriority.LOWEST)
+    @EventHandler(priority=EventPriority.LOWEST)
     public void onRenderPlayerPost(EventRenderPlayerPost event) {
         this.applyRenderRotation();
     }
@@ -200,13 +200,13 @@ extends HudModule {
         if (!this.enabled) {
             return;
         }
-        if (RotationManager.INSTANCE.hasAdaptiveController() && Vape.INSTANCE.getClientSettings().c.getEffectiveValue().booleanValue()) {
+        if (RotationManager.INSTANCE.hasAdaptiveController() && Vape.INSTANCE.getClientSettings().thirdPersonAimView.getEffectiveValue().booleanValue()) {
             return;
         }
         this.restorePlayerView();
     }
 
-    @EventHandler(A=EventPriority.LOWEST)
+    @EventHandler(priority=EventPriority.LOWEST)
     public void onRenderPlayerPre(EventRenderPlayerPre event) {
         this.applyWorldRotation();
     }
@@ -225,7 +225,7 @@ extends HudModule {
         return savedPitch;
     }
 
-    @EventHandler(A=EventPriority.LOWEST)
+    @EventHandler(priority=EventPriority.LOWEST)
     public void onPostRenderWorldPass(EventPostRenderWorldPass event) {
         this.applyRenderRotation();
     }

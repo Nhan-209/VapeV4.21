@@ -36,7 +36,7 @@ implements GuiMouseListener {
         }
         this.clickPending.set(false);
         PublicProfileListingDetailsPanel detailsPanel = this.profilesFrame.l((PublicProfile)null);
-        detailsPanel.T(ApiServices.d().R().x(this.profileSummary.h()).whenCompleteAsync((response, error) -> this.handleProfileLoad(this.clickPending, detailsPanel, this.profileSummary, response, error), (Executor)ClientSettings.UI_EXECUTOR).exceptionally(PublicProfileListingResultOpenClickHandler::lambda$onClick$1));
+        detailsPanel.T(ApiServices.getInstance().getPublicProfileApi().viewProfile(this.profileSummary.getProfileId()).whenCompleteAsync((response, error) -> this.handleProfileLoad(this.clickPending, detailsPanel, this.profileSummary, response, error), (Executor)ClientSettings.UI_EXECUTOR).exceptionally(PublicProfileListingResultOpenClickHandler::lambda$onClick$1));
     }
 
     private void handleProfileLoad(AtomicBoolean clickState, PublicProfileListingDetailsPanel detailsPanel, PublicProfileSummary summary, ApiResponse apiResponse, Throwable throwable) {
@@ -50,17 +50,17 @@ implements GuiMouseListener {
             PublicProfilesFrame.k(this.profilesFrame, detailsPanel.E());
             return;
         }
-        if (!apiResponse.t()) {
-            Vape.debugLog("Failed to get public response details of " + summary.h() + ": " + apiResponse.N());
-            PublicProfileManager.b("Failed to view profile: " + apiResponse.N());
+        if (!apiResponse.isSuccessful()) {
+            Vape.debugLog("Failed to get public response details of " + summary.getProfileId() + ": " + apiResponse.getError());
+            PublicProfileManager.showWarning("Failed to view profile: " + apiResponse.getError());
             PublicProfilesFrame.k(this.profilesFrame, detailsPanel.E());
             return;
         }
-        if (!ASSERTIONS_DISABLED && apiResponse.T() == null) {
+        if (!ASSERTIONS_DISABLED && apiResponse.getData() == null) {
             throw new AssertionError();
         }
-        Vape.INSTANCE.getPublicProfileManager().Z((PublicProfile)apiResponse.T());
-        this.profilesFrame.l((PublicProfile)apiResponse.T());
+        Vape.INSTANCE.getPublicProfileManager().addProfileTags((PublicProfile)apiResponse.getData());
+        this.profilesFrame.l((PublicProfile)apiResponse.getData());
     }
 
     PublicProfileListingResultOpenClickHandler(PublicProfilesFrame publicProfilesFrame, AtomicBoolean atomicBoolean, PublicProfileSummary publicProfileSummary) {

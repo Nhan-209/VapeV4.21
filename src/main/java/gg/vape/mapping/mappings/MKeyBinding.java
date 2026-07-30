@@ -24,7 +24,7 @@ extends Mapping {
     private final MappingField x;
 
     public void d(Object object, boolean bl) {
-        this.q.c(null, object, bl);
+        this.q.invokeVoid(null, object, bl);
     }
 
     public static boolean U() {
@@ -32,11 +32,11 @@ extends Mapping {
     }
 
     public void x(Object object) {
-        this.z.c(null, object);
+        this.z.invokeVoid(null, object);
     }
 
     public void s(int n) {
-        this.z.c(null, n);
+        this.z.invokeVoid(null, n);
     }
 
     public Object l(Object object) {
@@ -44,7 +44,7 @@ extends Mapping {
     }
 
     public void o(Object object, boolean bl) {
-        this.s.c(object, bl);
+        this.s.invokeVoid(object, bl);
     }
 
     public MKeyBinding() {
@@ -71,13 +71,13 @@ extends Mapping {
             boolean bl4 = true;
             String string4 = "unPressAllKeys";
             MKeyBinding mKeyBinding4 = this;
-            this.T = this.x(string4, bl4, clazz4, classArray2);
+            this.T = this.registerStaticMethod(string4, bl4, clazz4, classArray2);
             Class[] classArray3 = new Class[]{Integer.TYPE};
             Class<Void> clazz5 = Void.TYPE;
             boolean bl5 = true;
             String string5 = "onTick";
             MKeyBinding mKeyBinding5 = this;
-            this.z = this.x(string5, bl5, clazz5, classArray3);
+            this.z = this.registerStaticMethod(string5, bl5, clazz5, classArray3);
             if (GuiComponent.getLegacyComponentState() == null) {
                 MKeyBinding.O(false);
             }
@@ -90,7 +90,7 @@ extends Mapping {
         String string6 = "isPressed";
         MKeyBinding mKeyBinding6 = this;
         this.p = this.Y(string6, bl6, clazz6, classArray);
-        if (Wrapper.c.isVanillaMinecraftPresent() && ForgeVersion.MC_1_16_5.v()) {
+        if (Wrapper.vapeInstance.isVanillaMinecraftPresent() && ForgeVersion.MC_1_16_5.v()) {
             Class[] classArray4 = new Class[]{};
             Class<Boolean> clazz7 = Boolean.TYPE;
             boolean bl7 = true;
@@ -100,7 +100,7 @@ extends Mapping {
         } else {
             Class[] classArray5 = new Class[]{};
             Class<Boolean> clazz8 = Boolean.TYPE;
-            boolean bl8 = Wrapper.G;
+            boolean bl8 = Wrapper.isNativeAvailable;
             String string8 = "func_151470_d";
             MKeyBinding mKeyBinding8 = this;
             this.c = this.Y(string8, bl8, clazz8, classArray5);
@@ -110,7 +110,7 @@ extends Mapping {
         boolean bl9 = true;
         String string9 = "unPressAllKeys";
         MKeyBinding mKeyBinding9 = this;
-        this.T = this.x(string9, bl9, clazz9, classArray6);
+        this.T = this.registerStaticMethod(string9, bl9, clazz9, classArray6);
         if (ForgeVersion.MC_1_16_5.d()) {
             Class[] classArray7 = new Class[]{Boolean.TYPE};
             Class<Void> clazz10 = Void.TYPE;
@@ -134,13 +134,13 @@ extends Mapping {
             boolean bl13 = true;
             String string13 = "setKeyBindState";
             MKeyBinding mKeyBinding13 = this;
-            this.q = this.x(string13, bl13, clazz13, classArray9);
+            this.q = this.registerStaticMethod(string13, bl13, clazz13, classArray9);
             Class[] classArray10 = new Class[]{MappedClasses.zp};
             Class<Void> clazz14 = Void.TYPE;
             boolean bl14 = true;
             String string14 = "onTick";
             MKeyBinding mKeyBinding14 = this;
-            this.z = this.x(string14, bl14, clazz14, classArray10);
+            this.z = this.registerStaticMethod(string14, bl14, clazz14, classArray10);
         } else {
             Class[] classArray11 = new Class[]{};
             Class<Integer> clazz15 = Integer.TYPE;
@@ -153,13 +153,13 @@ extends Mapping {
             boolean bl16 = true;
             String string16 = "setKeyBindState";
             MKeyBinding mKeyBinding16 = this;
-            this.q = this.x(string16, bl16, clazz16, classArray12);
+            this.q = this.registerStaticMethod(string16, bl16, clazz16, classArray12);
             Class[] classArray13 = new Class[]{Integer.TYPE};
             Class<Void> clazz17 = Void.TYPE;
             boolean bl17 = true;
             String string17 = "onTick";
             MKeyBinding mKeyBinding17 = this;
-            this.z = this.x(string17, bl17, clazz17, classArray13);
+            this.z = this.registerStaticMethod(string17, bl17, clazz17, classArray13);
         }
         if (GuiComponent.getLegacyComponentState() == null) {
             MKeyBinding.O(true);
@@ -167,12 +167,12 @@ extends Mapping {
     }
 
     public void g(int n, boolean bl) {
-        this.q.c(null, n, bl);
+        this.q.invokeVoid(null, n, bl);
     }
 
 
     public boolean M(Object object) {
-        return this.p.e(object, new Object[0]);
+        return this.p.invokeBoolean(object, new Object[0]);
     }
 
     public static boolean j() {
@@ -181,7 +181,7 @@ extends Mapping {
     }
 
     public void S(Object object) {
-        this.X.F(object);
+        this.X.invokeVoidNoArgs(object);
     }
 
     public static void O(boolean bl) {
@@ -201,7 +201,7 @@ extends Mapping {
     }
 
     public void R() {
-        this.T.F(null);
+        this.T.invokeVoidNoArgs(null);
     }
 
     public boolean S$src$Z$wvm5qt(Object object) {
@@ -209,11 +209,11 @@ extends Mapping {
     }
 
     public boolean a(Object object) {
-        return this.c.e(object, new Object[0]);
+        return this.c.invokeBoolean(object, new Object[0]);
     }
 
     public int B(Object object) {
-        return this.Z.Z(object, new Object[0]);
+        return this.Z.invokeInt(object, new Object[0]);
     }
 }
 

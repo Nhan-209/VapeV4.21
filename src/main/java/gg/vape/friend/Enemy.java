@@ -7,72 +7,72 @@ import gg.vape.friend.TargetType;
 
 public class Enemy
 extends TargetEntry {
-    private String V;
-    private String n;
-    private boolean W;
+    private String alias;
+    private String name;
+    private boolean exclusive;
 
-    public String x() {
-        return this.V;
+    public String getAlias() {
+        return this.alias;
     }
 
-    public Enemy(String string, String string2) {
-        this(string, string2, false);
+    public Enemy(String name, String alias) {
+        this(name, alias, false);
     }
 
-    public static Enemy c(JsonObject jsonObject) {
-        String string = "";
-        String string2 = "";
-        boolean bl = true;
+    public static Enemy fromJson(JsonObject jsonObject) {
+        String name = "";
+        String alias = "";
+        boolean exclusive = true;
         if (jsonObject.get("name") != null && !jsonObject.get("name").isJsonNull()) {
-            string = jsonObject.get("name").getAsString();
+            name = jsonObject.get("name").getAsString();
         }
         if (jsonObject.get("alias") != null && !jsonObject.get("alias").isJsonNull()) {
-            string2 = jsonObject.get("alias").getAsString();
+            alias = jsonObject.get("alias").getAsString();
         }
         if (jsonObject.get("exclusive") != null && !jsonObject.get("exclusive").isJsonNull()) {
-            bl = jsonObject.get("exclusive").getAsBoolean();
+            exclusive = jsonObject.get("exclusive").getAsBoolean();
         }
-        return new Enemy(string, string2, bl);
+        return new Enemy(name, alias, exclusive);
     }
 
 
-    public void x(String string) {
-        this.V = string;
+    public void setAlias(String alias) {
+        this.alias = alias;
     }
 
-    public void k(boolean bl) {
-        this.W = bl;
-        Vape.INSTANCE.getFriendManager().m();
+    public void setExclusive(boolean exclusive) {
+        this.exclusive = exclusive;
+        Vape.INSTANCE.getFriendManager().refreshPlayerNames();
     }
 
-    public String R() {
-        if (Vape.INSTANCE.getEnemyManager().z.getEffectiveValue().booleanValue()) {
-            return this.x();
+    public String getDisplayName() {
+        if (Vape.INSTANCE.getEnemyManager().useAlias.getEffectiveValue().booleanValue()) {
+            return this.getAlias();
         }
-        return this.n;
+        return this.name;
     }
 
-    public JsonObject s$src$Lcom_google_gson_JsonObject_$hkaqtu() {
+    public JsonObject toJson() {
         JsonObject jsonObject = new JsonObject();
-        jsonObject.addProperty("name", this.n);
-        jsonObject.addProperty("alias", this.V);
-        jsonObject.addProperty("exclusive", Boolean.valueOf(this.W));
+        jsonObject.addProperty("name", this.name);
+        jsonObject.addProperty("alias", this.alias);
+        jsonObject.addProperty("exclusive", Boolean.valueOf(this.exclusive));
         return jsonObject;
     }
 
-    public Enemy(String string, String string2, boolean bl) {
+    public Enemy(String name, String alias, boolean exclusive) {
         super(TargetType.ENEMY);
-        this.n = string;
-        this.V = string2;
-        this.W = bl;
+        this.name = name;
+        this.alias = alias;
+        this.exclusive = exclusive;
     }
 
-    public boolean t() {
-        return this.W;
+    public boolean isExclusive() {
+        return this.exclusive;
     }
 
-    public String y() {
-        return this.n;
+    public String getName() {
+        return this.name;
     }
 }
 

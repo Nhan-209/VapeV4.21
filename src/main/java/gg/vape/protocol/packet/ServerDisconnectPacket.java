@@ -15,7 +15,7 @@ implements ZeusSerializablePacket {
 
     @Override
     public void o(ZeusPacketBuffer zeusPacketBuffer) {
-        zeusPacketBuffer.U(this.t);
+        zeusPacketBuffer.writeEnum(this.t);
     }
 
     public ServerDisconnectPacket(OnlineDisconnectReason onlineDisconnectReason) {
@@ -35,7 +35,7 @@ implements ZeusSerializablePacket {
 
     @Override
     public void S(ZeusPacketBuffer zeusPacketBuffer) {
-        this.t = zeusPacketBuffer.Y(OnlineDisconnectReason.class);
+        this.t = zeusPacketBuffer.readEnum(OnlineDisconnectReason.class);
     }
 
     static {

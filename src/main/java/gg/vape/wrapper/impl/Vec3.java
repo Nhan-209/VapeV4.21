@@ -10,13 +10,13 @@ extends Wrapper {
 
     public static final Vec3 H() {
         if (v == null) {
-            v = new Vec3(Vec3.c.getMappings().g.O());
+            v = new Vec3(Vec3.vapeInstance.getMappings().g.O());
         }
         return v;
     }
 
     public Vec3 r(double d) {
-        return new Vec3(Vec3.c.getMappings().g.H(this.I, d));
+        return new Vec3(Vec3.vapeInstance.getMappings().g.H(this.I, d));
     }
 
     public double m$src$D$aa18vd() {
@@ -24,11 +24,11 @@ extends Wrapper {
     }
 
     public double getY() {
-        return Vec3.c.getMappings().g.z(this.I);
+        return Vec3.vapeInstance.getMappings().g.z(this.I);
     }
 
     public void N(double d) {
-        Vec3.c.getMappings().g.V(this.I, d);
+        Vec3.vapeInstance.getMappings().g.V(this.I, d);
     }
 
     public static int b() {
@@ -37,7 +37,7 @@ extends Wrapper {
     }
 
     public Vec3 addVector(double d, double d2, double d3) {
-        return new Vec3(Vec3.c.getMappings().g.Y(this.I, d, d2, d3));
+        return new Vec3(Vec3.vapeInstance.getMappings().g.Y(this.I, d, d2, d3));
     }
 
     public static void L(int n) {
@@ -58,11 +58,11 @@ extends Wrapper {
 
 
     public void Z(double d) {
-        Vec3.c.getMappings().g.Z(this.I, d);
+        Vec3.vapeInstance.getMappings().g.Z(this.I, d);
     }
 
     public double distanceTo(Vec3 vec3) {
-        return Vec3.c.getMappings().g.S(this.I, vec3.getObject());
+        return Vec3.vapeInstance.getMappings().g.S(this.I, vec3.getObject());
     }
 
     public double Q() {
@@ -95,7 +95,7 @@ extends Wrapper {
     }
 
     public void m(double d) {
-        Vec3.c.getMappings().g.K(this.I, d);
+        Vec3.vapeInstance.getMappings().g.K(this.I, d);
     }
 
     public Vec3 N(Vec3 vec3) {
@@ -130,7 +130,7 @@ extends Wrapper {
     }
 
     public double getZ() {
-        return Vec3.c.getMappings().g.P(this.I);
+        return Vec3.vapeInstance.getMappings().g.P(this.I);
     }
 
     public static int v() {
@@ -138,7 +138,7 @@ extends Wrapper {
     }
 
     public Vec3 i(Object object, double d) {
-        return new Vec3(Vec3.c.getMappings().g.M(this.I, object, d));
+        return new Vec3(Vec3.vapeInstance.getMappings().g.M(this.I, object, d));
     }
 
     public double j() {
@@ -149,7 +149,7 @@ extends Wrapper {
     }
 
     public double getX() {
-        return Vec3.c.getMappings().g.O(this.I);
+        return Vec3.vapeInstance.getMappings().g.O(this.I);
     }
 
     public double H(Vec3 vec3) {
@@ -160,7 +160,7 @@ extends Wrapper {
     }
 
     public static Vec3 create(double d, double d2, double d3) {
-        return new Vec3(Vec3.c.getMappings().g.q(d, d2, d3));
+        return new Vec3(Vec3.vapeInstance.getMappings().g.q(d, d2, d3));
     }
 }
 

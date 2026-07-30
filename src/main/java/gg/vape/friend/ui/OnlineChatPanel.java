@@ -7,33 +7,32 @@ import gg.vape.ui.click.component.PanelComponent;
 
 public class OnlineChatPanel
 extends PanelComponent {
-    private PartyMemberListPanel QF = new PartyMemberListPanel(99.0, 80.0);
-    private static final String db = "wrap";
-    private OnlineChatInputComponent Qg;
+    private static final String WRAP_LAYOUT = "wrap";
+    private final PartyMemberListPanel messageListPanel = new PartyMemberListPanel(99.0, 80.0);
+    private final OnlineChatInputComponent chatInput;
 
-    public OnlineChatInputComponent g$src$Lgg_vape_friend_ui_OnlineChatInputComponent_$1pydg2z() {
-        return this.Qg;
+    public OnlineChatInputComponent getChatInput() {
+        return this.chatInput;
     }
 
     @Override
     public void c() {
         super.c();
-        double d = this.QF.L() + this.Qg.L();
-        this.setExplicitHeight(d);
-        this.Y(d);
-        this.t(d + 1.0);
+        double contentHeight = this.messageListPanel.L() + this.chatInput.L();
+        this.setExplicitHeight(contentHeight);
+        this.Y(contentHeight);
+        this.t(contentHeight + 1.0);
         this.setShowDisabledOverlay(false);
     }
 
-    public PartyMemberListPanel z() {
-        return this.QF;
+    public PartyMemberListPanel getMessageListPanel() {
+        return this.messageListPanel;
     }
 
     public OnlineChatPanel(OnlineChatSender onlineChatSender) {
         super(99.0, 100.0);
-        this.Qg = new OnlineChatInputComponent(this, onlineChatSender);
-        this.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M(db);
-        this.addChildren(this.QF, this.Qg);
+        this.chatInput = new OnlineChatInputComponent(this, onlineChatSender);
+        this.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M(WRAP_LAYOUT);
+        this.addChildren(this.messageListPanel, this.chatInput);
     }
 }
-

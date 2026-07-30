@@ -13,11 +13,11 @@ import java.util.Map;
 
 public class PartyInvitesPanel
 extends PanelComponent {
-    private static final String db;
-    double eg = 0.0;
-    private final Map<PartyInvite, PartyInviteRow> eA = new LinkedHashMap<PartyInvite, PartyInviteRow>();
-    private static String eI;
-    private boolean eE;
+    private static final String WRAP_LAYOUT;
+    private double contentHeight;
+    private final Map<PartyInvite, PartyInviteRow> inviteRows = new LinkedHashMap<PartyInvite, PartyInviteRow>();
+    private static String obfuscationName;
+    private boolean expanded;
 
 
     @Override
@@ -27,26 +27,24 @@ extends PanelComponent {
     /*
      * WARNING - Removed try catching itself - possible behaviour change.
      */
-    public void u(PartyInviteRow partyInviteRow) {
-        Map<PartyInvite, PartyInviteRow> map = this.eA;
-        synchronized (map) {
-            this.eA.put(partyInviteRow.T(), partyInviteRow);
-            this.h(partyInviteRow, new Object[0]);
-            this.b$src$V$172vuhc();
+    public void addInviteRow(PartyInviteRow inviteRow) {
+        synchronized (this.inviteRows) {
+            this.inviteRows.put(inviteRow.getInvite(), inviteRow);
+            this.h(inviteRow, new Object[0]);
+            this.updateRowVisibility();
         }
     }
 
     /*
      * WARNING - Removed try catching itself - possible behaviour change.
      */
-    public void P(PartyInvite partyInvite) {
-        Map<PartyInvite, PartyInviteRow> map = this.eA;
-        synchronized (map) {
-            PartyInviteRow partyInviteRow = this.eA.get(partyInvite);
-            if (partyInviteRow == null) {
+    public void removeInvite(PartyInvite invite) {
+        synchronized (this.inviteRows) {
+            PartyInviteRow inviteRow = this.inviteRows.get(invite);
+            if (inviteRow == null) {
                 return;
             }
-            this.b(partyInviteRow);
+            this.removeInviteRow(inviteRow);
         }
     }
 
@@ -54,27 +52,26 @@ extends PanelComponent {
     public void g(GuiMouseEvent guiMouseEvent) {
     }
 
-    public void n$src$V$179hdlo() {
-        this.eE = !this.eE;
-        this.N(this.eE);
-        this.b$src$V$172vuhc();
+    public void toggleExpanded() {
+        this.expanded = !this.expanded;
+        this.N(this.expanded);
+        this.updateRowVisibility();
     }
 
     /*
      * WARNING - Removed try catching itself - possible behaviour change.
      */
-    public void b(PartyInviteRow partyInviteRow) {
-        Map<PartyInvite, PartyInviteRow> map = this.eA;
-        synchronized (map) {
-            this.eA.remove(partyInviteRow.T());
-            this.removeChild(partyInviteRow);
-            this.b$src$V$172vuhc();
+    public void removeInviteRow(PartyInviteRow inviteRow) {
+        synchronized (this.inviteRows) {
+            this.inviteRows.remove(inviteRow.getInvite());
+            this.removeChild(inviteRow);
+            this.updateRowVisibility();
         }
     }
 
     @Override
     public double C() {
-        return this.eg;
+        return this.contentHeight;
     }
 
     @Override
@@ -86,39 +83,39 @@ extends PanelComponent {
     public void V() {
     }
 
-    public static void f(String string) {
-        eI = string;
+    public static void setObfuscationName(String name) {
+        obfuscationName = name;
     }
 
     public PartyInvitesPanel() {
         super(100.0, 0.0);
         this.setShowDisabledOverlay(false);
         this.F(FrameScrollbarPlacement.OUTSIDE);
-        this.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M(db);
+        this.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M(WRAP_LAYOUT);
     }
 
     static {
-        PartyInvitesPanel.f("KA2HLb");
-        db = "wrap";
+        PartyInvitesPanel.setObfuscationName("KA2HLb");
+        WRAP_LAYOUT = "wrap";
     }
 
-    public void b$src$V$172vuhc() {
-        List<GuiComponent> list = this.f();
-        for (int i = 0; i < list.size(); ++i) {
+    public void updateRowVisibility() {
+        List<GuiComponent> rows = this.f();
+        for (int i = 0; i < rows.size(); ++i) {
             if (i == 0) {
-                list.get(i).setVisible(true);
+                rows.get(i).setVisible(true);
                 continue;
             }
-            list.get(i).setVisible(this.eE);
+            rows.get(i).setVisible(this.expanded);
         }
         this.W(0.0);
     }
 
     @Override
     public void H() {
-        int n = Vape.INSTANCE.getOnlineManager().y().n().size();
-        this.eg = n < 1 ? 1.0 : (n < 2 ? 17.0 : (this.eE ? 48.0 : 17.0));
-        this.t(this.eg);
+        int n = Vape.INSTANCE.getOnlineManager().getPartyManager().getInvites().size();
+        this.contentHeight = n < 1 ? 1.0 : (n < 2 ? 17.0 : (this.expanded ? 48.0 : 17.0));
+        this.t(this.contentHeight);
     }
 
     @Override
@@ -126,7 +123,7 @@ extends PanelComponent {
     }
 
     public static String getName() {
-        return eI;
+        return obfuscationName;
     }
 }
 

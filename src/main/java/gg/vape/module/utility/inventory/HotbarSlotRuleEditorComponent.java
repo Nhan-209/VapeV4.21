@@ -15,38 +15,38 @@ import java.util.List;
 
 public class HotbarSlotRuleEditorComponent
 extends GuiComponent {
-    private HotbarSlotRuleGroupComponent O;
-    private List<HotbarSlotRuleGroupComponent> Q;
-    private boolean G;
-    private HotbarSlotRuleAddButton v = new HotbarSlotRuleAddButton();
-    private static String[] R;
-    private HotbarSlotRuleValue I;
+    private HotbarSlotRuleGroupComponent selectedGroup;
+    private List<HotbarSlotRuleGroupComponent> groups;
+    private boolean editing;
+    private HotbarSlotRuleAddButton addGroupButton = new HotbarSlotRuleAddButton();
+    private static String[] opaqueState;
+    private HotbarSlotRuleValue ruleValue;
 
-    public HotbarSlotRuleValue F$src$Lgg_vape_module_utility_inventory_HotbarSlotRule$1fu2xro() {
-        return this.I;
+    public HotbarSlotRuleValue getRuleValue() {
+        return this.ruleValue;
     }
 
-    static List N(HotbarSlotRuleEditorComponent hotbarSlotRuleEditorComponent) {
-        return hotbarSlotRuleEditorComponent.Q;
+    static List<HotbarSlotRuleGroupComponent> getGroupsInternal(HotbarSlotRuleEditorComponent hotbarSlotRuleEditorComponent) {
+        return hotbarSlotRuleEditorComponent.groups;
     }
 
-    public JsonObject A$src$Lcom_google_gson_JsonObject_$167pnb8() {
+    public JsonObject serializeRules() {
         JsonObject jsonObject = new JsonObject();
         JsonArray jsonArray = new JsonArray();
-        for (HotbarSlotRuleGroupComponent hotbarSlotRuleGroupComponent : this.Q) {
-            jsonArray.add((JsonElement)hotbarSlotRuleGroupComponent.b$src$Lcom_google_gson_JsonObject_$1jm30j());
+        for (HotbarSlotRuleGroupComponent hotbarSlotRuleGroupComponent : this.groups) {
+            jsonArray.add((JsonElement)hotbarSlotRuleGroupComponent.toJson());
         }
-        if (this.O == null) {
+        if (this.selectedGroup == null) {
             jsonObject.addProperty("selected", (Number)0);
         } else {
-            jsonObject.addProperty("selected", (Number)this.Q.indexOf(this.O));
+            jsonObject.addProperty("selected", (Number)this.groups.indexOf(this.selectedGroup));
         }
         jsonObject.add("panels", (JsonElement)jsonArray);
         return jsonObject;
     }
 
-    public List<HotbarSlotRuleGroupComponent> U$src$Ljava_util_List_$1g9oi4r() {
-        return this.Q;
+    public List<HotbarSlotRuleGroupComponent> getGroups() {
+        return this.groups;
     }
 
 
@@ -54,8 +54,8 @@ extends GuiComponent {
     public void u() {
     }
 
-    public void f(JsonObject jsonObject) {
-        this.Q.clear();
+    public void loadJson(JsonObject jsonObject) {
+        this.groups.clear();
         if (!jsonObject.has("panels")) {
             return;
         }
@@ -63,25 +63,25 @@ extends GuiComponent {
         int n = jsonObject.get("selected").getAsInt();
         int n2 = jsonArray.size();
         for (int i = 0; i < n2; ++i) {
-            HotbarSlotRuleGroupComponent hotbarSlotRuleGroupComponent = new HotbarSlotRuleGroupComponent(this, this.B$src$Ljava_util_List_$12o4b7i());
-            hotbarSlotRuleGroupComponent.W(jsonArray.get(i).getAsJsonObject());
-            this.Q.add(hotbarSlotRuleGroupComponent);
+            HotbarSlotRuleGroupComponent hotbarSlotRuleGroupComponent = new HotbarSlotRuleGroupComponent(this, this.createEmptyRuleSlots());
+            hotbarSlotRuleGroupComponent.loadJson(jsonArray.get(i).getAsJsonObject());
+            this.groups.add(hotbarSlotRuleGroupComponent);
         }
-        if (this.Q.size() > 0) {
-            this.O = this.U$src$Ljava_util_List_$1g9oi4r().get(n);
+        if (this.groups.size() > 0) {
+            this.selectedGroup = this.getGroups().get(n);
         }
-        this.w$src$V$j701ty();
+        this.rebuildChildren();
     }
 
     @Override
     public void I() {
     }
 
-    public void w$src$V$j701ty() {
+    public void rebuildChildren() {
         this.f().clear();
-        this.addChildren(this.v);
-        for (HotbarSlotRuleGroupComponent hotbarSlotRuleGroupComponent : this.U$src$Ljava_util_List_$1g9oi4r()) {
-            HotbarSlotRuleGroupComponent hotbarSlotRuleGroupComponent2 = hotbarSlotRuleGroupComponent.Q(new HotbarSlotRuleGroupSelectClickHandler(this, hotbarSlotRuleGroupComponent));
+        this.addChildren(this.addGroupButton);
+        for (HotbarSlotRuleGroupComponent hotbarSlotRuleGroupComponent : this.getGroups()) {
+            HotbarSlotRuleGroupComponent hotbarSlotRuleGroupComponent2 = hotbarSlotRuleGroupComponent.addCloseListener(new HotbarSlotRuleGroupSelectClickHandler(this, hotbarSlotRuleGroupComponent));
             this.addChildren(hotbarSlotRuleGroupComponent2);
         }
         this.getParentFrameComponent().l$src$V$1mibm4x();
@@ -91,7 +91,7 @@ extends GuiComponent {
         HotbarSlotRuleEditorComponent.v(new String[1]);
     }
 
-    private List<HotbarSlotRule> B$src$Ljava_util_List_$12o4b7i() {
+    private List<HotbarSlotRule> createEmptyRuleSlots() {
         ArrayList<HotbarSlotRule> arrayList = new ArrayList<HotbarSlotRule>();
         for (int i = 0; i < 9; ++i) {
             HotbarSlotRule hotbarSlotRule = new HotbarSlotRule(0);
@@ -101,27 +101,27 @@ extends GuiComponent {
     }
 
     public HotbarSlotRuleEditorComponent(HotbarSlotRuleValue hotbarSlotRuleValue) {
-        this.Q = new ArrayList<HotbarSlotRuleGroupComponent>();
-        this.I = hotbarSlotRuleValue;
+        this.groups = new ArrayList<HotbarSlotRuleGroupComponent>();
+        this.ruleValue = hotbarSlotRuleValue;
         hotbarSlotRuleValue.setEditor(this);
         HotbarSlotRuleEditorComponent hotbarSlotRuleEditorComponent = this;
-        this.v.addClickListener(() -> {
-            HotbarSlotRuleGroupComponent groupComponent = new HotbarSlotRuleGroupComponent(hotbarSlotRuleEditorComponent, this.B$src$Ljava_util_List_$12o4b7i());
-            this.Q.add(groupComponent);
-            if (this.O == null) {
-                this.O = groupComponent;
+        this.addGroupButton.addClickListener(() -> {
+            HotbarSlotRuleGroupComponent groupComponent = new HotbarSlotRuleGroupComponent(hotbarSlotRuleEditorComponent, this.createEmptyRuleSlots());
+            this.groups.add(groupComponent);
+            if (this.selectedGroup == null) {
+                this.selectedGroup = groupComponent;
             }
-            this.w$src$V$j701ty();
+            this.rebuildChildren();
         });
-        this.addChildren(this.v);
+        this.addChildren(this.addGroupButton);
     }
 
-    static HotbarSlotRuleGroupComponent H(HotbarSlotRuleEditorComponent hotbarSlotRuleEditorComponent) {
-        return hotbarSlotRuleEditorComponent.O;
+    static HotbarSlotRuleGroupComponent getSelectedGroupInternal(HotbarSlotRuleEditorComponent hotbarSlotRuleEditorComponent) {
+        return hotbarSlotRuleEditorComponent.selectedGroup;
     }
 
-    public void f(HotbarSlotRuleGroupComponent hotbarSlotRuleGroupComponent) {
-        this.O = hotbarSlotRuleGroupComponent;
+    public void selectGroup(HotbarSlotRuleGroupComponent hotbarSlotRuleGroupComponent) {
+        this.selectedGroup = hotbarSlotRuleGroupComponent;
     }
 
     @Override
@@ -132,10 +132,10 @@ extends GuiComponent {
     @Override
     public void H() {
         this.onDisable();
-        this.v.K(this.G$src$D$1b2f02a());
-        this.v.S(this.n());
-        double d = this.v.n() + this.v.L();
-        for (HotbarSlotRuleGroupComponent hotbarSlotRuleGroupComponent : this.U$src$Ljava_util_List_$1g9oi4r()) {
+        this.addGroupButton.K(this.G$src$D$1b2f02a());
+        this.addGroupButton.S(this.n());
+        double d = this.addGroupButton.n() + this.addGroupButton.L();
+        for (HotbarSlotRuleGroupComponent hotbarSlotRuleGroupComponent : this.getGroups()) {
             hotbarSlotRuleGroupComponent.K(this.G$src$D$1b2f02a());
             hotbarSlotRuleGroupComponent.S(d);
             d += hotbarSlotRuleGroupComponent.L();
@@ -147,31 +147,31 @@ extends GuiComponent {
     }
 
     public static String[] u$src$ALjava_lang_String_$1im86xh() {
-        return R;
+        return opaqueState;
     }
 
     @Override
     public double C() {
-        double d = this.v.L();
-        for (HotbarSlotRuleGroupComponent hotbarSlotRuleGroupComponent : this.U$src$Ljava_util_List_$1g9oi4r()) {
+        double d = this.addGroupButton.L();
+        for (HotbarSlotRuleGroupComponent hotbarSlotRuleGroupComponent : this.getGroups()) {
             d += hotbarSlotRuleGroupComponent.L();
         }
         return d;
     }
 
     public static void v(String[] stringArray) {
-        R = stringArray;
+        opaqueState = stringArray;
     }
 
-    public void o(HotbarSlotRuleGroupComponent hotbarSlotRuleGroupComponent) {
-        this.U$src$Ljava_util_List_$1g9oi4r().remove(hotbarSlotRuleGroupComponent);
+    public void removeGroup(HotbarSlotRuleGroupComponent hotbarSlotRuleGroupComponent) {
+        this.getGroups().remove(hotbarSlotRuleGroupComponent);
     }
 
     @Override
     public void g(GuiMouseEvent guiMouseEvent) {
     }
 
-    public HotbarSlotRuleGroupComponent q$src$Lgg_vape_module_utility_inventory_HotbarSlotRule$1uq9d6u() {
-        return this.O;
+    public HotbarSlotRuleGroupComponent getSelectedGroup() {
+        return this.selectedGroup;
     }
 }

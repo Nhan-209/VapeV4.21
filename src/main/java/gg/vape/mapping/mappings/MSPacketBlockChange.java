@@ -34,7 +34,7 @@ extends Mapping {
     }
 
     public Object h$src$Ljava_lang_Object_$1ir33a2(Object object) {
-        return this.Y.L(object, new Object[0]);
+        return this.Y.invokeObject(object, new Object[0]);
     }
 
     public MSPacketBlockChange() {
@@ -49,12 +49,12 @@ extends Mapping {
                 Class clazz = MappedClasses.Vv;
                 String string = "getBlockState";
                 MSPacketBlockChange mSPacketBlockChange = this;
-                this.Y = ((MappingMethodBuilder)mSPacketBlockChange.u(string, clazz, classArray).X(ForgeVersion.MC_1_16_5.n(), MappedClasses.Zl)).s();
+                this.Y = ((MappingMethodBuilder)mSPacketBlockChange.methodBuilder(string, clazz, classArray).setTypeForVersion(ForgeVersion.MC_1_16_5.n(), MappedClasses.Zl)).buildMethod();
                 Class[] classArray2 = new Class[]{};
                 Class clazz2 = MappedClasses.lf;
                 String string2 = "getBlockPosition";
                 MSPacketBlockChange mSPacketBlockChange2 = this;
-                this.U = ((MappingMethodBuilder)this.u(string2, clazz2, classArray2).A(ForgeVersion.MC_1_16_5.n(), "getPos")).s();
+                this.U = ((MappingMethodBuilder)this.methodBuilder(string2, clazz2, classArray2).setNameForVersion(ForgeVersion.MC_1_16_5.n(), "getPos")).buildMethod();
             } else {
                 Class<Integer> clazz = Integer.TYPE;
                 boolean bl = false;
@@ -83,7 +83,7 @@ extends Mapping {
 
 
     public Object j(Object object) {
-        return this.U.L(object, new Object[0]);
+        return this.U.invokeObject(object, new Object[0]);
     }
 }
 

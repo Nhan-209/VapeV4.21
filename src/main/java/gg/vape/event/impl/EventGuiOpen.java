@@ -12,22 +12,22 @@ import gg.vape.wrapper.impl.GuiScreen;
 
 public class EventGuiOpen
 extends Event {
-    private GuiScreen a;
-    private static final EventListeners N = new EventListeners();
+    private GuiScreen guiScreen;
+    private static final EventListeners EVENT_LISTENERS = new EventListeners();
 
     @Override
     public boolean fire() {
-        if (ClientSettings.d && Vape.INSTANCE.getClientSettings().T.getEffectiveValue().booleanValue()) {
-            ClientSettings.d = false;
-            boolean bl = false;
-            if (this.a.isInstance(MappedClasses.u5) || this.a.isInstance(MappedClasses.D6) || this.a.isInstance(MappedClasses.F_)) {
+        if (ClientSettings.pendingSanityReset && Vape.INSTANCE.getClientSettings().sanityCheck.getEffectiveValue().booleanValue()) {
+            ClientSettings.pendingSanityReset = false;
+            boolean modulesDisabled = false;
+            if (this.guiScreen.isInstance(MappedClasses.u5) || this.guiScreen.isInstance(MappedClasses.D6) || this.guiScreen.isInstance(MappedClasses.F_)) {
                 for (Mod mod : Vape.INSTANCE.getModManager().collectMods()) {
                     if (mod instanceof HudModule || mod.getCategory() == Category.b || !mod.r$src$Z$14eylz9()) continue;
                     mod.Y(false);
-                    bl = true;
+                    modulesDisabled = true;
                 }
             }
-            if (bl) {
+            if (modulesDisabled) {
                 Vape.INSTANCE.getNotificationManager().showInfo("Sanity Check", "All modules have been disabled!", 5000L);
             }
         }
@@ -35,29 +35,29 @@ extends Event {
     }
 
     public static EventListeners getEventListeners() {
-        return N;
+        return EVENT_LISTENERS;
     }
 
 
     public GuiScreen getGuiScreen() {
-        return this.a;
+        return this.guiScreen;
     }
 
     public Object getGuiScreenObject() {
-        return this.a.getObject();
+        return this.guiScreen.getObject();
     }
 
-    public EventGuiOpen(Object object) {
-        this.a = new GuiScreen(object);
+    public EventGuiOpen(Object guiScreenHandle) {
+        this.guiScreen = new GuiScreen(guiScreenHandle);
     }
 
     public void setGuiScreen(GuiScreen guiScreen) {
-        this.a = guiScreen;
+        this.guiScreen = guiScreen;
     }
 
     @Override
     public EventListeners getListeners() {
-        return N;
+        return EVENT_LISTENERS;
     }
 }
 

@@ -5,14 +5,14 @@ import gg.vape.ui.click.component.GuiClickListener;
 
 public class PartyOverviewPanelActionClickHandler
 implements GuiClickListener {
-    final PartyDetailsPanel F;
+    private final PartyDetailsPanel detailsPanel;
 
     @Override
     public void onPrimaryClick() {
-        PartyDetailsPanel.x(this.F);
+        PartyDetailsPanel.toggleSettingsPopup(this.detailsPanel);
     }
 
-    public PartyOverviewPanelActionClickHandler(PartyDetailsPanel kq_02) {
-        this.F = kq_02;
+    public PartyOverviewPanelActionClickHandler(PartyDetailsPanel detailsPanel) {
+        this.detailsPanel = detailsPanel;
     }
 }

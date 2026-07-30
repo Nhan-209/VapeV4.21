@@ -21,7 +21,7 @@ extends Mapping {
     }
 
     public Stream<Object> a(Object object) {
-        return (Stream)this.B.L(object, new Object[0]);
+        return (Stream)this.B.invokeObject(object, new Object[0]);
     }
 }
 

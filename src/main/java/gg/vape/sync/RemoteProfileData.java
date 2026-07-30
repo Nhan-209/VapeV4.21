@@ -57,8 +57,8 @@ public class RemoteProfileData {
         json.addProperty("profileId", this.profileId != null ? this.profileId.toString() : null);
         json.addProperty("name", this.name);
         json.addProperty("vapeVersion", this.vapeVersion);
-        json.add("data", this.data != null ? ApiHttpClient.Z.toJsonTree(this.data) : null);
-        json.add("metadata", this.metadata != null ? this.metadata.i() : null);
+        json.add("data", this.data != null ? ApiHttpClient.GSON.toJsonTree(this.data) : null);
+        json.add("metadata", this.metadata != null ? this.metadata.toJson() : null);
         return json;
     }
 
@@ -83,8 +83,8 @@ public class RemoteProfileData {
                 UUID.fromString(json.get("profileId").getAsString()),
                 json.get("name").getAsString(),
                 json.get("vapeVersion").getAsString(),
-                (Map<String, Object>)ApiHttpClient.Z.fromJson(json.get("data"), Map.class),
-                ProfileRemoteMetadata.s(json.get("metadata")));
+                (Map<String, Object>)ApiHttpClient.GSON.fromJson(json.get("data"), Map.class),
+                ProfileRemoteMetadata.fromJson(json.get("metadata")));
     }
 }
 

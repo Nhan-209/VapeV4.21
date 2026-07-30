@@ -84,13 +84,13 @@ extends Mapping {
                 String string = "xTexOffs";
                 Class clazz2 = MappedClasses.q;
                 MModelRenderer mModelRenderer = this;
-                this.r = mModelRenderer.X(clazz2, string, bl, clazz);
+                this.r = mModelRenderer.registerInstanceFieldForOwner(clazz2, string, bl, clazz);
                 Class<Integer> clazz3 = Integer.TYPE;
                 boolean bl2 = true;
                 String string2 = "yTexOffs";
                 Class clazz4 = MappedClasses.q;
                 MModelRenderer mModelRenderer2 = this;
-                this.D = this.X(clazz4, string2, bl2, clazz3);
+                this.D = this.registerInstanceFieldForOwner(clazz4, string2, bl2, clazz3);
             } else {
                 Class<Integer> clazz = Integer.TYPE;
                 boolean bl = true;

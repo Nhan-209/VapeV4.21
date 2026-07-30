@@ -6,15 +6,15 @@ import gg.vape.event.EventListeners;
 @Deprecated
 public class DeprecatedEmptyCancelableEvent
 extends Event {
-    private static final EventListeners b = new EventListeners();
+    private static final EventListeners EVENT_LISTENERS = new EventListeners();
 
     public static EventListeners getEventListeners() {
-        return b;
+        return EVENT_LISTENERS;
     }
 
     @Override
     public EventListeners getListeners() {
-        return b;
+        return EVENT_LISTENERS;
     }
 
     @Override
@@ -22,4 +22,3 @@ extends Event {
         return super.fire();
     }
 }
-

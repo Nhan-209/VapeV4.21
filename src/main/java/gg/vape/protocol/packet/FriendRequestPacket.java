@@ -6,28 +6,27 @@ import gg.vape.protocol.packet.ZeusTrackedPacket;
 
 public class FriendRequestPacket
 extends ZeusTrackedPacket<FriendRequestResponsePacket> {
-    private String f;
+    private String username;
 
     public FriendRequestPacket() {
     }
 
-    public String j() {
-        return this.f;
+    public String getUsername() {
+        return this.username;
     }
 
-    public FriendRequestPacket(String string) {
+    public FriendRequestPacket(String username) {
         this();
-        this.f = string;
+        this.username = username;
     }
 
     @Override
     public void x(ZeusPacketBuffer gx_12) {
-        this.f = gx_12.v(16);
+        this.username = gx_12.readString(16);
     }
 
     @Override
     public void T(ZeusPacketBuffer gx_12) {
-        gx_12.y(this.f);
+        gx_12.writeString(this.username);
     }
 }
-

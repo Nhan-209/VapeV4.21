@@ -5,34 +5,33 @@ import gg.vape.event.EventListeners;
 
 public class LegacyStringRenderPayloadEvent
 extends Event {
-    private Object p;
-    private String S;
-    private static final EventListeners s = new EventListeners();
-    private int w;
-    private boolean q;
-    private float Z;
-    private float v;
+    private final Object fontRendererHandle;
+    private final String text;
+    private static final EventListeners EVENT_LISTENERS = new EventListeners();
+    private final int color;
+    private final boolean dropShadow;
+    private final float x;
+    private final float y;
 
     public static EventListeners getEventListeners() {
-        return s;
+        return EVENT_LISTENERS;
     }
 
     public int getX() {
-        return (int)this.Z;
+        return (int)this.x;
     }
 
-    public LegacyStringRenderPayloadEvent(Object object, String string, float f, float f2, int n, boolean bl) {
-        this.p = object;
-        this.S = string;
-        this.Z = f;
-        this.v = f2;
-        this.w = n;
-        this.q = bl;
+    public LegacyStringRenderPayloadEvent(Object fontRendererHandle, String text, float x, float y, int color, boolean dropShadow) {
+        this.fontRendererHandle = fontRendererHandle;
+        this.text = text;
+        this.x = x;
+        this.y = y;
+        this.color = color;
+        this.dropShadow = dropShadow;
     }
 
     @Override
     public EventListeners getListeners() {
-        return s;
+        return EVENT_LISTENERS;
     }
 }
-

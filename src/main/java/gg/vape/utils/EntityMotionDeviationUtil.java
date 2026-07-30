@@ -6,7 +6,7 @@ public class EntityMotionDeviationUtil {
     public static final double LEGACY_DEVIATION_THRESHOLD = 2.6;
 
     public static double calculateDeviation(Vec3d sourcePosition, double sourceYOffset, Vec3d direction, double targetX, double targetY, double targetZ, double horizontalSize, double verticalSize, double padding) {
-        return EntityMotionDeviationUtil.calculateDeviation(sourcePosition.Y(), sourcePosition.t() + sourceYOffset, sourcePosition.o(), direction.Y(), direction.t(), direction.o(), targetX, targetY, targetZ, horizontalSize, verticalSize, padding);
+        return EntityMotionDeviationUtil.calculateDeviation(sourcePosition.getX(), sourcePosition.getY() + sourceYOffset, sourcePosition.getZ(), direction.getX(), direction.getY(), direction.getZ(), targetX, targetY, targetZ, horizontalSize, verticalSize, padding);
     }
 
     public static double calculateDeviation(double sourceX, double sourceY, double sourceZ, double directionX, double directionY, double directionZ, double targetX, double targetY, double targetZ, double horizontalSize, double verticalSize, double padding) {

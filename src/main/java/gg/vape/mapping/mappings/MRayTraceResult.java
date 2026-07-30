@@ -25,7 +25,7 @@ extends Mapping {
 
     private Object M(Object object) {
         if (ForgeVersion.MC_1_16_5.d()) {
-            return this.F.L(object, new Object[0]);
+            return this.F.invokeObject(object, new Object[0]);
         }
         return this.H.getObject(object);
     }
@@ -64,13 +64,13 @@ extends Mapping {
             String string = "pos";
             Class clazz5 = MappedClasses.qF;
             MRayTraceResult mRayTraceResult = this;
-            this.I = mRayTraceResult.X(clazz5, string, bl, clazz);
+            this.I = mRayTraceResult.registerInstanceFieldForOwner(clazz5, string, bl, clazz);
             Class clazz6 = MappedClasses.q0;
             boolean bl5 = true;
             String string5 = "face";
             Class clazz7 = MappedClasses.qF;
             MRayTraceResult mRayTraceResult5 = this;
-            this.c = this.X(clazz7, string5, bl5, clazz6);
+            this.c = this.registerInstanceFieldForOwner(clazz7, string5, bl5, clazz6);
         } else {
             Class clazz = MappedClasses.lf;
             boolean bl = true;
@@ -124,7 +124,7 @@ extends Mapping {
             String string11 = "entity";
             Class clazz14 = MappedClasses.zl;
             MRayTraceResult mRayTraceResult11 = this;
-            this.N = this.X(clazz14, string11, bl11, clazz13);
+            this.N = this.registerInstanceFieldForOwner(clazz14, string11, bl11, clazz13);
             Class[] classArray = new Class[]{};
             Class clazz15 = MappedClasses.lk;
             boolean bl12 = true;
@@ -137,19 +137,19 @@ extends Mapping {
             String string13 = "<init>";
             Class clazz17 = MappedClasses.qF;
             MRayTraceResult mRayTraceResult13 = this;
-            this.b = this.W(clazz17, string13, bl13, clazz16, classArray3);
+            this.b = this.registerInstanceMethodForOwner(clazz17, string13, bl13, clazz16, classArray3);
             Class[] classArray4 = new Class[]{MappedClasses.zc, MappedClasses.qP};
             Class<Void> clazz18 = Void.TYPE;
             boolean bl14 = false;
             String string14 = "<init>";
             Class clazz19 = MappedClasses.zl;
             MRayTraceResult mRayTraceResult14 = this;
-            this.d = this.W(clazz19, string14, bl14, clazz18, classArray4);
+            this.d = this.registerInstanceMethodForOwner(clazz19, string14, bl14, clazz18, classArray4);
         }
     }
 
     public Object m(Object object, Object object2, Object object3, Object object4) {
-        return this.Z.O(object, object2, object3, object4);
+        return this.Z.newInstance(object, object2, object3, object4);
     }
 
     public int n(Object object) {
@@ -157,7 +157,7 @@ extends Mapping {
     }
 
     public Object y(Object object, Object object2) {
-        return this.D.O(object, object2);
+        return this.D.newInstance(object, object2);
     }
 
     public static Object Z(MRayTraceResult mRayTraceResult, Object object) {
@@ -165,7 +165,7 @@ extends Mapping {
     }
 
     public Object o(Object object, Object object2, Object object3, boolean bl) {
-        return this.b.O(object, object2, object3, bl);
+        return this.b.newInstance(object, object2, object3, bl);
     }
 
     public int z(Object object) {
@@ -173,7 +173,7 @@ extends Mapping {
     }
 
     public Object M(Object object, Object object2) {
-        return this.d.O(object, object2);
+        return this.d.newInstance(object, object2);
     }
 
     public Object o(Object object) {

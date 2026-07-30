@@ -14,12 +14,11 @@ extends JavassistMappingTask {
     }
 
     @Override
-    public void c() {
+    public void transform() {
         MappingMethod mappingMethod = Vape.INSTANCE.getMappings().qg.S;
         EventInjectionSpec eventInjectionSpec = new EventInjectionSpec(mappingMethod, EventBlockLayerOverrideLegacy.class);
-        eventInjectionSpec.d("$0");
-        eventInjectionSpec.H("($r) $event.getBlockLayer()");
-        this.O(eventInjectionSpec);
+        eventInjectionSpec.setConstructorArguments("$0");
+        eventInjectionSpec.setReturnExpression("($r) $event.getBlockLayer()");
+        this.registerEventInjection(eventInjectionSpec);
     }
 }
-

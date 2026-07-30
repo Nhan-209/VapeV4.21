@@ -77,8 +77,8 @@ extends GuiComponent {
             List<ClickGuiModuleCardComponent> list = this.collectSiblingCards();
             this.finishDragging(list);
             if (this.pendingOrderIndex != -1) {
-                Vape.INSTANCE.getModuleProfileMetadataCodec().k().remove(this.module);
-                Vape.INSTANCE.getModuleProfileMetadataCodec().k().add(this.pendingOrderIndex, this.module);
+                Vape.INSTANCE.getModuleProfileMetadataCodec().getSelectedModules().remove(this.module);
+                Vape.INSTANCE.getModuleProfileMetadataCodec().getSelectedModules().add(this.pendingOrderIndex, this.module);
             }
             this.pendingOrderIndex = -1;
             if (this.reorderAction != null) {
@@ -367,7 +367,7 @@ extends GuiComponent {
             }
             double d19 = d16 + 1.5;
             Color color9 = ClickGuiModuleCardComponent.J.i;
-            GuiRenderPrimitives.V((float)d18, (float)d19, 4.0, (float)(0.8 / Vape.INSTANCE.getClientSettings().s()), color9);
+            GuiRenderPrimitives.V((float)d18, (float)d19, 4.0, (float)(0.8 / Vape.INSTANCE.getClientSettings().getGuiScaleFactor()), color9);
         }
         double d20 = d15 - this.bindInput.A() - 8.0;
         double d21 = d9 - 5.0;

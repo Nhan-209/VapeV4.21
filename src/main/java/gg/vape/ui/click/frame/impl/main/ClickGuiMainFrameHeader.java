@@ -55,8 +55,8 @@ extends FrameHeaderComponent {
 
     private static void lambda$new$0() {
         ClientSettings.INSTANCE.switchFrameStack(ClientSettings.mainStack);
-        Vape.INSTANCE.getPublicProfileSettings().n.setValue(Vape.INSTANCE.getPublicProfileSettings().M);
-        Vape.INSTANCE.getPublicProfileSettings().n.setValue(Vape.INSTANCE.getPublicProfileSettings().P);
+        Vape.INSTANCE.getPublicProfileSettings().guiStyle.setValue(Vape.INSTANCE.getPublicProfileSettings().framesGuiStyle);
+        Vape.INSTANCE.getPublicProfileSettings().guiStyle.setValue(Vape.INSTANCE.getPublicProfileSettings().centralGuiStyle);
         Vape.INSTANCE.getNotificationManager().showInfo("Refreshed", "StandaloneGUI refreshed", 1000L);
     }
 
@@ -78,7 +78,7 @@ extends FrameHeaderComponent {
     @Override
     public void H() {
         double d;
-        if (!Vape.INSTANCE.getPublicProfileSettings().o.getEffectiveValue().booleanValue() && Vape.INSTANCE.getSyncThread().hasPendingSave() && System.currentTimeMillis() > Vape.INSTANCE.getSyncThread().getLastSaveTime() + 60000L) {
+        if (!Vape.INSTANCE.getPublicProfileSettings().autoSave.getEffectiveValue().booleanValue() && Vape.INSTANCE.getSyncThread().hasPendingSave() && System.currentTimeMillis() > Vape.INSTANCE.getSyncThread().getLastSaveTime() + 60000L) {
             this.syncIcon.setVisible(true);
         } else {
             this.syncIcon.setVisible(false);

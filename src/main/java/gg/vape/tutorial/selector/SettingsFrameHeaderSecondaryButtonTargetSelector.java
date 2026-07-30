@@ -9,25 +9,25 @@ import java.util.Arrays;
 
 public class SettingsFrameHeaderSecondaryButtonTargetSelector
 extends TutorialTargetSelector<SettingsFrameHeaderComponent> {
-    final TextGuiTutorialPage p;
-    SettingsFrameHeaderComponent I;
+    private final TextGuiTutorialPage tutorialPage;
+    private SettingsFrameHeaderComponent selectedHeader;
 
-    public boolean o(SettingsFrameHeaderComponent settingsFrameHeaderComponent) {
-        this.I = settingsFrameHeaderComponent;
+    private boolean matchesHeader(SettingsFrameHeaderComponent settingsFrameHeaderComponent) {
+        this.selectedHeader = settingsFrameHeaderComponent;
         return true;
     }
 
     @Override
-    public boolean X(SettingsFrameHeaderComponent settingsFrameHeaderComponent) {
-        return this.o(settingsFrameHeaderComponent);
+    public boolean matches(SettingsFrameHeaderComponent settingsFrameHeaderComponent) {
+        return this.matchesHeader(settingsFrameHeaderComponent);
     }
 
     @Override
-    public ArrayList<GuiComponent> v(GuiComponent guiComponent) {
-        if (this.o().isInstance(guiComponent)) {
-            ArrayList<GuiComponent> arrayList = super.v(guiComponent);
-            if (arrayList != null && this.I != null && this.I.equals(guiComponent)) {
-                return new ArrayList<GuiComponent>(Arrays.asList(this.I.x$src$Lgg_vape_ui_click_component_IconButtonComponent_$x1h5th()));
+    public ArrayList<GuiComponent> findTargets(GuiComponent guiComponent) {
+        if (this.getTargetType().isInstance(guiComponent)) {
+            ArrayList<GuiComponent> arrayList = super.findTargets(guiComponent);
+            if (arrayList != null && this.selectedHeader != null && this.selectedHeader.equals(guiComponent)) {
+                return new ArrayList<GuiComponent>(Arrays.asList(this.selectedHeader.x$src$Lgg_vape_ui_click_component_IconButtonComponent_$x1h5th()));
             }
             return arrayList;
         }
@@ -37,7 +37,7 @@ extends TutorialTargetSelector<SettingsFrameHeaderComponent> {
 
     public SettingsFrameHeaderSecondaryButtonTargetSelector(TextGuiTutorialPage textGuiTutorialPage, Class clazz) {
         super(clazz);
-        this.p = textGuiTutorialPage;
-        this.I = null;
+        this.tutorialPage = textGuiTutorialPage;
+        this.selectedHeader = null;
     }
 }

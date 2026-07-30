@@ -3,25 +3,24 @@ package gg.vape.event;
 import gg.vape.event.EventListenerRegistration;
 
 public class EventListenerTiming {
-    private final long S;
-    private long W;
-    private final EventListenerRegistration N;
+    private final long startNanos;
+    private long durationNanos;
+    private final EventListenerRegistration registration;
 
     public EventListenerRegistration getRegistration() {
-        return this.N;
+        return this.registration;
     }
 
-    public EventListenerTiming(EventListenerRegistration eventListenerRegistration) {
-        this.N = eventListenerRegistration;
-        this.S = System.nanoTime();
+    public EventListenerTiming(EventListenerRegistration registration) {
+        this.registration = registration;
+        this.startNanos = System.nanoTime();
     }
 
     public void finish() {
-        this.W = System.nanoTime() - this.S;
+        this.durationNanos = System.nanoTime() - this.startNanos;
     }
 
     public long getDurationNanos() {
-        return this.W;
+        return this.durationNanos;
     }
 }
-

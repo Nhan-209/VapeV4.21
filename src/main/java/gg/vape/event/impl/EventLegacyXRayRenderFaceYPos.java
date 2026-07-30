@@ -4,8 +4,7 @@ import gg.vape.event.impl.EventLegacyXRayBlockRenderBase;
 
 public class EventLegacyXRayRenderFaceYPos
 extends EventLegacyXRayBlockRenderBase {
-    public EventLegacyXRayRenderFaceYPos(Object object) {
-        super(object);
+    public EventLegacyXRayRenderFaceYPos(Object blockHandle) {
+        super(blockHandle);
     }
 }
-

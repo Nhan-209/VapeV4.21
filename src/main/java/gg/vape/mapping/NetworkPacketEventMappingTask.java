@@ -15,7 +15,7 @@ extends JavassistMappingTask {
     }
 
     @Override
-    public void c() {
+    public void transform() {
         this.k();
     }
 
@@ -24,16 +24,16 @@ extends JavassistMappingTask {
         EventInjectionSpec eventInjectionSpec;
         MappingMethod mappingMethod = Vape.INSTANCE.getMappings().Do.a;
         MappingMethod mappingMethod2 = Vape.INSTANCE.getMappings().Do.O;
-        if (mappingMethod != null && !mappingMethod.h()) {
+        if (mappingMethod != null && !mappingMethod.hasResolutionFailed()) {
             eventInjectionSpec = new EventInjectionSpec(mappingMethod, EventPacketReceive.class);
-            eventInjectionSpec.d("$0, $2");
-            eventInjectionSpec.V("$2 = (" + MappedClasses.Fm.getName() + ") $event.getPacketInstance();");
-            this.O(eventInjectionSpec);
+            eventInjectionSpec.setConstructorArguments("$0, $2");
+            eventInjectionSpec.setAfterCode("$2 = (" + MappedClasses.Fm.getName() + ") $event.getPacketInstance();");
+            this.registerEventInjection(eventInjectionSpec);
         }
         eventInjectionSpec = new EventInjectionSpec(mappingMethod2, EventPacketSend.class);
-        eventInjectionSpec.d("$0, $1");
-        eventInjectionSpec.V("$1 = (" + MappedClasses.Fm.getName() + ") $event.getPacketInstance();");
-        this.O(eventInjectionSpec);
+        eventInjectionSpec.setConstructorArguments("$0, $1");
+        eventInjectionSpec.setAfterCode("$1 = (" + MappedClasses.Fm.getName() + ") $event.getPacketInstance();");
+        this.registerEventInjection(eventInjectionSpec);
     }
 }
 

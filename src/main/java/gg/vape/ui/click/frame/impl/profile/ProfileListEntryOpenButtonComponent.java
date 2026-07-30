@@ -29,8 +29,8 @@ extends AnimatedIconButtonComponent {
         if (this.profile == null) {
             return;
         }
-        this.selectedProfile = Vape.INSTANCE.getProfilesManager().M().equals(this.profile);
-        this.publicProfile = this.profile.N();
+        this.selectedProfile = Vape.INSTANCE.getProfilesManager().getActiveProfile().equals(this.profile);
+        this.publicProfile = this.profile.getPublicProfile();
         boolean nowPublished = this.publicProfile != null;
         if (nowPublished != this.publishedProfile) {
             this.publishedProfile = nowPublished;
@@ -59,9 +59,9 @@ extends AnimatedIconButtonComponent {
             if (this.selectedProfile) {
                 return;
             }
-            Vape.INSTANCE.getProfilesManager().S(this.profile);
-            if (this.profile.j$src$Lgg_vape_config_ProfileRemoteMetadata_$1dp9fd0() != null && this.profile.P$src$Ljava_util_UUID_$kdhg08() != null) {
-                ApiServices.d().c().F(ProfilesSyncPayloadBuilder.T(null, Collections.singletonList(this.profile.P$src$Ljava_util_UUID_$kdhg08())));
+            Vape.INSTANCE.getProfilesManager().removeProfile(this.profile);
+            if (this.profile.getRemoteMetadata() != null && this.profile.getOnlineId() != null) {
+                ApiServices.getInstance().getUserDataApi().saveProfileData(ProfilesSyncPayloadBuilder.build(null, Collections.singletonList(this.profile.getOnlineId())));
             }
             if (this.afterDelete != null) {
                 this.afterDelete.run();
@@ -69,9 +69,9 @@ extends AnimatedIconButtonComponent {
         } else {
             FrameStackManager activeStack = ClientSettings.INSTANCE.getActiveStack();
             if (activeStack instanceof ClickGuiFrameManager) {
-                this.openAsOverlay(this.publicProfile.w(), (ClickGuiFrameManager)activeStack);
+                this.openAsOverlay(this.publicProfile.getProfileId(), (ClickGuiFrameManager)activeStack);
             } else {
-                PublicProfilesFrame.J(true, this.publicProfile.w());
+                PublicProfilesFrame.J(true, this.publicProfile.getProfileId());
             }
         }
     }
@@ -79,7 +79,7 @@ extends AnimatedIconButtonComponent {
     private void openAsOverlay(long publicProfileId, ClickGuiFrameManager frameManager) {
         PublicProfilesFrame profilesFrame = ClientSettings.getFrame(PublicProfilesFrame.class);
         frameManager.setSidecarFrame(profilesFrame);
-        ApiServices.d().R().x(publicProfileId)
+        ApiServices.getInstance().getPublicProfileApi().viewProfile(publicProfileId)
             .whenCompleteAsync((response, error) -> handleProfileResponse(profilesFrame, response, error), (Executor)ClientSettings.UI_EXECUTOR)
             .exceptionally(ProfileListEntryOpenButtonComponent::ignoreLoadFailure);
     }
@@ -120,12 +120,12 @@ extends AnimatedIconButtonComponent {
             Vape.logThrowable(error);
             return;
         }
-        if (!response.t()) {
-            Vape.debugLog("Failed to load public profile data: " + response.N());
+        if (!response.isSuccessful()) {
+            Vape.debugLog("Failed to load public profile data: " + response.getError());
             return;
         }
-        assert response.T() != null;
-        profilesFrame.N((PublicProfile)response.T());
+        assert response.getData() != null;
+        profilesFrame.N((PublicProfile)response.getData());
     }
 
     public Profile getProfile() {

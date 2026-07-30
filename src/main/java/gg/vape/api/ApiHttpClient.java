@@ -27,94 +27,95 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nullable;
 
 public class ApiHttpClient {
-    private static boolean h;
-    private static final DateFormat O;
-    public static final Gson Z;
+    private static boolean opaqueState;
+    private static final DateFormat API_DATE_FORMAT;
+    public static final Gson GSON;
 
     @Nullable
     @Contract(value="null -> null")
-    public static Date U(@Nullable String string) throws ParseException {
-        if (string == null) {
+    public static Date parseApiDate(@Nullable String dateText) throws ParseException {
+        if (dateText == null) {
             return null;
         }
-        return O.parse(string);
+        return API_DATE_FORMAT.parse(dateText);
     }
 
     static {
-        ApiHttpClient.l(true);
-        Z = new GsonBuilder().serializeNulls().create();
-        O = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
+        ApiHttpClient.setOpaqueState(true);
+        GSON = new GsonBuilder().serializeNulls().create();
+        API_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
     }
 
-    private static <R> R w(String string, String string2, Class<R> clazz, @Nullable Object object) throws Exception {
-        return (R)ApiHttpClient.y(string, arg_0 -> ApiHttpClient.lambda$request$0(object, string2, string, clazz, arg_0));
+    private static <R> R request(String url, String httpMethod, Class<R> responseType, @Nullable Object body) throws Exception {
+        return (R)ApiHttpClient.withConnection(url,
+                connection -> ApiHttpClient.executeJsonRequest(body, httpMethod, url, responseType, connection));
     }
 
-    private static <T> T y(String string, Function<HttpURLConnection, T> function) throws Exception {
+    private static <T> T withConnection(String url, Function<HttpURLConnection, T> requestHandler) throws Exception {
         try {
-            TrustManager[] trustManagerArray = new TrustManager[]{new ApiPermissiveX509ExtendedTrustManager()};
-            SSLContext sSLContext = SSLContext.getInstance("SSL");
-            sSLContext.init(null, trustManagerArray, new SecureRandom());
-            HttpURLConnection httpURLConnection = (HttpURLConnection)new URL(string).openConnection();
-            httpURLConnection.setConnectTimeout(10000);
-            httpURLConnection.setReadTimeout(15000);
-            httpURLConnection.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
-            if (httpURLConnection instanceof HttpsURLConnection) {
-                HttpsURLConnection httpsConnection = (HttpsURLConnection)httpURLConnection;
-                httpsConnection.setSSLSocketFactory(sSLContext.getSocketFactory());
+            TrustManager[] trustManagers = new TrustManager[]{new ApiPermissiveX509ExtendedTrustManager()};
+            SSLContext sslContext = SSLContext.getInstance("SSL");
+            sslContext.init(null, trustManagers, new SecureRandom());
+            HttpURLConnection connection = (HttpURLConnection)new URL(url).openConnection();
+            connection.setConnectTimeout(10000);
+            connection.setReadTimeout(15000);
+            connection.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
+            if (connection instanceof HttpsURLConnection) {
+                HttpsURLConnection httpsConnection = (HttpsURLConnection)connection;
+                httpsConnection.setSSLSocketFactory(sslContext.getSocketFactory());
                 httpsConnection.setHostnameVerifier((hostname, session) -> true);
             }
-            return function.apply(httpURLConnection);
+            return requestHandler.apply(connection);
         }
-        catch (Throwable throwable) {
-            throw new Exception(throwable);
+        catch (Throwable error) {
+            throw new Exception(error);
         }
     }
 
-    private static Object lambda$get$1(Class clazz, HttpURLConnection httpURLConnection) {
+    private static Object readJsonResponse(Class responseType, HttpURLConnection connection) {
         try {
-            return Z.fromJson((Reader)new InputStreamReader(httpURLConnection.getInputStream()), clazz);
+            return GSON.fromJson((Reader)new InputStreamReader(connection.getInputStream()), responseType);
         }
-        catch (IOException iOException) {
-            throw new RuntimeException(iOException);
+        catch (IOException error) {
+            throw new RuntimeException(error);
         }
     }
 
-    public static boolean S() {
-        boolean bl = ApiHttpClient.e();
+    public static boolean opaquePredicate() {
+        boolean state = ApiHttpClient.getOpaqueState();
         return false;
     }
 
-    public static <R> ApiResponse<R> V(String string, Function<JsonElement, R> function) throws Exception {
-        return ApiResponse.m(ApiHttpClient.U(string, JsonObject.class), function);
+    public static <R> ApiResponse<R> getApiResponse(String url, Function<JsonElement, R> dataParser) throws Exception {
+        return ApiResponse.fromJson(ApiHttpClient.get(url, JsonObject.class), dataParser);
     }
 
-    public static void l(boolean bl) {
-        h = bl;
+    public static void setOpaqueState(boolean state) {
+        opaqueState = state;
     }
 
-    public static <R> ApiResponse<R> z(String string, Object object, Function<JsonElement, R> function) throws Exception {
-        return ApiResponse.m(ApiHttpClient.w(string, "POST", JsonObject.class, object), function);
+    public static <R> ApiResponse<R> postApiResponse(String url, Object body, Function<JsonElement, R> dataParser) throws Exception {
+        return ApiResponse.fromJson(ApiHttpClient.request(url, "POST", JsonObject.class, body), dataParser);
     }
 
-    public static <R> R l(String string, Class<R> clazz, Object object) throws Exception {
-        return ApiHttpClient.w(string, "POST", clazz, object);
+    public static <R> R post(String url, Class<R> responseType, Object body) throws Exception {
+        return ApiHttpClient.request(url, "POST", responseType, body);
     }
 
-    public static <R> ApiResponse<R> U(String string, Object object, Function<JsonElement, R> function) throws Exception {
-        return ApiResponse.m(ApiHttpClient.w(string, "DELETE", JsonObject.class, object), function);
+    public static <R> ApiResponse<R> deleteApiResponse(String url, Object body, Function<JsonElement, R> dataParser) throws Exception {
+        return ApiResponse.fromJson(ApiHttpClient.request(url, "DELETE", JsonObject.class, body), dataParser);
     }
 
-    public static <R> R L(String string, Class<R> clazz) throws Exception {
-        return ApiHttpClient.w(string, "DELETE", clazz, null);
+    public static <R> R delete(String url, Class<R> responseType) throws Exception {
+        return ApiHttpClient.request(url, "DELETE", responseType, null);
     }
 
-    public static boolean e() {
-        return h;
+    public static boolean getOpaqueState() {
+        return opaqueState;
     }
 
-    private static Throwable a(Throwable throwable) {
-        return throwable;
+    private static Throwable preserveThrowable(Throwable error) {
+        return error;
     }
 
     /*
@@ -122,61 +123,64 @@ public class ApiHttpClient {
      * Enabled unnecessary exception pruning
      * Enabled aggressive exception aggregation
      */
-    private static Object lambda$request$0(Object object, String string, String string2, Class clazz, HttpURLConnection httpURLConnection) {
+    private static Object executeJsonRequest(Object body, String httpMethod, String url, Class responseType,
+                                             HttpURLConnection connection) {
         try {
-            int n;
+            int statusCode;
             block10: {
-                String string3 = object != null ? Z.toJson(object) : null;
-                byte[] byArray = string3 != null ? string3.getBytes(StandardCharsets.UTF_8) : null;
-                httpURLConnection.setDoOutput(true);
-                httpURLConnection.setRequestMethod(string);
-                if (string3 != null) {
-                    httpURLConnection.setRequestProperty("Content-Type", "application/json");
-                    httpURLConnection.setRequestProperty("charset", "utf-8");
-                    httpURLConnection.setRequestProperty("Content-Length", Integer.toString(byArray.length));
-                    DataOutputStream dataOutputStream = new DataOutputStream(httpURLConnection.getOutputStream());
-                    Throwable throwable = null;
+                String jsonBody = body != null ? GSON.toJson(body) : null;
+                byte[] bodyBytes = jsonBody != null ? jsonBody.getBytes(StandardCharsets.UTF_8) : null;
+                connection.setDoOutput(true);
+                connection.setRequestMethod(httpMethod);
+                if (jsonBody != null) {
+                    connection.setRequestProperty("Content-Type", "application/json");
+                    connection.setRequestProperty("charset", "utf-8");
+                    connection.setRequestProperty("Content-Length", Integer.toString(bodyBytes.length));
+                    DataOutputStream output = new DataOutputStream(connection.getOutputStream());
+                    Throwable pendingError = null;
                     try {
-                        dataOutputStream.write(byArray);
-                        if (dataOutputStream == null) break block10;
+                        output.write(bodyBytes);
+                        if (output == null) break block10;
                     }
-                    catch (Throwable throwable2) {
+                    catch (Throwable writeError) {
                         try {
-                            throwable = throwable2;
-                            throw throwable2;
+                            pendingError = writeError;
+                            throw writeError;
                         }
-                        catch (Throwable throwable3) {
-                            if (dataOutputStream == null) throw throwable3;
-                            if (throwable == null) {
-                                dataOutputStream.close();
-                                throw throwable3;
+                        catch (Throwable closeTrigger) {
+                            if (output == null) throw closeTrigger;
+                            if (pendingError == null) {
+                                output.close();
+                                throw closeTrigger;
                             }
                             try {
-                                dataOutputStream.close();
-                                throw throwable3;
+                                output.close();
+                                throw closeTrigger;
                             }
-                            catch (Throwable throwable4) {
-                                throwable.addSuppressed(throwable4);
-                                throw throwable3;
+                            catch (Throwable closeError) {
+                                pendingError.addSuppressed(closeError);
+                                throw closeTrigger;
                             }
                         }
                     }
-                    dataOutputStream.close();
+                    output.close();
                 }
             }
-            if ((n = httpURLConnection.getResponseCode()) == 200) return Z.fromJson((Reader)new InputStreamReader(httpURLConnection.getInputStream()), clazz);
-            throw new ApiHttpStatusException(string2, string, n);
+            if ((statusCode = connection.getResponseCode()) == 200) {
+                return GSON.fromJson((Reader)new InputStreamReader(connection.getInputStream()), responseType);
+            }
+            throw new ApiHttpStatusException(url, httpMethod, statusCode);
         }
-        catch (Exception exception) {
-            throw new RuntimeException(exception);
+        catch (Exception error) {
+            throw new RuntimeException(error);
         }
     }
 
-    public static <R> R U(String string, Class<R> clazz) throws Exception {
-        return (R)ApiHttpClient.y(string, arg_0 -> ApiHttpClient.lambda$get$1(clazz, arg_0));
+    public static <R> R get(String url, Class<R> responseType) throws Exception {
+        return (R)ApiHttpClient.withConnection(url, connection -> ApiHttpClient.readJsonResponse(responseType, connection));
     }
 
-    public static <R> R e(String string, Class<R> clazz, Object object) throws Exception {
-        return ApiHttpClient.w(string, "DELETE", clazz, object);
+    public static <R> R delete(String url, Class<R> responseType, Object body) throws Exception {
+        return ApiHttpClient.request(url, "DELETE", responseType, body);
     }
 }

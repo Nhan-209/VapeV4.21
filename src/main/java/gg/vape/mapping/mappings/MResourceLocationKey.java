@@ -27,7 +27,7 @@ extends Mapping {
             boolean bl2 = true;
             String string = b;
             MResourceLocationKey mResourceLocationKey = this;
-            this.I = mResourceLocationKey.u(string, bl2, clazz);
+            this.I = mResourceLocationKey.registerStaticField(string, bl2, clazz);
             if (GuiComponent.getLegacyComponentState() == null) {
                 MResourceLocationKey.L(false);
             }
@@ -37,7 +37,7 @@ extends Mapping {
         boolean bl3 = true;
         String string = b;
         MResourceLocationKey mResourceLocationKey = this;
-        this.I = mResourceLocationKey.u(string, bl3, clazz);
+        this.I = mResourceLocationKey.registerStaticField(string, bl3, clazz);
         if (GuiComponent.getLegacyComponentState() == null) {
             MResourceLocationKey.L(true);
         }

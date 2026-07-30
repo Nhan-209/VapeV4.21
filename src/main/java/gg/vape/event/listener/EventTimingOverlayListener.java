@@ -22,69 +22,69 @@ import java.util.stream.Collectors;
 
 public class EventTimingOverlayListener
 implements EventListener {
-    private static String[] j;
-    private TimerUtil O = new TimerUtil();
-    private List<String> A = new ArrayList<String>();
-    public static EventTimingOverlayListener e;
+    private static String[] obfuscationState;
+    private final TimerUtil refreshTimer = new TimerUtil();
+    private List<String> displayLines = new ArrayList<String>();
+    public static EventTimingOverlayListener INSTANCE;
 
     @EventHandler
     public void onRender2D(EventRender2D eventRender2D) {
-        for (int i = 0; i < this.A.size(); ++i) {
-            SmoothFontRenderer smoothFontRenderer = Vape.INSTANCE.getFontManager().D(12, false);
-            double d = smoothFontRenderer.N(this.A.get(i));
-            GuiRenderPrimitives.C(10.0, 8 + i * 8, d, 8.0, Color.BLACK);
-            smoothFontRenderer.g(this.A.get(i), 10.0, 8 + i * 8, -1);
+        for (int index = 0; index < this.displayLines.size(); ++index) {
+            SmoothFontRenderer fontRenderer = Vape.INSTANCE.getFontManager().D(12, false);
+            double width = fontRenderer.N(this.displayLines.get(index));
+            GuiRenderPrimitives.C(10.0, 8 + index * 8, width, 8.0, Color.BLACK);
+            fontRenderer.g(this.displayLines.get(index), 10.0, 8 + index * 8, -1);
         }
     }
 
-    private static Map<Class<?>, List<Long>> lambda$getTimings$0(Class<?> clazz) {
+    private static Map<Class<?>, List<Long>> createEventTimings(Class<?> listenerType) {
         return new ConcurrentHashMap<Class<?>, List<Long>>();
     }
 
     static {
-        e = new EventTimingOverlayListener();
-        EventTimingOverlayListener.w(null);
+        INSTANCE = new EventTimingOverlayListener();
+        EventTimingOverlayListener.setObfuscationState(null);
     }
 
-    public static void w(String[] stringArray) {
-        j = stringArray;
+    public static void setObfuscationState(String[] state) {
+        obfuscationState = state;
     }
 
     @EventHandler
     public void onTick(EventPreTick eventPreTick) {
-        if (this.O.hasTimeElapsed(3000L)) {
-            this.P();
-            this.O.reset();
+        if (this.refreshTimer.hasTimeElapsed(3000L)) {
+            this.refreshDisplayLines();
+            this.refreshTimer.reset();
         }
     }
 
-    public static String[] s() {
-        return j;
+    public static String[] getObfuscationState() {
+        return obfuscationState;
     }
 
 
-    private void P() {
-        this.A.clear();
-        ConcurrentHashMap<Class<?>, Map<Class<?>, List<Long>>> concurrentHashMap = new ConcurrentHashMap<Class<?>, Map<Class<?>, List<Long>>>();
+    private void refreshDisplayLines() {
+        this.displayLines.clear();
+        ConcurrentHashMap<Class<?>, Map<Class<?>, List<Long>>> timingsByListener = new ConcurrentHashMap<Class<?>, Map<Class<?>, List<Long>>>();
         for (EventDispatchTrace trace : EventBus.getInstance().getTimingHistory().getTraces().keySet()) {
-            for (EventListenerTiming eventListenerTiming : trace.getListenerTimings()) {
-                Class<?> clazz = eventListenerTiming.getRegistration().getListener().getClass();
-                concurrentHashMap.computeIfAbsent(clazz, EventTimingOverlayListener::lambda$getTimings$0).computeIfAbsent(trace.getEventType(), EventTimingOverlayListener::lambda$getTimings$1).add(eventListenerTiming.getDurationNanos());
+            for (EventListenerTiming listenerTiming : trace.getListenerTimings()) {
+                Class<?> listenerType = listenerTiming.getRegistration().getListener().getClass();
+                timingsByListener.computeIfAbsent(listenerType, EventTimingOverlayListener::createEventTimings).computeIfAbsent(trace.getEventType(), EventTimingOverlayListener::createDurationList).add(listenerTiming.getDurationNanos());
             }
         }
-        ArrayList<EventTimingDisplayLine> arrayList = new ArrayList<EventTimingDisplayLine>();
-        for (Map.Entry<Class<?>, Map<Class<?>, List<Long>>> entry : concurrentHashMap.entrySet()) {
-            for (Map.Entry<Class<?>, List<Long>> entry2 : entry.getValue().entrySet()) {
-                long l = entry2.getValue().stream().mapToLong(Long::longValue).sum() / 1000L;
-                long l2 = (long)(entry2.getValue().stream().mapToLong(Long::longValue).average().orElse(0.0) / 1000.0);
-                arrayList.add(new EventTimingDisplayLine(l + " " + l2 + " " + entry.getKey().getSimpleName() + " " + entry2.getKey().getName(), l));
+        ArrayList<EventTimingDisplayLine> timingLines = new ArrayList<EventTimingDisplayLine>();
+        for (Map.Entry<Class<?>, Map<Class<?>, List<Long>>> listenerEntry : timingsByListener.entrySet()) {
+            for (Map.Entry<Class<?>, List<Long>> eventEntry : listenerEntry.getValue().entrySet()) {
+                long totalMicros = eventEntry.getValue().stream().mapToLong(Long::longValue).sum() / 1000L;
+                long averageMicros = (long)(eventEntry.getValue().stream().mapToLong(Long::longValue).average().orElse(0.0) / 1000.0);
+                timingLines.add(new EventTimingDisplayLine(totalMicros + " " + averageMicros + " " + listenerEntry.getKey().getSimpleName() + " " + eventEntry.getKey().getName(), totalMicros));
             }
         }
-        arrayList.sort(Comparator.comparingLong(EventTimingDisplayLine::h).reversed());
-        this.A = arrayList.stream().map(EventTimingDisplayLine::Y).collect(Collectors.toList());
+        timingLines.sort(Comparator.comparingLong(EventTimingDisplayLine::getTotalMicros).reversed());
+        this.displayLines = timingLines.stream().map(EventTimingDisplayLine::getText).collect(Collectors.toList());
     }
 
-    private static List<Long> lambda$getTimings$1(Class<?> clazz) {
+    private static List<Long> createDurationList(Class<?> eventType) {
         return new ArrayList<Long>();
     }
 }

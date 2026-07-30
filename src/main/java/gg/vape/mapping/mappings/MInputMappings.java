@@ -28,7 +28,7 @@ extends Mapping {
     }
 
     private void J(Object object) {
-        this.M.F(object);
+        this.M.invokeVoidNoArgs(object);
     }
 
     private int k(Object object) {
@@ -51,7 +51,7 @@ extends Mapping {
     }
 
     private Object z(int n, int n2) {
-        return this.J.O(n, n2);
+        return this.J.newInstance(n, n2);
     }
 
     public static int T(MInputMappings mInputMappings, Object object) {
@@ -114,7 +114,7 @@ extends Mapping {
                     String string8 = "<init>";
                     Class clazz9 = MappedClasses.Fu;
                     MInputMappings mInputMappings8 = this;
-                    this.J = this.W(clazz9, string8, bl8, clazz8, classArray3);
+                    this.J = this.registerInstanceMethodForOwner(clazz9, string8, bl8, clazz8, classArray3);
                     Class[] classArray4 = new Class[]{Long.TYPE, MappedClasses.Fu, Integer.TYPE};
                     Class<Void> clazz10 = Void.TYPE;
                     boolean bl9 = true;
@@ -159,14 +159,14 @@ extends Mapping {
         int n2;
         int n3 = n2 = bl ? 1 : 0;
         if (ForgeVersion.MC_1_21_10.d()) {
-            this.L.c(object, l, this.z(n, 0), n2);
+            this.L.invokeVoid(object, l, this.z(n, 0), n2);
         } else {
-            this.L.c(object, l, n, n2, 0);
+            this.L.invokeVoid(object, l, n, n2, 0);
         }
     }
 
     private void p(Object object) {
-        this.r.F(object);
+        this.r.invokeVoidNoArgs(object);
     }
 
     public static void d(MInputMappings mInputMappings, Object object, long l, int n, boolean bl) {

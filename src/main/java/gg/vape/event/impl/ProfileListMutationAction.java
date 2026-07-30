@@ -4,13 +4,12 @@ public enum ProfileListMutationAction {
     ADD,
     REMOVE;
 
-    private static final ProfileListMutationAction[] U;
+    private static final ProfileListMutationAction[] VALUES_COPY;
 
     static {
-        String[] stringArray = new String[]{"REMOVE", "ADD"};
+        String[] declaredNames = new String[]{"REMOVE", "ADD"};
 
 
-        U = new ProfileListMutationAction[]{ADD, REMOVE};
+        VALUES_COPY = new ProfileListMutationAction[]{ADD, REMOVE};
     }
 }
-

@@ -2,9 +2,7 @@ package gg.vape.wrapper.impl;
 
 import gg.vape.mapping.mappings.MEffectRenderer;
 import gg.vape.wrapper.Wrapper;
-import gg.vape.wrapper.impl.EntityFX;
-import gg.vape.wrapper.impl.ForgeVersion;
-import gg.vape.wrapper.impl.SoundAwareEntityFX;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,7 +13,7 @@ extends Wrapper {
     }
 
     public List<SoundAwareEntityFX> getParticleEmitters() {
-        List list = EffectRenderer.c.getMappings().Ru.A(this.I);
+        List list = EffectRenderer.vapeInstance.getMappings().Ru.A(this.I);
         ArrayList<SoundAwareEntityFX> arrayList = new ArrayList<SoundAwareEntityFX>();
         for (Object e : list) {
             arrayList.add(new SoundAwareEntityFX(e));
@@ -25,7 +23,7 @@ extends Wrapper {
 
     public List<EntityFX>[][] getFxLayers() {
         if (ForgeVersion.MC_1_7_10.Y()) {
-            List[][] listArray = MEffectRenderer.N(EffectRenderer.c.getMappings().Ru, this.I);
+            List[][] listArray = MEffectRenderer.N(EffectRenderer.vapeInstance.getMappings().Ru, this.I);
             ArrayList[][] arrayListArrayArray = new ArrayList[4][];
             int n = 0;
             for (List[] listArray2 : listArray) {
@@ -44,7 +42,7 @@ extends Wrapper {
             return arrayListArrayArray;
         }
         ArrayList[][] arrayListArrayArray = new ArrayList[1][];
-        List[] listArray = MEffectRenderer.z(EffectRenderer.c.getMappings().Ru, this.I);
+        List[] listArray = MEffectRenderer.z(EffectRenderer.vapeInstance.getMappings().Ru, this.I);
         int n = 0;
         ArrayList[] arrayListArray = new ArrayList[4];
         for (int i = 0; i < listArray.length; ++i) {

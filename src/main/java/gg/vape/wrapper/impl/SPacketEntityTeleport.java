@@ -1,7 +1,5 @@
 package gg.vape.wrapper.impl;
 
-import gg.vape.wrapper.impl.Packet;
-
 public class SPacketEntityTeleport
 extends Packet {
     public SPacketEntityTeleport(Object object) {
@@ -9,27 +7,27 @@ extends Packet {
     }
 
     public int d() {
-        return SPacketEntityTeleport.c.getMappings().qH.a(this.I);
+        return SPacketEntityTeleport.vapeInstance.getMappings().qH.a(this.I);
     }
 
     public byte Z() {
-        return SPacketEntityTeleport.c.getMappings().qH.s(this.I);
+        return SPacketEntityTeleport.vapeInstance.getMappings().qH.s(this.I);
     }
 
     public byte x() {
-        return SPacketEntityTeleport.c.getMappings().qH.v(this.I);
+        return SPacketEntityTeleport.vapeInstance.getMappings().qH.v(this.I);
     }
 
     public int I() {
-        return SPacketEntityTeleport.c.getMappings().qH.z(this.I);
+        return SPacketEntityTeleport.vapeInstance.getMappings().qH.z(this.I);
     }
 
     public int u() {
-        return SPacketEntityTeleport.c.getMappings().qH.O(this.I);
+        return SPacketEntityTeleport.vapeInstance.getMappings().qH.O(this.I);
     }
 
     public int m$src$I$1g30xfs() {
-        return SPacketEntityTeleport.c.getMappings().qH.J(this.I);
+        return SPacketEntityTeleport.vapeInstance.getMappings().qH.J(this.I);
     }
 }
 

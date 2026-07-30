@@ -16,7 +16,7 @@ extends Mapping {
     private final MappingField L;
 
     private Object n(Object object) {
-        return this.I.L(object, new Object[0]);
+        return this.I.invokeObject(object, new Object[0]);
     }
 
     public static Object R(MContainer mContainer, Object object) {
@@ -28,7 +28,7 @@ extends Mapping {
     }
 
     private Object J(Object object, int n) {
-        return this.o.L(object, n);
+        return this.o.invokeObject(object, n);
     }
 
 

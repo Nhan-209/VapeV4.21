@@ -176,8 +176,8 @@ extends SimpleChannelInboundHandler<ZeusSerializablePacket> {
     }
 
     private static void lambda$sendUserDisplayNamePacket$19(Consumer consumer, UserDisplayNameResponsePacket userDisplayNameResponsePacket) {
-        if (userDisplayNameResponsePacket.S() == UserDisplayNameStatus.SUCCESSFUL) {
-            Vape.INSTANCE.getOnlineManager().r().i(userDisplayNameResponsePacket.A());
+        if (userDisplayNameResponsePacket.getStatus() == UserDisplayNameStatus.SUCCESSFUL) {
+            Vape.INSTANCE.getOnlineManager().getLocalFriend().setDisplayName(userDisplayNameResponsePacket.getDisplayName());
         }
         consumer.accept(userDisplayNameResponsePacket);
     }
@@ -191,8 +191,8 @@ extends SimpleChannelInboundHandler<ZeusSerializablePacket> {
     }
 
     private void lambda$sendGroupUninvitePacket$17(UserModel userModel, Consumer consumer, GroupUninviteResponsePacket groupUninviteResponsePacket) {
-        if (groupUninviteResponsePacket.H() == GroupUninviteStatus.SUCCESS) {
-            OnlineEventDispatcher.O.G(new PartyInviteRemovedEvent(this, Vape.INSTANCE.getOnlineManager().u().Q(userModel.g(), () -> ZeusClient.lambda$null$16(userModel))));
+        if (groupUninviteResponsePacket.getStatus() == GroupUninviteStatus.SUCCESS) {
+            OnlineEventDispatcher.O.G(new PartyInviteRemovedEvent(this, Vape.INSTANCE.getOnlineManager().getFriendCache().getOrCreateFriend(userModel.getId(), () -> ZeusClient.lambda$null$16(userModel))));
         }
         consumer.accept(groupUninviteResponsePacket);
     }
@@ -206,20 +206,20 @@ extends SimpleChannelInboundHandler<ZeusSerializablePacket> {
     }
 
     private void o(ServerPingPacket serverPingPacket) {
-        if (serverPingPacket.s() == Vape.INSTANCE.getOnlineManager().r().S().g()) {
+        if (serverPingPacket.s() == Vape.INSTANCE.getOnlineManager().getLocalFriend().getUser().getId()) {
             return;
         }
         PingTargetData pingTargetData = serverPingPacket.m();
-        OnlineFriend onlineFriend = Vape.INSTANCE.getOnlineManager().u().m(serverPingPacket.s());
-        String string = onlineFriend != null ? onlineFriend.C() : String.valueOf(serverPingPacket.s());
-        PingMarker pingMarker = PingManager.B.d(onlineFriend);
+        OnlineFriend onlineFriend = Vape.INSTANCE.getOnlineManager().getFriendCache().getFriend(serverPingPacket.s());
+        String string = onlineFriend != null ? onlineFriend.getDisplayName() : String.valueOf(serverPingPacket.s());
+        PingMarker pingMarker = PingManager.INSTANCE.getMarker(onlineFriend);
         PingMarker pingMarker2 = null;
         if (pingTargetData.K() == PingTargetKind.POSITION) {
             if (!(H || pingTargetData.W() != null && pingTargetData.w() != null && pingTargetData.L() != null)) {
                 throw new AssertionError();
             }
-            if (pingMarker instanceof OnlineFriendPingMarker && pingMarker.D(pingTargetData.W(), pingTargetData.w(), pingTargetData.L())) {
-                pingMarker.b();
+            if (pingMarker instanceof OnlineFriendPingMarker && pingMarker.isNear(pingTargetData.W(), pingTargetData.w(), pingTargetData.L())) {
+                pingMarker.retrigger();
                 return;
             }
             pingMarker2 = new OnlineFriendPingMarker(onlineFriend, new double[]{pingTargetData.W(), pingTargetData.w(), pingTargetData.L()});
@@ -228,8 +228,8 @@ extends SimpleChannelInboundHandler<ZeusSerializablePacket> {
             if (!(H || pingTargetData.y() != null && pingTargetData.u() != null && pingTargetData.r() != null)) {
                 throw new AssertionError();
             }
-            if (pingMarker instanceof BlockPingMarker && (dArray = pingMarker.A())[0] == (double)pingTargetData.y().intValue() && dArray[1] == (double)pingTargetData.u().intValue() && dArray[2] == (double)pingTargetData.r().intValue()) {
-                pingMarker.b();
+            if (pingMarker instanceof BlockPingMarker && (dArray = pingMarker.getWorldPosition())[0] == (double)pingTargetData.y().intValue() && dArray[1] == (double)pingTargetData.u().intValue() && dArray[2] == (double)pingTargetData.r().intValue()) {
+                pingMarker.retrigger();
                 return;
             }
             pingMarker2 = new BlockPingMarker(onlineFriend, new double[]{pingTargetData.y().intValue(), pingTargetData.u().intValue(), pingTargetData.r().intValue()});
@@ -238,34 +238,34 @@ extends SimpleChannelInboundHandler<ZeusSerializablePacket> {
                 throw new AssertionError();
             }
             Long l = pingTargetData.t();
-            if (l != null && l.longValue() == Vape.INSTANCE.getOnlineManager().r().S().g()) {
+            if (l != null && l.longValue() == Vape.INSTANCE.getOnlineManager().getLocalFriend().getUser().getId()) {
                 return;
             }
-            if (pingMarker instanceof EntityPingMarker && pingMarker.D(pingTargetData.W(), pingTargetData.w(), pingTargetData.L())) {
-                pingMarker.b();
+            if (pingMarker instanceof EntityPingMarker && pingMarker.isNear(pingTargetData.W(), pingTargetData.w(), pingTargetData.L())) {
+                pingMarker.retrigger();
                 return;
             }
             pingMarker2 = new EntityPingMarker(onlineFriend, pingTargetData.t(), pingTargetData.e(), new double[]{pingTargetData.W(), pingTargetData.w(), pingTargetData.L()});
         }
         if (pingMarker2 != null) {
-            PingManager.B.Q(pingMarker2);
+            PingManager.INSTANCE.addMarker(pingMarker2);
         }
     }
 
     private void W(ServerInventoryUpdatePacket serverInventoryUpdatePacket) {
-        OnlineActivityManager onlineActivityManager = Vape.INSTANCE.getOnlineManager().V();
-        OnlineFriendActivityState onlineFriendActivityState = onlineActivityManager.J(serverInventoryUpdatePacket.S());
+        OnlineActivityManager onlineActivityManager = Vape.INSTANCE.getOnlineManager().getActivityManager();
+        OnlineFriendActivityState onlineFriendActivityState = onlineActivityManager.getActivityState(serverInventoryUpdatePacket.getUserId());
         if (onlineFriendActivityState == null) {
             return;
         }
-        for (Map.Entry<Integer, ActivityItemStackPayload> entry : serverInventoryUpdatePacket.h().entrySet()) {
+        for (Map.Entry<Integer, ActivityItemStackPayload> entry : serverInventoryUpdatePacket.getInventoryItems().entrySet()) {
             if (entry.getKey() >= 36) {
-                onlineFriendActivityState.I()[entry.getKey().intValue() - 36] = ActivityItemStack.C(entry.getValue());
+                onlineFriendActivityState.getArmor()[entry.getKey().intValue() - 36] = ActivityItemStack.fromPayload(entry.getValue());
                 continue;
             }
-            onlineFriendActivityState.N$src$ALgg_vape_friend_activity_ActivityItemStack_$1nvfl9h()[entry.getKey().intValue()] = ActivityItemStack.C(entry.getValue());
+            onlineFriendActivityState.getInventory()[entry.getKey().intValue()] = ActivityItemStack.fromPayload(entry.getValue());
         }
-        onlineFriendActivityState.y(true);
+        onlineFriendActivityState.setDataAvailable(true);
     }
 
     public void p(long l) {
@@ -274,26 +274,26 @@ extends SimpleChannelInboundHandler<ZeusSerializablePacket> {
     }
 
     private void y(ServerInventorySnapshotPacket serverInventorySnapshotPacket) {
-        OnlineActivityManager onlineActivityManager = Vape.INSTANCE.getOnlineManager().V();
-        OnlineFriendActivityState onlineFriendActivityState = onlineActivityManager.J(serverInventorySnapshotPacket.f());
+        OnlineActivityManager onlineActivityManager = Vape.INSTANCE.getOnlineManager().getActivityManager();
+        OnlineFriendActivityState onlineFriendActivityState = onlineActivityManager.getActivityState(serverInventorySnapshotPacket.getUserId());
         if (onlineFriendActivityState == null) {
             return;
         }
-        Arrays.fill(onlineFriendActivityState.I(), null);
-        Arrays.fill(onlineFriendActivityState.N$src$ALgg_vape_friend_activity_ActivityItemStack_$1nvfl9h(), null);
-        onlineFriendActivityState.D(serverInventorySnapshotPacket.A());
-        for (Map.Entry<Integer, ActivityItemStackPayload> entry : serverInventorySnapshotPacket.N().entrySet()) {
+        Arrays.fill(onlineFriendActivityState.getArmor(), null);
+        Arrays.fill(onlineFriendActivityState.getInventory(), null);
+        onlineFriendActivityState.setHeldItemSlot(serverInventorySnapshotPacket.getHeldItemSlot());
+        for (Map.Entry<Integer, ActivityItemStackPayload> entry : serverInventorySnapshotPacket.getInventoryItems().entrySet()) {
             if (entry.getKey() >= 36) {
-                onlineFriendActivityState.I()[entry.getKey().intValue() - 36] = ActivityItemStack.C(entry.getValue());
+                onlineFriendActivityState.getArmor()[entry.getKey().intValue() - 36] = ActivityItemStack.fromPayload(entry.getValue());
                 continue;
             }
-            onlineFriendActivityState.N$src$ALgg_vape_friend_activity_ActivityItemStack_$1nvfl9h()[entry.getKey().intValue()] = ActivityItemStack.C(entry.getValue());
+            onlineFriendActivityState.getInventory()[entry.getKey().intValue()] = ActivityItemStack.fromPayload(entry.getValue());
         }
-        onlineFriendActivityState.y(true);
+        onlineFriendActivityState.setDataAvailable(true);
     }
 
     private void L(ServerFriendRequestPacket serverFriendRequestPacket) {
-        OnlineEventDispatcher.O.G(new FriendRequestReceivedEvent(this, serverFriendRequestPacket.b()));
+        OnlineEventDispatcher.O.G(new FriendRequestReceivedEvent(this, serverFriendRequestPacket.getRequest()));
     }
 
     public void v(PresenceState presenceState) {
@@ -301,14 +301,14 @@ extends SimpleChannelInboundHandler<ZeusSerializablePacket> {
     }
 
     private static void lambda$sendFriendRequestUpdatePacket$9(boolean bl, Consumer consumer, FriendRequestUpdateResponsePacket friendRequestUpdateResponsePacket) {
-        if (friendRequestUpdateResponsePacket.l() != FriendRequestUpdateStatus.UNKNOWN && bl) {
-            OnlineEventDispatcher.O.G(new FriendModelUpdateEvent(ZeusConnectionManager.T().u(), friendRequestUpdateResponsePacket.S()));
+        if (friendRequestUpdateResponsePacket.getStatus() != FriendRequestUpdateStatus.UNKNOWN && bl) {
+            OnlineEventDispatcher.O.G(new FriendModelUpdateEvent(ZeusConnectionManager.T().u(), friendRequestUpdateResponsePacket.getUpdatedFriend()));
         }
         consumer.accept(friendRequestUpdateResponsePacket);
     }
 
     private void A(ServerUserDisplayNamePacket serverUserDisplayNamePacket) {
-        OnlineEventDispatcher.O.G(new UserDisplayNameChangedEvent(this, serverUserDisplayNamePacket.y(), serverUserDisplayNamePacket.N()));
+        OnlineEventDispatcher.O.G(new UserDisplayNameChangedEvent(this, serverUserDisplayNamePacket.getUserId(), serverUserDisplayNamePacket.getDisplayName()));
     }
 
     public void h(long[] lArray) {
@@ -326,7 +326,7 @@ extends SimpleChannelInboundHandler<ZeusSerializablePacket> {
     @SuppressWarnings("unchecked")
     public <R extends ZeusTrackedPacket<?>> void w(ZeusTrackedPacket<R> zeusTrackedPacket, @Nullable Consumer<R> consumer, @Nullable Runnable runnable) {
         Consumer<ZeusTrackedPacket<?>> trackedConsumer = (Consumer<ZeusTrackedPacket<?>>)(Consumer<?>)consumer;
-        this.d.put(zeusTrackedPacket.o$src$Ljava_util_UUID_$1pm4r8s(), OnlineRadarPreviewState.l(trackedConsumer, runnable));
+        this.d.put(zeusTrackedPacket.o$src$Ljava_util_UUID_$1pm4r8s(), OnlineRadarPreviewState.create(trackedConsumer, runnable));
         this.V(zeusTrackedPacket);
     }
 
@@ -346,11 +346,11 @@ extends SimpleChannelInboundHandler<ZeusSerializablePacket> {
             if (onlineRadarPreviewState == null) {
                 throw new RuntimeException("Failed to find queued future for packet " + zeusSerializablePacket + " (" + zeusTrackedPacket.o$src$Ljava_util_UUID_$1pm4r8s() + ")");
             }
-            if (onlineRadarPreviewState.n() != null) {
-                onlineRadarPreviewState.n().accept(zeusTrackedPacket);
+            if (onlineRadarPreviewState.getKey() != null) {
+                onlineRadarPreviewState.getKey().accept(zeusTrackedPacket);
             }
-            if (onlineRadarPreviewState.R() != null) {
-                onlineRadarPreviewState.R().run();
+            if (onlineRadarPreviewState.getValue() != null) {
+                onlineRadarPreviewState.getValue().run();
             }
             return;
         }
@@ -424,7 +424,7 @@ extends SimpleChannelInboundHandler<ZeusSerializablePacket> {
     }
 
     private void I(ServerFriendChatMessagePacket serverFriendChatMessagePacket) {
-        OnlineEventDispatcher.O.G(new FriendChatMessageEvent(this, serverFriendChatMessagePacket.C(), serverFriendChatMessagePacket.h()));
+        OnlineEventDispatcher.O.G(new FriendChatMessageEvent(this, serverFriendChatMessagePacket.getSender(), serverFriendChatMessagePacket.getMessage()));
     }
 
     public void V(UserModel userModel, Consumer<GroupUninviteResponsePacket> consumer, Runnable runnable) {
@@ -432,7 +432,7 @@ extends SimpleChannelInboundHandler<ZeusSerializablePacket> {
     }
 
     private void r(FriendVisibilityUpdatePacket friendVisibilityUpdatePacket) {
-        OnlineEventDispatcher.O.G(new FriendVisibilityUpdateEvent(this, friendVisibilityUpdatePacket.S(), friendVisibilityUpdatePacket.N()));
+        OnlineEventDispatcher.O.G(new FriendVisibilityUpdateEvent(this, friendVisibilityUpdatePacket.getUserId(), friendVisibilityUpdatePacket.isVisible()));
     }
 
     private static OnlineFriend lambda$null$14(UserModel userModel) {
@@ -447,7 +447,7 @@ extends SimpleChannelInboundHandler<ZeusSerializablePacket> {
     }
 
     private void v(ServerFriendModelPacket serverFriendModelPacket) {
-        OnlineEventDispatcher.O.G(new FriendModelUpdateEvent(ZeusConnectionManager.T().u(), serverFriendModelPacket.t()));
+        OnlineEventDispatcher.O.G(new FriendModelUpdateEvent(ZeusConnectionManager.T().u(), serverFriendModelPacket.getFriend()));
     }
 
     public void N(Consumer<HandshakeResponsePacket> consumer) {
@@ -455,13 +455,13 @@ extends SimpleChannelInboundHandler<ZeusSerializablePacket> {
     }
 
     private void v(FriendCpsPacket friendCpsPacket) {
-        OnlineActivityManager onlineActivityManager = Vape.INSTANCE.getOnlineManager().V();
-        OnlineFriendActivityState onlineFriendActivityState = onlineActivityManager.J(friendCpsPacket.G());
+        OnlineActivityManager onlineActivityManager = Vape.INSTANCE.getOnlineManager().getActivityManager();
+        OnlineFriendActivityState onlineFriendActivityState = onlineActivityManager.getActivityState(friendCpsPacket.getUserId());
         if (onlineFriendActivityState == null) {
             return;
         }
-        onlineFriendActivityState.D(friendCpsPacket.N());
-        onlineFriendActivityState.y(true);
+        onlineFriendActivityState.setHeldItemSlot(friendCpsPacket.getClicksPerSecond());
+        onlineFriendActivityState.setDataAvailable(true);
     }
 
     public ZeusProtocolState k() {
@@ -470,7 +470,7 @@ extends SimpleChannelInboundHandler<ZeusSerializablePacket> {
 
     private void lambda$sendGroupCreatePacket$11(Consumer consumer, GroupCreateResponsePacket groupCreateResponsePacket) {
         consumer.accept(groupCreateResponsePacket);
-        OnlineEventDispatcher.O.G(new GroupCreatedEvent(this, new PartyState(Vape.INSTANCE.getOnlineManager().r())));
+        OnlineEventDispatcher.O.G(new GroupCreatedEvent(this, new PartyState(Vape.INSTANCE.getOnlineManager().getLocalFriend())));
     }
 
     private static void lambda$sendFriendDeletePacket$7(Consumer consumer, FriendDeleteResponsePacket friendDeleteResponsePacket) {
@@ -479,7 +479,7 @@ extends SimpleChannelInboundHandler<ZeusSerializablePacket> {
 
     private void lambda$switchToAuthenticated$3(FriendsListResponsePacket friendsListResponsePacket) {
         this.Y();
-        OnlineEventDispatcher.O.G(new InitialOnlineFriendStateEvent(this, friendsListResponsePacket.s(), friendsListResponsePacket.W(), friendsListResponsePacket.O()));
+        OnlineEventDispatcher.O.G(new InitialOnlineFriendStateEvent(this, friendsListResponsePacket.getFriends(), friendsListResponsePacket.getIncomingRequests(), friendsListResponsePacket.getOutgoingRequests()));
     }
 
     public void V(ZeusSerializablePacket zeusSerializablePacket) {
@@ -495,7 +495,7 @@ extends SimpleChannelInboundHandler<ZeusSerializablePacket> {
                     // empty if block
                 }
                 if (!this.d.containsKey(((ZeusTrackedPacket)zeusSerializablePacket).o$src$Ljava_util_UUID_$1pm4r8s())) {
-                    this.d.put(((ZeusTrackedPacket)zeusSerializablePacket).o$src$Ljava_util_UUID_$1pm4r8s(), OnlineRadarPreviewState.l(ZeusClient::lambda$sendPacket$0, ZeusClient::lambda$sendPacket$1));
+                    this.d.put(((ZeusTrackedPacket)zeusSerializablePacket).o$src$Ljava_util_UUID_$1pm4r8s(), OnlineRadarPreviewState.create(ZeusClient::lambda$sendPacket$0, ZeusClient::lambda$sendPacket$1));
                 }
             } else if (!(zeusSerializablePacket instanceof HeartbeatPacket)) {
                 // empty if block
@@ -542,30 +542,30 @@ extends SimpleChannelInboundHandler<ZeusSerializablePacket> {
         if (!H && authenticationResponsePacket.s() == null) {
             throw new AssertionError();
         }
-        Vape.INSTANCE.getOnlineManager().r().c(authenticationResponsePacket.s());
+        Vape.INSTANCE.getOnlineManager().getLocalFriend().setUser(authenticationResponsePacket.s());
         this.f(authenticationResponsePacket.s());
         consumer.accept(authenticationResponsePacket);
     }
 
     public void Y() {
-        boolean bl = OnlineConnectionManager.T.S().O().getEffectiveValue();
+        boolean bl = OnlineConnectionManager.INSTANCE.getSettings().getShareUsername().getEffectiveValue();
         this.V(new ShowUsernamePacket(bl));
     }
 
     private void u(ActivitySnapshotsPacket activitySnapshotsPacket) {
-        OnlineActivityManager onlineActivityManager = Vape.INSTANCE.getOnlineManager().V();
-        for (int i = 0; i < activitySnapshotsPacket.u().length; ++i) {
-            long l = activitySnapshotsPacket.u()[i];
-            ActivitySnapshotPayload activitySnapshotPayload = activitySnapshotsPacket.Q()[i];
-            OnlineFriendActivityState onlineFriendActivityState = onlineActivityManager.J(l);
+        OnlineActivityManager onlineActivityManager = Vape.INSTANCE.getOnlineManager().getActivityManager();
+        for (int i = 0; i < activitySnapshotsPacket.getUserIds().length; ++i) {
+            long userId = activitySnapshotsPacket.getUserIds()[i];
+            ActivitySnapshotPayload activitySnapshotPayload = activitySnapshotsPacket.getSnapshots()[i];
+            OnlineFriendActivityState onlineFriendActivityState = onlineActivityManager.getActivityState(userId);
             if (onlineFriendActivityState == null) continue;
-            onlineFriendActivityState.N(activitySnapshotPayload);
+            onlineFriendActivityState.applySnapshot(activitySnapshotPayload);
         }
     }
 
     private void lambda$sendGroupInvitePacket$15(UserModel userModel, Consumer consumer, GroupInviteResponsePacket groupInviteResponsePacket) {
-        if (groupInviteResponsePacket.a() == GroupInviteStatus.SUCCESS) {
-            OnlineEventDispatcher.O.G(new GroupInviteSentEvent(this, Vape.INSTANCE.getOnlineManager().u().Q(userModel.g(), () -> ZeusClient.lambda$null$14(userModel))));
+        if (groupInviteResponsePacket.getStatus() == GroupInviteStatus.SUCCESS) {
+            OnlineEventDispatcher.O.G(new GroupInviteSentEvent(this, Vape.INSTANCE.getOnlineManager().getFriendCache().getOrCreateFriend(userModel.getId(), () -> ZeusClient.lambda$null$14(userModel))));
         }
         consumer.accept(groupInviteResponsePacket);
     }
@@ -615,21 +615,21 @@ extends SimpleChannelInboundHandler<ZeusSerializablePacket> {
     }
 
     private void lambda$sendGroupInviteStatePacket$18(Consumer consumer, GroupInviteStateResponsePacket groupInviteStateResponsePacket) {
-        if (groupInviteStateResponsePacket.M() == GroupInviteStateStatus.SUCCESSFULLY_ACCEPTED) {
-            if (!H && groupInviteStateResponsePacket.Y() == null) {
+        if (groupInviteStateResponsePacket.getStatus() == GroupInviteStateStatus.SUCCESSFULLY_ACCEPTED) {
+            if (!H && groupInviteStateResponsePacket.getPartyState() == null) {
                 throw new AssertionError();
             }
-            OnlineEventDispatcher.O.G(new GroupInviteAcceptedEvent(this, new PartyState(groupInviteStateResponsePacket.Y())));
+            OnlineEventDispatcher.O.G(new GroupInviteAcceptedEvent(this, new PartyState(groupInviteStateResponsePacket.getPartyState())));
         }
         consumer.accept(groupInviteStateResponsePacket);
     }
 
     private void F(ServerGroupChatMessagePacket serverGroupChatMessagePacket) {
-        new GroupChatMessageEvent(this, new UserModel(serverGroupChatMessagePacket.E(), null), new UserModel(serverGroupChatMessagePacket.E(), null), serverGroupChatMessagePacket.z()).u();
+        new GroupChatMessageEvent(this, new UserModel(serverGroupChatMessagePacket.getSenderUserId(), null), new UserModel(serverGroupChatMessagePacket.getSenderUserId(), null), serverGroupChatMessagePacket.getMessage()).u();
     }
 
     private void N(FriendServerAddressPacket friendServerAddressPacket) {
-        OnlineEventDispatcher.O.G(new FriendServerAddressEvent(this, friendServerAddressPacket.b(), friendServerAddressPacket.w()));
+        OnlineEventDispatcher.O.G(new FriendServerAddressEvent(this, friendServerAddressPacket.getUserId(), friendServerAddressPacket.getServerAddress()));
     }
 
     private void f(UserModel userModel) {
@@ -665,7 +665,7 @@ extends SimpleChannelInboundHandler<ZeusSerializablePacket> {
     }
 
     private void lambda$sendGroupDeletePacket$13(Consumer consumer, GroupDeleteResponsePacket groupDeleteResponsePacket) {
-        if (groupDeleteResponsePacket.t() == GroupDeleteStatus.SUCCESS) {
+        if (groupDeleteResponsePacket.getStatus() == GroupDeleteStatus.SUCCESS) {
             OnlineEventDispatcher.O.G(new GroupDeletedEvent(this));
         }
         consumer.accept(groupDeleteResponsePacket);
@@ -673,7 +673,7 @@ extends SimpleChannelInboundHandler<ZeusSerializablePacket> {
 
     private void lambda$sendGroupLeavePacket$12(Consumer consumer, GroupLeaveResponsePacket groupLeaveResponsePacket) {
         consumer.accept(groupLeaveResponsePacket);
-        if (groupLeaveResponsePacket.D() == GroupLeaveStatus.SUCCESS) {
+        if (groupLeaveResponsePacket.getStatus() == GroupLeaveStatus.SUCCESS) {
             OnlineEventDispatcher.O.G(new GroupLeftEvent(this));
         }
     }
@@ -683,16 +683,16 @@ extends SimpleChannelInboundHandler<ZeusSerializablePacket> {
     }
 
     private void L(ServerHeldItemSlotPacket serverHeldItemSlotPacket) {
-        OnlineFriend onlineFriend = Vape.INSTANCE.getOnlineManager().u().m(serverHeldItemSlotPacket.S());
+        OnlineFriend onlineFriend = Vape.INSTANCE.getOnlineManager().getFriendCache().getFriend(serverHeldItemSlotPacket.getUserId());
         if (onlineFriend == null) {
             return;
         }
-        OnlineActivityManager onlineActivityManager = Vape.INSTANCE.getOnlineManager().V();
-        OnlineFriendActivityState onlineFriendActivityState = onlineActivityManager.J(serverHeldItemSlotPacket.S());
+        OnlineActivityManager onlineActivityManager = Vape.INSTANCE.getOnlineManager().getActivityManager();
+        OnlineFriendActivityState onlineFriendActivityState = onlineActivityManager.getActivityState(serverHeldItemSlotPacket.getUserId());
         if (onlineFriendActivityState == null) {
             return;
         }
-        onlineFriendActivityState.O(serverHeldItemSlotPacket.e());
+        onlineFriendActivityState.setClicksPerSecond(serverHeldItemSlotPacket.getHeldItemSlot());
     }
 
     public UserModel i() {
@@ -716,17 +716,17 @@ extends SimpleChannelInboundHandler<ZeusSerializablePacket> {
             if (!H && serverGroupInviteUpdatePacket.k() == null) {
                 throw new AssertionError();
             }
-            if (Vape.INSTANCE.getOnlineManager().r().S().g() == serverGroupInviteUpdatePacket.k().g()) {
+            if (Vape.INSTANCE.getOnlineManager().getLocalFriend().getUser().getId() == serverGroupInviteUpdatePacket.k().getId()) {
                 return;
             }
-            OnlineEventDispatcher.O.G(new GroupInviteSentEvent(this, Vape.INSTANCE.getOnlineManager().u().Q(serverGroupInviteUpdatePacket.f().g(), () -> ZeusClient.lambda$handleServerGroupInviteUpdatePacket$20(serverGroupInviteUpdatePacket))));
+            OnlineEventDispatcher.O.G(new GroupInviteSentEvent(this, Vape.INSTANCE.getOnlineManager().getFriendCache().getOrCreateFriend(serverGroupInviteUpdatePacket.f().getId(), () -> ZeusClient.lambda$handleServerGroupInviteUpdatePacket$20(serverGroupInviteUpdatePacket))));
         } else if (serverGroupInviteUpdatePacket.e() == GroupInviteUpdateStatus.DECLINED) {
-            OnlineEventDispatcher.O.G(new PartyInviteRemovedEvent(this, Vape.INSTANCE.getOnlineManager().u().Q(serverGroupInviteUpdatePacket.f().g(), () -> ZeusClient.lambda$handleServerGroupInviteUpdatePacket$21(serverGroupInviteUpdatePacket))));
+            OnlineEventDispatcher.O.G(new PartyInviteRemovedEvent(this, Vape.INSTANCE.getOnlineManager().getFriendCache().getOrCreateFriend(serverGroupInviteUpdatePacket.f().getId(), () -> ZeusClient.lambda$handleServerGroupInviteUpdatePacket$21(serverGroupInviteUpdatePacket))));
         }
     }
 
     private void h(ServerGroupLeaderChangedPacket serverGroupLeaderChangedPacket) {
-        OnlineEventDispatcher.O.G(new PartyLeaderChangedEvent(this, serverGroupLeaderChangedPacket.O()));
+        OnlineEventDispatcher.O.G(new PartyLeaderChangedEvent(this, serverGroupLeaderChangedPacket.getNewLeader()));
     }
 
     public void N(int n, Map<Integer, ActivityItemStackPayload> map) {
@@ -734,7 +734,7 @@ extends SimpleChannelInboundHandler<ZeusSerializablePacket> {
     }
 
     private void G(ServerFriendPresenceStatePacket serverFriendPresenceStatePacket) {
-        OnlineEventDispatcher.O.G(new FriendPresenceStateEvent(this, serverFriendPresenceStatePacket.y(), serverFriendPresenceStatePacket.C()));
+        OnlineEventDispatcher.O.G(new FriendPresenceStateEvent(this, serverFriendPresenceStatePacket.getUser(), serverFriendPresenceStatePacket.getPresenceState()));
     }
 
     private static void lambda$sendHandshake$2(Consumer consumer, HandshakeResponsePacket handshakeResponsePacket) {
@@ -757,7 +757,7 @@ extends SimpleChannelInboundHandler<ZeusSerializablePacket> {
     }
 
     private void v(ServerFriendRequestRemovedPacket serverFriendRequestRemovedPacket) {
-        OnlineEventDispatcher.O.G(new FriendRequestRemovedEvent(this, serverFriendRequestRemovedPacket.R()));
+        OnlineEventDispatcher.O.G(new FriendRequestRemovedEvent(this, serverFriendRequestRemovedPacket.getUserId()));
     }
 
     public void exceptionCaught(ChannelHandlerContext channelHandlerContext, Throwable throwable) throws Exception {
@@ -774,15 +774,15 @@ extends SimpleChannelInboundHandler<ZeusSerializablePacket> {
 
     private void G(ServerDisconnectPacket serverDisconnectPacket) {
         if (serverDisconnectPacket.q() == OnlineDisconnectReason.BANNED) {
-            OnlineConnectionManager.T.o(OnlineAccountState.BANNED);
+            OnlineConnectionManager.INSTANCE.setAccountState(OnlineAccountState.BANNED);
         }
-        OnlineConnectionManager.T.f(serverDisconnectPacket.q());
-        OnlineConnectionManager.T.I();
+        OnlineConnectionManager.INSTANCE.setDisconnectReason(serverDisconnectPacket.q());
+        OnlineConnectionManager.INSTANCE.connect();
     }
 
     public void J(String string, Consumer<AuthenticationResponsePacket> consumer) {
         MinecraftSessionWrapper minecraftSessionWrapper = Minecraft.Q$src$Lgg_vape_account_MinecraftSessionWrapper_$1ftnn3u();
-        this.z(new AuthenticationPacket(string, minecraftSessionWrapper.R(), minecraftSessionWrapper.M()), arg_0 -> this.lambda$sendAuthenticationPacket$5(consumer, arg_0));
+        this.z(new AuthenticationPacket(string, minecraftSessionWrapper.getProfileId(), minecraftSessionWrapper.getUsername()), arg_0 -> this.lambda$sendAuthenticationPacket$5(consumer, arg_0));
     }
 
     private void L(FriendActivityUsersPacket friendActivityUsersPacket) {
@@ -790,26 +790,26 @@ extends SimpleChannelInboundHandler<ZeusSerializablePacket> {
             block3: {
                 if (friendActivityUsersPacket.G() != FriendActivityUsersAction.ADD) break block3;
                 for (long l : friendActivityUsersPacket.Y()) {
-                    OnlineFriend onlineFriend = Vape.INSTANCE.getOnlineManager().u().m(l);
+                    OnlineFriend onlineFriend = Vape.INSTANCE.getOnlineManager().getFriendCache().getFriend(l);
                     if (onlineFriend == null) continue;
-                    Vape.INSTANCE.getOnlineManager().V().o(onlineFriend);
+                    Vape.INSTANCE.getOnlineManager().getActivityManager().startTracking(onlineFriend);
                 }
                 break block4;
             }
             if (friendActivityUsersPacket.G() != FriendActivityUsersAction.CHANGED_WORLD) break block4;
             for (long l : friendActivityUsersPacket.Y()) {
-                if (l == Vape.INSTANCE.getOnlineManager().r().S().g()) {
-                    Vape.INSTANCE.getOnlineManager().V().R(false);
+                if (l == Vape.INSTANCE.getOnlineManager().getLocalFriend().getUser().getId()) {
+                    Vape.INSTANCE.getOnlineManager().getActivityManager().reset(false);
                     continue;
                 }
-                Vape.INSTANCE.getOnlineManager().V().m(l);
+                Vape.INSTANCE.getOnlineManager().getActivityManager().removeTrackedUser(l);
             }
         }
     }
 
     private void lambda$sendFriendRequestPacket$8(Consumer consumer, FriendRequestResponsePacket friendRequestResponsePacket) {
-        if (friendRequestResponsePacket.n() == FriendRequestResponseStatus.SENT) {
-            OnlineEventDispatcher.O.G(new FriendRequestSentEvent(this, friendRequestResponsePacket.c()));
+        if (friendRequestResponsePacket.getStatus() == FriendRequestResponseStatus.SENT) {
+            OnlineEventDispatcher.O.G(new FriendRequestSentEvent(this, friendRequestResponsePacket.getRequest()));
         }
         consumer.accept(friendRequestResponsePacket);
     }
@@ -821,6 +821,6 @@ extends SimpleChannelInboundHandler<ZeusSerializablePacket> {
     }
 
     private void S(ServerGroupOptionUpdatePacket serverGroupOptionUpdatePacket) {
-        OnlineEventDispatcher.O.G(new GroupOptionUpdatedEvent(this, serverGroupOptionUpdatePacket.f(), serverGroupOptionUpdatePacket.Z()));
+        OnlineEventDispatcher.O.G(new GroupOptionUpdatedEvent(this, serverGroupOptionUpdatePacket.getOption(), serverGroupOptionUpdatePacket.getValue()));
     }
 }

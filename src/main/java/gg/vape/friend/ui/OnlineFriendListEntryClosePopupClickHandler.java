@@ -5,14 +5,14 @@ import gg.vape.ui.click.component.GuiClickListener;
 
 public class OnlineFriendListEntryClosePopupClickHandler
 implements GuiClickListener {
-    final OnlineFriendListEntry B;
+    private final OnlineFriendListEntry entry;
 
     @Override
     public void onPrimaryClick() {
-        OnlineFriendListEntry.d(this.B);
+        OnlineFriendListEntry.closePopup(this.entry);
     }
 
-    public OnlineFriendListEntryClosePopupClickHandler(OnlineFriendListEntry mz_22) {
-        this.B = mz_22;
+    public OnlineFriendListEntryClosePopupClickHandler(OnlineFriendListEntry entry) {
+        this.entry = entry;
     }
 }

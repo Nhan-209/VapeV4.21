@@ -95,13 +95,13 @@ implements InventoryActionModule {
         for (int slot = 9; slot <= 45; ++slot) {
             ItemMappingEntry itemMappingEntry;
             ItemStack itemStack = localPlayer.F$src$Lgg_vape_wrapper_impl_Container_$152y6lm().getSlot(slot).I();
-            if (itemStack.isNull() || (itemMappingEntry = Vape.INSTANCE.getItemStackResolver().resolve(itemStack)) == null || !itemMappingEntry.M().toLowerCase().contains("totem_of_undying")) continue;
+            if (itemStack.isNull() || (itemMappingEntry = Vape.INSTANCE.getItemStackResolver().resolve(itemStack)) == null || !itemMappingEntry.getResourceKey().toLowerCase().contains("totem_of_undying")) continue;
             count += itemStack.t();
         }
         return count;
     }
 
-    @EventHandler(A=EventPriority.HIGHEST)
+    @EventHandler(priority=EventPriority.HIGHEST)
     public void onSendClickBlock(EventSendClickBlockToController event) {
         if (this.suppressInput) {
             event.setCancelled(true);
@@ -172,7 +172,7 @@ implements InventoryActionModule {
         this.resetDelayTimer();
     }
 
-    @EventHandler(A=EventPriority.HIGHEST)
+    @EventHandler(priority=EventPriority.HIGHEST)
     public void onClickMouse(EventClickMouse event) {
         if (this.suppressInput) {
             event.setCancelled(true);
@@ -189,12 +189,12 @@ implements InventoryActionModule {
 
     private void releaseMovementKeys(GameSettings gameSettings) {
         if (this.suppressInput) {
-            KeyBindingHelper.updateKeyBinding(gameSettings.Y(), gg.vape.config.ClientSettings.B(gameSettings.Y()), true);
-            KeyBindingHelper.updateKeyBinding(gameSettings.s(), gg.vape.config.ClientSettings.B(gameSettings.s()), true);
-            KeyBindingHelper.updateKeyBinding(gameSettings.x$src$Lgg_vape_wrapper_impl_KeyBinding_$1cf7isg(), gg.vape.config.ClientSettings.B(gameSettings.x$src$Lgg_vape_wrapper_impl_KeyBinding_$1cf7isg()), true);
-            KeyBindingHelper.updateKeyBinding(gameSettings.g$src$Lgg_vape_wrapper_impl_KeyBinding_$qqn5n3(), gg.vape.config.ClientSettings.B(gameSettings.g$src$Lgg_vape_wrapper_impl_KeyBinding_$qqn5n3()), true);
-            KeyBindingHelper.updateKeyBinding(gameSettings.O(), gg.vape.config.ClientSettings.B(gameSettings.O()), true);
-            KeyBindingHelper.updateKeyBinding(gameSettings.r(), gg.vape.config.ClientSettings.B(gameSettings.r()), true);
+            KeyBindingHelper.updateKeyBinding(gameSettings.Y(), gg.vape.config.ClientSettings.isPhysicalKeyDown(gameSettings.Y()), true);
+            KeyBindingHelper.updateKeyBinding(gameSettings.s(), gg.vape.config.ClientSettings.isPhysicalKeyDown(gameSettings.s()), true);
+            KeyBindingHelper.updateKeyBinding(gameSettings.x$src$Lgg_vape_wrapper_impl_KeyBinding_$1cf7isg(), gg.vape.config.ClientSettings.isPhysicalKeyDown(gameSettings.x$src$Lgg_vape_wrapper_impl_KeyBinding_$1cf7isg()), true);
+            KeyBindingHelper.updateKeyBinding(gameSettings.g$src$Lgg_vape_wrapper_impl_KeyBinding_$qqn5n3(), gg.vape.config.ClientSettings.isPhysicalKeyDown(gameSettings.g$src$Lgg_vape_wrapper_impl_KeyBinding_$qqn5n3()), true);
+            KeyBindingHelper.updateKeyBinding(gameSettings.O(), gg.vape.config.ClientSettings.isPhysicalKeyDown(gameSettings.O()), true);
+            KeyBindingHelper.updateKeyBinding(gameSettings.r(), gg.vape.config.ClientSettings.isPhysicalKeyDown(gameSettings.r()), true);
         }
     }
 
@@ -252,7 +252,7 @@ implements InventoryActionModule {
                 this.blockMovementKeys(eventPrePlayerTick.getGameSettings());
             }
         }
-        if (Vape.INSTANCE.getModManager().N(AutoTotem.class) || Vape.INSTANCE.getClientSettings().J$src$Z$c57s1l()) {
+        if (Vape.INSTANCE.getModManager().isOtherInventoryActionActive(AutoTotem.class) || Vape.INSTANCE.getClientSettings().isLobbyCheckActive()) {
             this.clickQueue.clear();
             return;
         }
@@ -303,7 +303,7 @@ implements InventoryActionModule {
         }
         ItemStack itemStack = localPlayer.F$src$Lgg_vape_wrapper_impl_Container_$152y6lm().getSlot(45).I();
         ItemMappingEntry itemMappingEntry = Vape.INSTANCE.getItemStackResolver().resolve(itemStack);
-        if (itemMappingEntry != null && itemMappingEntry.M().toLowerCase().contains("totem_of_undying")) {
+        if (itemMappingEntry != null && itemMappingEntry.getResourceKey().toLowerCase().contains("totem_of_undying")) {
             if (this.inventoryOpen && this.clickQueue.isEmpty()) {
                 this.closePending = true;
                 this.resetDelayTimer();
@@ -330,7 +330,7 @@ implements InventoryActionModule {
         }
     }
 
-    @EventHandler(A=EventPriority.HIGHEST)
+    @EventHandler(priority=EventPriority.HIGHEST)
     public void onRightClickMouse(EventRightClickMouse eventRightClickMouse) {
         if (this.suppressInput) {
             eventRightClickMouse.setCancelled(true);
@@ -372,7 +372,7 @@ implements InventoryActionModule {
         for (int slot = 9; slot < 45; ++slot) {
             ItemMappingEntry itemMappingEntry;
             ItemStack itemStack = localPlayer.F$src$Lgg_vape_wrapper_impl_Container_$152y6lm().getSlot(slot).I();
-            if (itemStack.isNull() || (itemMappingEntry = Vape.INSTANCE.getItemStackResolver().resolve(itemStack)) == null || !itemMappingEntry.M().toLowerCase().contains("totem_of_undying")) continue;
+            if (itemStack.isNull() || (itemMappingEntry = Vape.INSTANCE.getItemStackResolver().resolve(itemStack)) == null || !itemMappingEntry.getResourceKey().toLowerCase().contains("totem_of_undying")) continue;
             if (!this.randomSlot.getEffectiveValue().booleanValue()) {
                 return slot;
             }
@@ -398,7 +398,7 @@ implements InventoryActionModule {
         return -1;
     }
 
-    @EventHandler(A=EventPriority.HIGHEST)
+    @EventHandler(priority=EventPriority.HIGHEST)
     public void onThreadBoundPostTick(EventThreadBoundPostTick eventThreadBoundPostTick) {
         if (this.suppressInput) {
             eventThreadBoundPostTick.setCancelled(true);
@@ -420,7 +420,7 @@ implements InventoryActionModule {
         return freecam != null && freecam.r$src$Z$14eylz9() || this.rotationClaim.isBlockedFor(this) && !this.rotationClaim.acquire(this, true);
     }
 
-    @EventHandler(A=EventPriority.HIGHEST)
+    @EventHandler(priority=EventPriority.HIGHEST)
     public void onThreadBoundPreTick(EventThreadBoundPreTick eventThreadBoundPreTick) {
         if (this.suppressInput) {
             eventThreadBoundPreTick.setCancelled(true);

@@ -41,7 +41,7 @@ extends Mapping {
     }
 
     private boolean isInGround(Object object) {
-        return this.v.e(object, new Object[0]);
+        return this.v.invokeBoolean(object, new Object[0]);
     }
 
     public static Object getCaughtEntity(MEntityFishHook mEntityFishHook, Object object) {
@@ -49,7 +49,7 @@ extends Mapping {
     }
 
     private Object getCaughtEntity(Object object) {
-        return this.w.L(object, new Object[0]);
+        return this.w.invokeObject(object, new Object[0]);
     }
 
     public static boolean isInGround(MEntityFishHook mEntityFishHook, Object object) {

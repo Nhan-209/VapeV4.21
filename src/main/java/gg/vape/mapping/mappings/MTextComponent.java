@@ -33,7 +33,7 @@ extends Mapping {
             String string2 = "getVisualOrderText";
             Class clazz3 = MappedClasses.Yr;
             MTextComponent mTextComponent2 = this;
-            this.N = this.W(clazz3, string2, bl2, clazz2, classArray2);
+            this.N = this.registerInstanceMethodForOwner(clazz3, string2, bl2, clazz2, classArray2);
             return;
         }
         if (ForgeVersion.MC_1_20_6.d()) {
@@ -48,7 +48,7 @@ extends Mapping {
             boolean bl3 = true;
             String string3 = "create";
             MTextComponent mTextComponent3 = this;
-            this.Q = this.x(string3, bl3, clazz4, classArray3);
+            this.Q = this.registerStaticMethod(string3, bl3, clazz4, classArray3);
         } else {
             Class[] classArray = new Class[]{};
             Class<String> clazz = String.class;
@@ -63,11 +63,11 @@ extends Mapping {
         String string = "getVisualOrderText";
         Class clazz5 = MappedClasses.Yr;
         MTextComponent mTextComponent = this;
-        this.N = mTextComponent.W(clazz5, string, bl, clazz, classArray);
+        this.N = mTextComponent.registerInstanceMethodForOwner(clazz5, string, bl, clazz, classArray);
     }
 
     private Object r(Object object) {
-        return this.Q.L(null, object);
+        return this.Q.invokeObject(null, object);
     }
 
 
@@ -80,11 +80,11 @@ extends Mapping {
     }
 
     private Object Z(Object object) {
-        return this.h.L(object, new Object[0]);
+        return this.h.invokeObject(object, new Object[0]);
     }
 
     private Object n(Object object) {
-        return this.h.L(object, new Object[0]);
+        return this.h.invokeObject(object, new Object[0]);
     }
 
     public static Object s(MTextComponent mTextComponent, Object object) {

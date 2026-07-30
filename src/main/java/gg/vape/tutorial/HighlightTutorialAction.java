@@ -21,22 +21,22 @@ import java.util.Queue;
 
 public abstract class HighlightTutorialAction
 extends TutorialAction {
-    private double e;
-    private TutorialTooltipPlacement h = TutorialTooltipPlacement.TOP;
-    private boolean L;
-    private int u = 1;
-    private boolean X;
-    private double z;
-    private HashMap<GuiComponent, GuiMouseListener> N;
-    private Queue<QueuedTutorialMessage> T = new ArrayDeque<QueuedTutorialMessage>();
-    private final List<GuiComponent> B;
+    private double horizontalOffset;
+    private TutorialTooltipPlacement tooltipPlacement = TutorialTooltipPlacement.TOP;
+    private boolean includeHiddenComponents;
+    private int queuedMessageCount = 1;
+    private boolean includeInactiveTargets;
+    private double verticalOffset;
+    private final HashMap<GuiComponent, GuiMouseListener> mouseListeners;
+    private final Queue<QueuedTutorialMessage> queuedMessages = new ArrayDeque<QueuedTutorialMessage>();
+    private final List<GuiComponent> highlightedComponents;
 
 
-    public TutorialTooltipPlacement j() {
-        return this.h;
+    public TutorialTooltipPlacement getTooltipPlacement() {
+        return this.tooltipPlacement;
     }
 
-    public void V(Frame frame, double d, double d2, double d3, double d4, TutorialTooltipPlacement tutorialTooltipPlacement) {
+    public void positionTooltip(Frame frame, double d, double d2, double d3, double d4, TutorialTooltipPlacement tutorialTooltipPlacement) {
         double d5;
         double d6;
         double d7;
@@ -83,101 +83,101 @@ extends TutorialAction {
     }
 
     @Override
-    public void w() {
+    public void render() {
         TutorialFrame tutorialFrame = ClientSettings.getFrame(TutorialFrame.class);
-        if (!this.X()) {
+        if (!this.isTargetReady()) {
             return;
         }
-        RectData rectData = this.t();
-        if (this.e != 0.0) {
-            rectData.A(this.e);
+        RectData rectData = this.getHighlightBounds();
+        if (this.horizontalOffset != 0.0) {
+            rectData.A(this.horizontalOffset);
         }
-        if (this.z != 0.0) {
-            rectData.U(this.z);
+        if (this.verticalOffset != 0.0) {
+            rectData.U(this.verticalOffset);
         }
         GuiRenderPrimitives.t(rectData.o() - 2.0, rectData.W() - 2.0, rectData.e() + 3.0, rectData.R() + 4.0, ClientSettings.INSTANCE.getAccentColor().brighter().brighter());
-        this.V(tutorialFrame, rectData.o(), rectData.W(), rectData.e(), rectData.R(), this.j());
+        this.positionTooltip(tutorialFrame, rectData.o(), rectData.W(), rectData.e(), rectData.R(), this.getTooltipPlacement());
     }
 
-    public boolean V() {
-        return this.L;
+    public boolean includesHiddenComponents() {
+        return this.includeHiddenComponents;
     }
 
     @Override
-    public void S() {
+    public void cleanup() {
         Vape.debugLog("completed stage");
-        for (GuiComponent guiComponent : this.B) {
-            Vape.debugLog("removed " + guiComponent + " " + this.N.get(guiComponent));
-            guiComponent.removeMouseListener(this.N.get(guiComponent));
+        for (GuiComponent guiComponent : this.highlightedComponents) {
+            Vape.debugLog("removed " + guiComponent + " " + this.mouseListeners.get(guiComponent));
+            guiComponent.removeMouseListener(this.mouseListeners.get(guiComponent));
         }
-        this.B.clear();
-        this.N.clear();
+        this.highlightedComponents.clear();
+        this.mouseListeners.clear();
     }
 
     @Override
-    public boolean a() {
-        if (this.T.isEmpty()) {
+    public boolean canAdvance() {
+        if (this.queuedMessages.isEmpty()) {
             return true;
         }
-        QueuedTutorialMessage queuedTutorialMessage = this.T.poll();
-        this.I().H(queuedTutorialMessage.b);
-        this.I().e(queuedTutorialMessage.E);
-        this.I().G$src$Lgg_vape_ui_click_component_gui_TextButton_$82emrx().setLabelText("Ok (" + (this.u - this.T.size()) + "/" + this.u + ")");
+        QueuedTutorialMessage queuedTutorialMessage = this.queuedMessages.poll();
+        this.getComponent().setTitleText(queuedTutorialMessage.title);
+        this.getComponent().setDescriptionText(queuedTutorialMessage.message);
+        this.getComponent().getActionButton().setLabelText("Ok (" + (this.queuedMessageCount - this.queuedMessages.size()) + "/" + this.queuedMessageCount + ")");
         return false;
     }
 
-    public void H(GuiComponent guiComponent, GuiMouseListener guiMouseListener) {
+    public void registerMouseListener(GuiComponent guiComponent, GuiMouseListener guiMouseListener) {
         Vape.debugLog("adding listener " + guiComponent + " " + guiMouseListener);
         guiComponent.addMouseListener(guiMouseListener);
-        this.N.put(guiComponent, guiMouseListener);
+        this.mouseListeners.put(guiComponent, guiMouseListener);
     }
 
-    public boolean M() {
-        return this.X;
+    public boolean includesInactiveTargets() {
+        return this.includeInactiveTargets;
     }
 
-    public HighlightTutorialAction y(double d) {
-        this.z = d;
+    public HighlightTutorialAction setVerticalOffset(double verticalOffset) {
+        this.verticalOffset = verticalOffset;
         return this;
     }
 
     @Override
-    public boolean X() {
+    public boolean isTargetReady() {
         return false;
     }
 
-    public HighlightTutorialAction j(boolean bl) {
-        this.X = bl;
+    public HighlightTutorialAction setIncludeInactiveTargets(boolean includeInactiveTargets) {
+        this.includeInactiveTargets = includeInactiveTargets;
         return this;
     }
 
-    public HighlightTutorialAction E(TutorialTooltipPlacement tutorialTooltipPlacement) {
-        this.h = tutorialTooltipPlacement;
+    public HighlightTutorialAction setTooltipPlacement(TutorialTooltipPlacement tooltipPlacement) {
+        this.tooltipPlacement = tooltipPlacement;
         return this;
     }
 
-    public abstract RectData t();
+    public abstract RectData getHighlightBounds();
 
-    public HighlightTutorialAction u(double d) {
-        this.e = d;
+    public HighlightTutorialAction setHorizontalOffset(double horizontalOffset) {
+        this.horizontalOffset = horizontalOffset;
         return this;
     }
 
-    public HighlightTutorialAction h(String string, String string2) {
-        this.T.add(new QueuedTutorialMessage(string, string2));
-        this.I().G$src$Lgg_vape_ui_click_component_gui_TextButton_$82emrx().setLabelText("Ok (1/" + ++this.u + ")");
+    public HighlightTutorialAction queueMessage(String title, String message) {
+        this.queuedMessages.add(new QueuedTutorialMessage(title, message));
+        this.getComponent().getActionButton().setLabelText("Ok (1/" + ++this.queuedMessageCount + ")");
         return this;
     }
 
     public HighlightTutorialAction(TutorialActionComponent tutorialActionComponent, boolean bl) {
         super(tutorialActionComponent);
-        this.N = new HashMap();
-        this.B = new ArrayList<GuiComponent>();
-        this.L = bl;
+        this.mouseListeners = new HashMap();
+        this.highlightedComponents = new ArrayList<GuiComponent>();
+        this.includeHiddenComponents = bl;
     }
 
-    public List<GuiComponent> B() {
-        return this.B;
+    public List<GuiComponent> getHighlightedComponents() {
+        return this.highlightedComponents;
     }
 }
 

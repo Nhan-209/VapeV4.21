@@ -7,49 +7,49 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nullable;
 
 public class PublicProfileUser {
-    private final String u;
-    private final long r;
-    private static int[] Z;
+    private final String username;
+    private final long userId;
+    private static int[] runtimeState;
 
-    public static int[] I() {
-        return Z;
+    public static int[] getRuntimeState() {
+        return runtimeState;
     }
 
-    public static void Q(int[] nArray) {
-        Z = nArray;
+    public static void setRuntimeState(int[] runtimeState) {
+        PublicProfileUser.runtimeState = runtimeState;
     }
 
-    public String o() {
-        return this.u;
+    public String getUsername() {
+        return this.username;
     }
 
     static {
-        PublicProfileUser.Q(null);
+        PublicProfileUser.setRuntimeState(null);
     }
 
     @Nullable
     @Contract(value="null -> null")
-    public static PublicProfileUser K(@Nullable JsonElement jsonElement) {
-        if (jsonElement == null || jsonElement.isJsonNull()) {
+    public static PublicProfileUser fromJson(@Nullable JsonElement element) {
+        if (element == null || element.isJsonNull()) {
             return null;
         }
-        JsonObject jsonObject = jsonElement.getAsJsonObject();
-        PublicProfileUser publicProfileUser = new PublicProfileUser(jsonObject.get("userId").getAsLong(), ConfigJsonUtils.P(jsonObject, "username"));
-        return publicProfileUser.o() != null ? publicProfileUser : null;
+        JsonObject object = element.getAsJsonObject();
+        PublicProfileUser user = new PublicProfileUser(object.get("userId").getAsLong(), ConfigJsonUtils.getString(object, "username"));
+        return user.getUsername() != null ? user : null;
     }
 
-    PublicProfileUser(long l, String string) {
-        this.r = l;
-        this.u = string;
+    PublicProfileUser(long userId, String username) {
+        this.userId = userId;
+        this.username = username;
     }
 
     public String toString() {
-        return "SimpleOnlineUser{userId=" + this.r + ", username='" + this.u + '\'' + '}';
+        return "SimpleOnlineUser{userId=" + this.userId + ", username='" + this.username + '\'' + '}';
     }
 
 
-    public long j() {
-        return this.r;
+    public long getUserId() {
+        return this.userId;
     }
 }
 

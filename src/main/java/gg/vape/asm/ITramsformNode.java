@@ -5,18 +5,17 @@ import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.MethodNode;
 
 public interface ITramsformNode {
-    public String F();
+    String getOwnerInternalName();
 
-    public InsnList R();
+    InsnList getLoadInstructions();
 
     public boolean hasOwner();
 
-    public String p();
+    String getDescriptor();
 
-    public ITramsformNode setOwner(Class var1);
+    ITramsformNode setOwner(Class ownerClass);
 
-    public InsnList h();
+    InsnList getStoreInstructions();
 
-    public void onTransform(ClassNode var1, MethodNode var2);
+    void prepare(ClassNode classNode, MethodNode methodNode);
 }
-

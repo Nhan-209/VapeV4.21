@@ -5,14 +5,13 @@ public enum PublicProfileReviewDisplayType {
     SELF,
     REPLY;
 
-    private static final PublicProfileReviewDisplayType[] W;
+    private static final PublicProfileReviewDisplayType[] ENUM_VALUES;
 
     static {
-        String[] stringArray = new String[]{"REPLY", "OTHER", "SELF"};
+        String[] serializedNames = new String[]{"REPLY", "OTHER", "SELF"};
 
 
 
-        W = new PublicProfileReviewDisplayType[]{OTHER, SELF, REPLY};
+        ENUM_VALUES = new PublicProfileReviewDisplayType[]{OTHER, SELF, REPLY};
     }
 }
-

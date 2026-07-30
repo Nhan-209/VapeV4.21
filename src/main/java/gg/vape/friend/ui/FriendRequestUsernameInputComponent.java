@@ -5,12 +5,12 @@ import gg.vape.ui.click.component.TextInputComponentBase;
 
 class FriendRequestUsernameInputComponent
 extends TextInputComponentBase {
-    final FriendRequestsPanel qM;
+    final FriendRequestsPanel owner;
 
 
-    FriendRequestUsernameInputComponent(FriendRequestsPanel friendRequestsPanel, String string) {
-        super(string);
-        this.qM = friendRequestsPanel;
+    FriendRequestUsernameInputComponent(FriendRequestsPanel friendRequestsPanel, String placeholder) {
+        super(placeholder);
+        this.owner = friendRequestsPanel;
     }
 
     @Override
@@ -28,7 +28,7 @@ extends TextInputComponentBase {
         if (this.getText().equals("")) {
             return;
         }
-        FriendRequestsPanel.I(this.qM, this.getText());
+        FriendRequestsPanel.submitUsername(this.owner, this.getText());
         this.setText("");
     }
 

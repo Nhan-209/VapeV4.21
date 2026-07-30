@@ -562,7 +562,7 @@ public class GuiRenderPrimitives {
     private static Void lambda$drawItemSprite$0(double d, ItemStack itemStack, double d2, double d3) {
         RenderItemTextBridge renderItemTextBridge;
         Wrapper wrapper;
-        double d4 = Vape.INSTANCE.getClientSettings().s();
+        double d4 = Vape.INSTANCE.getClientSettings().getGuiScaleFactor();
         double d5 = d * d4;
         float f = (float)Minecraft.p().k(Minecraft.gameSettings().T(), false) / 2.0f;
         float f2 = 1.0f / f;

@@ -68,7 +68,7 @@ extends JavassistMappingTask {
     }
 
     @Override
-    public void c() {
+    public void transform() {
         this.p();
         this.Q$src$V$gyu8sk();
         if (ForgeVersion.MC_1_7_10.Y()) {
@@ -88,13 +88,13 @@ extends JavassistMappingTask {
         String string;
         this.j = Vape.INSTANCE.getMappings().CC.k;
         if (ForgeVersion.MC_1_20_6.d()) {
-            this.L = Vape.INSTANCE.getMappings().Rr.Q.v();
-            this.Z = Vape.INSTANCE.getMappings().Rr.q.v();
-            this.y = Vape.INSTANCE.getMappings().Rr.O.v();
+            this.L = Vape.INSTANCE.getMappings().Rr.Q.getResolvedName();
+            this.Z = Vape.INSTANCE.getMappings().Rr.q.getResolvedName();
+            this.y = Vape.INSTANCE.getMappings().Rr.O.getResolvedName();
         } else {
-            this.W = Vape.INSTANCE.getMappings().Rr.jv.J();
-            this.f = Vape.INSTANCE.getMappings().Rr.jT.J();
-            this.N = Vape.INSTANCE.getMappings().Rr.U.J();
+            this.W = Vape.INSTANCE.getMappings().Rr.jv.getResolvedName();
+            this.f = Vape.INSTANCE.getMappings().Rr.jT.getResolvedName();
+            this.N = Vape.INSTANCE.getMappings().Rr.U.getResolvedName();
         }
         String string2 = EventMotion.class.getName();
         CtBehavior ctBehavior = this.F(this.j);
@@ -113,4 +113,3 @@ extends JavassistMappingTask {
         return entityPlayerSPEventMappingTask.L;
     }
 }
-

@@ -3,10 +3,6 @@ package gg.vape.wrapper.impl;
 import gg.vape.mapping.MappedClasses;
 import gg.vape.mapping.mappings.MMatrixStack;
 import gg.vape.wrapper.Wrapper;
-import gg.vape.wrapper.impl.Matrix4f;
-import gg.vape.wrapper.impl.Matrix4fTransformBridge;
-import gg.vape.wrapper.impl.MatrixStackEntry;
-import gg.vape.wrapper.impl.Quaternion;
 
 public class MatrixStack
 extends Wrapper {
@@ -15,11 +11,11 @@ extends Wrapper {
             new Matrix4fTransformBridge(this.I).J();
             return;
         }
-        MMatrixStack.o(MatrixStack.c.getMappingsMapperCompat().qn, this.I);
+        MMatrixStack.o(MatrixStack.vapeInstance.getMappingsMapperCompat().qn, this.I);
     }
 
     public MatrixStackEntry F() {
-        return new MatrixStackEntry(MMatrixStack.S(MatrixStack.c.getMappingsMapperCompat().qn, this.I));
+        return new MatrixStackEntry(MMatrixStack.S(MatrixStack.vapeInstance.getMappingsMapperCompat().qn, this.I));
     }
 
     public void y() {
@@ -27,11 +23,11 @@ extends Wrapper {
             new Matrix4fTransformBridge(this.I).X();
             return;
         }
-        MMatrixStack.b(MatrixStack.c.getMappingsMapperCompat().qn, this.I);
+        MMatrixStack.b(MatrixStack.vapeInstance.getMappingsMapperCompat().qn, this.I);
     }
 
     public void i(Quaternion jd_12) {
-        MMatrixStack.r(MatrixStack.c.getMappingsMapperCompat().qn, this.I, jd_12.getObject());
+        MMatrixStack.r(MatrixStack.vapeInstance.getMappingsMapperCompat().qn, this.I, jd_12.getObject());
     }
 
     public void i(Matrix4f tl_12) {
@@ -39,7 +35,7 @@ extends Wrapper {
             new Matrix4fTransformBridge(this.I).a(tl_12);
             return;
         }
-        MMatrixStack.o(MatrixStack.c.getMappingsMapperCompat().qn, this.I, tl_12.getObject());
+        MMatrixStack.o(MatrixStack.vapeInstance.getMappingsMapperCompat().qn, this.I, tl_12.getObject());
     }
 
     public void V(double d, double d2, double d3) {
@@ -47,7 +43,7 @@ extends Wrapper {
             new Matrix4fTransformBridge(this.I).N((float)d, (float)d2, (float)d3);
             return;
         }
-        MMatrixStack.d(MatrixStack.c.getMappingsMapperCompat().qn, this.I, d, d2, d3);
+        MMatrixStack.d(MatrixStack.vapeInstance.getMappingsMapperCompat().qn, this.I, d, d2, d3);
     }
 
 
@@ -56,7 +52,7 @@ extends Wrapper {
             new Matrix4fTransformBridge(this.I).h();
             return;
         }
-        MMatrixStack.u(MatrixStack.c.getMappingsMapperCompat().qn, this.I);
+        MMatrixStack.u(MatrixStack.vapeInstance.getMappingsMapperCompat().qn, this.I);
     }
 
     public void S(float f, float f2, float f3) {
@@ -64,7 +60,7 @@ extends Wrapper {
             new Matrix4fTransformBridge(this.I).d(f, f2, f3);
             return;
         }
-        MMatrixStack.o(MatrixStack.c.getMappingsMapperCompat().qn, this.I, f, f2, f3);
+        MMatrixStack.o(MatrixStack.vapeInstance.getMappingsMapperCompat().qn, this.I, f, f2, f3);
     }
 
     public MatrixStack(Object object) {
@@ -76,7 +72,7 @@ extends Wrapper {
     }
 
     public static MatrixStack A() {
-        return new MatrixStack(MMatrixStack.U(MatrixStack.c.getMappingsMapperCompat().qn));
+        return new MatrixStack(MMatrixStack.U(MatrixStack.vapeInstance.getMappingsMapperCompat().qn));
     }
 }
 

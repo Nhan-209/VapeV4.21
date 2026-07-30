@@ -48,10 +48,10 @@ public class ProfileSnapshot {
         if (this.profile == null) {
             return;
         }
-        JsonObject profileJson = this.profile.J$src$Lcom_google_gson_JsonObject_$16ar19y();
+        JsonObject profileJson = this.profile.getData();
         profileJson.add("modules", this.serializeModules());
         profileJson.add("enabled", this.serializeEnabledModules());
-        this.profile.B(profileJson);
+        this.profile.updateData(profileJson);
     }
 
     public void setProfile(Profile profile) {
@@ -89,24 +89,24 @@ public class ProfileSnapshot {
             for (JsonElement moduleElement : modulesJson) {
                 if (moduleElement.isJsonNull() || !moduleElement.isJsonObject()) continue;
                 JsonObject moduleJson = moduleElement.getAsJsonObject();
-                String moduleName = ConfigJsonUtils.P(moduleJson, "name");
+                String moduleName = ConfigJsonUtils.getString(moduleJson, "name");
                 if (moduleName == null) continue;
                 moduleJsonByName.put(moduleName, moduleJson);
             }
         }
-        for (Mod mod : Vape.INSTANCE.getModManager().f()) {
-            this.moduleSnapshots.add(new ProfileModuleSnapshot(this, mod, moduleJsonByName.get(mod.getName())));
+        for (Mod module : Vape.INSTANCE.getModManager().getTopLevelModules()) {
+            this.moduleSnapshots.add(new ProfileModuleSnapshot(this, module, moduleJsonByName.get(module.getName())));
         }
         this.moduleSnapshots.sort(new NameComparator());
         this.guiBuilder = new ProfileSnapshotGuiBuilder(this);
     }
 
     public static ProfileSnapshot createEditableCopy(PublicProfile publicProfile, Profile sourceProfile) {
-        Profile editableProfile = new Profile(publicProfile.v(), sourceProfile.P());
-        editableProfile.e(sourceProfile.C(true));
-        editableProfile.A(sourceProfile.r());
-        editableProfile.h(publicProfile.v());
-        return new ProfileSnapshot(editableProfile, sourceProfile.J$src$Lcom_google_gson_JsonObject_$16ar19y().getAsJsonArray("modules"));
+        Profile editableProfile = new Profile(publicProfile.getName(), sourceProfile.getClientVersion());
+        editableProfile.loadJson(sourceProfile.toJson(true));
+        editableProfile.setPublishedData(sourceProfile.getPublishedData());
+        editableProfile.setName(publicProfile.getName());
+        return new ProfileSnapshot(editableProfile, sourceProfile.getData().getAsJsonArray("modules"));
     }
 
     public List<ProfileModuleSnapshot> getAllModules() {
@@ -114,27 +114,27 @@ public class ProfileSnapshot {
     }
 
     public static ProfileSnapshot resolvePublicProfileSnapshot(PublicProfile publicProfile) {
-        Object serializedModules = publicProfile.s$src$Ljava_util_Map_$1fhtcsp() != null
-            ? publicProfile.s$src$Ljava_util_Map_$1fhtcsp().getOrDefault("modules", null)
+        Object serializedModules = publicProfile.getData() != null
+            ? publicProfile.getData().getOrDefault("modules", null)
             : null;
-        assert publicProfile.c() != null;
-        Profile localProfile = publicProfile.c().v() != null
-            ? Vape.INSTANCE.getProfilesManager().H(publicProfile.c().v())
+        assert publicProfile.getShareInfo() != null;
+        Profile localProfile = publicProfile.getShareInfo().getDerivedFrom() != null
+            ? Vape.INSTANCE.getProfilesManager().getProfileByOnlineId(publicProfile.getShareInfo().getDerivedFrom())
             : null;
         if (localProfile != null) {
-            if (localProfile.equals(Vape.INSTANCE.getProfilesManager().M())) {
-                localProfile.a();
+            if (localProfile.equals(Vape.INSTANCE.getProfilesManager().getActiveProfile())) {
+                localProfile.captureCurrentState();
             }
-            return localProfile.n(true);
+            return localProfile.createSnapshot(true);
         }
-        Profile detachedProfile = new Profile(publicProfile.v(), "4.21");
-        JsonArray modulesJson = ApiHttpClient.Z.fromJson(serializedModules != null ? ApiHttpClient.Z.toJson(serializedModules) : "[]", JsonArray.class);
+        Profile detachedProfile = new Profile(publicProfile.getName(), "4.21");
+        JsonArray modulesJson = ApiHttpClient.GSON.fromJson(serializedModules != null ? ApiHttpClient.GSON.toJson(serializedModules) : "[]", JsonArray.class);
         JsonObject profileData = new JsonObject();
         JsonObject data = new JsonObject();
         data.add("modules", modulesJson);
         profileData.add("data", data);
-        detachedProfile.e(profileData);
-        detachedProfile.h(publicProfile.v());
+        detachedProfile.loadJson(profileData);
+        detachedProfile.setName(publicProfile.getName());
         return new ProfileSnapshot(detachedProfile, modulesJson);
     }
 }

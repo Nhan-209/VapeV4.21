@@ -27,7 +27,7 @@ extends Mapping {
         boolean bl2 = true;
         String string2 = "EMPTY";
         MPotionVersionRange mPotionVersionRange2 = this;
-        this.N = this.u(string2, bl2, clazz2);
+        this.N = this.registerStaticField(string2, bl2, clazz2);
     }
 
     public static Object F(MPotionVersionRange mPotionVersionRange, Object object) {
@@ -35,7 +35,7 @@ extends Mapping {
     }
 
     private Object B(Object object) {
-        return this.p.L(object, new Object[0]);
+        return this.p.invokeObject(object, new Object[0]);
     }
 
     public static Object h(MPotionVersionRange mPotionVersionRange) {

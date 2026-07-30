@@ -21,7 +21,7 @@ extends Mapping {
     private MappingMethod l;
 
     private int K(Object object, int n) {
-        return this.j.Z(object, n);
+        return this.j.invokeInt(object, n);
     }
 
     public static void X(MWorldRenderer mWorldRenderer, Object object, boolean bl) {
@@ -42,7 +42,7 @@ extends Mapping {
 
 
     private void g(Object object, int n) {
-        this.F.c(object, n);
+        this.F.invokeVoid(object, n);
     }
 
     private Object x(Object object) {
@@ -50,7 +50,7 @@ extends Mapping {
     }
 
     private void E(Object object, float f, float f2, float f3, int n) {
-        this.b.c(object, Float.valueOf(f), Float.valueOf(f2), Float.valueOf(f3), n);
+        this.b.invokeVoid(object, Float.valueOf(f), Float.valueOf(f2), Float.valueOf(f3), n);
     }
 
     public static Object v(MWorldRenderer mWorldRenderer, Object object) {

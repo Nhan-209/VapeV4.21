@@ -65,7 +65,7 @@ extends Mod {
         return false;
     }
 
-    @EventHandler(A=EventPriority.HIGH)
+    @EventHandler(priority=EventPriority.HIGH)
     public void onKeyPress(EventKeyPress event) {
         if (!event.isKeybinding(Minecraft.gameSettings().F()) || !event.isDown()) {
             return;
@@ -129,7 +129,7 @@ extends Mod {
         return !this.limitToItems.getEffectiveValue() || this.allowedItems.isValid(heldItem, false);
     }
 
-    @EventHandler(A=EventPriority.HIGH)
+    @EventHandler(priority=EventPriority.HIGH)
     public void onSyntheticAttack(SyntheticAttackRequestEvent event) {
         if (event.getSource() == this) {
             return;
@@ -137,7 +137,7 @@ extends Mod {
         this.handleAttack(new SyntheticAttackCancellationAdapter(event));
     }
 
-    @EventHandler(A=EventPriority.HIGH)
+    @EventHandler(priority=EventPriority.HIGH)
     public void onMouseButton(EventMouseButton event) {
         if (!event.isKeybinding(Minecraft.gameSettings().F()) || !event.isDown()) {
             return;
@@ -177,7 +177,7 @@ extends Mod {
         return -1;
     }
 
-    @EventHandler(A=EventPriority.HIGH)
+    @EventHandler(priority=EventPriority.HIGH)
     public void onTick(EventPreTick eventPreTick) {
         if (eventPreTick.getThePlayer().isNull()) {
             return;

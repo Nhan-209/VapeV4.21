@@ -14,7 +14,7 @@ extends Mapping {
     }
 
     private Object z() {
-        return this.c.L(null, new Object[0]);
+        return this.c.invokeObject(null, new Object[0]);
     }
 
     public MEmptyItemAttributeModifiers() {
@@ -24,7 +24,7 @@ extends Mapping {
         boolean bl = false;
         String string = b;
         MEmptyItemAttributeModifiers mEmptyItemAttributeModifiers = this;
-        this.c = this.x(string, bl, clazz, classArray);
+        this.c = this.registerStaticMethod(string, bl, clazz, classArray);
     }
 }
 

@@ -7,15 +7,14 @@ import java.awt.Point;
 
 public class CurrentPartyPanelOpenDetailsMouseListener
 implements GuiMouseListener {
-    final CurrentPartyPanel i;
+    private final CurrentPartyPanel panel;
 
     public CurrentPartyPanelOpenDetailsMouseListener(CurrentPartyPanel currentPartyPanel) {
-        this.i = currentPartyPanel;
+        this.panel = currentPartyPanel;
     }
 
     @Override
     public void g(Point point, MouseClickButton mouseClickButton) {
-        CurrentPartyPanel.W(this.i, point, mouseClickButton);
+        CurrentPartyPanel.openDetails(this.panel, point, mouseClickButton);
     }
 }
-

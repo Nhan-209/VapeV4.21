@@ -6,22 +6,22 @@ import gg.vape.protocol.packet.ZeusSerializablePacket;
 
 public class FriendCpsPacket
 implements ZeusSerializablePacket {
-    private long O;
-    private int D;
+    private long userId;
+    private int clicksPerSecond;
 
-    public long G() {
-        return this.O;
+    public long getUserId() {
+        return this.userId;
     }
 
     @Override
     public void S(ZeusPacketBuffer zeusPacketBuffer) {
-        this.O = zeusPacketBuffer.long_a();
-        this.D = zeusPacketBuffer.Y();
+        this.userId = zeusPacketBuffer.readLong();
+        this.clicksPerSecond = zeusPacketBuffer.readVarInt();
     }
 
-    public FriendCpsPacket(UserModel userModel, int n) {
-        this.O = userModel.g();
-        this.D = n;
+    public FriendCpsPacket(UserModel userModel, int clicksPerSecond) {
+        this.userId = userModel.getId();
+        this.clicksPerSecond = clicksPerSecond;
     }
 
     public FriendCpsPacket() {
@@ -29,12 +29,11 @@ implements ZeusSerializablePacket {
 
     @Override
     public void o(ZeusPacketBuffer zeusPacketBuffer) {
-        zeusPacketBuffer.v(this.O);
-        zeusPacketBuffer.i(this.D);
+        zeusPacketBuffer.writeLong(this.userId);
+        zeusPacketBuffer.writeVarInt(this.clicksPerSecond);
     }
 
-    public int N() {
-        return this.D;
+    public int getClicksPerSecond() {
+        return this.clicksPerSecond;
     }
 }
-

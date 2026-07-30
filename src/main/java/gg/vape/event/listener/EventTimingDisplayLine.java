@@ -1,20 +1,19 @@
 package gg.vape.event.listener;
 
 public class EventTimingDisplayLine {
-    private final String I;
-    private final long V;
+    private final String text;
+    private final long totalMicros;
 
-    public EventTimingDisplayLine(String string, long l) {
-        this.I = string;
-        this.V = l;
+    public EventTimingDisplayLine(String text, long totalMicros) {
+        this.text = text;
+        this.totalMicros = totalMicros;
     }
 
-    public long h() {
-        return this.V;
+    public long getTotalMicros() {
+        return this.totalMicros;
     }
 
-    public String Y() {
-        return this.I;
+    public String getText() {
+        return this.text;
     }
 }
-

@@ -32,7 +32,7 @@ extends Mapping {
             boolean bl = true;
             String string = "FOG_TERRAIN";
             MTickEvent_Phase mTickEvent_Phase = this;
-            this.Z = mTickEvent_Phase.u(string, bl, clazz);
+            this.Z = mTickEvent_Phase.registerStaticField(string, bl, clazz);
             this.V = null;
             return;
         }
@@ -41,23 +41,23 @@ extends Mapping {
             boolean bl = true;
             String string = "NONE";
             MTickEvent_Phase mTickEvent_Phase = this;
-            this.V = mTickEvent_Phase.u(string, bl, clazz);
+            this.V = mTickEvent_Phase.registerStaticField(string, bl, clazz);
             Class clazz2 = MappedClasses.uw;
             boolean bl2 = true;
             String string2 = "WORLD";
             MTickEvent_Phase mTickEvent_Phase2 = this;
-            this.Z = this.u(string2, bl2, clazz2);
+            this.Z = this.registerStaticField(string2, bl2, clazz2);
         } else {
             Class clazz = MappedClasses.uw;
             boolean bl = true;
             String string = "FOG_SKY";
             MTickEvent_Phase mTickEvent_Phase = this;
-            this.V = mTickEvent_Phase.u(string, bl, clazz);
+            this.V = mTickEvent_Phase.registerStaticField(string, bl, clazz);
             Class clazz3 = MappedClasses.uw;
             boolean bl3 = true;
             String string3 = "FOG_TERRAIN";
             MTickEvent_Phase mTickEvent_Phase3 = this;
-            this.Z = this.u(string3, bl3, clazz3);
+            this.Z = this.registerStaticField(string3, bl3, clazz3);
         }
     }
 

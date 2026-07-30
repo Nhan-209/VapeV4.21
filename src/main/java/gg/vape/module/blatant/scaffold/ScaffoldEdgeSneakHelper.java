@@ -66,10 +66,10 @@ extends SubModule<Scaffold> {
         float forwardInput = 0.0f;
         KeyBinding forwardKey = gameSettings.s();
         KeyBinding backKey = gameSettings.Y();
-        if (ClientSettings.B(forwardKey)) {
+        if (ClientSettings.isPhysicalKeyDown(forwardKey)) {
             forwardInput += -1.0f;
         }
-        if (ClientSettings.B(backKey)) {
+        if (ClientSettings.isPhysicalKeyDown(backKey)) {
             forwardInput += 1.0f;
         }
         boolean notMovingForward = forwardInput <= 0.0f;

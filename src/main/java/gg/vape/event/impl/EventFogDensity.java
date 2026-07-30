@@ -8,42 +8,42 @@ import gg.vape.wrapper.impl.RenderSystem;
 
 public class EventFogDensity
 extends Event {
-    private static final EventListeners S = new EventListeners();
-    private float v;
+    private static final EventListeners EVENT_LISTENERS = new EventListeners();
+    private float density;
 
-    public void setDensity(float f) {
-        this.v = f;
+    public void setDensity(float density) {
+        this.density = density;
     }
 
 
     @Override
     public boolean fire() {
-        boolean bl = super.fire();
-        if (bl) {
+        boolean applied = super.fire();
+        if (applied) {
             if (ForgeVersion.MC_1_8_9.B()) {
-                GlStateManager.g(this.v);
+                GlStateManager.g(this.density);
             } else if (ForgeVersion.MC_1_16_5.d()) {
-                RenderSystem.o(this.v);
+                RenderSystem.o(this.density);
             }
         }
-        return bl;
+        return applied;
     }
 
-    public EventFogDensity(float f) {
-        this.v = f;
+    public EventFogDensity(float density) {
+        this.density = density;
     }
 
     public float getDensity() {
-        return this.v;
+        return this.density;
     }
 
     public static EventListeners getEventListeners() {
-        return S;
+        return EVENT_LISTENERS;
     }
 
     @Override
     public EventListeners getListeners() {
-        return S;
+        return EVENT_LISTENERS;
     }
 }
 

@@ -7,16 +7,16 @@ import org.jetbrains.annotations.Nullable;
 
 public class FriendServerAddressPacket
 implements ZeusSerializablePacket {
-    private long Z;
-    private String j;
+    private long userId;
+    private String serverAddress;
 
-    public FriendServerAddressPacket(UserModel userModel, String string) {
-        this.Z = userModel.g();
-        this.j = string;
+    public FriendServerAddressPacket(UserModel userModel, String serverAddress) {
+        this.userId = userModel.getId();
+        this.serverAddress = serverAddress;
     }
 
-    public long b() {
-        return this.Z;
+    public long getUserId() {
+        return this.userId;
     }
 
 
@@ -25,26 +25,25 @@ implements ZeusSerializablePacket {
 
     @Override
     public void o(ZeusPacketBuffer zeusPacketBuffer) {
-        zeusPacketBuffer.v(this.Z);
+        zeusPacketBuffer.writeLong(this.userId);
         ZeusPacketBuffer zeusPacketBuffer2 = zeusPacketBuffer;
-        boolean bl = this.j != null;
-        zeusPacketBuffer2.Y(bl);
-        if (this.j != null) {
-            zeusPacketBuffer.y(this.j);
+        boolean hasServerAddress = this.serverAddress != null;
+        zeusPacketBuffer2.writeBoolean(hasServerAddress);
+        if (this.serverAddress != null) {
+            zeusPacketBuffer.writeString(this.serverAddress);
         }
     }
 
     @Nullable
-    public String w() {
-        return this.j;
+    public String getServerAddress() {
+        return this.serverAddress;
     }
 
     @Override
     public void S(ZeusPacketBuffer zeusPacketBuffer) {
-        this.Z = zeusPacketBuffer.long_a();
-        if (zeusPacketBuffer.boolean_a()) {
-            this.j = zeusPacketBuffer.v(128);
+        this.userId = zeusPacketBuffer.readLong();
+        if (zeusPacketBuffer.readBoolean()) {
+            this.serverAddress = zeusPacketBuffer.readString(128);
         }
     }
 }
-

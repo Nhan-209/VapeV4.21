@@ -5,8 +5,7 @@ import gg.vape.friend.ping.BlockPingMarker;
 
 public class OnlineFriendBlockPingMarker
 extends BlockPingMarker {
-    public OnlineFriendBlockPingMarker(OnlineFriend yS, double[] dArray) {
-        super(yS, dArray);
+    public OnlineFriendBlockPingMarker(OnlineFriend onlineFriend, double[] position) {
+        super(onlineFriend, position);
     }
 }
-

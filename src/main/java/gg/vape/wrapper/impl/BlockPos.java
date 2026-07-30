@@ -5,10 +5,7 @@ import gg.vape.utils.MathUtil;
 import gg.vape.utils.datas.BlockCoordinate;
 import gg.vape.utils.datas.BlockData;
 import gg.vape.utils.math.NumericMathUtil;
-import gg.vape.wrapper.impl.EnumFacing;
-import gg.vape.wrapper.impl.ForgeVersion;
-import gg.vape.wrapper.impl.Vec3;
-import gg.vape.wrapper.impl.Vec3i;
+
 import java.util.Objects;
 
 public class BlockPos
@@ -39,7 +36,7 @@ extends Vec3i {
     }
 
     public BlockPos y() {
-        return new BlockPos(MBlockPos.s(BlockPos.c.getMappings().RP, this.I));
+        return new BlockPos(MBlockPos.s(BlockPos.vapeInstance.getMappings().RP, this.I));
     }
 
     public BlockPos W(int n) {
@@ -66,14 +63,14 @@ extends Vec3i {
     }
 
     public BlockPos X$src$Lgg_vape_wrapper_impl_BlockPos_$jlnp6b() {
-        return new BlockPos(MBlockPos.B(BlockPos.c.getMappings().RP, this.I));
+        return new BlockPos(MBlockPos.B(BlockPos.vapeInstance.getMappings().RP, this.I));
     }
 
     public static BlockPos P(Vec3 vec3) {
         if (ForgeVersion.MC_1_20_6.d()) {
             return BlockPos.create(NumericMathUtil.floorDouble(vec3.getX()), NumericMathUtil.floorDouble(vec3.getY()), NumericMathUtil.floorDouble(vec3.getZ()));
         }
-        return new BlockPos(BlockPos.c.getMappings().RP.D(vec3.getObject()));
+        return new BlockPos(BlockPos.vapeInstance.getMappings().RP.D(vec3.getObject()));
     }
 
     public BlockPos n(int n) {
@@ -81,11 +78,11 @@ extends Vec3i {
     }
 
     public BlockPos j() {
-        return new BlockPos(MBlockPos.O(BlockPos.c.getMappings().RP, this.I));
+        return new BlockPos(MBlockPos.O(BlockPos.vapeInstance.getMappings().RP, this.I));
     }
 
     public BlockPos g(EnumFacing enumFacing, int n) {
-        return new BlockPos(BlockPos.c.getMappings().RP.offset(this.I, enumFacing.getObject(), n));
+        return new BlockPos(BlockPos.vapeInstance.getMappings().RP.offset(this.I, enumFacing.getObject(), n));
     }
 
     public static long p(double d, double d2, double d3) {
@@ -101,7 +98,7 @@ extends Vec3i {
     }
 
     public BlockPos G() {
-        return new BlockPos(MBlockPos.b(BlockPos.c.getMappings().RP, this.I));
+        return new BlockPos(MBlockPos.b(BlockPos.vapeInstance.getMappings().RP, this.I));
     }
 
     public BlockPos offset(EnumFacing enumFacing) {
@@ -124,7 +121,7 @@ extends Vec3i {
         if (ForgeVersion.MC_1_20_6.d()) {
             return BlockPos.create(NumericMathUtil.floorDouble(d), NumericMathUtil.floorDouble(d2), NumericMathUtil.floorDouble(d3));
         }
-        return new BlockPos(BlockPos.c.getMappings().RP.H(d, d2, d3));
+        return new BlockPos(BlockPos.vapeInstance.getMappings().RP.H(d, d2, d3));
     }
 
     public BlockPos e(int n) {
@@ -132,15 +129,15 @@ extends Vec3i {
     }
 
     public BlockPos d$src$Lgg_vape_wrapper_impl_BlockPos_$6vry9r() {
-        return new BlockPos(MBlockPos.z(BlockPos.c.getMappings().RP, this.I));
+        return new BlockPos(MBlockPos.z(BlockPos.vapeInstance.getMappings().RP, this.I));
     }
 
     public BlockPos o$src$Lgg_vape_wrapper_impl_BlockPos_$10np7re() {
-        return new BlockPos(MBlockPos.H(BlockPos.c.getMappings().RP, this.I));
+        return new BlockPos(MBlockPos.H(BlockPos.vapeInstance.getMappings().RP, this.I));
     }
 
     public static BlockPos create(int n, int n2, int n3) {
-        return new BlockPos(BlockPos.c.getMappings().RP.q(n, n2, n3));
+        return new BlockPos(BlockPos.vapeInstance.getMappings().RP.q(n, n2, n3));
     }
 }
 

@@ -54,7 +54,7 @@ implements InventoryActionModule {
 
     @EventHandler
     public void onTick(EventPrePlayerTick event) {
-        if (Vape.INSTANCE.getModManager().N(AutoArmor.class) || Vape.INSTANCE.getClientSettings().J$src$Z$c57s1l()) {
+        if (Vape.INSTANCE.getModManager().isOtherInventoryActionActive(AutoArmor.class) || Vape.INSTANCE.getClientSettings().isLobbyCheckActive()) {
             this.clickQueue.clear();
             return;
         }
@@ -180,7 +180,7 @@ implements InventoryActionModule {
     @Override
     public String getDetailedSuffix() {
         if (this.combatCheck.getEffectiveValue().booleanValue() && this.combatGuard.isBlocked()) {
-            return ClientSettings.F + "c[In Combat]";
+            return ClientSettings.FORMAT_CODE + "c[In Combat]";
         }
         return super.getDetailedSuffix();
     }
@@ -195,23 +195,23 @@ implements InventoryActionModule {
 
     private int armorSlotFor(ItemStack itemStack) {
         ItemMappingEntry itemMappingEntry = Vape.INSTANCE.getItemStackResolver().resolve(itemStack);
-        if (itemMappingEntry == null || itemMappingEntry.M() == null) {
+        if (itemMappingEntry == null || itemMappingEntry.getResourceKey() == null) {
             return -1;
         }
         for (String string : this.bootsNames) {
-            if (!itemMappingEntry.M().toLowerCase().contains(string)) continue;
+            if (!itemMappingEntry.getResourceKey().toLowerCase().contains(string)) continue;
             return 8;
         }
         for (String string : this.leggingsNames) {
-            if (!itemMappingEntry.M().toLowerCase().contains(string)) continue;
+            if (!itemMappingEntry.getResourceKey().toLowerCase().contains(string)) continue;
             return 7;
         }
         for (String string : this.chestplateNames) {
-            if (!itemMappingEntry.M().toLowerCase().contains(string)) continue;
+            if (!itemMappingEntry.getResourceKey().toLowerCase().contains(string)) continue;
             return 6;
         }
         for (String string : this.helmetNames) {
-            if (!itemMappingEntry.M().toLowerCase().contains(string)) continue;
+            if (!itemMappingEntry.getResourceKey().toLowerCase().contains(string)) continue;
             return 5;
         }
         return -1;

@@ -48,28 +48,28 @@ extends Mapping {
         boolean bl = true;
         String string = "MOB_EFFECT";
         MBuiltInRegistries mBuiltInRegistries = this;
-        this.j = this.u(string, bl, clazz);
+        this.j = this.registerStaticField(string, bl, clazz);
         Class clazz2 = MappedClasses.Fk;
         boolean bl2 = true;
         String string2 = "POTION";
         MBuiltInRegistries mBuiltInRegistries2 = this;
-        this.G = this.u(string2, bl2, clazz2);
+        this.G = this.registerStaticField(string2, bl2, clazz2);
         Class clazz3 = MappedClasses.lz;
         boolean bl3 = true;
         String string3 = "ITEM";
         MBuiltInRegistries mBuiltInRegistries3 = this;
-        this.L = this.u(string3, bl3, clazz3);
+        this.L = this.registerStaticField(string3, bl3, clazz3);
         Class clazz4 = MappedClasses.lz;
         boolean bl4 = true;
         String string4 = "BLOCK";
         MBuiltInRegistries mBuiltInRegistries4 = this;
-        this.d = this.u(string4, bl4, clazz4);
+        this.d = this.registerStaticField(string4, bl4, clazz4);
         GuiComponent[] guiComponentArray2 = guiComponentArray;
         Class clazz5 = MappedClasses.Fk;
         boolean bl5 = true;
         String string5 = "PARTICLE_TYPE";
         MBuiltInRegistries mBuiltInRegistries5 = this;
-        this.n = this.u(string5, bl5, clazz5);
+        this.n = this.registerStaticField(string5, bl5, clazz5);
     }
 
 

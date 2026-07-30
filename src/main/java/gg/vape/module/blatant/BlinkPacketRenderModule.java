@@ -106,7 +106,7 @@ extends Mod {
         this.chokeCount = 0;
         for (PacketSendDispatchGuardCallback packetSendDispatchGuardCallback : this.pendingCallbacks) {
             try {
-                packetSendDispatchGuardCallback.O(this.dispatchGuard);
+                packetSendDispatchGuardCallback.dispatch(this.dispatchGuard);
             }
             catch (Exception exception) {
                 Vape.logThrowable(exception);
@@ -150,7 +150,7 @@ extends Mod {
                 color = Color.YELLOW;
                 firstBreadcrumb = false;
             }
-            RenderUtil.u(breadcrumb.H - 0.1, breadcrumb.B, breadcrumb.i - 0.1, 0.2, 0.0, 0.2, 1.0, Color.BLACK, color, renderX, renderY, renderZ);
+            RenderUtil.u(breadcrumb.getX() - 0.1, breadcrumb.getY(), breadcrumb.getZ() - 0.1, 0.2, 0.0, 0.2, 1.0, Color.BLACK, color, renderX, renderY, renderZ);
         }
         if (!GuiRenderPrimitives.d()) {
             GL11.glDepthMask((boolean)true);
@@ -185,7 +185,7 @@ extends Mod {
         int currentChokeCount = this.getChokeCount();
         if (!this.stopped && this.autoSend.getEffectiveValue().booleanValue() && (Double)this.sendThreshold.getValue() > 0.0 && (double)currentChokeCount >= (Double)this.sendThreshold.getValue()) {
             if (this.fakePlayer != null && this.fakePlayer.isNotNull()) {
-                this.fakePlayer.t(player.z(), ClientSettings.H ? player.N() : player.N() - 1.5, player.h(), player.J(), player.V());
+                this.fakePlayer.t(player.z(), ClientSettings.IS_LEGACY_1_7 ? player.N() : player.N() - 1.5, player.h(), player.J(), player.V());
                 this.fakePlayer.z(player.s());
             }
             this.breadcrumbTrail.clear();
@@ -218,9 +218,9 @@ extends Mod {
         this.addValue(this.directionMode, this.breadcrumbs, this.spawnFake, this.autoSend, this.sendThreshold);
     }
 
-    @EventHandler(A=EventPriority.LOWEREST)
+    @EventHandler(priority=EventPriority.LOWEREST)
     public void onPacketSend(EventPacketSend eventPacketSend) {
-        if (!Thread.currentThread().equals(EventTickBase.S.getOwnerThread())) {
+        if (!Thread.currentThread().equals(EventTickBase.PRE_TICK_EXECUTOR.getOwnerThread())) {
             return;
         }
         if (eventPacketSend.isCanceled()) {
@@ -252,7 +252,7 @@ extends Mod {
         }
         if (this.spawnFake.getEffectiveValue().booleanValue()) {
             this.fakePlayer = EntityOtherPlayerMP.create(Minecraft.theWorld(), Minecraft.thePlayer().c$src$Lgg_vape_wrapper_impl_GameProfile_$ir8937());
-            this.fakePlayerEntityId = ClientSettings.f();
+            this.fakePlayerEntityId = ClientSettings.reserveEntityId();
             this.fakePlayer.M(player, true);
             if (ForgeVersion.MC_1_17.d()) {
                 this.fakePlayer.Q(this.fakePlayerEntityId);
@@ -270,7 +270,7 @@ extends Mod {
         if (player.isNull() || this.fakePlayer.isNull() || !this.spawnFake.getEffectiveValue().booleanValue()) {
             return;
         }
-        this.fakePlayer.t(player.z(), ClientSettings.H ? player.N() : player.N() - 1.5, player.h(), player.J(), player.V());
+        this.fakePlayer.t(player.z(), ClientSettings.IS_LEGACY_1_7 ? player.N() : player.N() - 1.5, player.h(), player.J(), player.V());
         this.fakePlayer.z(player.s());
     }
 

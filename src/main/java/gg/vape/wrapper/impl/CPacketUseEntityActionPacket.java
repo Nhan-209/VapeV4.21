@@ -1,8 +1,5 @@
 package gg.vape.wrapper.impl;
 
-import gg.vape.wrapper.impl.CPacketUseEntityAction;
-import gg.vape.wrapper.impl.Vec3;
-
 public class CPacketUseEntityActionPacket
 extends CPacketUseEntityAction {
     public CPacketUseEntityActionPacket(Object object) {
@@ -10,7 +7,7 @@ extends CPacketUseEntityAction {
     }
 
     public Vec3 C() {
-        return new Vec3(CPacketUseEntityActionPacket.c.getMappingsMapperCompat().h6.c(this.I));
+        return new Vec3(CPacketUseEntityActionPacket.vapeInstance.getMappingsMapperCompat().h6.c(this.I));
     }
 }
 

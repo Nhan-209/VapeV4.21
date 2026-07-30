@@ -10,15 +10,15 @@ import gg.vape.utils.ClipboardUtil;
 
 public class UsernameCopyClickHandler
 implements GuiClickListener {
-    final UsernameEditorPanel x;
+    private final UsernameEditorPanel editorPanel;
 
     @Override
     public void onPrimaryClick() {
-        ClipboardUtil.setText(Vape.INSTANCE.getOnlineManager().r().C());
-        OnlineFriendUiHelper.P(new NotificationMessage(NotificationType.SUCCESS, "Copied " + Vape.INSTANCE.getOnlineManager().r().C() + " to clipboard"));
+        ClipboardUtil.setText(Vape.INSTANCE.getOnlineManager().getLocalFriend().getDisplayName());
+        OnlineFriendUiHelper.showNotification(new NotificationMessage(NotificationType.SUCCESS, "Copied " + Vape.INSTANCE.getOnlineManager().getLocalFriend().getDisplayName() + " to clipboard"));
     }
 
     public UsernameCopyClickHandler(UsernameEditorPanel usernameEditorPanel) {
-        this.x = usernameEditorPanel;
+        this.editorPanel = usernameEditorPanel;
     }
 }

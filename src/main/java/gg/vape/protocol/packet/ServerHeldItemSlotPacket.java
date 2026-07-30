@@ -6,20 +6,20 @@ import gg.vape.protocol.packet.ZeusSerializablePacket;
 
 public class ServerHeldItemSlotPacket
 implements ZeusSerializablePacket {
-    private int R;
-    private long T;
+    private int heldItemSlot;
+    private long userId;
 
-    public long S() {
-        return this.T;
+    public long getUserId() {
+        return this.userId;
     }
 
-    public ServerHeldItemSlotPacket(UserModel userModel, int n) {
-        this.T = userModel.g();
-        this.R = n;
+    public ServerHeldItemSlotPacket(UserModel userModel, int heldItemSlot) {
+        this.userId = userModel.getId();
+        this.heldItemSlot = heldItemSlot;
     }
 
-    public int e() {
-        return this.R;
+    public int getHeldItemSlot() {
+        return this.heldItemSlot;
     }
 
     public ServerHeldItemSlotPacket() {
@@ -27,14 +27,13 @@ implements ZeusSerializablePacket {
 
     @Override
     public void S(ZeusPacketBuffer zeusPacketBuffer) {
-        this.T = zeusPacketBuffer.long_a();
-        this.R = zeusPacketBuffer.k();
+        this.userId = zeusPacketBuffer.readLong();
+        this.heldItemSlot = zeusPacketBuffer.readInt();
     }
 
     @Override
     public void o(ZeusPacketBuffer zeusPacketBuffer) {
-        zeusPacketBuffer.v(this.T);
-        zeusPacketBuffer.K(this.R);
+        zeusPacketBuffer.writeLong(this.userId);
+        zeusPacketBuffer.writeInt(this.heldItemSlot);
     }
 }
-

@@ -67,11 +67,11 @@ extends Mapping {
         if (ForgeVersion.MC_1_7_10.Y()) {
             if (ForgeVersion.MC_1_12_2.d()) {
                 Class<Float> clazz2 = Float.TYPE;
-                boolean bl2 = Wrapper.G;
+                boolean bl2 = Wrapper.isNativeAvailable;
                 String string2 = "field_191988_bg";
                 Class clazz3 = MappedClasses.zQ;
                 MEntityPlayerSP mEntityPlayerSP2 = this;
-                this.g = this.X(clazz3, string2, bl2, clazz2);
+                this.g = this.registerInstanceFieldForOwner(clazz3, string2, bl2, clazz2);
                 Class clazz4 = MappedClasses.F1;
                 boolean bl3 = true;
                 String string3 = "connection";
@@ -126,7 +126,7 @@ extends Mapping {
                 String string12 = "sendChat";
                 Class clazz14 = MappedClasses.F1;
                 MEntityPlayerSP mEntityPlayerSP12 = this;
-                this.G = this.W(clazz14, string12, bl12, clazz13, classArray);
+                this.G = this.registerInstanceMethodForOwner(clazz14, string12, bl12, clazz13, classArray);
             } else {
                 Class[] classArray = new Class[]{String.class};
                 Class<Void> clazz15 = Void.TYPE;
@@ -158,12 +158,12 @@ extends Mapping {
         Class<Integer> clazz19 = Integer.TYPE;
         String string17 = "sprintToggleTimer";
         MEntityPlayerSP mEntityPlayerSP17 = this;
-        this.Z = ((MappingFieldBuilder)this.T(string17, clazz19).A(ForgeVersion.MC_1_16_5.n(), "sprintTriggerTime")).z();
+        this.Z = ((MappingFieldBuilder)this.fieldBuilder(string17, clazz19).setNameForVersion(ForgeVersion.MC_1_16_5.n(), "sprintTriggerTime")).buildField();
         Class[] classArray = new Class[]{};
         Class<Void> clazz20 = Void.TYPE;
         String string18 = "onLivingUpdate";
         MEntityPlayerSP mEntityPlayerSP18 = this;
-        this.z = ((MappingMethodBuilder)((MappingMethodBuilder)this.u(string18, clazz20, classArray).A(ForgeVersion.MC_1_16_5.n(), "aiStep")).Q(ForgeVersion.MC_1_21_4.n(), MappedClasses.zQ)).s();
+        this.z = ((MappingMethodBuilder)((MappingMethodBuilder)this.methodBuilder(string18, clazz20, classArray).setNameForVersion(ForgeVersion.MC_1_16_5.n(), "aiStep")).setOwnerClassForVersion(ForgeVersion.MC_1_21_4.n(), MappedClasses.zQ)).buildMethod();
         if (ForgeVersion.MC_1_12_2.d()) {
             if (!ForgeVersion.MC_1_16_5.d()) {
                 Class[] classArray2 = new Class[]{MappedClasses.Y6, Float.TYPE, Float.TYPE};
@@ -194,19 +194,19 @@ extends Mapping {
         Class<Float> clazz25 = Float.TYPE;
         String string23 = "renderArmYaw";
         MEntityPlayerSP mEntityPlayerSP23 = this;
-        this.f = ((MappingFieldBuilder)this.T(string23, clazz25).A(ForgeVersion.MC_1_16_5.n(), "yBob")).z();
+        this.f = ((MappingFieldBuilder)this.fieldBuilder(string23, clazz25).setNameForVersion(ForgeVersion.MC_1_16_5.n(), "yBob")).buildField();
         Class<Float> clazz26 = Float.TYPE;
         String string24 = "renderArmPitch";
         MEntityPlayerSP mEntityPlayerSP24 = this;
-        this.n = ((MappingFieldBuilder)this.T(string24, clazz26).A(ForgeVersion.MC_1_16_5.n(), "xBob")).z();
+        this.n = ((MappingFieldBuilder)this.fieldBuilder(string24, clazz26).setNameForVersion(ForgeVersion.MC_1_16_5.n(), "xBob")).buildField();
         Class<Float> clazz27 = Float.TYPE;
         String string25 = "prevRenderArmYaw";
         MEntityPlayerSP mEntityPlayerSP25 = this;
-        this.K = ((MappingFieldBuilder)this.T(string25, clazz27).A(ForgeVersion.MC_1_16_5.n(), "yBobO")).z();
+        this.K = ((MappingFieldBuilder)this.fieldBuilder(string25, clazz27).setNameForVersion(ForgeVersion.MC_1_16_5.n(), "yBobO")).buildField();
         Class<Float> clazz28 = Float.TYPE;
         String string26 = "prevRenderArmPitch";
         MEntityPlayerSP mEntityPlayerSP26 = this;
-        this.L = ((MappingFieldBuilder)this.T(string26, clazz28).A(ForgeVersion.MC_1_16_5.n(), "xBobO")).z();
+        this.L = ((MappingFieldBuilder)this.fieldBuilder(string26, clazz28).setNameForVersion(ForgeVersion.MC_1_16_5.n(), "xBobO")).buildField();
     }
 
     private Object b(Object object) {
@@ -302,7 +302,7 @@ extends Mapping {
     }
 
     private void B(Object object, String string) {
-        this.G.c(object, string);
+        this.G.invokeVoid(object, string);
     }
 
     private void n(Object object, float f) {

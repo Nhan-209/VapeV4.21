@@ -77,7 +77,7 @@ extends Mod {
 
     @EventHandler
     public void onRenderPlayerPost(EventRenderPlayerPost event) {
-        if (Vape.INSTANCE.getClientSettings().J(event.getEntityPlayer()) && this.hideBots.getEffectiveValue().booleanValue()) {
+        if (Vape.INSTANCE.getClientSettings().isBot(event.getEntityPlayer()) && this.hideBots.getEffectiveValue().booleanValue()) {
             return;
         }
         if (this.colored.getEffectiveValue().booleanValue()) {
@@ -110,10 +110,10 @@ extends Mod {
 
     @EventHandler
     public void onRenderPlayerPre(EventRenderPlayerPre event) {
-        if (this.hideBots.getEffectiveValue().booleanValue() && Vape.INSTANCE.getClientSettings().J(event.getEntityPlayer())) {
+        if (this.hideBots.getEffectiveValue().booleanValue() && Vape.INSTANCE.getClientSettings().isBot(event.getEntityPlayer())) {
             return;
         }
-        if (ClientSettings.E(event.getEntityPlayer())) {
+        if (ClientSettings.isReservedEntity(event.getEntityPlayer())) {
             return;
         }
         ESP esp = Vape.INSTANCE.getModManager().getMod(ESP.class);

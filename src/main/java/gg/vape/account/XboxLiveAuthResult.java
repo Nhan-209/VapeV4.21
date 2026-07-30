@@ -1,12 +1,11 @@
 package gg.vape.account;
 
 public class XboxLiveAuthResult {
-    public String A;
-    public String x;
+    public String userHash;
+    public String token;
 
-    public XboxLiveAuthResult(String string, String string2) {
-        this.A = string;
-        this.x = string2;
+    public XboxLiveAuthResult(String userHash, String token) {
+        this.userHash = userHash;
+        this.token = token;
     }
 }
-

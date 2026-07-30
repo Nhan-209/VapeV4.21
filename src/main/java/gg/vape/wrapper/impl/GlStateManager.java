@@ -6,9 +6,7 @@ import gg.vape.utils.render.BufferedGuiRenderPrimitives;
 import gg.vape.utils.render.GuiRenderPrimitives;
 import gg.vape.utils.render.OpenGlBackendHolder;
 import gg.vape.wrapper.Wrapper;
-import gg.vape.wrapper.impl.ForgeVersion;
-import gg.vape.wrapper.impl.GlStateManager$TextureState;
-import gg.vape.wrapper.impl.GlStateManager_BlendState;
+
 import java.nio.IntBuffer;
 import java.util.ArrayList;
 import org.lwjgl.opengl.GL11;
@@ -29,14 +27,14 @@ extends Wrapper {
             OpenGlBackendHolder.backend.disableCapability(3553);
             return;
         }
-        MGlStateManager.a(GlStateManager.c.getMappings().Dt);
+        MGlStateManager.a(GlStateManager.vapeInstance.getMappings().Dt);
     }
 
     public static int F() {
         if (GlStateManager.i()) {
             return GL11.glGenTextures();
         }
-        return MGlStateManager.A(GlStateManager.c.getMappings().Dt);
+        return MGlStateManager.A(GlStateManager.vapeInstance.getMappings().Dt);
     }
 
     public static void L() {
@@ -44,7 +42,7 @@ extends Wrapper {
             OpenGlBackendHolder.backend.enableCapability(2884);
             return;
         }
-        MGlStateManager.c(GlStateManager.c.getMappings().Dt);
+        MGlStateManager.c(GlStateManager.vapeInstance.getMappings().Dt);
     }
 
     public GlStateManager(Object object) {
@@ -55,7 +53,7 @@ extends Wrapper {
         if (GlStateManager.i()) {
             return;
         }
-        MGlStateManager.m(GlStateManager.c.getMappings().Dt, n);
+        MGlStateManager.m(GlStateManager.vapeInstance.getMappings().Dt, n);
     }
 
     static {
@@ -72,7 +70,7 @@ extends Wrapper {
 
     public static GlStateManager_BlendState W() {
         if (F == null) {
-            F = new GlStateManager_BlendState(MGlStateManager.U(GlStateManager.c.getMappings().Dt));
+            F = new GlStateManager_BlendState(MGlStateManager.U(GlStateManager.vapeInstance.getMappings().Dt));
         }
         return F;
     }
@@ -82,7 +80,7 @@ extends Wrapper {
             GL11.glBlendFunc((int)n, (int)n2);
             return;
         }
-        MGlStateManager.B(GlStateManager.c.getMappings().Dt, n, n2, n3, n4);
+        MGlStateManager.B(GlStateManager.vapeInstance.getMappings().Dt, n, n2, n3, n4);
     }
 
     public static void enableTexture2D() {
@@ -93,7 +91,7 @@ extends Wrapper {
             OpenGlBackendHolder.backend.enableCapability(3553);
             return;
         }
-        MGlStateManager.Z(GlStateManager.c.getMappings().Dt);
+        MGlStateManager.Z(GlStateManager.vapeInstance.getMappings().Dt);
     }
 
     public static void F$src$V$acq27m() {
@@ -101,7 +99,7 @@ extends Wrapper {
             OpenGlBackendHolder.backend.loadIdentity();
             return;
         }
-        MGlStateManager.P(GlStateManager.c.getMappings().Dt);
+        MGlStateManager.P(GlStateManager.vapeInstance.getMappings().Dt);
     }
 
     public static void Y() {
@@ -109,7 +107,7 @@ extends Wrapper {
             OpenGlBackendHolder.backend.disableCapability(2884);
             return;
         }
-        MGlStateManager.N(GlStateManager.c.getMappings().Dt);
+        MGlStateManager.N(GlStateManager.vapeInstance.getMappings().Dt);
     }
 
     public static void disableBlend() {
@@ -126,7 +124,7 @@ extends Wrapper {
             OpenGlBackendHolder.backend.setDepthMask(bl);
             return;
         }
-        MGlStateManager.p(GlStateManager.c.getMappings().Dt, bl);
+        MGlStateManager.p(GlStateManager.vapeInstance.getMappings().Dt, bl);
     }
 
     public static void enableDepth() {
@@ -134,7 +132,7 @@ extends Wrapper {
             OpenGlBackendHolder.backend.enableCapability(2929);
             return;
         }
-        MGlStateManager.M(GlStateManager.c.getMappings().Dt);
+        MGlStateManager.M(GlStateManager.vapeInstance.getMappings().Dt);
     }
 
     public static int p() {
@@ -148,7 +146,7 @@ extends Wrapper {
             GL11.glBindTexture((int)3553, (int)n);
             return;
         }
-        if (o == null && (objectArray = MGlStateManager.e(GlStateManager.c.getMappings().Dt)) != null && objectArray.length > 0 && (object = objectArray[0]) != null) {
+        if (o == null && (objectArray = MGlStateManager.e(GlStateManager.vapeInstance.getMappings().Dt)) != null && objectArray.length > 0 && (object = objectArray[0]) != null) {
             o = new GlStateManager$TextureState(object);
         }
         if (o != null && n != o.P()) {
@@ -169,7 +167,7 @@ extends Wrapper {
             OpenGlBackendHolder.backend.disableCapability(2929);
             return;
         }
-        MGlStateManager.j(GlStateManager.c.getMappings().Dt);
+        MGlStateManager.j(GlStateManager.vapeInstance.getMappings().Dt);
     }
 
     public static void color(float f, float f2, float f3, float f4) {
@@ -178,10 +176,10 @@ extends Wrapper {
             return;
         }
         if (ForgeVersion.MC_1_17.d()) {
-            MGlStateManager.Z(GlStateManager.c.getMappings().Dt, f == 1.0f, f2 == 1.0f, f3 == 1.0f, f4 == 1.0f);
+            MGlStateManager.Z(GlStateManager.vapeInstance.getMappings().Dt, f == 1.0f, f2 == 1.0f, f3 == 1.0f, f4 == 1.0f);
             return;
         }
-        MGlStateManager.O(GlStateManager.c.getMappings().Dt, f, f2, f3, f4);
+        MGlStateManager.O(GlStateManager.vapeInstance.getMappings().Dt, f, f2, f3, f4);
     }
 
     public static void g(float f) {
@@ -189,7 +187,7 @@ extends Wrapper {
             GL11.glFogf((int)2914, (float)f);
             return;
         }
-        MGlStateManager.c(GlStateManager.c.getMappings().Dt, f);
+        MGlStateManager.c(GlStateManager.vapeInstance.getMappings().Dt, f);
     }
 
     private static IllegalArgumentException a(IllegalArgumentException illegalArgumentException) {
@@ -205,7 +203,7 @@ extends Wrapper {
             OpenGlBackendHolder.backend.rotate(f, f2, f3, f4);
             return;
         }
-        MGlStateManager.P(GlStateManager.c.getMappings().Dt, f, f2, f3, f4);
+        MGlStateManager.P(GlStateManager.vapeInstance.getMappings().Dt, f, f2, f3, f4);
     }
 
     public static void Y(int n, int n2) {
@@ -213,21 +211,21 @@ extends Wrapper {
             GlStateManager.tryBlendFuncSeparate(n, n2, n, n2);
             return;
         }
-        MGlStateManager.j(GlStateManager.c.getMappings().Dt, n, n2);
+        MGlStateManager.j(GlStateManager.vapeInstance.getMappings().Dt, n, n2);
     }
 
     public static int i(int n) {
         if (ForgeVersion.MC_1_21_10.v()) {
             return -1;
         }
-        return GlStateManager.c.getMappings().Dt.w(n);
+        return GlStateManager.vapeInstance.getMappings().Dt.w(n);
     }
 
     public static void t(int n, int n2) {
         if (ForgeVersion.MC_1_20_6.v()) {
             return;
         }
-        MGlStateManager.a(GlStateManager.c.getMappings().Dt, n, n2);
+        MGlStateManager.a(GlStateManager.vapeInstance.getMappings().Dt, n, n2);
     }
 
     public static void disableLighting() {
@@ -238,7 +236,7 @@ extends Wrapper {
             OpenGlBackendHolder.backend.disableCapability(2896);
             return;
         }
-        MGlStateManager.X(GlStateManager.c.getMappings().Dt);
+        MGlStateManager.X(GlStateManager.vapeInstance.getMappings().Dt);
     }
 
     public static void enableBlend() {
@@ -258,7 +256,7 @@ extends Wrapper {
             OpenGlBackendHolder.backend.enableCapability(3008);
             return;
         }
-        MGlStateManager.v(GlStateManager.c.getMappings().Dt);
+        MGlStateManager.v(GlStateManager.vapeInstance.getMappings().Dt);
     }
 
     public static void disableAlpha() {
@@ -269,7 +267,7 @@ extends Wrapper {
             OpenGlBackendHolder.backend.disableCapability(3008);
             return;
         }
-        MGlStateManager.O(GlStateManager.c.getMappings().Dt);
+        MGlStateManager.O(GlStateManager.vapeInstance.getMappings().Dt);
     }
 
     public static void enableLighting() {
@@ -280,11 +278,11 @@ extends Wrapper {
             OpenGlBackendHolder.backend.enableCapability(2896);
             return;
         }
-        MGlStateManager.x(GlStateManager.c.getMappings().Dt);
+        MGlStateManager.x(GlStateManager.vapeInstance.getMappings().Dt);
     }
 
     public static void h(int n, int n2, int n3, int n4, int n5, int n6, int n7, int n8, IntBuffer intBuffer) {
-        MGlStateManager.Q(GlStateManager.c.getMappings().Dt, n, n2, n3, n4, n5, n6, n7, n8, intBuffer);
+        MGlStateManager.Q(GlStateManager.vapeInstance.getMappings().Dt, n, n2, n3, n4, n5, n6, n7, n8, intBuffer);
     }
 
     public static void r(int n, boolean bl) {
@@ -337,7 +335,7 @@ extends Wrapper {
 
     public static ArrayList<GlStateManager$TextureState> R() {
         ArrayList<GlStateManager$TextureState> arrayList = new ArrayList<GlStateManager$TextureState>();
-        for (Object object : MGlStateManager.e(GlStateManager.c.getMappings().Dt)) {
+        for (Object object : MGlStateManager.e(GlStateManager.vapeInstance.getMappings().Dt)) {
             arrayList.add(new GlStateManager$TextureState(object));
         }
         return arrayList;

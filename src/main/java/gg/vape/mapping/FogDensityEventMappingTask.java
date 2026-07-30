@@ -11,7 +11,7 @@ extends JavassistMappingTask {
     private static final String c = "0.1F";
 
     @Override
-    public void c() {
+    public void transform() {
         CtBehavior ctBehavior = this.F(Vape.INSTANCE.getMappings().V.H);
         this.H(ctBehavior, EventFogDensity.class, c, "", "");
     }
@@ -20,4 +20,3 @@ extends JavassistMappingTask {
         super(MappedClasses.Dq);
     }
 }
-

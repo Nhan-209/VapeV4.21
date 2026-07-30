@@ -4,13 +4,12 @@ import org.objectweb.asm.ClassWriter;
 
 public class TransformClassWriter
 extends ClassWriter {
-    public TransformClassWriter(int n) {
-        super(n);
+    public TransformClassWriter(int flags) {
+        super(flags);
     }
 
     @Override
-    protected String getCommonSuperClass(String string, String string2) {
-        return super.getCommonSuperClass(string, string2);
+    protected String getCommonSuperClass(String firstType, String secondType) {
+        return super.getCommonSuperClass(firstType, secondType);
     }
 }
-

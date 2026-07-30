@@ -96,9 +96,9 @@ DescribedOption {
         return this.displayName;
     }
 
-    private ComparisonOperator(String string2, String string3) {
-        this.displayName = string2;
-        this.symbol = string3;
+    private ComparisonOperator(String displayName, String symbol) {
+        this.displayName = displayName;
+        this.symbol = symbol;
     }
 
 

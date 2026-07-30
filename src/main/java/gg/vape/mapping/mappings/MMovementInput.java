@@ -34,7 +34,7 @@ extends Mapping {
             Class<Float> clazz = Float.TYPE;
             String string = "moveStrafe";
             MMovementInput mMovementInput = this;
-            this.V = ((MappingFieldBuilder)mMovementInput.T(string, clazz).A(ForgeVersion.MC_1_21_0.n(), "leftImpulse")).z();
+            this.V = ((MappingFieldBuilder)mMovementInput.fieldBuilder(string, clazz).setNameForVersion(ForgeVersion.MC_1_21_0.n(), "leftImpulse")).buildField();
         }
         if (ForgeVersion.MC_1_21_4.d()) {
             Class clazz = MappedClasses.qn;
@@ -53,11 +53,11 @@ extends Mapping {
             Class<Boolean> clazz = Boolean.TYPE;
             String string = "jump";
             MMovementInput mMovementInput = this;
-            this.K = ((MappingFieldBuilder)mMovementInput.T(string, clazz).A(ForgeVersion.MC_1_21_0.n(), "jumping")).z();
+            this.K = ((MappingFieldBuilder)mMovementInput.fieldBuilder(string, clazz).setNameForVersion(ForgeVersion.MC_1_21_0.n(), "jumping")).buildField();
             Class<Boolean> clazz3 = Boolean.TYPE;
             String string3 = "sneak";
             MMovementInput mMovementInput3 = this;
-            this.b = ((MappingFieldBuilder)((MappingFieldBuilder)this.T(string3, clazz3).A(ForgeVersion.MC_1_21_0.n(), "shiftKeyDown")).A(ForgeVersion.MC_1_16_5.n(), "sneaking")).z();
+            this.b = ((MappingFieldBuilder)((MappingFieldBuilder)this.fieldBuilder(string3, clazz3).setNameForVersion(ForgeVersion.MC_1_21_0.n(), "shiftKeyDown")).setNameForVersion(ForgeVersion.MC_1_16_5.n(), "sneaking")).buildField();
             if (ForgeVersion.MC_1_12_2.d()) {
                 if (ForgeVersion.MC_1_17.d()) {
                     Class<Float> clazz4 = Float.TYPE;
@@ -67,7 +67,7 @@ extends Mapping {
                     this.p = this.J(string4, bl, clazz4);
                 } else {
                     Class<Float> clazz5 = Float.TYPE;
-                    boolean bl = Wrapper.G;
+                    boolean bl = Wrapper.isNativeAvailable;
                     String string5 = "field_192832_b";
                     MMovementInput mMovementInput5 = this;
                     this.p = this.J(string5, bl, clazz5);

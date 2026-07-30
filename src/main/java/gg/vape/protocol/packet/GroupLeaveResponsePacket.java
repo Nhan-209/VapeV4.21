@@ -7,28 +7,27 @@ import gg.vape.protocol.packet.ZeusTrackedPacket;
 
 public class GroupLeaveResponsePacket
 extends ZeusTrackedPacket<GroupLeavePacket> {
-    private GroupLeaveStatus j;
+    private GroupLeaveStatus status;
 
-    public GroupLeaveStatus D() {
-        return this.j;
+    public GroupLeaveStatus getStatus() {
+        return this.status;
     }
 
     @Override
     public void T(ZeusPacketBuffer gx_12) {
-        gx_12.U(this.j);
+        gx_12.writeEnum(this.status);
     }
 
     @Override
     public void x(ZeusPacketBuffer gx_12) {
-        this.j = gx_12.Y(GroupLeaveStatus.class);
+        this.status = gx_12.readEnum(GroupLeaveStatus.class);
     }
 
     public GroupLeaveResponsePacket() {
     }
 
-    public GroupLeaveResponsePacket(GroupLeavePacket gL, GroupLeaveStatus qo_12) {
-        super(gL);
-        this.j = qo_12;
+    public GroupLeaveResponsePacket(GroupLeavePacket request, GroupLeaveStatus status) {
+        super(request);
+        this.status = status;
     }
 }
-

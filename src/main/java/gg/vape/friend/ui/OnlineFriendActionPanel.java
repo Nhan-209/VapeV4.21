@@ -30,119 +30,119 @@ import java.awt.Color;
 
 public class OnlineFriendActionPanel
 extends PanelComponent {
-    private final OnlineFriend R7;
-    private final TextActionButton RI;
-    private final BooleanValue RY;
-    private final BooleanToggleComponent Rw;
-    private boolean RV;
-    private final IconActionButton RT;
-    private final IconActionButton RM;
-    private boolean RP;
+    private final OnlineFriend friend;
+    private final TextActionButton chatButton;
+    private final BooleanValue syncWithFriendsValue;
+    private final BooleanToggleComponent syncWithFriendsToggle;
+    private boolean actionPending;
+    private final IconActionButton removeButton;
+    private final IconActionButton inviteButton;
+    private boolean inviteDisabled;
 
     @Override
     public double C() {
         return 35.0;
     }
 
-    private void lambda$null$5() {
-        this.RV = false;
+    private void handlePartyCreationFailure() {
+        this.actionPending = false;
     }
 
-    private void lambda$null$10(PopupFrame popupFrame) {
+    private void cancelFriendRemoval(PopupFrame popupFrame) {
         ClientSettings.removePopup(popupFrame);
-        this.RV = false;
+        this.actionPending = false;
     }
 
-    private void x(OnlineFriend onlineFriend, GroupInviteResponsePacket groupInviteResponsePacket) {
-        switch (groupInviteResponsePacket.a()) {
+    private void showInviteResult(OnlineFriend friend, GroupInviteResponsePacket response) {
+        switch (response.getStatus()) {
             case SUCCESS: {
-                OnlineFriendUiHelper.P(new NotificationMessage(NotificationType.SUCCESS, "Invited " + onlineFriend.C() + " to party"));
+                OnlineFriendUiHelper.showNotification(new NotificationMessage(NotificationType.SUCCESS, "Invited " + friend.getDisplayName() + " to party"));
                 break;
             }
             case TOO_MANY_INVITES: {
-                OnlineFriendUiHelper.P(new NotificationMessage(NotificationType.ERROR, "Sent too many invites"));
+                OnlineFriendUiHelper.showNotification(new NotificationMessage(NotificationType.ERROR, "Sent too many invites"));
                 break;
             }
             case NOT_ONLINE: 
             case ALREADY_INVITED: 
             case FAILED: {
-                OnlineFriendUiHelper.P(new NotificationMessage(NotificationType.ERROR, "Error inviting " + onlineFriend.C() + " to party"));
+                OnlineFriendUiHelper.showNotification(new NotificationMessage(NotificationType.ERROR, "Error inviting " + friend.getDisplayName() + " to party"));
             }
         }
     }
 
-    private void lambda$null$9(PopupFrame popupFrame) {
+    private void confirmFriendRemoval(PopupFrame popupFrame) {
         ClientSettings.removePopup(popupFrame);
-        ZeusConnectionManager.T().u().i(this.R7.S(), this::lambda$null$7, this::lambda$null$8);
+        ZeusConnectionManager.T().u().i(this.friend.getUser(), this::handleFriendRemovalResponse, this::handleFriendRemovalFailure);
     }
 
-    static boolean V(OnlineFriendActionPanel onlineFriendActionPanel) {
-        return onlineFriendActionPanel.RP;
+    static boolean isInviteDisabled(OnlineFriendActionPanel panel) {
+        return panel.inviteDisabled;
     }
 
 
-    private void lambda$null$3() {
-        this.RV = false;
+    private void handleNewPartyInviteFailure() {
+        this.actionPending = false;
     }
 
     public OnlineFriendActionPanel(OnlineFriend onlineFriend) {
         super(99.0, 35.0);
         boolean bl;
-        this.RT = new IconActionButton("newtrash", 0.2, 20.0, 13.0, OnlineFriendActionPanel.J.d, 0.9);
-        this.RM = new OnlineFriendActionIconButton(this, "party@2x", 0.2, 20.0, 13.0, OnlineFriendActionPanel.J.B, 0.9);
-        this.RI = new TextActionButton("CHAT", 0.7, false, 46.0, 13.0, OnlineFriendActionPanel.J.B, 0.9);
-        this.RY = new OnlineFriendNotificationsValue(this, (Object)null, "Sync with Friends", false);
-        this.Rw = new BooleanToggleComponent("Sync with friends", 0.8, this.RY);
-        this.RV = false;
-        this.R7 = onlineFriend;
-        boolean bl2 = bl = Vape.INSTANCE.getOnlineManager().y().j() != null;
+        this.removeButton = new IconActionButton("newtrash", 0.2, 20.0, 13.0, OnlineFriendActionPanel.J.d, 0.9);
+        this.inviteButton = new OnlineFriendActionIconButton(this, "party@2x", 0.2, 20.0, 13.0, OnlineFriendActionPanel.J.B, 0.9);
+        this.chatButton = new TextActionButton("CHAT", 0.7, false, 46.0, 13.0, OnlineFriendActionPanel.J.B, 0.9);
+        this.syncWithFriendsValue = new OnlineFriendNotificationsValue(this, (Object)null, "Sync with Friends", false);
+        this.syncWithFriendsToggle = new BooleanToggleComponent("Sync with friends", 0.8, this.syncWithFriendsValue);
+        this.actionPending = false;
+        this.friend = onlineFriend;
+        boolean bl2 = bl = Vape.INSTANCE.getOnlineManager().getPartyManager().getCurrentParty() != null;
         if (bl) {
-            boolean bl3 = Vape.INSTANCE.getOnlineManager().y().j().c().contains(onlineFriend);
-            boolean bl4 = Vape.INSTANCE.getOnlineManager().y().j().S().contains(onlineFriend);
-            this.RP = onlineFriend.F().equals((Object)OnlineStatus.OFFLINE) || bl3 || bl4;
-            this.RM.setBackgroundAnimation(new ColorAnimation(0.15, this.RP ? OnlineFriendActionPanel.J.m : new Color(45, 45, 45), this.RP ? OnlineFriendActionPanel.J.m : this.RM.getBackgroundColor()));
-            this.RM.setIconColorAnimation(new ColorAnimation(0.15, this.RP ? OnlineFriendActionPanel.J.K : OnlineFriendActionPanel.J.W, this.RP ? OnlineFriendActionPanel.J.K : OnlineFriendActionPanel.J.f));
-            this.RY.setValue(onlineFriend.y());
+            boolean bl3 = Vape.INSTANCE.getOnlineManager().getPartyManager().getCurrentParty().getMembers().contains(onlineFriend);
+            boolean bl4 = Vape.INSTANCE.getOnlineManager().getPartyManager().getCurrentParty().getInvitedUsers().contains(onlineFriend);
+            this.inviteDisabled = onlineFriend.getStatus().equals((Object)OnlineStatus.OFFLINE) || bl3 || bl4;
+            this.inviteButton.setBackgroundAnimation(new ColorAnimation(0.15, this.inviteDisabled ? OnlineFriendActionPanel.J.m : new Color(45, 45, 45), this.inviteDisabled ? OnlineFriendActionPanel.J.m : this.inviteButton.getBackgroundColor()));
+            this.inviteButton.setIconColorAnimation(new ColorAnimation(0.15, this.inviteDisabled ? OnlineFriendActionPanel.J.K : OnlineFriendActionPanel.J.W, this.inviteDisabled ? OnlineFriendActionPanel.J.K : OnlineFriendActionPanel.J.f));
+            this.syncWithFriendsValue.setValue(onlineFriend.isSyncWithFriends());
             this.setShowDisabledOverlay(false);
-            this.Rw.setUseExplicitWidth(true);
-            this.Rw.o(90.0);
-            this.Rw.setExplicitWidth(90.0);
-            this.Rw.setShowDisabledOverlay(false);
+            this.syncWithFriendsToggle.setUseExplicitWidth(true);
+            this.syncWithFriendsToggle.o(90.0);
+            this.syncWithFriendsToggle.setExplicitWidth(90.0);
+            this.syncWithFriendsToggle.setShowDisabledOverlay(false);
             this.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M("wrap, widthwrap");
-            this.RT.w("Remove friend");
-            this.RM.w("Invite to party");
-            this.Rw.w("Automatically add friend to Minecraft Friends list");
-            this.b$src$V$1c62ivh();
-            this.RM.addClickListener(() -> this.lambda$new$6(onlineFriend));
-            this.addChildren(new SpacerComponent(99.0, 1.0), new SpacerComponent(6.0, 1.0), this.RT, new SpacerComponent(2.0, 1.0), this.RM, new SpacerComponent(2.0, 1.0), this.RI, new SpacerComponent(99.0, 2.0), new SpacerComponent(2.0, 1.0), this.Rw);
+            this.removeButton.w("Remove friend");
+            this.inviteButton.w("Invite to party");
+            this.syncWithFriendsToggle.w("Automatically add friend to Minecraft Friends list");
+            this.configureRemoveButton();
+            this.inviteButton.addClickListener(() -> this.sendPartyInvite(onlineFriend));
+            this.addChildren(new SpacerComponent(99.0, 1.0), new SpacerComponent(6.0, 1.0), this.removeButton, new SpacerComponent(2.0, 1.0), this.inviteButton, new SpacerComponent(2.0, 1.0), this.chatButton, new SpacerComponent(99.0, 2.0), new SpacerComponent(2.0, 1.0), this.syncWithFriendsToggle);
             return;
         }
         boolean bl5 = false;
         boolean bl6 = false;
-        this.RP = onlineFriend.F().equals((Object)OnlineStatus.OFFLINE);
-        this.RM.setBackgroundAnimation(new ColorAnimation(0.15, this.RP ? OnlineFriendActionPanel.J.m : new Color(45, 45, 45), this.RP ? OnlineFriendActionPanel.J.m : this.RM.getBackgroundColor()));
-        this.RM.setIconColorAnimation(new ColorAnimation(0.15, this.RP ? OnlineFriendActionPanel.J.K : OnlineFriendActionPanel.J.W, this.RP ? OnlineFriendActionPanel.J.K : OnlineFriendActionPanel.J.f));
-        this.RY.setValue(onlineFriend.y());
+        this.inviteDisabled = onlineFriend.getStatus().equals((Object)OnlineStatus.OFFLINE);
+        this.inviteButton.setBackgroundAnimation(new ColorAnimation(0.15, this.inviteDisabled ? OnlineFriendActionPanel.J.m : new Color(45, 45, 45), this.inviteDisabled ? OnlineFriendActionPanel.J.m : this.inviteButton.getBackgroundColor()));
+        this.inviteButton.setIconColorAnimation(new ColorAnimation(0.15, this.inviteDisabled ? OnlineFriendActionPanel.J.K : OnlineFriendActionPanel.J.W, this.inviteDisabled ? OnlineFriendActionPanel.J.K : OnlineFriendActionPanel.J.f));
+        this.syncWithFriendsValue.setValue(onlineFriend.isSyncWithFriends());
         this.setShowDisabledOverlay(false);
-        this.Rw.setUseExplicitWidth(true);
-        this.Rw.o(90.0);
-        this.Rw.setExplicitWidth(90.0);
-        this.Rw.setShowDisabledOverlay(false);
+        this.syncWithFriendsToggle.setUseExplicitWidth(true);
+        this.syncWithFriendsToggle.o(90.0);
+        this.syncWithFriendsToggle.setExplicitWidth(90.0);
+        this.syncWithFriendsToggle.setShowDisabledOverlay(false);
         this.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M("wrap, widthwrap");
-        this.RT.w("Remove friend");
-        this.RM.w("Invite to party");
-        this.Rw.w("Automatically add friend to Minecraft Friends list");
-        this.b$src$V$1c62ivh();
-        this.RM.addClickListener(() -> this.lambda$new$6(onlineFriend));
-        this.addChildren(new SpacerComponent(99.0, 1.0), new SpacerComponent(6.0, 1.0), this.RT, new SpacerComponent(2.0, 1.0), this.RM, new SpacerComponent(2.0, 1.0), this.RI, new SpacerComponent(99.0, 2.0), new SpacerComponent(2.0, 1.0), this.Rw);
+        this.removeButton.w("Remove friend");
+        this.inviteButton.w("Invite to party");
+        this.syncWithFriendsToggle.w("Automatically add friend to Minecraft Friends list");
+        this.configureRemoveButton();
+        this.inviteButton.addClickListener(() -> this.sendPartyInvite(onlineFriend));
+        this.addChildren(new SpacerComponent(99.0, 1.0), new SpacerComponent(6.0, 1.0), this.removeButton, new SpacerComponent(2.0, 1.0), this.inviteButton, new SpacerComponent(2.0, 1.0), this.chatButton, new SpacerComponent(99.0, 2.0), new SpacerComponent(2.0, 1.0), this.syncWithFriendsToggle);
     }
 
-    static OnlineFriend O(OnlineFriendActionPanel onlineFriendActionPanel) {
-        return onlineFriendActionPanel.R7;
+    static OnlineFriend getFriend(OnlineFriendActionPanel panel) {
+        return panel.friend;
     }
 
-    private void lambda$null$1() {
-        this.RV = false;
+    private void handleExistingPartyInviteFailure() {
+        this.actionPending = false;
     }
 
     @Override
@@ -150,65 +150,65 @@ extends PanelComponent {
         boolean bl;
         boolean bl2;
         super.u();
-        boolean bl3 = bl2 = Vape.INSTANCE.getOnlineManager().y().j() != null;
+        boolean bl3 = bl2 = Vape.INSTANCE.getOnlineManager().getPartyManager().getCurrentParty() != null;
         if (bl2) {
             boolean bl4;
-            boolean bl5 = Vape.INSTANCE.getOnlineManager().y().j().c().contains(this.R7);
-            boolean bl6 = Vape.INSTANCE.getOnlineManager().y().j().S().contains(this.R7);
-            boolean bl7 = bl4 = this.R7.F().equals((Object)OnlineStatus.OFFLINE) || bl5 || bl6;
-            if (this.RP != bl4) {
-                this.RP = bl4;
-                this.RM.setBackgroundAnimation(new ColorAnimation(0.15, this.RP ? OnlineFriendActionPanel.J.m : new Color(45, 45, 45), this.RP ? OnlineFriendActionPanel.J.m : this.RM.getBackgroundColor()));
-                this.RM.setIconColorAnimation(new ColorAnimation(0.15, this.RP ? OnlineFriendActionPanel.J.K : OnlineFriendActionPanel.J.W, this.RP ? OnlineFriendActionPanel.J.K : OnlineFriendActionPanel.J.f));
+            boolean bl5 = Vape.INSTANCE.getOnlineManager().getPartyManager().getCurrentParty().getMembers().contains(this.friend);
+            boolean bl6 = Vape.INSTANCE.getOnlineManager().getPartyManager().getCurrentParty().getInvitedUsers().contains(this.friend);
+            boolean bl7 = bl4 = this.friend.getStatus().equals((Object)OnlineStatus.OFFLINE) || bl5 || bl6;
+            if (this.inviteDisabled != bl4) {
+                this.inviteDisabled = bl4;
+                this.inviteButton.setBackgroundAnimation(new ColorAnimation(0.15, this.inviteDisabled ? OnlineFriendActionPanel.J.m : new Color(45, 45, 45), this.inviteDisabled ? OnlineFriendActionPanel.J.m : this.inviteButton.getBackgroundColor()));
+                this.inviteButton.setIconColorAnimation(new ColorAnimation(0.15, this.inviteDisabled ? OnlineFriendActionPanel.J.K : OnlineFriendActionPanel.J.W, this.inviteDisabled ? OnlineFriendActionPanel.J.K : OnlineFriendActionPanel.J.f));
             }
             return;
         }
         boolean bl8 = false;
         boolean bl9 = false;
-        boolean bl10 = bl = this.R7.F().equals((Object)OnlineStatus.OFFLINE);
-        if (this.RP != bl) {
-            this.RP = bl;
-            this.RM.setBackgroundAnimation(new ColorAnimation(0.15, this.RP ? OnlineFriendActionPanel.J.m : new Color(45, 45, 45), this.RP ? OnlineFriendActionPanel.J.m : this.RM.getBackgroundColor()));
-            this.RM.setIconColorAnimation(new ColorAnimation(0.15, this.RP ? OnlineFriendActionPanel.J.K : OnlineFriendActionPanel.J.W, this.RP ? OnlineFriendActionPanel.J.K : OnlineFriendActionPanel.J.f));
+        boolean bl10 = bl = this.friend.getStatus().equals((Object)OnlineStatus.OFFLINE);
+        if (this.inviteDisabled != bl) {
+            this.inviteDisabled = bl;
+            this.inviteButton.setBackgroundAnimation(new ColorAnimation(0.15, this.inviteDisabled ? OnlineFriendActionPanel.J.m : new Color(45, 45, 45), this.inviteDisabled ? OnlineFriendActionPanel.J.m : this.inviteButton.getBackgroundColor()));
+            this.inviteButton.setIconColorAnimation(new ColorAnimation(0.15, this.inviteDisabled ? OnlineFriendActionPanel.J.K : OnlineFriendActionPanel.J.W, this.inviteDisabled ? OnlineFriendActionPanel.J.K : OnlineFriendActionPanel.J.f));
         }
     }
 
-    private void lambda$null$0(OnlineFriend onlineFriend, GroupInviteResponsePacket groupInviteResponsePacket) {
-        this.x(onlineFriend, groupInviteResponsePacket);
+    private void handleExistingPartyInviteResponse(OnlineFriend friend, GroupInviteResponsePacket response) {
+        this.showInviteResult(friend, response);
     }
 
-    private void lambda$new$6(OnlineFriend onlineFriend) {
-        if (this.RV) {
+    private void sendPartyInvite(OnlineFriend friend) {
+        if (this.actionPending) {
             return;
         }
-        if (onlineFriend.F() == OnlineStatus.OFFLINE) {
+        if (friend.getStatus() == OnlineStatus.OFFLINE) {
             return;
         }
-        this.RV = true;
-        PartyState partyState = Vape.INSTANCE.getOnlineManager().y().j();
+        this.actionPending = true;
+        PartyState partyState = Vape.INSTANCE.getOnlineManager().getPartyManager().getCurrentParty();
         if (partyState != null) {
-            if (!partyState.t()) {
-                this.RV = false;
+            if (!partyState.canInvite()) {
+                this.actionPending = false;
                 return;
             }
-            if (partyState.c().contains(onlineFriend)) {
-                this.RV = false;
-                OnlineFriendUiHelper.P(new NotificationMessage(NotificationType.ERROR, "Cannot send party invite to a party member"));
+            if (partyState.getMembers().contains(friend)) {
+                this.actionPending = false;
+                OnlineFriendUiHelper.showNotification(new NotificationMessage(NotificationType.ERROR, "Cannot send party invite to a party member"));
                 return;
             }
-            if (partyState.S().contains(onlineFriend)) {
-                this.RV = false;
-                OnlineFriendUiHelper.P(new NotificationMessage(NotificationType.ERROR, "Cannot send party invite to an already invited person"));
+            if (partyState.getInvitedUsers().contains(friend)) {
+                this.actionPending = false;
+                OnlineFriendUiHelper.showNotification(new NotificationMessage(NotificationType.ERROR, "Cannot send party invite to an already invited person"));
                 return;
             }
-            ZeusConnectionManager.T().u().J(onlineFriend.S(), arg_0 -> this.lambda$null$0(onlineFriend, arg_0), this::lambda$null$1);
+            ZeusConnectionManager.T().u().J(friend.getUser(), response -> this.handleExistingPartyInviteResponse(friend, response), this::handleExistingPartyInviteFailure);
             return;
         }
-        ZeusConnectionManager.T().u().w(arg_0 -> this.lambda$null$4(onlineFriend, arg_0), this::lambda$null$5);
+        ZeusConnectionManager.T().u().w(response -> this.handlePartyCreationResponse(friend, response), this::handlePartyCreationFailure);
     }
 
-    private void lambda$null$8() {
-        this.RV = false;
+    private void handleFriendRemovalFailure() {
+        this.actionPending = false;
     }
 
     @Override
@@ -216,16 +216,16 @@ extends PanelComponent {
         super.c();
     }
 
-    public TextActionButton b$src$Lgg_vape_ui_click_component_gui_TextActionButton$efmaux() {
-        return this.RI;
+    public TextActionButton getChatButton() {
+        return this.chatButton;
     }
 
-    private void lambda$null$2(OnlineFriend onlineFriend, GroupInviteResponsePacket groupInviteResponsePacket) {
-        this.x(onlineFriend, groupInviteResponsePacket);
+    private void handleNewPartyInviteResponse(OnlineFriend friend, GroupInviteResponsePacket response) {
+        this.showInviteResult(friend, response);
     }
 
-    private void b$src$V$1c62ivh() {
-        this.RT.addClickListener(this::lambda$addDeleteListener$11);
+    private void configureRemoveButton() {
+        this.removeButton.addClickListener(this::openFriendRemovalConfirmation);
     }
 
     @Override
@@ -233,29 +233,29 @@ extends PanelComponent {
         return 99.0;
     }
 
-    private void lambda$null$4(OnlineFriend onlineFriend, GroupCreateResponsePacket groupCreateResponsePacket) {
-        if (groupCreateResponsePacket.q$src$Lgg_vape_protocol_packet_GroupCreateStatus_$1c0kqtl() == GroupCreateStatus.SUCCESS) {
-            this.RV = true;
-            ZeusConnectionManager.T().u().J(onlineFriend.S(), arg_0 -> this.lambda$null$2(onlineFriend, arg_0), this::lambda$null$3);
+    private void handlePartyCreationResponse(OnlineFriend friend, GroupCreateResponsePacket response) {
+        if (response.getStatus() == GroupCreateStatus.SUCCESS) {
+            this.actionPending = true;
+            ZeusConnectionManager.T().u().J(friend.getUser(), inviteResponse -> this.handleNewPartyInviteResponse(friend, inviteResponse), this::handleNewPartyInviteFailure);
         }
     }
 
-    private void lambda$null$7(FriendDeleteResponsePacket friendDeleteResponsePacket) {
-        if (friendDeleteResponsePacket.I()) {
-            Vape.INSTANCE.getFriendManager().E(this.R7.q());
-            Vape.INSTANCE.getOnlineFriendManager().g(this.R7);
+    private void handleFriendRemovalResponse(FriendDeleteResponsePacket response) {
+        if (response.isDeleted()) {
+            Vape.INSTANCE.getFriendManager().removeFriend(this.friend.getExternalFriend());
+            Vape.INSTANCE.getOnlineFriendManager().removeFriend(this.friend);
         }
     }
 
-    private void lambda$addDeleteListener$11() {
-        if (this.RV) {
+    private void openFriendRemovalConfirmation() {
+        if (this.actionPending) {
             return;
         }
-        this.RV = true;
-        ConfirmationDialogComponent confirmationDialogComponent = new ConfirmationDialogComponent("Are you sure you want to remove this friend?", "REMOVE", "newtrash");
-        DimmedCenteredPopupFrame dimmedCenteredPopupFrame = ClientSettings.createPopup(this.L$src$Lgg_vape_ui_click_frame_Frame_$1djx6sa(), confirmationDialogComponent, DimmedCenteredPopupFrame.class);
-        confirmationDialogComponent.getConfirmButton().addClickListener(() -> this.lambda$null$9(dimmedCenteredPopupFrame));
-        confirmationDialogComponent.getCloseButton().addClickListener(() -> this.lambda$null$10(dimmedCenteredPopupFrame));
-        dimmedCenteredPopupFrame.addMouseListener(new OnlineFriendActionPanelPopupOutsideClickFilter(this, dimmedCenteredPopupFrame));
+        this.actionPending = true;
+        ConfirmationDialogComponent confirmationDialog = new ConfirmationDialogComponent("Are you sure you want to remove this friend?", "REMOVE", "newtrash");
+        DimmedCenteredPopupFrame confirmationPopup = ClientSettings.createPopup(this.L$src$Lgg_vape_ui_click_frame_Frame_$1djx6sa(), confirmationDialog, DimmedCenteredPopupFrame.class);
+        confirmationDialog.getConfirmButton().addClickListener(() -> this.confirmFriendRemoval(confirmationPopup));
+        confirmationDialog.getCloseButton().addClickListener(() -> this.cancelFriendRemoval(confirmationPopup));
+        confirmationPopup.addMouseListener(new OnlineFriendActionPanelPopupOutsideClickFilter(this, confirmationPopup));
     }
 }

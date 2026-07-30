@@ -6,51 +6,51 @@ import gg.vape.wrapper.impl.Minecraft;
 
 public class EventLegacyRenderGlobalUpdateRenderersThrottle
 extends Event {
-    static float d = 0.0f;
-    private static final EventListeners L;
-    static float j;
-    private static boolean m;
+    static float lastPartialTicks = 0.0f;
+    private static final EventListeners EVENT_LISTENERS;
+    static float callsSincePartialTickChange;
+    private static boolean obfuscationState;
 
     @Override
     public boolean fire() {
-        float f = Minecraft.getTimer().renderPartialTicks();
-        j += 1.0f;
-        if (f != d && j >= 10.0f) {
-            j = 0.0f;
+        float partialTicks = Minecraft.getTimer().renderPartialTicks();
+        callsSincePartialTickChange += 1.0f;
+        if (partialTicks != lastPartialTicks && callsSincePartialTickChange >= 10.0f) {
+            callsSincePartialTickChange = 0.0f;
         }
-        if (j > 0.0f) {
+        if (callsSincePartialTickChange > 0.0f) {
             this.setCancelled(true);
         }
-        d = f;
+        lastPartialTicks = partialTicks;
         return super.fire();
     }
 
     @Override
     public EventListeners getListeners() {
-        return L;
+        return EVENT_LISTENERS;
     }
 
-    public static void V(boolean bl) {
-        m = bl;
+    public static void setThrottleObfuscationState(boolean state) {
+        obfuscationState = state;
     }
 
-    public static boolean c() {
-        return m;
+    public static boolean getThrottleObfuscationState() {
+        return obfuscationState;
     }
 
     public static EventListeners getEventListeners() {
-        return L;
+        return EVENT_LISTENERS;
     }
 
     static {
-        j = 0.0f;
-        L = new EventListeners();
-        EventLegacyRenderGlobalUpdateRenderersThrottle.V(false);
+        callsSincePartialTickChange = 0.0f;
+        EVENT_LISTENERS = new EventListeners();
+        EventLegacyRenderGlobalUpdateRenderersThrottle.setThrottleObfuscationState(false);
     }
 
 
-    public static boolean W() {
-        boolean bl = EventLegacyRenderGlobalUpdateRenderersThrottle.c();
+    public static boolean getObfuscationConstant() {
+        boolean state = EventLegacyRenderGlobalUpdateRenderersThrottle.getThrottleObfuscationState();
         return true;
     }
 }

@@ -6,52 +6,52 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PartyStateModel {
-    private List<GroupUserModel> s = new ArrayList<GroupUserModel>();
-    private GroupUserModel O;
-    private List<GroupUserModel> n = new ArrayList<GroupUserModel>();
+    private List<GroupUserModel> members = new ArrayList<GroupUserModel>();
+    private GroupUserModel leader;
+    private List<GroupUserModel> invitedUsers = new ArrayList<GroupUserModel>();
 
-    public GroupUserModel g() {
-        return this.O;
+    public GroupUserModel getLeader() {
+        return this.leader;
     }
 
-    public void k(ZeusPacketBuffer gx_12) {
-        this.O.f(gx_12);
-        gx_12.i(this.s.size());
-        for (GroupUserModel groupUserModel : this.s) {
-            groupUserModel.f(gx_12);
+    public void writeTo(ZeusPacketBuffer buffer) {
+        this.leader.writeTo(buffer);
+        buffer.writeVarInt(this.members.size());
+        for (GroupUserModel member : this.members) {
+            member.writeTo(buffer);
         }
-        gx_12.i(this.n.size());
-        for (GroupUserModel groupUserModel : this.n) {
-            groupUserModel.f(gx_12);
-        }
-    }
-
-    public PartyStateModel(ZeusPacketBuffer gx_12) {
-        int n;
-        this.O = new GroupUserModel(gx_12);
-        int n2 = gx_12.Y();
-        for (n = 0; n < n2; ++n) {
-            this.s.add(new GroupUserModel(gx_12));
-        }
-        n = gx_12.Y();
-        for (int i = 0; i < n; ++i) {
-            this.n.add(new GroupUserModel(gx_12));
+        buffer.writeVarInt(this.invitedUsers.size());
+        for (GroupUserModel invitedUser : this.invitedUsers) {
+            invitedUser.writeTo(buffer);
         }
     }
 
-
-    public List<GroupUserModel> h() {
-        return this.s;
+    public PartyStateModel(ZeusPacketBuffer buffer) {
+        int index;
+        this.leader = new GroupUserModel(buffer);
+        int memberCount = buffer.readVarInt();
+        for (index = 0; index < memberCount; ++index) {
+            this.members.add(new GroupUserModel(buffer));
+        }
+        int invitedUserCount = buffer.readVarInt();
+        for (int invitedIndex = 0; invitedIndex < invitedUserCount; ++invitedIndex) {
+            this.invitedUsers.add(new GroupUserModel(buffer));
+        }
     }
 
-    public PartyStateModel(GroupUserModel groupUserModel, List<GroupUserModel> list, List<GroupUserModel> list2) {
-        this.O = groupUserModel;
-        this.s = list;
-        this.n = list2;
+
+    public List<GroupUserModel> getMembers() {
+        return this.members;
     }
 
-    public List<GroupUserModel> V() {
-        return this.n;
+    public PartyStateModel(GroupUserModel leader, List<GroupUserModel> members, List<GroupUserModel> invitedUsers) {
+        this.leader = leader;
+        this.members = members;
+        this.invitedUsers = invitedUsers;
+    }
+
+    public List<GroupUserModel> getInvitedUsers() {
+        return this.invitedUsers;
     }
 }
 

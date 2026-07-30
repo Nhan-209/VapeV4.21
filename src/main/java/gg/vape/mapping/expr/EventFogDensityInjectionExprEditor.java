@@ -23,7 +23,7 @@ extends ExprEditor {
 
     @Override
     public void edit(MethodCall methodCall) throws CannotCompileException {
-        if (methodCall.getMethodName().equals(this.d.v()) && methodCall.getSignature().equals(this.d.j())) {
+        if (methodCall.getMethodName().equals(this.d.getResolvedName()) && methodCall.getSignature().equals(this.d.getDescriptor())) {
             String string = EventFogDensity.class.getName();
             methodCall.replace("$_ = $proceed($$);" + string + " vapeEvent = new " + string + "(0.1f);if (vapeEvent." + EventBus.getFireMethod(EventFogDensity.class).getName() + "()) {return;}");
             this.o.set(true);

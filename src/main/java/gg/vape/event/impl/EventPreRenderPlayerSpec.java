@@ -6,12 +6,12 @@ import gg.vape.wrapper.impl.EntityPlayer;
 
 public class EventPreRenderPlayerSpec
 extends Event {
-    private final float e;
-    private static final EventListeners Y = new EventListeners();
-    private final EntityPlayer h;
+    private final float partialTicks;
+    private static final EventListeners EVENT_LISTENERS = new EventListeners();
+    private final EntityPlayer player;
 
     public static EventListeners getEventListeners() {
-        return Y;
+        return EVENT_LISTENERS;
     }
 
     @Override
@@ -20,21 +20,20 @@ extends Event {
     }
 
     public float getPartial() {
-        return this.e;
+        return this.partialTicks;
     }
 
     @Override
     public EventListeners getListeners() {
-        return Y;
+        return EVENT_LISTENERS;
     }
 
     public EntityPlayer getClientPlayer() {
-        return this.h;
+        return this.player;
     }
 
-    public EventPreRenderPlayerSpec(Object object, float f) {
-        this.h = new EntityPlayer(object);
-        this.e = f;
+    public EventPreRenderPlayerSpec(Object playerHandle, float partialTicks) {
+        this.player = new EntityPlayer(playerHandle);
+        this.partialTicks = partialTicks;
     }
 }
-

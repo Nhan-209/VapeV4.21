@@ -34,19 +34,19 @@ import org.lwjgl.opengl.GL11;
 
 public class PingManager
 implements EventListener {
-    private long n = -1L;
-    private final List<PingMarker> C = new CopyOnWriteArrayList<PingMarker>();
-    private int i = 0;
-    private int O = (int)c;
-    private static final long c;
-    public static PingManager B;
-    private static final String b;
-    private PingMarker E;
+    private long cooldownEndNanos = -1L;
+    private final List<PingMarker> markers = new CopyOnWriteArrayList<PingMarker>();
+    private int queuedPingRequests = 0;
+    private int remainingPingAllowance = (int)OBFUSCATION_SEED;
+    private static final long OBFUSCATION_SEED;
+    public static PingManager INSTANCE;
+    private static final String RATE_LIMIT_MESSAGE;
+    private PingMarker pendingMarker;
 
     @Nullable
-    public PingMarker d(OnlineFriend onlineFriend) {
+    public PingMarker getMarker(OnlineFriend onlineFriend) {
         try {
-            return this.J(onlineFriend.S().g());
+            return this.getMarkerByUserId(onlineFriend.getUser().getId());
         }
         catch (Exception exception) {
             Vape.logThrowable(exception);
@@ -55,131 +55,127 @@ implements EventListener {
     }
 
     private void lambda$pickPing$1(PingMarker pingMarker, PingResponsePacket pingResponsePacket) {
-        this.O = pingResponsePacket.h();
-        this.n = System.nanoTime() + pingResponsePacket.p();
-        if (pingResponsePacket.v()) {
-            this.E = pingMarker;
+        this.remainingPingAllowance = pingResponsePacket.getRemainingPingAllowance();
+        this.cooldownEndNanos = System.nanoTime() + pingResponsePacket.getCooldownEndNanos();
+        if (pingResponsePacket.isRequestAccepted()) {
+            this.pendingMarker = pingMarker;
         } else {
-            this.a(pingMarker);
-            this.E = null;
-            this.k();
+            this.removeMarker(pingMarker);
+            this.pendingMarker = null;
+            this.showRateLimitNotification();
         }
     }
 
 
-    public void a(PingMarker pingMarker) {
-        this.C.remove(pingMarker);
+    public void removeMarker(PingMarker pingMarker) {
+        this.markers.remove(pingMarker);
     }
 
-    private void lambda$pickPing$0(boolean bl, PingMarker pingMarker, PingMarker pingMarker2, double[] dArray, PingResponsePacket pingResponsePacket) {
-        this.O = pingResponsePacket.h();
-        this.n = System.nanoTime() + pingResponsePacket.p();
-        if (pingResponsePacket.v()) {
-            if (bl) {
-                pingMarker.b();
+    private void lambda$pickPing$0(boolean nearPreviousPosition, PingMarker previousMarker, PingMarker candidateMarker, double[] previousPosition, PingResponsePacket pingResponsePacket) {
+        this.remainingPingAllowance = pingResponsePacket.getRemainingPingAllowance();
+        this.cooldownEndNanos = System.nanoTime() + pingResponsePacket.getCooldownEndNanos();
+        if (pingResponsePacket.isRequestAccepted()) {
+            if (nearPreviousPosition) {
+                previousMarker.retrigger();
             } else {
-                this.a(pingMarker);
-                this.E = pingMarker2;
-                this.Q(pingMarker2);
+                this.removeMarker(previousMarker);
+                this.pendingMarker = candidateMarker;
+                this.addMarker(candidateMarker);
             }
         } else {
-            pingMarker.n(dArray);
-            this.k();
+            previousMarker.setWorldPosition(previousPosition);
+            this.showRateLimitNotification();
         }
     }
 
-    private void k() {
-        Vape.INSTANCE.getNotificationManager().show(b, "", NotificationType.FRIENDS_GENERAL, 2000L);
+    private void showRateLimitNotification() {
+        Vape.INSTANCE.getNotificationManager().show(RATE_LIMIT_MESSAGE, "", NotificationType.FRIENDS_GENERAL, 2000L);
     }
 
-    private List<PingMarker> c() {
-        ArrayList<PingMarker> arrayList = new ArrayList<PingMarker>(this.C);
-        Collections.reverse(arrayList);
-        return arrayList;
+    private List<PingMarker> getMarkersInReverseOrder() {
+        ArrayList<PingMarker> reversedMarkers = new ArrayList<PingMarker>(this.markers);
+        Collections.reverse(reversedMarkers);
+        return reversedMarkers;
     }
 
-    public void Q(PingMarker pingMarker) {
-        PingMarker pingMarker2 = this.d(pingMarker.O());
+    public void addMarker(PingMarker pingMarker) {
+        PingMarker pingMarker2 = this.getMarker(pingMarker.getFriend());
         if (pingMarker2 != null) {
-            this.C.remove(pingMarker2);
+            this.markers.remove(pingMarker2);
         }
-        this.C.add(pingMarker);
+        this.markers.add(pingMarker);
     }
 
-    public void a() {
-        this.C.clear();
+    public void clear() {
+        this.markers.clear();
     }
 
-    @EventHandler(A=EventPriority.LOW)
-    public void O(EventRender3D eventRender3D) {
-        double[] dArray;
-        OnlineFriendPingMarker onlineFriendPingMarker;
-        Object object;
-        Object object2;
-        if (this.E != null && this.E.r()) {
-            this.E = null;
+    @EventHandler(priority=EventPriority.LOW)
+    public void onRender3DPickPing(EventRender3D eventRender3D) {
+        if (this.pendingMarker != null && this.pendingMarker.isExpired()) {
+            this.pendingMarker = null;
         }
-        if (this.n != -1L && System.nanoTime() > this.n) {
-            ++this.O;
-            this.n = -1L;
+        if (this.cooldownEndNanos != -1L && System.nanoTime() > this.cooldownEndNanos) {
+            ++this.remainingPingAllowance;
+            this.cooldownEndNanos = -1L;
         }
-        if (this.i < 1) {
+        if (this.queuedPingRequests < 1) {
             return;
         }
-        EntityLivingBase entityLivingBase = RayTraceUtil.l((EntityLivingBase)Minecraft.thePlayer(), 1000.0, 1000.0);
-        if (entityLivingBase != null) {
-            object2 = null;
-            if (entityLivingBase.isInstance(MappedClasses.Yl)) {
-                EntityPlayer entityPlayer = new EntityPlayer(entityLivingBase);
-                object = Vape.INSTANCE.getOnlineManager().V().X(entityPlayer.getName());
-                if (object != null) {
-                    object2 = ((OnlineFriendActivityState)object).a().S().g();
+        double[] position;
+        OnlineFriendPingMarker candidateMarker;
+        EntityLivingBase targetedEntity = RayTraceUtil.l((EntityLivingBase)Minecraft.thePlayer(), 1000.0, 1000.0);
+        if (targetedEntity != null) {
+            Long ownerUserId = null;
+            if (targetedEntity.isInstance(MappedClasses.Yl)) {
+                EntityPlayer entityPlayer = new EntityPlayer(targetedEntity);
+                OnlineFriendActivityState activityState = Vape.INSTANCE.getOnlineManager().getActivityManager().getActivityStateByMinecraftUsername(entityPlayer.getName());
+                if (activityState != null) {
+                    ownerUserId = activityState.getFriend().getUser().getId();
                 }
             }
-            onlineFriendPingMarker = new EntityPingMarker(Vape.INSTANCE.getOnlineManager().r(), (Long)object2, entityLivingBase);
-            dArray = onlineFriendPingMarker.A();
+            candidateMarker = new EntityPingMarker(Vape.INSTANCE.getOnlineManager().getLocalFriend(), ownerUserId, targetedEntity);
+            position = candidateMarker.getWorldPosition();
         } else {
-            object2 = Minecraft.thePlayer().W(1000.0, 1.0f);
-            dArray = new double[]{((RayTraceResult)object2).getHitVec().getX(), ((RayTraceResult)object2).getHitVec().getY(), ((RayTraceResult)object2).getHitVec().getZ()};
-            onlineFriendPingMarker = new OnlineFriendPingMarker(Vape.INSTANCE.getOnlineManager().r(), dArray);
+            RayTraceResult rayTraceResult = Minecraft.thePlayer().W(1000.0, 1.0f);
+            position = new double[]{rayTraceResult.getHitVec().getX(), rayTraceResult.getHitVec().getY(), rayTraceResult.getHitVec().getZ()};
+            candidateMarker = new OnlineFriendPingMarker(Vape.INSTANCE.getOnlineManager().getLocalFriend(), position);
         }
-        object2 = this.E;
-        if (object2 != null) {
-            if (object2.getClass().equals(onlineFriendPingMarker.getClass())) {
-                boolean bl = ((PingMarker)object2).C(dArray);
-                object = ((PingMarker)object2).A();
-                ((PingMarker)object2).n(dArray);
-                PingMarker previousMarker = (PingMarker)object2;
-                double[] previousPosition = (double[])object;
-                ZeusConnectionManager.T().u().o(((PingMarker)onlineFriendPingMarker).T(), arg_0 -> this.lambda$pickPing$0(bl, previousMarker, onlineFriendPingMarker, previousPosition, arg_0));
+        PingMarker previousMarker = this.pendingMarker;
+        if (previousMarker != null) {
+            if (previousMarker.getClass().equals(candidateMarker.getClass())) {
+                boolean nearPreviousPosition = previousMarker.isNear(position);
+                double[] previousPosition = previousMarker.getWorldPosition();
+                previousMarker.setWorldPosition(position);
+                ZeusConnectionManager.T().u().o(candidateMarker.toTargetData(), response -> this.lambda$pickPing$0(nearPreviousPosition, previousMarker, candidateMarker, previousPosition, response));
             } else {
-                this.E = null;
-                this.a(onlineFriendPingMarker);
+                this.pendingMarker = null;
+                this.removeMarker(candidateMarker);
             }
         }
-        if (this.E == null) {
-            this.E = onlineFriendPingMarker;
-            this.Q(onlineFriendPingMarker);
-            ZeusConnectionManager.T().u().o(((PingMarker)onlineFriendPingMarker).T(), arg_0 -> this.lambda$pickPing$1(onlineFriendPingMarker, arg_0));
+        if (this.pendingMarker == null) {
+            this.pendingMarker = candidateMarker;
+            this.addMarker(candidateMarker);
+            ZeusConnectionManager.T().u().o(candidateMarker.toTargetData(), response -> this.lambda$pickPing$1(candidateMarker, response));
         }
-        --this.i;
+        --this.queuedPingRequests;
     }
 
     @EventHandler
     public void onRender2D(EventRender2D eventRender2D) {
-        if (this.C.isEmpty()) {
+        if (this.markers.isEmpty()) {
             return;
         }
         OpenGlBackendHolder.backend.pushMatrix();
         GlStateManager.enableAlpha();
-        boolean bl = GL11.glIsEnabled((int)3042);
+        boolean blendEnabled = GL11.glIsEnabled((int)3042);
         RenderUtils.g();
-        for (PingMarker pingMarker : this.c()) {
-            if (pingMarker.d$src$AD$1it44rn() == null) continue;
-            pingMarker.D();
+        for (PingMarker pingMarker : this.getMarkersInReverseOrder()) {
+            if (pingMarker.getClippedScreenPosition() == null) continue;
+            pingMarker.renderScreenMarker();
         }
         RenderUtils.f();
-        if (bl) {
+        if (blendEnabled) {
             GlStateManager.enableBlend();
         } else {
             GlStateManager.disableBlend();
@@ -188,8 +184,8 @@ implements EventListener {
     }
 
     @EventHandler
-    public void W(EventRender3D eventRender3D) {
-        if (this.C.isEmpty()) {
+    public void onRender3D(EventRender3D eventRender3D) {
+        if (this.markers.isEmpty()) {
             return;
         }
         EntityPlayerSP entityPlayerSP = Minecraft.thePlayer();
@@ -200,45 +196,45 @@ implements EventListener {
         if (worldClient.isNull()) {
             return;
         }
-        for (PingMarker pingMarker : this.c()) {
-            if (!pingMarker.e()) {
-                pingMarker.o();
+        for (PingMarker pingMarker : this.getMarkersInReverseOrder()) {
+            if (!pingMarker.isTriggered()) {
+                pingMarker.trigger();
             }
-            if (pingMarker.r()) {
-                this.C.remove(pingMarker);
+            if (pingMarker.isExpired()) {
+                this.markers.remove(pingMarker);
                 continue;
             }
-            pingMarker.w(worldClient);
-            pingMarker.L$src$V$1mon1p8();
-            pingMarker.d();
+            pingMarker.update(worldClient);
+            pingMarker.updateScreenPosition();
+            pingMarker.render3D();
         }
     }
 
     public void onEnable() {
-        if (Vape.INSTANCE.getOnlineManager().B()) {
+        if (Vape.INSTANCE.getOnlineManager().isOffline()) {
             return;
         }
         if (Minecraft.currentScreen().isNotNull()) {
             return;
         }
-        if (this.O == 0) {
-            this.k();
+        if (this.remainingPingAllowance == 0) {
+            this.showRateLimitNotification();
             return;
         }
-        ++this.i;
+        ++this.queuedPingRequests;
     }
 
     static {
-        b = "Too many pings!";
-        c = 6217503732679049226L;
-        B = new PingManager();
+        RATE_LIMIT_MESSAGE = "Too many pings!";
+        OBFUSCATION_SEED = 6217503732679049226L;
+        INSTANCE = new PingManager();
     }
 
     @Nullable
-    public PingMarker J(long l) {
+    public PingMarker getMarkerByUserId(long userId) {
         try {
-            for (PingMarker pingMarker : this.C) {
-                if (pingMarker.O().S().g() != l) continue;
+            for (PingMarker pingMarker : this.markers) {
+                if (pingMarker.getFriend().getUser().getId() != userId) continue;
                 return pingMarker;
             }
         }

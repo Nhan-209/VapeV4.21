@@ -6,15 +6,15 @@ import gg.vape.utils.render.GuiRenderPrimitives;
 
 public class PartyOverviewBackgroundPanel
 extends PanelComponent {
-    final PartyDetailsPanel Es;
+    private final PartyDetailsPanel detailsPanel;
 
     @Override
-    public void z(boolean bl) {
+    public void z(boolean ignored) {
         GuiRenderPrimitives.C(this.G$src$D$1b2f02a(), this.n() - 4.0, this.A(), this.L() + 2.0 + 4.0, PartyOverviewBackgroundPanel.J.i);
     }
 
-    public PartyOverviewBackgroundPanel(PartyDetailsPanel partyDetailsPanel, double d, double d2) {
-        super(d, d2);
-        this.Es = partyDetailsPanel;
+    public PartyOverviewBackgroundPanel(PartyDetailsPanel detailsPanel, double width, double height) {
+        super(width, height);
+        this.detailsPanel = detailsPanel;
     }
 }

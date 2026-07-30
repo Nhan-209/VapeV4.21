@@ -16,7 +16,7 @@ extends Thread {
         while (!Vape.INSTANCE.isEnabled()) {
             try {
                 Thread.sleep(1L);
-                if (!this.rotationModule.r$src$Z$14eylz9() || !this.rotationModule.J$src$Z$gcqtyf()) continue;
+                if (!this.rotationModule.r$src$Z$14eylz9() || !this.rotationModule.isSelectedSubModule()) continue;
                 AimAssistRotationSubModule.runWorkerTick(this.rotationModule);
             }
             catch (Exception ignored) {}

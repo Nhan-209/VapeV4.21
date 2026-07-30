@@ -5,9 +5,8 @@ import gg.vape.config.SettingsPayload;
 public interface RefreshableSettingsPayload
 extends SettingsPayload {
     @Override
-    public void H();
+    public void initializeDefaults();
 
-    default public void M() {
+    default public void refreshFromCurrentSettings() {
     }
 }
-

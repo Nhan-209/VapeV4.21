@@ -11,12 +11,12 @@ import gg.vape.wrapper.impl.UseEntityPacketBridge;
 public class VapeShutdownEventListener
 implements EventListener {
 
-    @EventHandler(A=EventPriority.LOWEST)
+    @EventHandler(priority=EventPriority.LOWEST)
     public void onPacketSend(EventPacketSend eventPacketSend) {
         UseEntityPacketBridge useEntityPacketBridge;
-        int n;
+        int entityId;
         Packet packet = eventPacketSend.getPacket();
-        if (UseEntityPacketBridge.h(packet) && ClientSettings.B(n = (useEntityPacketBridge = new UseEntityPacketBridge(packet.getObject())).w())) {
+        if (UseEntityPacketBridge.h(packet) && ClientSettings.isReservedEntityId(entityId = (useEntityPacketBridge = new UseEntityPacketBridge(packet.getObject())).w())) {
             eventPacketSend.setCancelled(true);
         }
     }

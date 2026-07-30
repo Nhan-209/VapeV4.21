@@ -12,11 +12,11 @@ extends Mapping {
         super(MappedClasses.YM);
         Class[] classArray = new Class[]{Integer.TYPE, Integer.TYPE, Integer.TYPE};
         MAbstractClientPlayer mAbstractClientPlayer = this;
-        this.f = this.g(classArray);
+        this.f = this.registerConstructor(classArray);
     }
 
     private Object I(int n, int n2, int n3) {
-        return this.f.O(n, n2, n3);
+        return this.f.newInstance(n, n2, n3);
     }
 
     public static Object W(MAbstractClientPlayer mAbstractClientPlayer, int n, int n2, int n3) {

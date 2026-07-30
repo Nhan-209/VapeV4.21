@@ -222,11 +222,11 @@ extends Mapping {
     }
 
     private long N(Object object) {
-        return this.f.n(object, new Object[0]);
+        return this.f.invokeLong(object, new Object[0]);
     }
 
     private int y(Object object, int n, boolean bl) {
-        return this.J.Z(object, n, bl);
+        return this.J.invokeInt(object, n, bl);
     }
 
     public static boolean E(MMouseHelper mMouseHelper, Object object) {

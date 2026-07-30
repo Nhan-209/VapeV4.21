@@ -34,8 +34,8 @@ extends TextInputComponentBase {
         String[] stringArray = this.getText().split(" ");
         String string = stringArray[0];
         String string2 = stringArray.length > 1 ? stringArray[1] : stringArray[0];
-        Vape.INSTANCE.getEnemyManager().Q(new Enemy(string, string2));
-        ClientSettings.getFrame(EnemySettingsFrame.class).Q$src$V$1u5tkk5();
+        Vape.INSTANCE.getEnemyManager().addEnemy(new Enemy(string, string2));
+        ClientSettings.getFrame(EnemySettingsFrame.class).refreshEntries();
         this.setText("");
     }
 

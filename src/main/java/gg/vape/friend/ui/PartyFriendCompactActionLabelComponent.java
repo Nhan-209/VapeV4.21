@@ -6,7 +6,7 @@ import java.awt.Color;
 
 public class PartyFriendCompactActionLabelComponent
 extends AnimatedCenteredTextLabelComponent {
-    final PartyFriendRowComponent Vy;
+    private final PartyFriendRowComponent row;
 
     @Override
     public double C() {
@@ -15,7 +15,7 @@ extends AnimatedCenteredTextLabelComponent {
 
     public PartyFriendCompactActionLabelComponent(PartyFriendRowComponent partyFriendRowComponent, String string, Color color) {
         super(string, color);
-        this.Vy = partyFriendRowComponent;
+        this.row = partyFriendRowComponent;
     }
 
     @Override

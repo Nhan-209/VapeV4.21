@@ -27,7 +27,7 @@ extends Mapping {
     }
 
     public Object Q(Object object, Object object2, Object object3) {
-        return this.Z.L(null, object, object2, object3);
+        return this.Z.invokeObject(null, object, object2, object3);
     }
 
     public static int c() {
@@ -42,22 +42,22 @@ extends Mapping {
         super(MappedClasses.qF);
         Class[] classArray = new Class[]{MappedClasses.qP, MappedClasses.us, MappedClasses.lf};
         Class clazz = MappedClasses.qF;
-        boolean bl = Wrapper.G;
+        boolean bl = Wrapper.isNativeAvailable;
         String string = "func_216352_a";
         MBlockRayTraceResult mBlockRayTraceResult = this;
-        this.Z = this.x(string, bl, clazz, classArray);
+        this.Z = this.registerStaticMethod(string, bl, clazz, classArray);
         if (MBlockRayTraceResult.X() != 0) {
             Class<Boolean> clazz2 = Boolean.TYPE;
             String string2 = "inside";
             MBlockRayTraceResult mBlockRayTraceResult2 = this;
-            this.o = this.T(string2, clazz2).z();
+            this.o = this.fieldBuilder(string2, clazz2).buildField();
             GuiComponent.setLegacyComponentState(new GuiComponent[4]);
             return;
         }
         Class<Boolean> clazz3 = Boolean.TYPE;
         String string3 = "inside";
         MBlockRayTraceResult mBlockRayTraceResult3 = this;
-        this.o = this.T(string3, clazz3).z();
+        this.o = this.fieldBuilder(string3, clazz3).buildField();
     }
 
 }

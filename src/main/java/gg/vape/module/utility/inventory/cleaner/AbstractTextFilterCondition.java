@@ -34,9 +34,9 @@ implements TextFilterCondition<T> {
         return (T)this;
     }
 
-    protected AbstractTextFilterCondition(List<String> list, TextMatchMode textMatchMode) {
-        this.texts = new ArrayList<String>(list);
-        this.matchMode = textMatchMode;
+    protected AbstractTextFilterCondition(List<String> texts, TextMatchMode matchMode) {
+        this.texts = new ArrayList<String>(texts);
+        this.matchMode = matchMode;
     }
 
     public T clearText() {
@@ -45,7 +45,7 @@ implements TextFilterCondition<T> {
     }
 
     protected AbstractTextFilterCondition(JsonObject jsonObject) {
-        JsonArray jsonArray = ConfigJsonUtils.q(jsonObject, "text");
+        JsonArray jsonArray = ConfigJsonUtils.getJsonArray(jsonObject, "text");
         if (jsonArray != null) {
             for (int i = 0; i < jsonArray.size(); ++i) {
                 this.texts.add(Base64Util.decodeUtf8Base64(jsonArray.get(i).getAsString()));

@@ -9,43 +9,43 @@ import io.netty.handler.codec.MessageToByteEncoder;
 @ChannelHandler.Sharable
 public class ZeusFrameEncoder
 extends MessageToByteEncoder<ByteBuf> {
-    private static int C;
+    private static int configuredFrameLengthLimit;
 
-    private static IllegalArgumentException a(IllegalArgumentException illegalArgumentException) {
+    private static IllegalArgumentException propagateIllegalArgument(IllegalArgumentException illegalArgumentException) {
         return illegalArgumentException;
     }
 
-    public static void F(int n) {
-        C = n;
+    public static void setFrameLengthLimit(int frameLengthLimit) {
+        configuredFrameLengthLimit = frameLengthLimit;
     }
 
     static {
-        ZeusFrameEncoder.F(67);
+        ZeusFrameEncoder.setFrameLengthLimit(67);
     }
 
-    public static int o() {
-        int n = ZeusFrameEncoder.E();
+    public static int getReservedFrameValue() {
+        int frameLengthLimit = ZeusFrameEncoder.getFrameLengthLimit();
         return 0;
     }
 
     @Override
     protected void encode(ChannelHandlerContext context, ByteBuf input, ByteBuf output) {
-        this.X(context, input, output);
+        this.encodeFrame(context, input, output);
     }
 
-    protected void X(ChannelHandlerContext channelHandlerContext, ByteBuf byteBuf, ByteBuf byteBuf2) {
-        int n = byteBuf.readableBytes();
-        int n2 = ZeusPacketBuffer.O(n);
-        if (n2 > 3) {
-            throw new IllegalArgumentException("unable to fit " + n + " into 3");
+    protected void encodeFrame(ChannelHandlerContext channelHandlerContext, ByteBuf input, ByteBuf output) {
+        int payloadLength = input.readableBytes();
+        int prefixLength = ZeusPacketBuffer.getVarIntSize(payloadLength);
+        if (prefixLength > 3) {
+            throw new IllegalArgumentException("unable to fit " + payloadLength + " into 3");
         }
-        ZeusPacketBuffer zeusPacketBuffer = new ZeusPacketBuffer(byteBuf2);
-        zeusPacketBuffer.S(n2 + n);
-        zeusPacketBuffer.i(n);
-        zeusPacketBuffer.L(byteBuf, byteBuf.readerIndex(), n);
+        ZeusPacketBuffer zeusPacketBuffer = new ZeusPacketBuffer(output);
+        zeusPacketBuffer.ensureWritable(prefixLength + payloadLength);
+        zeusPacketBuffer.writeVarInt(payloadLength);
+        zeusPacketBuffer.writeBytes(input, input.readerIndex(), payloadLength);
     }
 
-    public static int E() {
-        return C;
+    public static int getFrameLengthLimit() {
+        return configuredFrameLengthLimit;
     }
 }

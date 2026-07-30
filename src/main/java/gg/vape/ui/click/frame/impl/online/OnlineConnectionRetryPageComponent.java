@@ -11,17 +11,17 @@ extends OnlineConnectionSettingsPageComponent {
     private UnderlinedTextLabel yr;
 
 
-    private static void lambda$new$0() {
-        OnlineConnectionManager.T.a();
+    private static void cancelReconnect() {
+        OnlineConnectionManager.INSTANCE.cancelConnectionAttempt();
     }
 
     @Override
     public void c() {
         super.c();
-        long l = OnlineConnectionManager.T.b();
-        if (l != -1L) {
-            int n = (int)((l - System.currentTimeMillis()) / 1000L);
-            this.getAlternateFontRenderer(0.8).W("Reconnecting in " + n + " second" + (n == 1 ? "" : "s") + "...", this.G$src$D$1b2f02a() + this.A() / 2.0, this.n() + 52.0, OnlineConnectionRetryPageComponent.J.A);
+        long reconnectAt = OnlineConnectionManager.INSTANCE.getNextReconnectAt();
+        if (reconnectAt != -1L) {
+            int remainingSeconds = (int)((reconnectAt - System.currentTimeMillis()) / 1000L);
+            this.getAlternateFontRenderer(0.8).W("Reconnecting in " + remainingSeconds + " second" + (remainingSeconds == 1 ? "" : "s") + "...", this.G$src$D$1b2f02a() + this.A() / 2.0, this.n() + 52.0, OnlineConnectionRetryPageComponent.J.A);
         } else {
             this.getAlternateFontRenderer(1.0).W("Reconnecting...", this.G$src$D$1b2f02a() + this.A() / 2.0, this.n() + 52.0, OnlineConnectionRetryPageComponent.J.A);
         }
@@ -30,7 +30,7 @@ extends OnlineConnectionSettingsPageComponent {
 
     public OnlineConnectionRetryPageComponent() {
         this.yr = new UnderlinedTextLabel("Cancel", (double)0.8f, OnlineConnectionRetryPageComponent.J.A, new Color(255, 255, 255, 255));
-        this.yr.addClickListener(OnlineConnectionRetryPageComponent::lambda$new$0);
+        this.yr.addClickListener(OnlineConnectionRetryPageComponent::cancelReconnect);
         this.yr.o(50.0);
         this.yr.Y(10.0);
         this.h(new PaddedComponent(125.0, 0.0, 20.0, 0.0, this.yr), new Object[0]);

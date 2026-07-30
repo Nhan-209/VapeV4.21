@@ -8,32 +8,31 @@ public enum PublicProfileSortMode {
     DOWNLOADED("downloaded", "Most Downloaded"),
     NEWEST("newest", "Newest");
 
-    private final String j;
+    private final String queryValue;
     public static final List<PublicProfileSortMode> VALUES;
-    private static final /* synthetic */ PublicProfileSortMode[] u;
-    private final String T;
+    private static final /* synthetic */ PublicProfileSortMode[] ENUM_VALUES;
+    private final String displayName;
 
-    public String y() {
-        return this.T;
+    public String getDisplayName() {
+        return this.displayName;
     }
 
-    public String C() {
-        return this.j;
+    public String getQueryValue() {
+        return this.queryValue;
     }
 
-    private PublicProfileSortMode(String string2, String string3) {
-        this.j = string2;
-        this.T = string3;
+    private PublicProfileSortMode(String queryValue, String displayName) {
+        this.queryValue = queryValue;
+        this.displayName = displayName;
     }
 
     static {
-        String[] stringArray = new String[]{"rated", "Most Downloaded", "newest", "downloaded", "Top Rated", "Newest", "RATED", "NEWEST", "DOWNLOADED"};
+        String[] serializedNames = new String[]{"rated", "Most Downloaded", "newest", "downloaded", "Top Rated", "Newest", "RATED", "NEWEST", "DOWNLOADED"};
 
 
 
-        u = new PublicProfileSortMode[]{RATED, DOWNLOADED, NEWEST};
+        ENUM_VALUES = new PublicProfileSortMode[]{RATED, DOWNLOADED, NEWEST};
         VALUES = Arrays.asList(PublicProfileSortMode.values());
     }
 
 }
-

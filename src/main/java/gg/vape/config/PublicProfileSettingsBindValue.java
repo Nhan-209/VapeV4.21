@@ -7,12 +7,12 @@ import gg.vape.value.BindValue;
 
 public class PublicProfileSettingsBindValue
 extends BindValue {
-    final PublicProfileSettings p;
+    final PublicProfileSettings settings;
 
     @Override
-    public boolean loadJson(JsonObject jsonObject) {
-        boolean bl = super.loadJson(jsonObject);
-        return bl;
+    public boolean loadJson(JsonObject object) {
+        boolean loaded = super.loadJson(object);
+        return loaded;
     }
 
     @Override
@@ -20,8 +20,8 @@ extends BindValue {
         return false;
     }
 
-    public PublicProfileSettingsBindValue(PublicProfileSettings publicProfileSettings, Object object, String string, BindSet bindSet) {
-        super(object, string, bindSet);
-        this.p = publicProfileSettings;
+    public PublicProfileSettingsBindValue(PublicProfileSettings settings, Object owner, String name, BindSet bindSet) {
+        super(owner, name, bindSet);
+        this.settings = settings;
     }
 }

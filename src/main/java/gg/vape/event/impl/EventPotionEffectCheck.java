@@ -7,26 +7,26 @@ import gg.vape.wrapper.impl.Potion;
 
 public class EventPotionEffectCheck
 extends Event {
-    private final Object f;
-    private final Object S;
-    private Potion v;
-    private static final EventListeners g = new EventListeners();
-    private boolean Y;
-    private Entity j;
+    private final Object potionHandle;
+    private final Object entityHandle;
+    private Potion potion;
+    private static final EventListeners EVENT_LISTENERS = new EventListeners();
+    private boolean active;
+    private Entity entity;
 
-    public EventPotionEffectCheck(Object object, Object object2) {
-        this.S = object;
-        this.f = object2;
+    public EventPotionEffectCheck(Object entityHandle, Object potionHandle) {
+        this.entityHandle = entityHandle;
+        this.potionHandle = potionHandle;
     }
 
     public static EventListeners getEventListeners() {
-        return g;
+        return EVENT_LISTENERS;
     }
 
 
     @Override
     public EventListeners getListeners() {
-        return g;
+        return EVENT_LISTENERS;
     }
 
     @Override
@@ -35,25 +35,25 @@ extends Event {
     }
 
     public boolean isActive() {
-        return this.Y;
+        return this.active;
     }
 
     public Potion getPotion() {
-        if (this.v == null) {
-            this.v = new Potion(this.f);
+        if (this.potion == null) {
+            this.potion = new Potion(this.potionHandle);
         }
-        return this.v;
+        return this.potion;
     }
 
-    public void setActive(boolean bl) {
-        this.Y = bl;
+    public void setActive(boolean active) {
+        this.active = active;
     }
 
     public Entity getEntity() {
-        if (this.j == null) {
-            this.j = new Entity(this.S);
+        if (this.entity == null) {
+            this.entity = new Entity(this.entityHandle);
         }
-        return this.j;
+        return this.entity;
     }
 }
 

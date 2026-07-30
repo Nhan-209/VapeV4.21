@@ -9,28 +9,27 @@ import gg.vape.wrapper.impl.Minecraft;
 
 public class LocalOnlineFriend
 extends OnlineFriend {
-    private final OnlineFriendActivityState l;
-    private static final String f = "Self#1234";
-    private final OnlineFriendActivityPanel C;
+    private final OnlineFriendActivityState activityState;
+    private static final String DEFAULT_DISPLAY_NAME = "Self#1234";
+    private final OnlineFriendActivityPanel activityPanel;
 
-    public void c(UserModel userModel) {
-        this.q = userModel;
+    public void setUser(UserModel userModel) {
+        this.user = userModel;
     }
 
-    public OnlineFriendActivityState E() {
-        return this.l;
+    public OnlineFriendActivityState getActivityState() {
+        return this.activityState;
     }
 
-    public OnlineFriendActivityPanel X() {
-        return this.C;
+    public OnlineFriendActivityPanel getActivityPanel() {
+        return this.activityPanel;
     }
 
     public LocalOnlineFriend() {
-        super(f);
+        super(DEFAULT_DISPLAY_NAME);
         MinecraftSessionWrapper minecraftSessionWrapper = Minecraft.Q$src$Lgg_vape_account_MinecraftSessionWrapper_$1ftnn3u();
-        this.d(minecraftSessionWrapper.R(), minecraftSessionWrapper.M());
-        this.l = new OnlineFriendActivityState(this);
-        this.C = new OnlineFriendActivityPanel(this);
+        this.updateMinecraftProfile(minecraftSessionWrapper.getProfileId(), minecraftSessionWrapper.getUsername());
+        this.activityState = new OnlineFriendActivityState(this);
+        this.activityPanel = new OnlineFriendActivityPanel(this);
     }
 }
-

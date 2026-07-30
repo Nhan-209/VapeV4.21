@@ -21,7 +21,7 @@ extends Mapping {
     }
 
     private Object A(Object object, int n) {
-        return this.f.L(object, n);
+        return this.f.invokeObject(object, n);
     }
 
     public MGlyphProvider() {

@@ -14,7 +14,7 @@ import gg.vape.wrapper.impl.ForgeVersion;
 public class RenderPlayerEventMappingTask
 extends JavassistMappingTask {
     @Override
-    public void c() {
+    public void transform() {
         MappingMethod mappingMethod = Vape.INSTANCE.getMappings().hn.Y;
         if (!ForgeVersion.MC_1_21_0.d()) {
             if (ForgeVersion.MC_1_16_5.d()) {
@@ -26,9 +26,9 @@ extends JavassistMappingTask {
                 if (ForgeVersion.MC_1_7_10.L()) {
                     MappingMethod mappingMethod2 = Vape.INSTANCE.getMappings().hn.M;
                     EventInjectionSpec eventInjectionSpec = new EventInjectionSpec(mappingMethod2, EventSetArmorModel.class);
-                    eventInjectionSpec.d("$1, $2, $3");
-                    eventInjectionSpec.H("($r) $event.getResult()");
-                    this.O(eventInjectionSpec);
+                    eventInjectionSpec.setConstructorArguments("$1, $2, $3");
+                    eventInjectionSpec.setReturnExpression("($r) $event.getResult()");
+                    this.registerEventInjection(eventInjectionSpec);
                     MappingMethod mappingMethod3 = Vape.INSTANCE.getMappings().hn.E;
                     this.c(mappingMethod3, EventPreRenderPlayerSpec.class, "$1, $2");
                 }

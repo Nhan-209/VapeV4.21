@@ -97,12 +97,12 @@ extends OnlineConnectionSettingsPageComponent {
 
     private static String currentUsername() {
         AccountInfo accountInfo = Vape.INSTANCE == null ? null : Vape.INSTANCE.getAccountInfo();
-        return accountInfo == null || accountInfo.h() == null ? "User" : accountInfo.h();
+        return accountInfo == null || accountInfo.getUsername() == null ? "User" : accountInfo.getUsername();
     }
 
     private static long currentUserId() {
         AccountInfo accountInfo = Vape.INSTANCE == null ? null : Vape.INSTANCE.getAccountInfo();
-        return accountInfo == null ? -1L : accountInfo.i();
+        return accountInfo == null ? -1L : accountInfo.getUserId();
     }
 
 
@@ -170,7 +170,7 @@ extends OnlineConnectionSettingsPageComponent {
         SimpleTextLabelComponent simpleTextLabelComponent = new SimpleTextLabelComponent("Status", 0.8, OnlineAccountSettingsPageComponent.J.A);
         simpleTextLabelComponent.Y(this.f3.L());
         this.f3.h(simpleTextLabelComponent, new Object[0]);
-        this.f2.addClickListener(OnlineConnectionManager.T::Q);
+        this.f2.addClickListener(OnlineConnectionManager.INSTANCE::disconnect);
         this.f2.setExplicitHeight(10.0);
         this.f2.setExplicitWidth(45.0);
         this.f2.setNormalTextColor(OnlineAccountSettingsPageComponent.J.Z);
@@ -183,9 +183,9 @@ extends OnlineConnectionSettingsPageComponent {
         this.fE.setDisabledOverlayColor(OnlineAccountSettingsPageComponent.J.m);
         this.fE.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M("wrap");
         this.fE.h(new SpacerComponent(0.0, 4.0), new Object[0]);
-        this.fE.h(this.A(OnlineConnectionManager.T.S().X$src$Lgg_vape_value_BooleanValue_$7rygmo()), new Object[0]);
-        Object object = OnlineConnectionManager.T.S();
-        BooleanValue[] booleanValueArray = new BooleanValue[]{((OnlineSettings)object).O(), ((OnlineSettings)object).z(), ((OnlineSettings)object).l()};
+        this.fE.h(this.A(OnlineConnectionManager.INSTANCE.getSettings().getAutoLogin()), new Object[0]);
+        Object object = OnlineConnectionManager.INSTANCE.getSettings();
+        BooleanValue[] booleanValueArray = new BooleanValue[]{((OnlineSettings)object).getShareUsername(), ((OnlineSettings)object).getShareServer(), ((OnlineSettings)object).getShareInventory()};
         LinkedBooleanSettingsToggleComponent linkedBooleanSettingsToggleComponent = new LinkedBooleanSettingsToggleComponent(this, "Privacy settings", 0.8, null, booleanValueArray);
         linkedBooleanSettingsToggleComponent.setExplicitWidth(this.fE.A());
         linkedBooleanSettingsToggleComponent.setUseExplicitWidth(true);

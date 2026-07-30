@@ -11,28 +11,28 @@ import org.jetbrains.annotations.Nullable;
 public class EventPacketReceive
 extends Event {
     @Nullable
-    private NetworkManager c;
-    private final Object e;
+    private NetworkManager networkManager;
+    private final Object packetHandle;
     @Nullable
-    private Packet w;
-    private final Object v;
-    private static final EventListeners x = new EventListeners();
+    private Packet packet;
+    private final Object networkManagerHandle;
+    private static final EventListeners EVENT_LISTENERS = new EventListeners();
 
     @Override
     public EventListeners getListeners() {
-        return x;
+        return EVENT_LISTENERS;
     }
 
 
     public Packet getPacket() {
-        if (this.w == null) {
-            this.w = new Packet(this.e);
+        if (this.packet == null) {
+            this.packet = new Packet(this.packetHandle);
         }
-        return this.w;
+        return this.packet;
     }
 
     public static EventListeners getEventListeners() {
-        return x;
+        return EVENT_LISTENERS;
     }
 
     @Override
@@ -44,14 +44,14 @@ extends Event {
     }
 
     public Object getPacketInstance() {
-        return this.e;
+        return this.packetHandle;
     }
 
     public NetworkManager getNetworkManager() {
-        if (this.c == null) {
-            this.c = new NetworkManager(this.v);
+        if (this.networkManager == null) {
+            this.networkManager = new NetworkManager(this.networkManagerHandle);
         }
-        return this.c;
+        return this.networkManager;
     }
 
     public NetHandlerPlayClientImpl getNetHandler() {
@@ -59,12 +59,12 @@ extends Event {
     }
 
     public void setPacket(Packet packet) {
-        this.w = packet;
+        this.packet = packet;
     }
 
-    public EventPacketReceive(Object object, Object object2) {
-        this.v = object;
-        this.e = object2;
+    public EventPacketReceive(Object networkManagerHandle, Object packetHandle) {
+        this.networkManagerHandle = networkManagerHandle;
+        this.packetHandle = packetHandle;
     }
 }
 

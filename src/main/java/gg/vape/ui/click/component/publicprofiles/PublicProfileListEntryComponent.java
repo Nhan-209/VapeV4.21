@@ -35,7 +35,7 @@ extends InteractiveComponent {
 
     public PublicProfileListEntryComponent(PublicProfile publicProfile) {
         this.publicProfile = publicProfile;
-        this.title = new TruncatedTextComponent(publicProfile.v(), ELLIPSIS, 0.0, 0.85, PublicProfileListEntryComponent.J.A, false);
+        this.title = new TruncatedTextComponent(publicProfile.getName(), ELLIPSIS, 0.0, 0.85, PublicProfileListEntryComponent.J.A, false);
         this.idBadge = new PublicProfileIdBadgeComponent(this.getUnreadCount());
         this.setPropagateMouseEvents(true);
         this.addChildren(this.title, this.idBadge);
@@ -81,7 +81,7 @@ extends InteractiveComponent {
     }
 
     private long getUnreadCount() {
-        return this.publicProfile.c() != null ? this.publicProfile.c().o() : 0L;
+        return this.publicProfile.getShareInfo() != null ? this.publicProfile.getShareInfo().getUnreadNotifications() : 0L;
     }
 }
 

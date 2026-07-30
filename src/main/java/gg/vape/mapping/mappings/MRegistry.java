@@ -20,7 +20,7 @@ extends Mapping {
 
 
     private Object m(Object object, Object object2) {
-        return this.H.L(object, object2);
+        return this.H.invokeObject(object, object2);
     }
 
     public static int Q() {
@@ -53,7 +53,7 @@ extends Mapping {
     }
 
     private int D(Object object, Object object2) {
-        return this.x.Z(object, object2);
+        return this.x.invokeInt(object, object2);
     }
 
     public static Object F(MRegistry mRegistry, Object object, Object object2) {
@@ -65,7 +65,7 @@ extends Mapping {
     }
 
     private Object o(Object object, int n) {
-        return this.B.L(object, n);
+        return this.B.invokeObject(object, n);
     }
 
     public MRegistry() {
@@ -74,14 +74,14 @@ extends Mapping {
         Class<Integer> clazz = Integer.TYPE;
         String string = "getId";
         MRegistry mRegistry = this;
-        this.x = ((MappingMethodBuilder)this.u(string, clazz, classArray).Q(ForgeVersion.MC_1_21_4.n(), MappedClasses.ua)).s();
+        this.x = ((MappingMethodBuilder)this.methodBuilder(string, clazz, classArray).setOwnerClassForVersion(ForgeVersion.MC_1_21_4.n(), MappedClasses.ua)).buildMethod();
         Class[] classArray2 = new Class[]{Integer.TYPE};
         Class<Object> clazz2 = Object.class;
         boolean bl = true;
         String string2 = "byId";
         Class clazz3 = MappedClasses.ua;
         MRegistry mRegistry2 = this;
-        this.B = this.W(clazz3, string2, bl, clazz2, classArray2);
+        this.B = this.registerInstanceMethodForOwner(clazz3, string2, bl, clazz2, classArray2);
         Class[] classArray3 = new Class[]{Object.class};
         Class clazz4 = MappedClasses.Vo;
         boolean bl2 = true;
@@ -105,7 +105,7 @@ extends Mapping {
             Class<Object> clazz7 = Object.class;
             String string6 = "get";
             MRegistry mRegistry6 = this;
-            this.u = ((MappingMethodBuilder)this.u(string6, clazz7, classArray6).A(ForgeVersion.MC_1_21_4.n(), "getValue")).s();
+            this.u = ((MappingMethodBuilder)this.methodBuilder(string6, clazz7, classArray6).setNameForVersion(ForgeVersion.MC_1_21_4.n(), "getValue")).buildMethod();
             GuiComponent.setLegacyComponentState(new GuiComponent[3]);
             return;
         }
@@ -119,15 +119,15 @@ extends Mapping {
         Class<Object> clazz9 = Object.class;
         String string8 = "get";
         MRegistry mRegistry8 = this;
-        this.u = ((MappingMethodBuilder)this.u(string8, clazz9, classArray8).A(ForgeVersion.MC_1_21_4.n(), "getValue")).s();
+            this.u = ((MappingMethodBuilder)this.methodBuilder(string8, clazz9, classArray8).setNameForVersion(ForgeVersion.MC_1_21_4.n(), "getValue")).buildMethod();
     }
 
     private Object q(Object object, Object object2) {
-        return this.T.L(object, object2);
+        return this.T.invokeObject(object, object2);
     }
 
     private Object y(Object object, Object object2) {
-        return this.u.L(object, object2);
+        return this.u.invokeObject(object, object2);
     }
 
     public static Stream h(MRegistry mRegistry, Object object) {
@@ -135,7 +135,7 @@ extends Mapping {
     }
 
     private Stream X(Object object) {
-        return (Stream)this.M.L(object, new Object[0]);
+        return (Stream)this.M.invokeObject(object, new Object[0]);
     }
 }
 

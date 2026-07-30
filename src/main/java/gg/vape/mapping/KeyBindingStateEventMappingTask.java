@@ -15,7 +15,7 @@ extends JavassistMappingTask {
     }
 
     @Override
-    public void c() {
+    public void transform() {
         if (ForgeVersion.MC_1_16_5.d()) {
             this.O(Vape.INSTANCE.getMappings().hJ.s, EventKeyBindingState.class, c, "");
             return;

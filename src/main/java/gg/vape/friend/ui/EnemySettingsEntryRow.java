@@ -10,7 +10,7 @@ extends SelectableTextRowComponent {
 
     @Override
     public boolean isSelected() {
-        return !this.enemy.t();
+        return !this.enemy.isExclusive();
     }
 
     public Enemy getEnemy() {
@@ -19,22 +19,22 @@ extends SelectableTextRowComponent {
 
     @Override
     public void g(GuiMouseEvent guiMouseEvent) {
-        this.enemy.k(!this.enemy.t());
+        this.enemy.setExclusive(!this.enemy.isExclusive());
     }
 
 
     @Override
     public void H() {
-        String text = this.enemy.y();
-        if (!this.enemy.R().equals(this.enemy.y()) && !this.isHovered()) {
-            text = "*" + this.enemy.x();
+        String text = this.enemy.getName();
+        if (!this.enemy.getDisplayName().equals(this.enemy.getName()) && !this.isHovered()) {
+            text = "*" + this.enemy.getAlias();
         }
         this.setText(text);
         super.H();
     }
 
     public EnemySettingsEntryRow(Enemy enemy) {
-        super(EnemySettingsEntryRow.J.d, enemy.y());
+        super(EnemySettingsEntryRow.J.d, enemy.getName());
         this.enemy = enemy;
     }
 }

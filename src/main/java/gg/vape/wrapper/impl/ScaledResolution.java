@@ -4,20 +4,20 @@ import gg.vape.utils.MathUtil;
 import gg.vape.wrapper.impl.Minecraft;
 
 public class ScaledResolution {
-    private final double p;
+    private final double scaledHeight;
     private static int G;
-    private int v = 1;
-    private int O = Minecraft.J();
-    private int q = Minecraft.h();
-    private final double N;
+    private int scaleFactor = 1;
+    private int scaledWidth = Minecraft.J();
+    private int scaledHeightPixels = Minecraft.h();
+    private final double scaledWidthDouble;
 
 
-    public double X() {
-        return this.p;
+    public double getScaledHeightDouble() {
+        return this.scaledHeight;
     }
 
-    public int T() {
-        return this.O;
+    public int getScaledWidth() {
+        return this.scaledWidth;
     }
 
     static {
@@ -30,20 +30,20 @@ public class ScaledResolution {
         G = n;
     }
 
-    public int e() {
-        return this.v;
+    public int getScaleFactor() {
+        return this.scaleFactor;
     }
 
-    public int G() {
-        return this.q;
+    public int getScaledHeight() {
+        return this.scaledHeightPixels;
     }
 
     public static int q() {
         return G;
     }
 
-    public double U() {
-        return this.N;
+    public double getScaledWidthDouble() {
+        return this.scaledWidthDouble;
     }
 
     public ScaledResolution() {
@@ -52,13 +52,13 @@ public class ScaledResolution {
         if (n == 0) {
             n = 1000;
         }
-        while (this.v < n && this.O / (this.v + 1) >= 320 && this.q / (this.v + 1) >= 240) {
-            ++this.v;
+        while (this.scaleFactor < n && this.scaledWidth / (this.scaleFactor + 1) >= 320 && this.scaledHeightPixels / (this.scaleFactor + 1) >= 240) {
+            ++this.scaleFactor;
         }
-        this.N = (double)this.O / (double)this.v;
-        this.p = (double)this.q / (double)this.v;
-        this.O = MathUtil.ceil(this.N);
-        this.q = MathUtil.ceil(this.p);
+        this.scaledWidthDouble = (double)this.scaledWidth / (double)this.scaleFactor;
+        this.scaledHeight = (double)this.scaledHeightPixels / (double)this.scaleFactor;
+        this.scaledWidth = MathUtil.ceil(this.scaledWidthDouble);
+        this.scaledHeightPixels = MathUtil.ceil(this.scaledHeight);
     }
 
     public static int W() {

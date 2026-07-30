@@ -44,11 +44,11 @@ extends Mapping {
     }
 
     private Object w(float f, float f2, boolean bl) {
-        return this.o.O(Float.valueOf(f), Float.valueOf(f2), bl);
+        return this.o.newInstance(Float.valueOf(f), Float.valueOf(f2), bl);
     }
 
     private Object o(float f, float f2, boolean bl, boolean bl2) {
-        return this.o.O(Float.valueOf(f), Float.valueOf(f2), bl, bl2);
+        return this.o.newInstance(Float.valueOf(f), Float.valueOf(f2), bl, bl2);
     }
 
 

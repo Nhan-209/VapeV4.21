@@ -195,7 +195,7 @@ extends Value<Boolean[], EntityTargetFilterValue> {
         if (entity.isNull()) {
             return false;
         }
-        if (ClientSettings.E(entity)) {
+        if (ClientSettings.isReservedEntity(entity)) {
             return false;
         }
         if (!this.peacefulValue.getEffectiveValue().booleanValue() && entity.isInstance(MappedClasses.zS)) {
@@ -232,16 +232,16 @@ extends Value<Boolean[], EntityTargetFilterValue> {
             if (!this.playersValue.getEffectiveValue().booleanValue()) {
                 return false;
             }
-            if (Vape.INSTANCE.getEnemyManager().q(entity.getName())) {
+            if (Vape.INSTANCE.getEnemyManager().isEnemy(entity.getName())) {
                 return true;
             }
             if (this.ignoreNakedValue.getEffectiveValue().booleanValue() && RotationUtil.b$src$Z$reqs95(entityLivingBase)) {
                 return false;
             }
-            if (Vape.INSTANCE.getClientSettings().e(entityPlayerSP, entityLivingBase)) {
+            if (Vape.INSTANCE.getClientSettings().isTeammate(entityPlayerSP, entityLivingBase)) {
                 return false;
             }
-            return !Vape.INSTANCE.getClientSettings().J(entityLivingBase);
+            return !Vape.INSTANCE.getClientSettings().isBot(entityLivingBase);
         }
         if (isMobEntity && !this.mobsValue.getEffectiveValue().booleanValue()) {
             return false;

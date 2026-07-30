@@ -6,16 +6,16 @@ import gg.vape.protocol.packet.ZeusSerializablePacket;
 
 public class ActivitySnapshotsPacket
 implements ZeusSerializablePacket {
-    private ActivitySnapshotPayload[] K;
-    private long[] L;
+    private ActivitySnapshotPayload[] snapshots;
+    private long[] userIds;
 
-    public ActivitySnapshotsPacket(long[] lArray, ActivitySnapshotPayload[] activitySnapshotPayloadArray) {
-        this.L = lArray;
-        this.K = activitySnapshotPayloadArray;
+    public ActivitySnapshotsPacket(long[] userIds, ActivitySnapshotPayload[] snapshots) {
+        this.userIds = userIds;
+        this.snapshots = snapshots;
     }
 
-    public long[] u() {
-        return this.L;
+    public long[] getUserIds() {
+        return this.userIds;
     }
 
 
@@ -24,26 +24,25 @@ implements ZeusSerializablePacket {
 
     @Override
     public void S(ZeusPacketBuffer zeusPacketBuffer) {
-        int n = zeusPacketBuffer.Y();
-        this.L = new long[n];
-        this.K = new ActivitySnapshotPayload[n];
+        int n = zeusPacketBuffer.readVarInt();
+        this.userIds = new long[n];
+        this.snapshots = new ActivitySnapshotPayload[n];
         for (int i = 0; i < n; ++i) {
-            this.L[i] = zeusPacketBuffer.long_a();
-            this.K[i] = new ActivitySnapshotPayload(zeusPacketBuffer);
+            this.userIds[i] = zeusPacketBuffer.readLong();
+            this.snapshots[i] = new ActivitySnapshotPayload(zeusPacketBuffer);
         }
     }
 
     @Override
     public void o(ZeusPacketBuffer zeusPacketBuffer) {
-        zeusPacketBuffer.i(this.L.length);
-        for (int i = 0; i < this.L.length; ++i) {
-            zeusPacketBuffer.v(this.L[i]);
-            this.K[i].i(zeusPacketBuffer);
+        zeusPacketBuffer.writeVarInt(this.userIds.length);
+        for (int i = 0; i < this.userIds.length; ++i) {
+            zeusPacketBuffer.writeLong(this.userIds[i]);
+            this.snapshots[i].writeTo(zeusPacketBuffer);
         }
     }
 
-    public ActivitySnapshotPayload[] Q() {
-        return this.K;
+    public ActivitySnapshotPayload[] getSnapshots() {
+        return this.snapshots;
     }
 }
-

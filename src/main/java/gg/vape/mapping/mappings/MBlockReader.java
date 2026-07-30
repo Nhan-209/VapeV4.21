@@ -19,17 +19,17 @@ extends Mapping {
         if (guiComponentArray != null) {
             Class[] classArray = new Class[]{MappedClasses.qP, MappedClasses.qP, MappedClasses.lN, MappedClasses.Y9, MappedClasses.zc};
             MBlockReader mBlockReader = this;
-            this.A = mBlockReader.g(classArray);
+            this.A = mBlockReader.registerConstructor(classArray);
             return;
         }
         Class[] classArray = new Class[]{MappedClasses.qP, MappedClasses.qP, MappedClasses.lN, MappedClasses.Y9, MappedClasses.zc};
         MBlockReader mBlockReader = this;
-        this.A = mBlockReader.g(classArray); 
+        this.A = mBlockReader.registerConstructor(classArray);
         GuiComponent.setLegacyComponentState(new GuiComponent[1]);
     }
 
 
     public Object n(Object object, Object object2, Object object3, Object object4, Object object5) {
-        return this.A.O(object, object2, object3, object4, object5);
+        return this.A.newInstance(object, object2, object3, object4, object5);
     }
 }

@@ -46,7 +46,7 @@ extends Mapping {
     }
 
     private Object u(String string) {
-        return this.H.O(string);
+        return this.H.newInstance(string);
     }
 }
 

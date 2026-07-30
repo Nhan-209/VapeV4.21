@@ -5,14 +5,14 @@ import gg.vape.ui.click.component.GuiClickListener;
 
 public class UsernameEditorEditButtonClickHandler
 implements GuiClickListener {
-    final UsernameEditorPanel b;
+    private final UsernameEditorPanel editorPanel;
 
     @Override
     public void onPrimaryClick() {
-        UsernameEditorPanel.t(this.b);
+        UsernameEditorPanel.toggleEditMode(this.editorPanel);
     }
 
-    public UsernameEditorEditButtonClickHandler(UsernameEditorPanel m5_02) {
-        this.b = m5_02;
+    public UsernameEditorEditButtonClickHandler(UsernameEditorPanel editorPanel) {
+        this.editorPanel = editorPanel;
     }
 }

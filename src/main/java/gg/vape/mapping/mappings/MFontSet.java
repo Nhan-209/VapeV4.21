@@ -59,7 +59,7 @@ extends Mapping {
     }
 
     public Object t(Object object, boolean bl) {
-        return this.W.L(object, bl);
+        return this.W.invokeObject(object, bl);
     }
 }
 

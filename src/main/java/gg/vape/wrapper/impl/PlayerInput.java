@@ -10,19 +10,19 @@ extends Wrapper {
     }
 
     public void A(float f) {
-        MPlayerInput.K(PlayerInput.c.getMappingsMapperCompat().RI, this.I, f);
+        MPlayerInput.K(PlayerInput.vapeInstance.getMappingsMapperCompat().RI, this.I, f);
     }
 
     public float Z() {
-        return MPlayerInput.e(PlayerInput.c.getMappingsMapperCompat().RI, this.I);
+        return MPlayerInput.e(PlayerInput.vapeInstance.getMappingsMapperCompat().RI, this.I);
     }
 
     public float P() {
-        return MPlayerInput.B(PlayerInput.c.getMappingsMapperCompat().RI, this.I);
+        return MPlayerInput.B(PlayerInput.vapeInstance.getMappingsMapperCompat().RI, this.I);
     }
 
     public void N(float f) {
-        MPlayerInput.s(PlayerInput.c.getMappingsMapperCompat().RI, this.I, f);
+        MPlayerInput.s(PlayerInput.vapeInstance.getMappingsMapperCompat().RI, this.I, f);
     }
 }
 

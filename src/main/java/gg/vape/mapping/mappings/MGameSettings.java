@@ -5,7 +5,6 @@ import gg.vape.mapping.MappedClasses;
 import gg.vape.mapping.Mapping;
 import gg.vape.mapping.MappingField;
 import gg.vape.mapping.MappingMethod;
-import gg.vape.mapping.mappings.MKeyBinding;
 import gg.vape.wrapper.Wrapper;
 import gg.vape.wrapper.impl.ForgeVersion;
 import gg.vape.wrapper.impl.GameSettingsValue;
@@ -132,7 +131,7 @@ extends Mapping {
         if (ForgeVersion.MC_26_2.d()) {
             Object object2 = Minecraft.k().getObject();
             Object object3 = this.S.getObject(object2);
-            return this.l.e(object3, new Object[0]);
+            return this.l.invokeBoolean(object3, new Object[0]);
         }
         return this.n.getBoolean(object);
     }
@@ -288,7 +287,7 @@ extends Mapping {
     }
 
     private void U(Object object, boolean bl) {
-        if (this.J.x()) {
+        if (this.J.hasResolutionFailed()) {
             return;
         }
         this.J.setBoolean(object, bl);
@@ -311,7 +310,7 @@ extends Mapping {
     }
 
     private boolean A$src$Z$nt71g2(Object object) {
-        if (this.J.x()) {
+        if (this.J.hasResolutionFailed()) {
             return false;
         }
         return this.J.getBoolean(object);
@@ -364,8 +363,8 @@ extends Mapping {
         if (ForgeVersion.MC_26_2.d()) {
             Object object2 = Minecraft.k().getObject();
             Object object3 = this.S.getObject(object2);
-            if (this.l.e(object3, new Object[0]) != bl) {
-                this.X.F(object3);
+            if (this.l.invokeBoolean(object3, new Object[0]) != bl) {
+                this.X.invokeVoidNoArgs(object3);
             }
             return;
         }
@@ -433,7 +432,7 @@ extends Mapping {
         boolean bl8 = false;
         String string6 = "ofFastRender";
         MGameSettings mGameSettings6 = this;
-        this.J = this.z(string6, bl8, bl7, clazz6);
+        this.J = this.registerInstanceFieldWithSecondaryFlag(string6, bl8, bl7, clazz6);
         Class clazz7 = MappedClasses.DR;
         boolean bl9 = true;
         String string7 = "keyBindForward";
@@ -466,7 +465,7 @@ extends Mapping {
         this.P = this.J(string12, bl14, clazz12);
         if (ForgeVersion.MC_1_7_10.L() && !Vape.INSTANCE.isVanillaMinecraftPresent()) {
             Class clazz13 = MappedClasses.DR;
-            boolean bl15 = Wrapper.G;
+            boolean bl15 = Wrapper.isNativeAvailable;
             String string13 = "field_152395_am";
             MGameSettings mGameSettings13 = this;
             this.C = this.J(string13, bl15, clazz13);
@@ -494,21 +493,21 @@ extends Mapping {
             String string17 = "hud";
             Class clazz18 = MappedClasses.Zj;
             MGameSettings mGameSettings17 = this;
-            this.S = this.X(clazz18, string17, bl19, clazz17);
+            this.S = this.registerInstanceFieldForOwner(clazz18, string17, bl19, clazz17);
             Class[] classArray = new Class[]{};
             Class<Boolean> clazz19 = Boolean.TYPE;
             boolean bl20 = true;
             String string18 = "isHidden";
             Class clazz20 = MappedClasses.zK;
             MGameSettings mGameSettings18 = this;
-            this.l = this.W(clazz20, string18, bl20, clazz19, classArray);
+            this.l = this.registerInstanceMethodForOwner(clazz20, string18, bl20, clazz19, classArray);
             Class[] classArray2 = new Class[]{};
             Class<Void> clazz21 = Void.TYPE;
             boolean bl21 = true;
             String string19 = "toggle";
             Class clazz22 = MappedClasses.zK;
             MGameSettings mGameSettings19 = this;
-            this.X = this.W(clazz22, string19, bl21, clazz21, classArray2);
+            this.X = this.registerInstanceMethodForOwner(clazz22, string19, bl21, clazz21, classArray2);
         } else {
             Class<Boolean> clazz23 = Boolean.TYPE;
             boolean bl22 = true;

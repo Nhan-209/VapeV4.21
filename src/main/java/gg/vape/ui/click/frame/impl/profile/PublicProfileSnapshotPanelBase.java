@@ -116,7 +116,7 @@ extends PublicProfileOverlayPanelBase {
         this.getClass();
         panelComponent2.h(new SpacerComponent(5.0, 0.0), "widthwrap");
         CenteredGlyphComponent centeredGlyphComponent = new CenteredGlyphComponent("vertical menu hover@2x", 5.0f, 5.0f);
-        String string = this.publicProfile.v();
+        String string = this.publicProfile.getName();
         double d = panelComponent2.A();
         this.getClass();
         TruncatedTextComponent truncatedTextComponent = new TruncatedTextComponent(string, "...", d - (double)(5.0f * 2.0f) - centeredGlyphComponent.A(), 1.0, PublicProfileSnapshotPanelBase.J.A, true);

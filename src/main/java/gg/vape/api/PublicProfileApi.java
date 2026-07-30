@@ -22,399 +22,399 @@ import java.util.concurrent.CompletableFuture;
 import org.jetbrains.annotations.Nullable;
 
 public class PublicProfileApi {
-    private final String q;
-    private static boolean M;
+    private final String baseUrl;
+    private static boolean opaqueState;
 
-    private ApiResponse lambda$listPublicProfileReviews$18(String string, long l, long l2) {
+    private ApiResponse requestDelayedReviewPage(String accessToken, long profileId, long page) {
         try {
             Thread.sleep(1000L);
         }
-        catch (InterruptedException interruptedException) {
+        catch (InterruptedException ignored) {
             // empty catch block
         }
         try {
-            return ApiHttpClient.V(this.q + "/api/v1/" + string + "/profile/public/review/view/" + l + "/" + l2, PublicProfileApi::lambda$null$17);
+            return ApiHttpClient.getApiResponse(this.baseUrl + "/api/v1/" + accessToken + "/profile/public/review/view/" + profileId + "/" + page, PublicProfileApi::parseReviewPageWithApiParser);
         }
-        catch (Exception exception) {
-            throw new RuntimeException(exception);
+        catch (Exception error) {
+            throw new RuntimeException(error);
         }
     }
 
-    public CompletableFuture<ApiResponse<RemoteProfileData>> q(long l) {
-        String string = ApiAccessTokenProvider.i();
-        return CompletableFuture.supplyAsync(() -> this.lambda$downloadPublicProfile$14(string, l));
+    public CompletableFuture<ApiResponse<RemoteProfileData>> downloadProfile(long profileId) {
+        String accessToken = ApiAccessTokenProvider.getAccessToken();
+        return CompletableFuture.supplyAsync(() -> this.requestProfileDownload(accessToken, profileId));
     }
 
-    private ApiResponse lambda$regenerateShareCode$27(long l, String string) {
+    private ApiResponse requestShareCodeRegeneration(long profileId, String accessToken) {
         try {
-            JsonObject jsonObject = new JsonObject();
-            jsonObject.addProperty("profileId", (Number)l);
-            return ApiHttpClient.z(this.q + "/api/v1/" + string + "/profile/public/regenerate/sharecode", jsonObject, PublicProfileShareInfo::T);
+            JsonObject payload = new JsonObject();
+            payload.addProperty("profileId", (Number)profileId);
+            return ApiHttpClient.postApiResponse(this.baseUrl + "/api/v1/" + accessToken + "/profile/public/regenerate/sharecode", payload, PublicProfileShareInfo::fromJson);
         }
         catch (Exception exception) {
             throw new RuntimeException(exception);
         }
     }
 
-    public CompletableFuture<ApiResponse<Boolean>> b(PublicProfile publicProfile) {
-        return this.z(publicProfile.w());
+    public CompletableFuture<ApiResponse<Boolean>> markAllReviewsRead(PublicProfile profile) {
+        return this.markAllReviewsRead(profile.getProfileId());
     }
 
-    public CompletableFuture<ApiResponse<PublicProfile>> y(JsonObject jsonObject) {
-        String string = ApiAccessTokenProvider.i();
-        return CompletableFuture.supplyAsync(() -> this.lambda$createPublicProfile$10(string, jsonObject));
+    public CompletableFuture<ApiResponse<PublicProfile>> createProfile(JsonObject payload) {
+        String accessToken = ApiAccessTokenProvider.getAccessToken();
+        return CompletableFuture.supplyAsync(() -> this.requestProfileCreation(accessToken, payload));
     }
 
-    public CompletableFuture<ApiResponse<Boolean>> T(PublicProfileReviewResponse publicProfileReviewResponse) {
-        return this.t(publicProfileReviewResponse.c());
+    public CompletableFuture<ApiResponse<Boolean>> deleteReviewResponse(PublicProfileReviewResponse response) {
+        return this.deleteReviewResponse(response.getId());
     }
 
-    public CompletableFuture<ApiResponse<Boolean>> i(long l) {
-        String string = ApiAccessTokenProvider.i();
-        return CompletableFuture.supplyAsync(() -> this.lambda$deletePublicProfile$11(string, l));
+    public CompletableFuture<ApiResponse<Boolean>> deleteProfile(long profileId) {
+        String accessToken = ApiAccessTokenProvider.getAccessToken();
+        return CompletableFuture.supplyAsync(() -> this.requestProfileDeletion(accessToken, profileId));
     }
 
-    private ApiResponse lambda$markAllReviewsAsRead$25(long l, String string) {
+    private ApiResponse requestMarkAllReviewsRead(long profileId, String accessToken) {
         try {
-            JsonObject jsonObject = new JsonObject();
-            jsonObject.addProperty("profileId", (Number)l);
-            return ApiHttpClient.z(this.q + "/api/v1/" + string + "/profile/public/review/mark/all", jsonObject, JsonElement::getAsBoolean);
+            JsonObject payload = new JsonObject();
+            payload.addProperty("profileId", (Number)profileId);
+            return ApiHttpClient.postApiResponse(this.baseUrl + "/api/v1/" + accessToken + "/profile/public/review/mark/all", payload, JsonElement::getAsBoolean);
         }
         catch (Exception exception) {
             throw new RuntimeException(exception);
         }
     }
 
-    private static List lambda$null$0(JsonElement jsonElement) {
-        ArrayList<String> arrayList = new ArrayList<String>();
-        JsonArray jsonArray = jsonElement.getAsJsonArray();
-        for (JsonElement jsonElement2 : jsonArray) {
-            arrayList.add(jsonElement2.getAsString());
+    private static List parseTags(JsonElement dataElement) {
+        ArrayList<String> tags = new ArrayList<String>();
+        JsonArray tagsJson = dataElement.getAsJsonArray();
+        for (JsonElement tagElement : tagsJson) {
+            tags.add(tagElement.getAsString());
         }
-        return arrayList;
+        return tags;
     }
 
-    private static PublicProfile lambda$null$9(JsonElement jsonElement) {
-        return PublicProfile.k((JsonElement)jsonElement.getAsJsonObject());
+    private static PublicProfile parsePublicProfile(JsonElement dataElement) {
+        return PublicProfile.fromJson((JsonElement)dataElement.getAsJsonObject());
     }
 
-    public CompletableFuture<ApiResponse<PagedResult<PublicProfileReview>>> U(long l, long l2) {
-        String string = ApiAccessTokenProvider.i();
-        return CompletableFuture.supplyAsync(() -> this.lambda$viewPublicProfileReviews$8(string, l, l2));
+    public CompletableFuture<ApiResponse<PagedResult<PublicProfileReview>>> getReviewPage(long profileId, long page) {
+        String accessToken = ApiAccessTokenProvider.getAccessToken();
+        return CompletableFuture.supplyAsync(() -> this.requestReviewPage(accessToken, profileId, page));
     }
 
-    public CompletableFuture<ApiResponse<Boolean>> h(long l, String string) {
-        String string2 = ApiAccessTokenProvider.i();
-        return CompletableFuture.supplyAsync(() -> this.lambda$reportPublicProfileResponse$24(string, string2, l));
+    public CompletableFuture<ApiResponse<Boolean>> reportReviewResponse(long responseId, String reason) {
+        String accessToken = ApiAccessTokenProvider.getAccessToken();
+        return CompletableFuture.supplyAsync(() -> this.requestReviewResponseReport(reason, accessToken, responseId));
     }
 
-    public CompletableFuture<ApiResponse<Boolean>> z(long l) {
-        String string = ApiAccessTokenProvider.i();
-        return CompletableFuture.supplyAsync(() -> this.lambda$markAllReviewsAsRead$25(l, string));
+    public CompletableFuture<ApiResponse<Boolean>> markAllReviewsRead(long profileId) {
+        String accessToken = ApiAccessTokenProvider.getAccessToken();
+        return CompletableFuture.supplyAsync(() -> this.requestMarkAllReviewsRead(profileId, accessToken));
     }
 
-    public CompletableFuture<ApiResponse<PublicProfileReview>> m(PublicProfile publicProfile, boolean bl, @Nullable String string) {
-        return this.l(publicProfile.w(), bl, string);
+    public CompletableFuture<ApiResponse<PublicProfileReview>> createReview(PublicProfile profile, boolean liked,
+                                                                           @Nullable String reason) {
+        return this.createReview(profile.getProfileId(), liked, reason);
     }
 
-    public CompletableFuture<ApiResponse<Boolean>> H(long l, List<Long> list) {
-        String string = ApiAccessTokenProvider.i();
-        return CompletableFuture.supplyAsync(() -> this.lambda$markReviewsAsRead$26(l, list, string));
+    public CompletableFuture<ApiResponse<Boolean>> markReviewsRead(long profileId, List<Long> reviewIds) {
+        String accessToken = ApiAccessTokenProvider.getAccessToken();
+        return CompletableFuture.supplyAsync(() -> this.requestMarkReviewsRead(profileId, reviewIds, accessToken));
     }
 
-    private ApiResponse lambda$deletePublicProfile$11(String string, long l) {
+    private ApiResponse requestProfileDeletion(String accessToken, long profileId) {
         try {
-            return ApiHttpClient.U(this.q + "/api/v1/" + string + "/profile/public/" + l + "/delete", null, JsonElement::getAsBoolean);
+            return ApiHttpClient.deleteApiResponse(this.baseUrl + "/api/v1/" + accessToken + "/profile/public/" + profileId + "/delete", null, JsonElement::getAsBoolean);
         }
         catch (Exception exception) {
             throw new RuntimeException(exception);
         }
     }
 
-    public CompletableFuture<ApiResponse<PublicProfileReviewResponse>> h(PublicProfileReview publicProfileReview, String string) {
-        return this.C(publicProfileReview.M(), string);
+    public CompletableFuture<ApiResponse<PublicProfileReviewResponse>> respondToReview(PublicProfileReview review,
+                                                                                       String message) {
+        return this.respondToReview(review.getCommentId(), message);
     }
 
-    public CompletableFuture<ApiResponse<Boolean>> P(PublicProfileReview publicProfileReview) {
-        return this.K(publicProfileReview.M());
+    public CompletableFuture<ApiResponse<Boolean>> deleteReview(PublicProfileReview review) {
+        return this.deleteReview(review.getCommentId());
     }
 
-    private ApiResponse lambda$viewPublicProfileReviews$8(String string, long l, long l2) {
+    private ApiResponse requestReviewPage(String accessToken, long profileId, long page) {
         try {
-            return ApiHttpClient.V(this.q + "/api/v1/" + string + "/profile/public/review/view/" + l + "/" + l2, PublicProfileApi::lambda$null$7);
+            return ApiHttpClient.getApiResponse(this.baseUrl + "/api/v1/" + accessToken + "/profile/public/review/view/" + profileId + "/" + page, PublicProfileApi::parseReviewPage);
         }
         catch (Exception exception) {
             throw new RuntimeException(exception);
         }
     }
 
-    public CompletableFuture<ApiResponse<RemoteProfileData>> A(long l) {
-        String string = ApiAccessTokenProvider.i();
-        return CompletableFuture.supplyAsync(() -> this.lambda$updatePublicProfile$15(string, l));
+    public CompletableFuture<ApiResponse<RemoteProfileData>> downloadProfileUpdate(long profileId) {
+        String accessToken = ApiAccessTokenProvider.getAccessToken();
+        return CompletableFuture.supplyAsync(() -> this.requestProfileUpdate(accessToken, profileId));
     }
 
-    private ApiResponse lambda$createPublicProfile$10(String string, JsonObject jsonObject) {
+    private ApiResponse requestProfileCreation(String accessToken, JsonObject payload) {
         try {
-            return ApiHttpClient.z(this.q + "/api/v1/" + string + "/profile/public/create", jsonObject, PublicProfileApi::lambda$null$9);
+            return ApiHttpClient.postApiResponse(this.baseUrl + "/api/v1/" + accessToken + "/profile/public/create", payload, PublicProfileApi::parsePublicProfile);
         }
         catch (Exception exception) {
             throw new RuntimeException(exception);
         }
     }
 
-    public CompletableFuture<ApiResponse<PagedResult<PublicProfileReview>>> r(long l, long l2) {
-        String string = ApiAccessTokenProvider.i();
-        return CompletableFuture.supplyAsync(() -> this.lambda$listPublicProfileReviews$18(string, l, l2));
+    public CompletableFuture<ApiResponse<PagedResult<PublicProfileReview>>> getDelayedReviewPage(long profileId, long page) {
+        String accessToken = ApiAccessTokenProvider.getAccessToken();
+        return CompletableFuture.supplyAsync(() -> this.requestDelayedReviewPage(accessToken, profileId, page));
     }
 
-    public CompletableFuture<ApiResponse<Boolean>> t(long l) {
-        String string = ApiAccessTokenProvider.i();
-        return CompletableFuture.supplyAsync(() -> this.lambda$deletePublicProfileReviewResponse$22(string, l));
+    public CompletableFuture<ApiResponse<Boolean>> deleteReviewResponse(long responseId) {
+        String accessToken = ApiAccessTokenProvider.getAccessToken();
+        return CompletableFuture.supplyAsync(() -> this.requestReviewResponseDeletion(accessToken, responseId));
     }
 
-    private ApiResponse lambda$reportPublicProfileResponse$24(String string, String string2, long l) {
+    private ApiResponse requestReviewResponseReport(String reason, String accessToken, long responseId) {
         try {
-            JsonObject jsonObject = new JsonObject();
-            jsonObject.addProperty("reason", string);
-            return ApiHttpClient.z(this.q + "/api/v1/" + string2 + "/profile/public/reports/create/response/" + l, jsonObject, JsonElement::getAsBoolean);
+            JsonObject payload = new JsonObject();
+            payload.addProperty("reason", reason);
+            return ApiHttpClient.postApiResponse(this.baseUrl + "/api/v1/" + accessToken + "/profile/public/reports/create/response/" + responseId, payload, JsonElement::getAsBoolean);
         }
         catch (Exception exception) {
             throw new RuntimeException(exception);
         }
     }
 
-    public CompletableFuture<ApiResponse<PagedResult<PublicProfileReview>>> F(PublicProfile publicProfile, long l) {
-        return this.r(publicProfile.w(), l);
+    public CompletableFuture<ApiResponse<PagedResult<PublicProfileReview>>> getDelayedReviewPage(PublicProfile profile,
+                                                                                                 long page) {
+        return this.getDelayedReviewPage(profile.getProfileId(), page);
     }
 
-    public CompletableFuture<ApiResponse<PublicProfile>> x(long l) {
-        String string = ApiAccessTokenProvider.i();
-        return CompletableFuture.supplyAsync(() -> this.lambda$viewPublicProfile$6(string, l));
+    public CompletableFuture<ApiResponse<PublicProfile>> viewProfile(long profileId) {
+        String accessToken = ApiAccessTokenProvider.getAccessToken();
+        return CompletableFuture.supplyAsync(() -> this.requestProfileView(accessToken, profileId));
     }
 
-    public PublicProfileApi(String string) {
-        this.q = string;
+    public PublicProfileApi(String baseUrl) {
+        this.baseUrl = baseUrl;
     }
 
-    private ApiResponse lambda$viewPublicProfile$6(String string, long l) {
+    private ApiResponse requestProfileView(String accessToken, long profileId) {
         try {
-            return ApiHttpClient.V(this.q + "/api/v1/" + string + "/profile/public/" + l + "/view", PublicProfileApi::lambda$null$5);
+            return ApiHttpClient.getApiResponse(this.baseUrl + "/api/v1/" + accessToken + "/profile/public/" + profileId + "/view", PublicProfileApi::parsePublicProfile);
         }
         catch (Exception exception) {
             throw new RuntimeException(exception);
         }
     }
 
-    private static PagedResult lambda$null$17(JsonElement jsonElement) {
-        return PagedResult.u(jsonElement.getAsJsonObject(), PublicProfileApi::lambda$null$16);
+    private static PagedResult parseReviewPageWithApiParser(JsonElement dataElement) {
+        return PagedResult.fromJson(dataElement.getAsJsonObject(), PublicProfileApi::parseReview);
     }
 
-    private ApiResponse lambda$reportPublicProfileReview$23(String string, String string2, long l) {
+    private ApiResponse requestReviewReport(String reason, String accessToken, long reviewId) {
         try {
-            JsonObject jsonObject = new JsonObject();
-            jsonObject.addProperty("reason", string);
-            return ApiHttpClient.z(this.q + "/api/v1/" + string2 + "/profile/public/reports/create/review/" + l, jsonObject, JsonElement::getAsBoolean);
+            JsonObject payload = new JsonObject();
+            payload.addProperty("reason", reason);
+            return ApiHttpClient.postApiResponse(this.baseUrl + "/api/v1/" + accessToken + "/profile/public/reports/create/review/" + reviewId, payload, JsonElement::getAsBoolean);
         }
         catch (Exception exception) {
             throw new RuntimeException(exception);
         }
     }
 
-    private static PublicProfile lambda$null$12(JsonElement jsonElement) {
-        return PublicProfile.k((JsonElement)jsonElement.getAsJsonObject());
+    private static PagedResult parseProfileSummaryPage(JsonElement dataElement) {
+        return PagedResult.fromJson(dataElement.getAsJsonObject(), PublicProfileApi::parseProfileSummary);
     }
 
-    private static PagedResult lambda$null$3(JsonElement jsonElement) {
-        return PagedResult.u(jsonElement.getAsJsonObject(), PublicProfileApi::lambda$null$2);
+    public CompletableFuture<ApiResponse<PublicProfileReviewResponse>> respondToReview(long reviewId, String message) {
+        String accessToken = ApiAccessTokenProvider.getAccessToken();
+        return CompletableFuture.supplyAsync(() -> this.requestReviewResponseCreation(message, accessToken, reviewId));
     }
 
-    public CompletableFuture<ApiResponse<PublicProfileReviewResponse>> C(long l, String string) {
-        String string2 = ApiAccessTokenProvider.i();
-        return CompletableFuture.supplyAsync(() -> this.lambda$createPublicProfileReviewResponse$21(string, string2, l));
-    }
-
-    public CompletableFuture<ApiResponse<Boolean>> K(long l) {
-        String string = ApiAccessTokenProvider.i();
-        return CompletableFuture.supplyAsync(() -> this.lambda$deletePublicProfileReview$20(string, l));
+    public CompletableFuture<ApiResponse<Boolean>> deleteReview(long reviewId) {
+        String accessToken = ApiAccessTokenProvider.getAccessToken();
+        return CompletableFuture.supplyAsync(() -> this.requestReviewDeletion(accessToken, reviewId));
     }
 
     static {
-        PublicProfileApi.Y(true);
+        PublicProfileApi.setOpaqueState(true);
     }
 
-    public CompletableFuture<ApiResponse<PublicProfileReview>> l(long l, boolean bl, @Nullable String string) {
-        String string2 = ApiAccessTokenProvider.i();
-        return CompletableFuture.supplyAsync(() -> this.lambda$createPublicProfileReview$19(l, string, bl, string2));
+    public CompletableFuture<ApiResponse<PublicProfileReview>> createReview(long profileId, boolean liked,
+                                                                           @Nullable String reason) {
+        String accessToken = ApiAccessTokenProvider.getAccessToken();
+        return CompletableFuture.supplyAsync(() -> this.requestReviewCreation(profileId, reason, liked, accessToken));
     }
 
-    private ApiResponse lambda$createPublicProfileReviewResponse$21(String string, String string2, long l) {
+    private ApiResponse requestReviewResponseCreation(String message, String accessToken, long reviewId) {
         try {
-            JsonObject jsonObject = new JsonObject();
-            jsonObject.addProperty("message", string);
-            return ApiHttpClient.z(this.q + "/api/v1/" + string2 + "/profile/public/review/respond/" + l, jsonObject, PublicProfileReviewResponse::p);
+            JsonObject payload = new JsonObject();
+            payload.addProperty("message", message);
+            return ApiHttpClient.postApiResponse(this.baseUrl + "/api/v1/" + accessToken + "/profile/public/review/respond/" + reviewId, payload, PublicProfileReviewResponse::fromJson);
         }
         catch (Exception exception) {
             throw new RuntimeException(exception);
         }
     }
 
-    public CompletableFuture<ApiResponse<Boolean>> j(PublicProfile publicProfile, List<Long> list) {
-        return this.H(publicProfile.w(), list);
+    public CompletableFuture<ApiResponse<Boolean>> markReviewsRead(PublicProfile profile, List<Long> reviewIds) {
+        return this.markReviewsRead(profile.getProfileId(), reviewIds);
     }
 
-    public CompletableFuture<ApiResponse<PublicProfileShareInfo>> H(long l) {
-        String string = ApiAccessTokenProvider.i();
-        return CompletableFuture.supplyAsync(() -> this.lambda$regenerateShareCode$27(l, string));
+    public CompletableFuture<ApiResponse<PublicProfileShareInfo>> regenerateShareCode(long profileId) {
+        String accessToken = ApiAccessTokenProvider.getAccessToken();
+        return CompletableFuture.supplyAsync(() -> this.requestShareCodeRegeneration(profileId, accessToken));
     }
 
-    public static boolean G() {
-        return M;
+    public static boolean getOpaqueState() {
+        return opaqueState;
     }
 
-    private ApiResponse lambda$downloadPublicProfile$14(String string, long l) {
+    private ApiResponse requestProfileDownload(String accessToken, long profileId) {
         try {
-            return ApiHttpClient.V(this.q + "/api/v1/" + string + "/profile/public/" + l + "/download", RemoteProfileData::fromJson);
+            return ApiHttpClient.getApiResponse(this.baseUrl + "/api/v1/" + accessToken + "/profile/public/" + profileId + "/download", RemoteProfileData::fromJson);
         }
         catch (Exception exception) {
             throw new RuntimeException(exception);
         }
     }
 
-    private ApiResponse lambda$editPublicProfile$13(String string, JsonObject jsonObject) {
+    private ApiResponse requestProfileEdit(String accessToken, JsonObject payload) {
         try {
-            return ApiHttpClient.z(this.q + "/api/v1/" + string + "/profile/public/edit", jsonObject, PublicProfileApi::lambda$null$12);
+            return ApiHttpClient.postApiResponse(this.baseUrl + "/api/v1/" + accessToken + "/profile/public/edit", payload, PublicProfileApi::parsePublicProfile);
         }
         catch (Exception exception) {
             throw new RuntimeException(exception);
         }
     }
 
-    private ApiResponse lambda$deletePublicProfileReviewResponse$22(String string, long l) {
+    private ApiResponse requestReviewResponseDeletion(String accessToken, long responseId) {
         try {
-            return ApiHttpClient.U(this.q + "/api/v1/" + string + "/profile/public/review/delete/response/" + l, null, JsonElement::getAsBoolean);
+            return ApiHttpClient.deleteApiResponse(this.baseUrl + "/api/v1/" + accessToken + "/profile/public/review/delete/response/" + responseId, null, JsonElement::getAsBoolean);
         }
         catch (Exception exception) {
             throw new RuntimeException(exception);
         }
     }
 
-    private ApiResponse lambda$markReviewsAsRead$26(long l, List list, String string) {
+    private ApiResponse requestMarkReviewsRead(long profileId, List<Long> reviewIds, String accessToken) {
         try {
-            JsonObject jsonObject = new JsonObject();
-            jsonObject.addProperty("profileId", (Number)l);
-            JsonArray jsonArray = new JsonArray();
-            Iterator iterator = list.iterator();
+            JsonObject payload = new JsonObject();
+            payload.addProperty("profileId", (Number)profileId);
+            JsonArray reviewIdsJson = new JsonArray();
+            Iterator<Long> iterator = reviewIds.iterator();
             while (iterator.hasNext()) {
-                long l2 = (Long)iterator.next();
-                jsonArray.add((JsonElement)new JsonPrimitive((Number)l2));
+                long reviewId = iterator.next();
+                reviewIdsJson.add((JsonElement)new JsonPrimitive((Number)reviewId));
             }
-            jsonObject.add("reviewIds", (JsonElement)jsonArray);
-            return ApiHttpClient.z(this.q + "/api/v1/" + string + "/profile/public/review/mark", jsonObject, JsonElement::getAsBoolean);
+            payload.add("reviewIds", (JsonElement)reviewIdsJson);
+            return ApiHttpClient.postApiResponse(this.baseUrl + "/api/v1/" + accessToken + "/profile/public/review/mark", payload, JsonElement::getAsBoolean);
         }
         catch (Exception exception) {
             throw new RuntimeException(exception);
         }
     }
 
-    public CompletableFuture<ApiResponse<PagedResult<PublicProfileSummary>>> r(PublicProfileSortMode publicProfileSortMode, long l, @Nullable String string, @Nullable List<String> list) {
-        String string2 = ApiAccessTokenProvider.i();
-        return CompletableFuture.supplyAsync(() -> this.lambda$listPublicProfiles$4(list, publicProfileSortMode, l, string, string2));
+    public CompletableFuture<ApiResponse<PagedResult<PublicProfileSummary>>> listProfiles(PublicProfileSortMode sortMode,
+                                                                                          long page,
+                                                                                          @Nullable String search,
+                                                                                          @Nullable List<String> tags) {
+        String accessToken = ApiAccessTokenProvider.getAccessToken();
+        return CompletableFuture.supplyAsync(() -> this.requestProfileList(tags, sortMode, page, search, accessToken));
     }
 
-    public static void Y(boolean bl) {
-        M = bl;
+    public static void setOpaqueState(boolean state) {
+        opaqueState = state;
     }
 
-    private static PublicProfileReview lambda$null$16(JsonElement jsonElement) {
-        return PublicProfileReview.a((JsonElement)jsonElement.getAsJsonObject());
+    private static PublicProfileReview parseReview(JsonElement dataElement) {
+        return PublicProfileReview.fromJson((JsonElement)dataElement.getAsJsonObject());
     }
 
-    private ApiResponse lambda$createPublicProfileReview$19(long l, String string, boolean bl, String string2) {
+    private ApiResponse requestReviewCreation(long profileId, String reason, boolean liked, String accessToken) {
         try {
-            JsonObject jsonObject = new JsonObject();
-            jsonObject.addProperty("profileId", (Number)l);
-            jsonObject.addProperty("reason", string);
-            jsonObject.addProperty("liked", Boolean.valueOf(bl));
-            return ApiHttpClient.z(this.q + "/api/v1/" + string2 + "/profile/public/review/create", jsonObject, PublicProfileReview::a);
+            JsonObject payload = new JsonObject();
+            payload.addProperty("profileId", (Number)profileId);
+            payload.addProperty("reason", reason);
+            payload.addProperty("liked", Boolean.valueOf(liked));
+            return ApiHttpClient.postApiResponse(this.baseUrl + "/api/v1/" + accessToken + "/profile/public/review/create", payload, PublicProfileReview::fromJson);
         }
         catch (Exception exception) {
             throw new RuntimeException(exception);
         }
     }
 
-    public CompletableFuture<ApiResponse<Boolean>> Y(long l, String string) {
-        String string2 = ApiAccessTokenProvider.i();
-        return CompletableFuture.supplyAsync(() -> this.lambda$reportPublicProfileReview$23(string, string2, l));
+    public CompletableFuture<ApiResponse<Boolean>> reportReview(long reviewId, String reason) {
+        String accessToken = ApiAccessTokenProvider.getAccessToken();
+        return CompletableFuture.supplyAsync(() -> this.requestReviewReport(reason, accessToken, reviewId));
     }
 
-    private static PublicProfile lambda$null$5(JsonElement jsonElement) {
-        return PublicProfile.k((JsonElement)jsonElement.getAsJsonObject());
-    }
-
-    public static boolean C() {
-        boolean bl = PublicProfileApi.G();
+    public static boolean opaquePredicate() {
+        boolean state = PublicProfileApi.getOpaqueState();
         return false;
     }
 
-    private ApiResponse lambda$getMostPopularTags$1(String string) {
+    private ApiResponse requestMostPopularTags(String accessToken) {
         try {
-            return ApiHttpClient.V(this.q + "/api/v1/" + string + "/profile/public/tags", PublicProfileApi::lambda$null$0);
+            return ApiHttpClient.getApiResponse(this.baseUrl + "/api/v1/" + accessToken + "/profile/public/tags", PublicProfileApi::parseTags);
         }
         catch (Exception exception) {
             throw new RuntimeException(exception);
         }
     }
 
-    private ApiResponse lambda$updatePublicProfile$15(String string, long l) {
+    private ApiResponse requestProfileUpdate(String accessToken, long profileId) {
         try {
-            return ApiHttpClient.V(this.q + "/api/v1/" + string + "/profile/public/" + l + "/update", RemoteProfileData::fromJson);
+            return ApiHttpClient.getApiResponse(this.baseUrl + "/api/v1/" + accessToken + "/profile/public/" + profileId + "/update", RemoteProfileData::fromJson);
         }
         catch (Exception exception) {
             throw new RuntimeException(exception);
         }
     }
 
-    public CompletableFuture<ApiResponse<List<String>>> F() {
-        String string = ApiAccessTokenProvider.i();
-        return CompletableFuture.supplyAsync(() -> this.lambda$getMostPopularTags$1(string));
+    public CompletableFuture<ApiResponse<List<String>>> getMostPopularTags() {
+        String accessToken = ApiAccessTokenProvider.getAccessToken();
+        return CompletableFuture.supplyAsync(() -> this.requestMostPopularTags(accessToken));
     }
 
-    private ApiResponse lambda$deletePublicProfileReview$20(String string, long l) {
+    private ApiResponse requestReviewDeletion(String accessToken, long reviewId) {
         try {
-            return ApiHttpClient.U(this.q + "/api/v1/" + string + "/profile/public/review/delete/" + l, null, JsonElement::getAsBoolean);
+            return ApiHttpClient.deleteApiResponse(this.baseUrl + "/api/v1/" + accessToken + "/profile/public/review/delete/" + reviewId, null, JsonElement::getAsBoolean);
         }
         catch (Exception exception) {
             throw new RuntimeException(exception);
         }
     }
 
-    private static PagedResult lambda$null$7(JsonElement jsonElement) {
-        return PagedResult.u(jsonElement.getAsJsonObject(), PublicProfileReview::a);
+    private static PagedResult parseReviewPage(JsonElement dataElement) {
+        return PagedResult.fromJson(dataElement.getAsJsonObject(), PublicProfileReview::fromJson);
     }
 
-    private static PublicProfileSummary lambda$null$2(JsonElement jsonElement) {
-        return PublicProfileSummary.g(jsonElement.getAsJsonObject());
+    private static PublicProfileSummary parseProfileSummary(JsonElement dataElement) {
+        return PublicProfileSummary.fromJson(dataElement.getAsJsonObject());
     }
 
-    public CompletableFuture<ApiResponse<PublicProfile>> O(JsonObject jsonObject) {
-        String string = ApiAccessTokenProvider.i();
-        return CompletableFuture.supplyAsync(() -> this.lambda$editPublicProfile$13(string, jsonObject));
+    public CompletableFuture<ApiResponse<PublicProfile>> editProfile(JsonObject payload) {
+        String accessToken = ApiAccessTokenProvider.getAccessToken();
+        return CompletableFuture.supplyAsync(() -> this.requestProfileEdit(accessToken, payload));
     }
 
-    private ApiResponse lambda$listPublicProfiles$4(List<String> list, PublicProfileSortMode publicProfileSortMode, long l, String string, String string2) {
+    private ApiResponse requestProfileList(List<String> tags, PublicProfileSortMode sortMode, long page,
+                                           String search, String accessToken) {
         try {
-            JsonArray jsonArray = new JsonArray();
-            if (list != null) {
-                for (String string3 : list) {
-                    jsonArray.add((JsonElement)new JsonPrimitive(string3));
+            JsonArray tagsJson = new JsonArray();
+            if (tags != null) {
+                for (String tag : tags) {
+                    tagsJson.add((JsonElement)new JsonPrimitive(tag));
                 }
             }
-            JsonObject jsonObject = new JsonObject();
-            jsonObject.addProperty("mode", publicProfileSortMode.C());
-            jsonObject.addProperty("page", (Number)l);
-            jsonObject.addProperty("search", string);
-            jsonObject.add("tags", (JsonElement)jsonArray);
-            return ApiHttpClient.z(this.q + "/api/v1/" + string2 + "/profile/public/list", jsonObject, PublicProfileApi::lambda$null$3);
+            JsonObject payload = new JsonObject();
+            payload.addProperty("mode", sortMode.getQueryValue());
+            payload.addProperty("page", (Number)page);
+            payload.addProperty("search", search);
+            payload.add("tags", (JsonElement)tagsJson);
+            return ApiHttpClient.postApiResponse(this.baseUrl + "/api/v1/" + accessToken + "/profile/public/list", payload, PublicProfileApi::parseProfileSummaryPage);
         }
         catch (Exception exception) {
             throw new RuntimeException(exception);

@@ -56,7 +56,7 @@ extends HudModule {
     }
 
 
-    @EventHandler(A=EventPriority.HIGHEST)
+    @EventHandler(priority=EventPriority.HIGHEST)
     public void onSyntheticAttack(SyntheticAttackRequestEvent event) {
         if (event.isCanceled() || Minecraft.currentScreen().isNotNull()) {
             return;

@@ -7,24 +7,24 @@ public class EventPreMotion
 extends EventMotion {
     @Override
     public boolean fire() {
-        if (V.isNull()) {
+        if (player.isNull()) {
             return false;
         }
-        boolean bl = super.fire();
-        EventMotion.access$302(V.S$src$Lgg_vape_wrapper_impl_Entity_$dgzs12());
+        boolean fired = super.fire();
+        EventMotion.storeRidingEntity(player.S$src$Lgg_vape_wrapper_impl_Entity_$dgzs12());
         if (EventPreMotion.shouldAlwaysSend()) {
-            V.T(new Entity(null));
+            player.T(new Entity(null));
         }
-        return bl;
+        return fired;
     }
 
 
-    public EventPreMotion(Object object) {
-        super(new Entity(object));
-        C = false;
-        EventMotion.access$002(EventMotion.V.J());
-        EventMotion.access$102(EventMotion.V.V());
-        EventMotion.access$202(EventMotion.V.b$src$Z$fqlxe4());
+    public EventPreMotion(Object playerHandle) {
+        super(new Entity(playerHandle));
+        alwaysSend = false;
+        EventMotion.storeRotationYaw(EventMotion.player.J());
+        EventMotion.storeRotationPitch(EventMotion.player.V());
+        EventMotion.storeOnGround(EventMotion.player.b$src$Z$fqlxe4());
     }
 }
 

@@ -7,24 +7,24 @@ import gg.vape.wrapper.impl.MatrixStack;
 
 public class EventPreRenderLiving
 extends Event {
-    private final Object i;
-    private MatrixStack p;
-    private Entity A;
-    private static final EventListeners d = new EventListeners();
-    private final double W;
-    private final double Q;
+    private final Object matrixStackHandle;
+    private MatrixStack matrixStack;
+    private Entity entity;
+    private static final EventListeners EVENT_LISTENERS = new EventListeners();
     private final double x;
-    private final Object H;
+    private final double y;
+    private final double z;
+    private final Object entityHandle;
 
     public Entity getEntity() {
-        if (this.A == null) {
-            this.A = new Entity(this.H);
+        if (this.entity == null) {
+            this.entity = new Entity(this.entityHandle);
         }
-        return this.A;
+        return this.entity;
     }
 
     public double getZ() {
-        return this.x;
+        return this.z;
     }
 
 
@@ -34,35 +34,35 @@ extends Event {
     }
 
     public double getY() {
-        return this.Q;
+        return this.y;
     }
 
     @Override
     public EventListeners getListeners() {
-        return d;
+        return EVENT_LISTENERS;
     }
 
     public static EventListeners getEventListeners() {
-        return d;
+        return EVENT_LISTENERS;
     }
 
     public MatrixStack getMatrixStack() {
-        if (this.p == null) {
-            this.p = new MatrixStack(this.i);
+        if (this.matrixStack == null) {
+            this.matrixStack = new MatrixStack(this.matrixStackHandle);
         }
-        return this.p;
+        return this.matrixStack;
     }
 
     public double getX() {
-        return this.W;
+        return this.x;
     }
 
-    public EventPreRenderLiving(Object object, double d, double d2, double d3, Object object2) {
-        this.H = object;
-        this.i = object2;
-        this.W = d;
-        this.Q = d2;
-        this.x = d3;
+    public EventPreRenderLiving(Object entityHandle, double x, double y, double z, Object matrixStackHandle) {
+        this.entityHandle = entityHandle;
+        this.matrixStackHandle = matrixStackHandle;
+        this.x = x;
+        this.y = y;
+        this.z = z;
     }
 }
 

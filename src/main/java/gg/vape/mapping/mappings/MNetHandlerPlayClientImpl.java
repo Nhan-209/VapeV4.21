@@ -26,7 +26,7 @@ extends Mapping {
     }
 
     private void Q(Object object, Object object2) {
-        this.F.c(object, object2);
+        this.F.invokeVoid(object, object2);
     }
 
     public MNetHandlerPlayClientImpl() {
@@ -49,7 +49,7 @@ extends Mapping {
             String string = "connection";
             Class clazz2 = MappedClasses.Yt;
             MNetHandlerPlayClientImpl mNetHandlerPlayClientImpl = this;
-            this.u = mNetHandlerPlayClientImpl.X(clazz2, string, bl, clazz);
+            this.u = mNetHandlerPlayClientImpl.registerInstanceFieldForOwner(clazz2, string, bl, clazz);
         } else {
             Class clazz = MappedClasses.FO;
             boolean bl = true;
@@ -64,7 +64,7 @@ extends Mapping {
             String string = "send";
             Class clazz3 = MappedClasses.Yt;
             MNetHandlerPlayClientImpl mNetHandlerPlayClientImpl = this;
-            this.F = mNetHandlerPlayClientImpl.W(clazz3, string, bl, clazz, classArray);
+            this.F = mNetHandlerPlayClientImpl.registerInstanceMethodForOwner(clazz3, string, bl, clazz, classArray);
         } else if (ForgeVersion.MC_1_12_2.d()) {
             Class[] classArray = new Class[]{MappedClasses.Fm};
             Class<Void> clazz = Void.TYPE;
@@ -93,7 +93,7 @@ extends Mapping {
             Class<Boolean> clazz = Boolean.TYPE;
             String string = "hasClientLoaded";
             MNetHandlerPlayClientImpl mNetHandlerPlayClientImpl = this;
-            this.r = mNetHandlerPlayClientImpl.u(string, clazz, classArray).s();
+            this.r = mNetHandlerPlayClientImpl.methodBuilder(string, clazz, classArray).buildMethod();
         }
         if (GuiComponent.getLegacyComponentState() == null) {
             MNetworkManager.Z(new String[2]);
@@ -113,7 +113,7 @@ extends Mapping {
     }
 
     private Collection N(Object object) {
-        return (Collection)this.h.L(object, new Object[0]);
+        return (Collection)this.h.invokeObject(object, new Object[0]);
     }
 
 
@@ -122,7 +122,7 @@ extends Mapping {
     }
 
     private boolean K(Object object) {
-        return this.r.e(object, new Object[0]);
+        return this.r.invokeBoolean(object, new Object[0]);
     }
 
     public static Object z(MNetHandlerPlayClientImpl mNetHandlerPlayClientImpl, Object object) {

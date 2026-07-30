@@ -4,8 +4,7 @@ import gg.vape.event.impl.EventEntityUpdateBase;
 
 public class EventPostEntityUpdate
 extends EventEntityUpdateBase {
-    public EventPostEntityUpdate(Object object) {
-        super(object);
+    public EventPostEntityUpdate(Object entityHandle) {
+        super(entityHandle);
     }
 }
-

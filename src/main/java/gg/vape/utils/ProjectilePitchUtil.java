@@ -11,13 +11,13 @@ public class ProjectilePitchUtil {
     public static float calculatePitch(Vec3d targetPosition, double projectileSpeed) {
         EntityPlayerSP player = Minecraft.thePlayer();
         double gravity = 0.05f;
-        double deltaX = targetPosition.Y() - player.z();
-        double deltaZ = targetPosition.o() - player.h();
+        double deltaX = targetPosition.getX() - player.z();
+        double deltaZ = targetPosition.getZ() - player.h();
         double horizontalDistance = Math.sqrt(deltaX * deltaX + deltaZ * deltaZ);
         double playerY = player.N();
         float eyeHeight = player.X();
         double boundingBoxMinY = player.R$src$Lgg_vape_wrapper_impl_AxisAlignedBB_$r19dfl().getMinY();
-        double verticalDistance = targetPosition.t() - player.U();
+        double verticalDistance = targetPosition.getY() - player.U();
         double verticalTerm = 2.0 * verticalDistance * (projectileSpeed * projectileSpeed);
         double horizontalTerm = gravity * (horizontalDistance * horizontalDistance);
         double trajectoryTerm = horizontalTerm + verticalTerm;

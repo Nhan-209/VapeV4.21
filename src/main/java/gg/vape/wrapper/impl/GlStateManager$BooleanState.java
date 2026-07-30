@@ -19,13 +19,13 @@ extends Wrapper {
     }
 
     public void O(boolean bl) {
-        boolean bl2 = GlStateManager$BooleanState.c.getMappings().he.J(this.I);
+        boolean bl2 = GlStateManager$BooleanState.vapeInstance.getMappings().he.J(this.I);
         if (bl != bl2) {
-            GlStateManager$BooleanState.c.getMappings().he.T(this.I, bl);
+            GlStateManager$BooleanState.vapeInstance.getMappings().he.T(this.I, bl);
             if (bl) {
-                OpenGlBackendHolder.backend.enableCapability(GlStateManager$BooleanState.c.getMappings().he.n(this.I));
+                OpenGlBackendHolder.backend.enableCapability(GlStateManager$BooleanState.vapeInstance.getMappings().he.n(this.I));
             } else {
-                OpenGlBackendHolder.backend.disableCapability(GlStateManager$BooleanState.c.getMappings().he.n(this.I));
+                OpenGlBackendHolder.backend.disableCapability(GlStateManager$BooleanState.vapeInstance.getMappings().he.n(this.I));
             }
         }
     }

@@ -3,7 +3,6 @@ package gg.vape.mapping.mappings;
 import gg.vape.mapping.MappedClasses;
 import gg.vape.mapping.Mapping;
 import gg.vape.mapping.MappingField;
-import gg.vape.mapping.mappings.MPacketIdFactory;
 import gg.vape.ui.click.component.GuiComponent;
 import gg.vape.wrapper.Wrapper;
 import gg.vape.wrapper.impl.ForgeVersion;
@@ -67,7 +66,7 @@ extends Mapping {
                 }
             } else {
                 Class<Integer> clazz4 = Integer.TYPE;
-                boolean bl4 = Wrapper.G;
+                boolean bl4 = Wrapper.isNativeAvailable;
                 String string4 = "field_149508_e";
                 MCPacketPlayerDigging mCPacketPlayerDigging4 = this;
                 this.N = this.J(string4, bl4, clazz4);

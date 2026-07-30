@@ -1,9 +1,6 @@
 package gg.vape.wrapper.impl;
 
 import gg.vape.wrapper.Wrapper;
-import gg.vape.wrapper.impl.EquipmentSlotGroup;
-import gg.vape.wrapper.impl.ForgeVersion;
-import gg.vape.wrapper.impl.Holder;
 
 public class MonsterAttributesBridge
 extends Wrapper {
@@ -13,34 +10,34 @@ extends Wrapper {
 
     public static EquipmentSlotGroup K() {
         if (ForgeVersion.MC_1_20_6.d()) {
-            Holder holder = new Holder(MonsterAttributesBridge.c.getMappings().qr.W());
+            Holder holder = new Holder(MonsterAttributesBridge.vapeInstance.getMappings().qr.W());
             return new EquipmentSlotGroup(holder.N());
         }
         if (ForgeVersion.MC_1_16_5.d()) {
-            return new EquipmentSlotGroup(MonsterAttributesBridge.c.getMappings().qr.W());
+            return new EquipmentSlotGroup(MonsterAttributesBridge.vapeInstance.getMappings().qr.W());
         }
         return null;
     }
 
     public static EquipmentSlotGroup B() {
         if (ForgeVersion.MC_1_20_6.d()) {
-            Holder holder = new Holder(MonsterAttributesBridge.c.getMappings().qr.N());
+            Holder holder = new Holder(MonsterAttributesBridge.vapeInstance.getMappings().qr.N());
             return new EquipmentSlotGroup(holder.N());
         }
-        return new EquipmentSlotGroup(MonsterAttributesBridge.c.getMappings().qr.N());
+        return new EquipmentSlotGroup(MonsterAttributesBridge.vapeInstance.getMappings().qr.N());
     }
 
     public static EquipmentSlotGroup t() {
         if (ForgeVersion.MC_1_20_6.d()) {
-            Holder holder = new Holder(MonsterAttributesBridge.c.getMappings().qr.w());
+            Holder holder = new Holder(MonsterAttributesBridge.vapeInstance.getMappings().qr.w());
             return new EquipmentSlotGroup(holder.N());
         }
-        return new EquipmentSlotGroup(MonsterAttributesBridge.c.getMappings().qr.w());
+        return new EquipmentSlotGroup(MonsterAttributesBridge.vapeInstance.getMappings().qr.w());
     }
 
     public static EquipmentSlotGroup q() {
         if (ForgeVersion.MC_1_20_6.d()) {
-            Holder holder = new Holder(MonsterAttributesBridge.c.getMappings().qr.o());
+            Holder holder = new Holder(MonsterAttributesBridge.vapeInstance.getMappings().qr.o());
             return new EquipmentSlotGroup(holder.N());
         }
         throw new UnsupportedOperationException("Attribute unavailable in this version");
@@ -48,7 +45,7 @@ extends Wrapper {
 
     public static Holder m$src$Lgg_vape_wrapper_impl_Holder_$1lgjxui() {
         if (ForgeVersion.MC_1_20_6.d()) {
-            Holder holder = new Holder(MonsterAttributesBridge.c.getMappings().qr.J());
+            Holder holder = new Holder(MonsterAttributesBridge.vapeInstance.getMappings().qr.J());
             return holder;
         }
         throw new UnsupportedOperationException("Holder class unavailable in this version");
@@ -56,18 +53,18 @@ extends Wrapper {
 
     public static EquipmentSlotGroup H() {
         if (ForgeVersion.MC_1_20_6.d()) {
-            Holder holder = new Holder(MonsterAttributesBridge.c.getMappings().qr.J());
+            Holder holder = new Holder(MonsterAttributesBridge.vapeInstance.getMappings().qr.J());
             return new EquipmentSlotGroup(holder.N());
         }
         if (ForgeVersion.MC_1_16_5.d()) {
-            return new EquipmentSlotGroup(MonsterAttributesBridge.c.getMappings().qr.J());
+            return new EquipmentSlotGroup(MonsterAttributesBridge.vapeInstance.getMappings().qr.J());
         }
         return null;
     }
 
     public static Holder L() {
         if (ForgeVersion.MC_1_20_6.d()) {
-            Holder holder = new Holder(MonsterAttributesBridge.c.getMappings().qr.W());
+            Holder holder = new Holder(MonsterAttributesBridge.vapeInstance.getMappings().qr.W());
             return holder;
         }
         throw new UnsupportedOperationException("Holder class unavailable in this version");
@@ -79,7 +76,7 @@ extends Wrapper {
 
     public static Holder g() {
         if (ForgeVersion.MC_1_20_6.d()) {
-            Holder holder = new Holder(MonsterAttributesBridge.c.getMappings().qr.o());
+            Holder holder = new Holder(MonsterAttributesBridge.vapeInstance.getMappings().qr.o());
             return holder;
         }
         throw new UnsupportedOperationException("Holder class unavailable in this version");
@@ -87,7 +84,7 @@ extends Wrapper {
 
     public static Holder D() {
         if (ForgeVersion.MC_1_20_6.d()) {
-            Holder holder = new Holder(MonsterAttributesBridge.c.getMappings().qr.y());
+            Holder holder = new Holder(MonsterAttributesBridge.vapeInstance.getMappings().qr.y());
             return holder;
         }
         throw new UnsupportedOperationException("Holder class unavailable in this version");
@@ -95,7 +92,7 @@ extends Wrapper {
 
     public static EquipmentSlotGroup c() {
         if (ForgeVersion.MC_1_20_6.d()) {
-            Holder holder = new Holder(MonsterAttributesBridge.c.getMappings().qr.y());
+            Holder holder = new Holder(MonsterAttributesBridge.vapeInstance.getMappings().qr.y());
             return new EquipmentSlotGroup(holder.N());
         }
         throw new UnsupportedOperationException("Attribute unavailable in this version");
@@ -103,7 +100,7 @@ extends Wrapper {
 
     public static Holder V() {
         if (ForgeVersion.MC_1_20_6.d()) {
-            Holder holder = new Holder(MonsterAttributesBridge.c.getMappings().qr.w());
+            Holder holder = new Holder(MonsterAttributesBridge.vapeInstance.getMappings().qr.w());
             return holder;
         }
         throw new UnsupportedOperationException("Holder class unavailable in this version");
@@ -111,7 +108,7 @@ extends Wrapper {
 
     public static Holder U() {
         if (ForgeVersion.MC_1_20_6.d()) {
-            Holder holder = new Holder(MonsterAttributesBridge.c.getMappings().qr.N());
+            Holder holder = new Holder(MonsterAttributesBridge.vapeInstance.getMappings().qr.N());
             return holder;
         }
         throw new UnsupportedOperationException("Holder class unavailable in this version");

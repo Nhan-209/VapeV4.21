@@ -11,55 +11,55 @@ import org.jetbrains.annotations.Nullable;
 public class ServerInventorySnapshotPacket
 implements ZeusSerializablePacket {
     private static final String b = "Too many items in inventory";
-    private Map<Integer, @Nullable ActivityItemStackPayload> X;
-    private int Y;
-    private long F;
+    private Map<Integer, @Nullable ActivityItemStackPayload> inventoryItems;
+    private int heldItemSlot;
+    private long userId;
 
-    public ServerInventorySnapshotPacket(UserModel userModel, int n, Map<Integer, @Nullable ActivityItemStackPayload> map) {
-        this.F = userModel.g();
-        this.Y = n;
-        this.X = map;
+    public ServerInventorySnapshotPacket(UserModel userModel, int heldItemSlot, Map<Integer, @Nullable ActivityItemStackPayload> inventoryItems) {
+        this.userId = userModel.getId();
+        this.heldItemSlot = heldItemSlot;
+        this.inventoryItems = inventoryItems;
     }
 
-    public int A() {
-        return this.Y;
+    public int getHeldItemSlot() {
+        return this.heldItemSlot;
     }
 
     @Override
     public void o(ZeusPacketBuffer zeusPacketBuffer) {
-        zeusPacketBuffer.v(this.F);
-        zeusPacketBuffer.i(this.Y);
-        zeusPacketBuffer.i(this.X.size());
-        for (Map.Entry<Integer, ActivityItemStackPayload> entry : this.X.entrySet()) {
-            zeusPacketBuffer.i(entry.getKey());
-            zeusPacketBuffer.Y(entry.getValue() != null);
+        zeusPacketBuffer.writeLong(this.userId);
+        zeusPacketBuffer.writeVarInt(this.heldItemSlot);
+        zeusPacketBuffer.writeVarInt(this.inventoryItems.size());
+        for (Map.Entry<Integer, ActivityItemStackPayload> entry : this.inventoryItems.entrySet()) {
+            zeusPacketBuffer.writeVarInt(entry.getKey());
+            zeusPacketBuffer.writeBoolean(entry.getValue() != null);
             if (entry.getValue() == null) continue;
-            entry.getValue().Q(zeusPacketBuffer);
+            entry.getValue().writeTo(zeusPacketBuffer);
         }
     }
 
     @Override
     public void S(ZeusPacketBuffer zeusPacketBuffer) {
-        this.F = zeusPacketBuffer.a();
-        this.Y = zeusPacketBuffer.Y();
-        int n = zeusPacketBuffer.Y();
+        this.userId = zeusPacketBuffer.readLong();
+        this.heldItemSlot = zeusPacketBuffer.readVarInt();
+        int n = zeusPacketBuffer.readVarInt();
         if (n > 40) {
             throw new RuntimeException(b);
         }
-        this.X = new HashMap<Integer, ActivityItemStackPayload>();
+        this.inventoryItems = new HashMap<Integer, ActivityItemStackPayload>();
         for (int i = 0; i < n; ++i) {
-            int n2 = zeusPacketBuffer.Y();
-            boolean bl = zeusPacketBuffer.a$src$Z$1c50x8d();
-            this.X.put(n2, bl ? new ActivityItemStackPayload(zeusPacketBuffer) : null);
+            int n2 = zeusPacketBuffer.readVarInt();
+            boolean bl = zeusPacketBuffer.readBoolean();
+            this.inventoryItems.put(n2, bl ? new ActivityItemStackPayload(zeusPacketBuffer) : null);
         }
     }
 
-    public Map<Integer, @Nullable ActivityItemStackPayload> N() {
-        return this.X;
+    public Map<Integer, @Nullable ActivityItemStackPayload> getInventoryItems() {
+        return this.inventoryItems;
     }
 
-    public long f() {
-        return this.F;
+    public long getUserId() {
+        return this.userId;
     }
 
     private static RuntimeException a(RuntimeException runtimeException) {
@@ -69,4 +69,3 @@ implements ZeusSerializablePacket {
     public ServerInventorySnapshotPacket() {
     }
 }
-

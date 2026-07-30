@@ -114,7 +114,7 @@ extends FrameHeaderComponent {
                 }
             }
             */
-            if (!Vape.INSTANCE.getPublicProfileSettings().o.getEffectiveValue().booleanValue() && Vape.INSTANCE.getSyncThread().hasPendingSave() && System.currentTimeMillis() > Vape.INSTANCE.getSyncThread().getLastSaveTime() + 60000L) {
+            if (!Vape.INSTANCE.getPublicProfileSettings().autoSave.getEffectiveValue().booleanValue() && Vape.INSTANCE.getSyncThread().hasPendingSave() && System.currentTimeMillis() > Vape.INSTANCE.getSyncThread().getLastSaveTime() + 60000L) {
                 this.G.setVisible(true);
                 this.G.K(d);
                 this.G.S(this.n());

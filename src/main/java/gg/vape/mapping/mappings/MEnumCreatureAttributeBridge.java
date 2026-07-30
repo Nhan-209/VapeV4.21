@@ -15,7 +15,7 @@ extends Mapping {
         boolean bl = true;
         String string = b;
         MEnumCreatureAttributeBridge mEnumCreatureAttributeBridge = this;
-        this.d = this.u(string, bl, clazz);
+        this.d = this.registerStaticField(string, bl, clazz);
     }
 
     private Object e() {

@@ -37,7 +37,7 @@ extends Mod {
     public final ModeValue mode;
     public final BooleanValue useDisplayName;
     public final RenderManager renderManager;
-    public final ModeOption threeDimensionalMode = new ESP3D(this, "3D").r$src$Lgg_vape_value_SubModuleValue_$1rfa4wx();
+    public final ModeOption threeDimensionalMode = new ESP3D(this, "3D").getSelectionValue();
     private final ModeOption skeletonMode;
     public final BooleanValue showName;
     public final ColorValue playerColor;
@@ -50,10 +50,10 @@ extends Mod {
     public ESP() {
         super("ESP", -16711936, Category.k, "Extra Sensory Perception\nRenders an ESP on players.");
         ESP2D esp2D = new ESP2D(this, "2D");
-        this.twoDimensionalMode = esp2D.r$src$Lgg_vape_value_SubModuleValue_$1rfa4wx();
+        this.twoDimensionalMode = esp2D.getSelectionValue();
         this.outlineRenderer = new ESPOutline(this, "Outline");
-        this.outlineMode = this.outlineRenderer.r$src$Lgg_vape_value_SubModuleValue_$1rfa4wx();
-        this.skeletonMode = new ESPSkeleton(this, "Skeleton").r$src$Lgg_vape_value_SubModuleValue_$1rfa4wx();
+        this.outlineMode = this.outlineRenderer.getSelectionValue();
+        this.skeletonMode = new ESPSkeleton(this, "Skeleton").getSelectionValue();
         this.playerColor = ColorValue.create(this, "Player Color", new Color(-14368924));
         this.showInvisibles = BooleanValue.create(this, "Invisibles", false, "Show invisibles.");
         this.enemyOnly = BooleanValue.create(this, "Enemy Only", false, "Only render enemies.");
@@ -104,7 +104,7 @@ extends Mod {
             return null;
         }
         if (entityLivingBase.isInstance(MappedClasses.lG)) {
-            MutableColor mutableColor = Vape.INSTANCE.getClientSettings().e(renderEntityContext);
+            MutableColor mutableColor = Vape.INSTANCE.getClientSettings().resolveEntityColor(renderEntityContext);
             if (mutableColor == null) {
                 mutableColor = this.playerColor.getMutableColor();
             }

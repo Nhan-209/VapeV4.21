@@ -15,7 +15,7 @@ extends Mapping {
         boolean bl = true;
         String string = b;
         MPlayerDiggingAction mPlayerDiggingAction = this;
-        this.Y = this.u(string, bl, clazz);
+        this.Y = this.registerStaticField(string, bl, clazz);
     }
 
     public Object l() {

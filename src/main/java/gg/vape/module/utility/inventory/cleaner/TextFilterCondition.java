@@ -28,8 +28,8 @@ extends InventoryFilterCondition<T> {
     default public JsonObject toJson() {
         JsonObject jsonObject = InventoryFilterCondition.super.toJson();
         JsonArray jsonArray = new JsonArray();
-        for (String string : this.getTexts()) {
-            jsonArray.add((JsonElement)new JsonPrimitive(Base64Util.encodeUtf8Base64(string)));
+        for (String text : this.getTexts()) {
+            jsonArray.add((JsonElement)new JsonPrimitive(Base64Util.encodeUtf8Base64(text)));
         }
         jsonObject.addProperty("operator", this.getMatchMode().getName());
         jsonObject.add("text", (JsonElement)jsonArray);

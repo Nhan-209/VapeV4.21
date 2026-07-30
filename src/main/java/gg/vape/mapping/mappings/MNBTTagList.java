@@ -18,7 +18,7 @@ extends Mapping {
     }
 
     private int v(Object object) {
-        return this.r.Z(object, new Object[0]);
+        return this.r.invokeInt(object, new Object[0]);
     }
 
     public static void Z(String string) {
@@ -107,14 +107,14 @@ extends Mapping {
     }
 
     private Object Z(Object object, int n) {
-        return this.I.L(object, n);
+        return this.I.invokeObject(object, n);
     }
 
     private String o(Object object, int n) {
         if (ForgeVersion.MC_1_21_6.d()) {
-            return (String)this.F.L(object, n, "");
+            return (String)this.F.invokeObject(object, n, "");
         }
-        return (String)this.F.L(object, n);
+        return (String)this.F.invokeObject(object, n);
     }
 }
 

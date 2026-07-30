@@ -8,38 +8,38 @@ import org.jetbrains.annotations.Nullable;
 
 public class EventLivingTravelBase
 extends Event {
-    private final Object K;
+    private final Object entityHandle;
     @Nullable
-    private EntityLivingBase Q;
-    private static final EventListeners r = new EventListeners();
+    private EntityLivingBase entity;
+    private static final EventListeners EVENT_LISTENERS = new EventListeners();
 
     @Override
     public boolean fire() {
-        if (!MappedClasses.z5.isInstance(this.K)) {
+        if (!MappedClasses.z5.isInstance(this.entityHandle)) {
             return false;
         }
         return super.fire();
     }
 
     public EntityLivingBase getEntity() {
-        if (this.Q == null) {
-            this.Q = new EntityLivingBase(this.K);
+        if (this.entity == null) {
+            this.entity = new EntityLivingBase(this.entityHandle);
         }
-        return this.Q;
+        return this.entity;
     }
 
 
     public static EventListeners getEventListeners() {
-        return r;
+        return EVENT_LISTENERS;
     }
 
     @Override
     public EventListeners getListeners() {
-        return r;
+        return EVENT_LISTENERS;
     }
 
-    public EventLivingTravelBase(Object object) {
-        this.K = object;
+    public EventLivingTravelBase(Object entityHandle) {
+        this.entityHandle = entityHandle;
     }
 }
 

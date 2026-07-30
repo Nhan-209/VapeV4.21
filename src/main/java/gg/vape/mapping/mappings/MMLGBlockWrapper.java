@@ -32,21 +32,21 @@ extends Mapping {
             Class clazz = MappedClasses.W;
             String string = "WATER";
             MMLGBlockWrapper mMLGBlockWrapper = this;
-            this.y = ((MappingFieldBuilder)((MappingFieldBuilder)mMLGBlockWrapper.T(string, clazz).X(ForgeVersion.MC_1_20_6.n(), MappedClasses.qC)).H(true)).z();
+            this.y = ((MappingFieldBuilder)((MappingFieldBuilder)mMLGBlockWrapper.fieldBuilder(string, clazz).setTypeForVersion(ForgeVersion.MC_1_20_6.n(), MappedClasses.qC)).setStaticMember(true)).buildField();
             Class clazz2 = MappedClasses.W;
             String string2 = "LAVA";
             MMLGBlockWrapper mMLGBlockWrapper2 = this;
-            this.n = ((MappingFieldBuilder)((MappingFieldBuilder)this.T(string2, clazz2).X(ForgeVersion.MC_1_20_6.n(), MappedClasses.qC)).H(true)).z();
+            this.n = ((MappingFieldBuilder)((MappingFieldBuilder)this.fieldBuilder(string2, clazz2).setTypeForVersion(ForgeVersion.MC_1_20_6.n(), MappedClasses.qC)).setStaticMember(true)).buildField();
             return;
         }
         Class clazz = MappedClasses.W;
         String string = "WATER";
         MMLGBlockWrapper mMLGBlockWrapper = this;
-        this.y = ((MappingFieldBuilder)((MappingFieldBuilder)mMLGBlockWrapper.T(string, clazz).X(ForgeVersion.MC_1_20_6.n(), MappedClasses.qC)).H(true)).z();
+        this.y = ((MappingFieldBuilder)((MappingFieldBuilder)mMLGBlockWrapper.fieldBuilder(string, clazz).setTypeForVersion(ForgeVersion.MC_1_20_6.n(), MappedClasses.qC)).setStaticMember(true)).buildField();
         Class clazz3 = MappedClasses.W;
         String string3 = "LAVA";
         MMLGBlockWrapper mMLGBlockWrapper3 = this;
-        this.n = ((MappingFieldBuilder)((MappingFieldBuilder)this.T(string3, clazz3).X(ForgeVersion.MC_1_20_6.n(), MappedClasses.qC)).H(true)).z();
+        this.n = ((MappingFieldBuilder)((MappingFieldBuilder)this.fieldBuilder(string3, clazz3).setTypeForVersion(ForgeVersion.MC_1_20_6.n(), MappedClasses.qC)).setStaticMember(true)).buildField();
         GuiComponent.setLegacyComponentState(new GuiComponent[5]);
     }
 

@@ -7,56 +7,58 @@ import java.util.List;
 import java.util.function.Function;
 
 public class PagedResult<T> {
-    private final boolean N;
-    private final long f;
-    private final long b;
-    private final long y;
-    private final List<T> X;
-    private final long I;
+    private final boolean lastPage;
+    private final long numberOfElements;
+    private final long totalElements;
+    private final long totalPages;
+    private final List<T> content;
+    private final long pageSize;
 
-    public long q() {
-        return this.f;
+    public long getNumberOfElements() {
+        return this.numberOfElements;
     }
 
-    public boolean F() {
-        return this.N;
+    public boolean isLastPage() {
+        return this.lastPage;
     }
 
-    PagedResult(List<T> list, boolean bl, long l, long l2, long l3, long l4) {
-        this.X = list;
-        this.N = bl;
-        this.y = l;
-        this.b = l2;
-        this.I = l3;
-        this.f = l4;
+    PagedResult(List<T> content, boolean lastPage, long totalPages, long totalElements, long pageSize,
+                long numberOfElements) {
+        this.content = content;
+        this.lastPage = lastPage;
+        this.totalPages = totalPages;
+        this.totalElements = totalElements;
+        this.pageSize = pageSize;
+        this.numberOfElements = numberOfElements;
     }
 
-    public long A() {
-        return this.y;
+    public long getTotalPages() {
+        return this.totalPages;
     }
 
-    public List<T> E() {
-        return this.X;
+    public List<T> getContent() {
+        return this.content;
     }
 
-    public static <T> PagedResult<T> u(JsonObject jsonObject, Function<JsonElement, T> function) {
-        ArrayList<T> arrayList = new ArrayList<T>();
-        for (JsonElement jsonElement : jsonObject.get("content").getAsJsonArray()) {
-            arrayList.add(function.apply(jsonElement));
+    public static <T> PagedResult<T> fromJson(JsonObject pageJson, Function<JsonElement, T> elementParser) {
+        ArrayList<T> content = new ArrayList<T>();
+        for (JsonElement element : pageJson.get("content").getAsJsonArray()) {
+            content.add(elementParser.apply(element));
         }
-        return new PagedResult(arrayList, jsonObject.get("last").getAsBoolean(), jsonObject.get("totalPages").getAsLong(), jsonObject.get("totalElements").getAsLong(), jsonObject.get("size").getAsLong(), jsonObject.get("numberOfElements").getAsLong());
+        return new PagedResult(content, pageJson.get("last").getAsBoolean(), pageJson.get("totalPages").getAsLong(),
+                pageJson.get("totalElements").getAsLong(), pageJson.get("size").getAsLong(),
+                pageJson.get("numberOfElements").getAsLong());
     }
 
-    public long L() {
-        return this.b;
+    public long getTotalElements() {
+        return this.totalElements;
     }
 
-    public long u() {
-        return this.I;
+    public long getPageSize() {
+        return this.pageSize;
     }
 
     public String toString() {
-        return "Paged{content=" + this.X + ", last=" + this.N + ", totalPages=" + this.y + ", totalElements=" + this.b + ", size=" + this.I + ", numberOfElements=" + this.f + '}';
+        return "Paged{content=" + this.content + ", last=" + this.lastPage + ", totalPages=" + this.totalPages + ", totalElements=" + this.totalElements + ", size=" + this.pageSize + ", numberOfElements=" + this.numberOfElements + '}';
     }
 }
-

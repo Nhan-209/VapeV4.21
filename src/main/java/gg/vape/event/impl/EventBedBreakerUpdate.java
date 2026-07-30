@@ -5,15 +5,15 @@ import gg.vape.event.EventListeners;
 
 public class EventBedBreakerUpdate
 extends Event {
-    private static final EventListeners P = new EventListeners();
+    private static final EventListeners EVENT_LISTENERS = new EventListeners();
 
     @Override
     public EventListeners getListeners() {
-        return P;
+        return EVENT_LISTENERS;
     }
 
     public static EventListeners getEventListeners() {
-        return P;
+        return EVENT_LISTENERS;
     }
 
     @Override
@@ -21,4 +21,3 @@ extends Event {
         return super.fire();
     }
 }
-

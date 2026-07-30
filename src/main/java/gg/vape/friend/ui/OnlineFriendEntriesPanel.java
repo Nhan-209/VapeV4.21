@@ -14,9 +14,9 @@ import java.util.List;
 
 public class OnlineFriendEntriesPanel
 extends PanelComponent {
-    double Iw = 0.0;
-    private static final String db = "wrap";
-    boolean IM = true;
+    private static final String WRAP_LAYOUT = "wrap";
+    private double contentHeight;
+    private boolean refreshPending = true;
 
     @Override
     public void v() {
@@ -26,27 +26,27 @@ extends PanelComponent {
         super(100.0, 20.0);
         this.setShowDisabledOverlay(false);
         this.F(FrameScrollbarPlacement.OUTSIDE);
-        this.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M(db);
+        this.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M(WRAP_LAYOUT);
         this.t(90.0);
     }
 
-    public void W() {
+    public void refreshList() {
         this.removeMarkedChildren();
         this.h(new SpacerComponent(1.0, 1.0), new Object[0]);
-        ArrayList<OnlineFriend> arrayList = new ArrayList<OnlineFriend>(Vape.INSTANCE.getOnlineFriendManager().g());
-        arrayList.sort(Comparator.comparingInt(OnlineFriendEntriesPanel::lambda$refreshList$0).thenComparing(OnlineFriend::C));
-        for (OnlineFriend onlineFriend : arrayList) {
-            OnlineFriendListEntry onlineFriendListEntry = Vape.INSTANCE.getOnlineManager().u().U(onlineFriend, () -> OnlineFriendEntriesPanel.lambda$refreshList$1(onlineFriend));
-            this.h(onlineFriendListEntry, new Object[0]);
+        ArrayList<OnlineFriend> friends = new ArrayList<OnlineFriend>(Vape.INSTANCE.getOnlineFriendManager().getFriends());
+        friends.sort(Comparator.comparingInt(OnlineFriendEntriesPanel::getStatusSortOrder).thenComparing(OnlineFriend::getDisplayName));
+        for (OnlineFriend friend : friends) {
+            OnlineFriendListEntry listEntry = Vape.INSTANCE.getOnlineManager().getFriendCache().getOrCreateListEntry(friend, () -> OnlineFriendEntriesPanel.createListEntry(friend));
+            this.h(listEntry, new Object[0]);
         }
     }
 
-    private static OnlineFriendListEntry lambda$refreshList$1(OnlineFriend onlineFriend) {
-        return new OnlineFriendListEntry(onlineFriend);
+    private static OnlineFriendListEntry createListEntry(OnlineFriend friend) {
+        return new OnlineFriendListEntry(friend);
     }
 
-    private static int lambda$refreshList$0(OnlineFriend onlineFriend) {
-        return onlineFriend.F().ordinal();
+    private static int getStatusSortOrder(OnlineFriend friend) {
+        return friend.getStatus().ordinal();
     }
 
     @Override
@@ -56,23 +56,23 @@ extends PanelComponent {
     @Override
     public void c() {
         super.c();
-        if (this.IM) {
-            this.W();
-            this.IM = false;
+        if (this.refreshPending) {
+            this.refreshList();
+            this.refreshPending = false;
         }
     }
 
 
     @Override
     public void V() {
-        double d = 0.0;
-        List<GuiComponent> list = this.f();
-        for (GuiComponent guiComponent : list) {
-            if (!guiComponent.V$src$Z$1xhop3l()) continue;
-            d += guiComponent.L();
+        double visibleHeight = 0.0;
+        List<GuiComponent> children = this.f();
+        for (GuiComponent child : children) {
+            if (!child.V$src$Z$1xhop3l()) continue;
+            visibleHeight += child.L();
         }
-        this.Iw = d;
-        this.setExplicitHeight(this.Iw);
+        this.contentHeight = visibleHeight;
+        this.setExplicitHeight(this.contentHeight);
     }
 
     @Override
@@ -89,8 +89,8 @@ extends PanelComponent {
         return 20.0;
     }
 
-    public void b$src$V$1a27gcp() {
-        this.IM = true;
+    public void requestRefresh() {
+        this.refreshPending = true;
     }
 }
 

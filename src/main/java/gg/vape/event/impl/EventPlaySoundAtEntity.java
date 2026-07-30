@@ -9,13 +9,13 @@ import gg.vape.wrapper.impl.SoundEvent;
 @Deprecated
 public class EventPlaySoundAtEntity
 extends Event {
-    private final Entity C;
-    private static final EventListeners n = new EventListeners();
-    private final String g;
+    private final Entity entity;
+    private static final EventListeners EVENT_LISTENERS = new EventListeners();
+    private final String name;
 
     @Override
     public EventListeners getListeners() {
-        return n;
+        return EVENT_LISTENERS;
     }
 
     @Override
@@ -24,25 +24,24 @@ extends Event {
     }
 
     public Entity getEntity() {
-        return this.C;
+        return this.entity;
     }
 
     public String getName() {
-        return this.g;
+        return this.name;
     }
 
-    public EventPlaySoundAtEntity(Entity entity, Object object) {
-        this.C = entity;
+    public EventPlaySoundAtEntity(Entity entity, Object soundHandleOrName) {
+        this.entity = entity;
         if (ForgeVersion.MC_1_16_5.d()) {
-            SoundEvent soundEvent = new SoundEvent(object);
-            this.g = soundEvent.V().getResourcePath();
+            SoundEvent soundEvent = new SoundEvent(soundHandleOrName);
+            this.name = soundEvent.V().getResourcePath();
         } else {
-            this.g = (String)object;
+            this.name = (String)soundHandleOrName;
         }
     }
 
     public static EventListeners getEventListeners() {
-        return n;
+        return EVENT_LISTENERS;
     }
 }
-

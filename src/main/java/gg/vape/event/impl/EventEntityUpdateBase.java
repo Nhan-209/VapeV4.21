@@ -9,17 +9,17 @@ import org.jetbrains.annotations.Nullable;
 public class EventEntityUpdateBase
 extends Event {
     @Nullable
-    private Entity h;
-    private static final EventListeners E = new EventListeners();
-    private final Object r;
+    private Entity entity;
+    private static final EventListeners EVENT_LISTENERS = new EventListeners();
+    private final Object entityHandle;
 
     public static EventListeners getEventListeners() {
-        return E;
+        return EVENT_LISTENERS;
     }
 
     @Override
     public boolean fire() {
-        if (!MappedClasses.z5.isInstance(this.r)) {
+        if (!MappedClasses.z5.isInstance(this.entityHandle)) {
             return false;
         }
         return super.fire();
@@ -27,18 +27,18 @@ extends Event {
 
     @Override
     public EventListeners getListeners() {
-        return E;
+        return EVENT_LISTENERS;
     }
 
-    EventEntityUpdateBase(Object object) {
-        this.r = object;
+    EventEntityUpdateBase(Object entityHandle) {
+        this.entityHandle = entityHandle;
     }
 
     public Entity getEntity() {
-        if (this.h == null) {
-            this.h = new Entity(this.r);
+        if (this.entity == null) {
+            this.entity = new Entity(this.entityHandle);
         }
-        return this.h;
+        return this.entity;
     }
 
 }

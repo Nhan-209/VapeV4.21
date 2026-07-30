@@ -2,9 +2,6 @@ package gg.vape.wrapper.impl;
 
 import gg.vape.mapping.mappings.MEnumParticleTypes;
 import gg.vape.wrapper.Wrapper;
-import gg.vape.wrapper.impl.BuiltInRegistries;
-import gg.vape.wrapper.impl.ForgeVersion;
-import gg.vape.wrapper.impl.Registry;
 
 public class EnumParticleTypes
 extends Wrapper {
@@ -14,9 +11,9 @@ extends Wrapper {
             return jn_12.W(this.I).getResourcePath();
         }
         if (ForgeVersion.MC_1_16_5.d()) {
-            return MEnumParticleTypes.i(EnumParticleTypes.c.getMappingsMapperCompat().Rp, this.I);
+            return MEnumParticleTypes.i(EnumParticleTypes.vapeInstance.getMappingsMapperCompat().Rp, this.I);
         }
-        return MEnumParticleTypes.I(EnumParticleTypes.c.getMappingsMapperCompat().Rp, this.I);
+        return MEnumParticleTypes.I(EnumParticleTypes.vapeInstance.getMappingsMapperCompat().Rp, this.I);
     }
 
     public EnumParticleTypes(Object object) {

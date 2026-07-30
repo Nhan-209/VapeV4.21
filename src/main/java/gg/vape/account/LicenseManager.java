@@ -6,41 +6,41 @@ import gg.vape.account.LicenseStatus;
 import gg.vape.account.LicenseStatusClient;
 
 public class LicenseManager {
-    private String D;
-    private LicenseInfo M;
-    private static int[] t;
+    private String licenseKey;
+    private LicenseInfo licenseInfo;
+    private static int[] opaqueState;
 
-    public static int[] X() {
-        return t;
+    public static int[] getOpaqueState() {
+        return opaqueState;
     }
 
-    public LicenseInfo gg_vape_account_LicenseInfo_D() {
-        return this.M;
+    public LicenseInfo getLicenseInfo() {
+        return this.licenseInfo;
     }
 
-    public static void U(int[] nArray) {
-        t = nArray;
+    public static void setOpaqueState(int[] state) {
+        opaqueState = state;
     }
 
 
-    public LicenseStatus a_vt_2_D() {
-        if (this.D == null) {
+    public LicenseStatus generateAccount() {
+        if (this.licenseKey == null) {
             return null;
         }
-        return new LicenseStatusClient().J(this.D);
+        return new LicenseStatusClient().generateAccount(this.licenseKey);
     }
 
-    public LicenseInfo I(String string) {
-        this.M = new LicenseInfoClient().v(string);
-        if (this.M != null) {
-            this.D = string;
+    public LicenseInfo fetchLicenseInfo(String licenseKey) {
+        this.licenseInfo = new LicenseInfoClient().fetchLicenseInfo(licenseKey);
+        if (this.licenseInfo != null) {
+            this.licenseKey = licenseKey;
         }
-        return this.M;
+        return this.licenseInfo;
     }
 
     static {
-        if (LicenseManager.X() == null) {
-            LicenseManager.U(new int[1]);
+        if (LicenseManager.getOpaqueState() == null) {
+            LicenseManager.setOpaqueState(new int[1]);
         }
     }
 }

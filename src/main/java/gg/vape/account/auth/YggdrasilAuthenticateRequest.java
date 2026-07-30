@@ -9,34 +9,34 @@ public class YggdrasilAuthenticateRequest
 implements YggdrasilAuthRequest {
     @Expose
     @SerializedName(value="password")
-    private final String Q;
+    private final String password;
     @Expose
     @SerializedName(value="agent")
-    private final YggdrasilAgent c;
+    private final YggdrasilAgent agent;
     @Expose
     @SerializedName(value="username")
-    private final String r;
+    private final String username;
     @Expose(serialize=false, deserialize=false)
     @SerializedName(value="clientToken")
-    private final String O;
+    private final String clientToken;
 
-    public YggdrasilAuthenticateRequest(String string, String string2, String string3, YggdrasilAgent cf_22) {
-        this.c = cf_22;
-        this.r = string;
-        this.Q = string2;
-        this.O = string3;
+    public YggdrasilAuthenticateRequest(String username, String password, String clientToken, YggdrasilAgent agent) {
+        this.agent = agent;
+        this.username = username;
+        this.password = password;
+        this.clientToken = clientToken;
     }
 
-    public YggdrasilAuthenticateRequest(String string, String string2, String string3) {
-        this(string, string2, string3, new YggdrasilAgent());
+    public YggdrasilAuthenticateRequest(String username, String password, String clientToken) {
+        this(username, password, clientToken, new YggdrasilAgent());
     }
 
-    public YggdrasilAuthenticateRequest(String string, String string2) {
-        this(string, string2, "", new YggdrasilAgent());
+    public YggdrasilAuthenticateRequest(String username, String password) {
+        this(username, password, "", new YggdrasilAgent());
     }
 
-    public YggdrasilAuthenticateRequest(String string, String string2, YggdrasilAgent cf_22) {
-        this(string, string2, "", cf_22);
+    public YggdrasilAuthenticateRequest(String username, String password, YggdrasilAgent agent) {
+        this(username, password, "", agent);
     }
 }
 

@@ -5,27 +5,26 @@ import gg.vape.protocol.packet.ZeusSerializablePacket;
 
 public class ServerFriendRequestRemovedPacket
 implements ZeusSerializablePacket {
-    private long x;
+    private long userId;
 
-    public long R() {
-        return this.x;
+    public long getUserId() {
+        return this.userId;
     }
 
     @Override
     public void S(ZeusPacketBuffer zeusPacketBuffer) {
-        this.x = zeusPacketBuffer.long_a();
+        this.userId = zeusPacketBuffer.readLong();
     }
 
     public ServerFriendRequestRemovedPacket() {
     }
 
-    public ServerFriendRequestRemovedPacket(long l) {
-        this.x = l;
+    public ServerFriendRequestRemovedPacket(long userId) {
+        this.userId = userId;
     }
 
     @Override
     public void o(ZeusPacketBuffer zeusPacketBuffer) {
-        zeusPacketBuffer.v(this.x);
+        zeusPacketBuffer.writeLong(this.userId);
     }
 }
-

@@ -18,52 +18,52 @@ import java.util.Map;
 import java.util.function.Predicate;
 
 public class EventBus {
-    public static boolean y;
-    private static int s;
-    private static Method Y;
-    private final EventTimingHistory E;
-    private static Method p;
-    private final Map<Class<? extends IEvent>, EventListeners> x = new LinkedHashMap<Class<? extends IEvent>, EventListeners>();
-    private final Map<EventListener, EventListenerRegistration> k = new LinkedHashMap<EventListener, EventListenerRegistration>();
-    private static final EventBus n;
-    private final Map<Class<? extends IEvent>, ArrayList<EventListenerRegistration>> j = new LinkedHashMap<Class<? extends IEvent>, ArrayList<EventListenerRegistration>>();
+    public static boolean timingEnabled;
+    private static int obfuscationState;
+    private static Method cachedHasListenersMethod;
+    private final EventTimingHistory timingHistory;
+    private static Method cachedFireMethod;
+    private final Map<Class<? extends IEvent>, EventListeners> listenerCountersByEventType = new LinkedHashMap<Class<? extends IEvent>, EventListeners>();
+    private final Map<EventListener, EventListenerRegistration> registrationsByListener = new LinkedHashMap<EventListener, EventListenerRegistration>();
+    private static final EventBus INSTANCE;
+    private final Map<Class<? extends IEvent>, ArrayList<EventListenerRegistration>> registrationsByEventType = new LinkedHashMap<Class<? extends IEvent>, ArrayList<EventListenerRegistration>>();
 
-    private static Throwable a(Throwable throwable) {
+    private static Throwable identityThrowable(Throwable throwable) {
         return throwable;
     }
 
-    public static void x(int n) {
-        s = n;
+    public static void setObfuscationState(int state) {
+        obfuscationState = state;
     }
 
     public EventTimingHistory getTimingHistory() {
-        return this.E;
+        return this.timingHistory;
     }
 
     public static Method getHasListenersMethod() {
-        if (Y == null) {
+        if (cachedHasListenersMethod == null) {
             for (Method method : EventListeners.class.getDeclaredMethods()) {
                 if (method.getReturnType() != Boolean.TYPE || method.getParameterCount() != 0) continue;
-                Y = method;
+                cachedHasListenersMethod = method;
                 break;
             }
         }
-        return Y;
+        return cachedHasListenersMethod;
     }
 
-    private EventListeners resolveEventListeners(Class<? extends IEvent> clazz) {
-        EventListeners eventListeners = this.x.get(clazz);
+    private EventListeners resolveEventListeners(Class<? extends IEvent> eventType) {
+        EventListeners eventListeners = this.listenerCountersByEventType.get(eventType);
         if (eventListeners != null) {
             return eventListeners;
         }
         try {
-            Method method = EventBus.findEventListenersAccessor(clazz);
+            Method method = EventBus.findEventListenersAccessor(eventType);
             if (method == null) {
                 return null;
             }
-            EventListeners eventListeners2 = (EventListeners)method.invoke(null, new Object[0]);
-            this.x.put(clazz, eventListeners2);
-            return eventListeners2;
+            EventListeners resolvedListeners = (EventListeners)method.invoke(null, new Object[0]);
+            this.listenerCountersByEventType.put(eventType, resolvedListeners);
+            return resolvedListeners;
         }
         catch (Throwable throwable) {
             return null;
@@ -71,62 +71,62 @@ public class EventBus {
     }
 
     static {
-        n = new EventBus();
-        y = false;
-        EventBus.x(32);
+        INSTANCE = new EventBus();
+        timingEnabled = false;
+        EventBus.setObfuscationState(32);
     }
 
-    public static int O() {
-        return s;
+    public static int getObfuscationState() {
+        return obfuscationState;
     }
 
-    public static int X() {
-        int n = EventBus.O();
+    public static int getObfuscationZero() {
+        int state = EventBus.getObfuscationState();
         return 0;
     }
 
     public Map<Class<? extends IEvent>, ArrayList<EventListenerRegistration>> getRegistrationsByEventType() {
-        return this.j;
+        return this.registrationsByEventType;
     }
 
-    public static Method findEventListenersAccessor(Class<? extends IEvent> clazz) {
-        for (Method method : clazz.getDeclaredMethods()) {
+    public static Method findEventListenersAccessor(Class<? extends IEvent> eventType) {
+        for (Method method : eventType.getDeclaredMethods()) {
             if (method.getReturnType() != EventListeners.class || method.getParameterCount() != 0 || !Modifier.isStatic(method.getModifiers())) continue;
             return method;
         }
-        if (IEvent.class.isAssignableFrom(clazz.getSuperclass())) {
-            return EventBus.findEventListenersAccessor(clazz.getSuperclass().asSubclass(IEvent.class));
+        if (IEvent.class.isAssignableFrom(eventType.getSuperclass())) {
+            return EventBus.findEventListenersAccessor(eventType.getSuperclass().asSubclass(IEvent.class));
         }
         return null;
     }
 
-    public <T extends IEvent> T post(T t) {
-        EventDispatchTrace eventDispatchTrace = null;
-        if (y) {
-            eventDispatchTrace = new EventDispatchTrace(t.getClass());
+    public <T extends IEvent> T post(T event) {
+        EventDispatchTrace dispatchTrace = null;
+        if (timingEnabled) {
+            dispatchTrace = new EventDispatchTrace(event.getClass());
         }
         try {
-            ArrayList<EventListenerRegistration> arrayList = this.j.get(t.getClass());
-            if (arrayList != null && !arrayList.isEmpty()) {
-                ArrayList<EventListenerRegistration> arrayList2 = new ArrayList<EventListenerRegistration>();
-                for (int i = 0; i < arrayList.size(); ++i) {
-                    EventListenerRegistration eventListenerRegistration = arrayList.get(i);
-                    if (!eventListenerRegistration.passesFilters(t)) continue;
-                    arrayList2.add(eventListenerRegistration);
+            ArrayList<EventListenerRegistration> registrations = this.registrationsByEventType.get(event.getClass());
+            if (registrations != null && !registrations.isEmpty()) {
+                ArrayList<EventListenerRegistration> matchingRegistrations = new ArrayList<EventListenerRegistration>();
+                for (int index = 0; index < registrations.size(); ++index) {
+                    EventListenerRegistration registration = registrations.get(index);
+                    if (!registration.passesFilters(event)) continue;
+                    matchingRegistrations.add(registration);
                 }
-                if (!arrayList2.isEmpty()) {
-                    for (EventPriority eventPriority : EventPriority.values()) {
-                        for (int i = 0; i < arrayList2.size(); ++i) {
+                if (!matchingRegistrations.isEmpty()) {
+                    for (EventPriority priority : EventPriority.values()) {
+                        for (int index = 0; index < matchingRegistrations.size(); ++index) {
                             try {
-                                EventListenerRegistration eventListenerRegistration = (EventListenerRegistration)arrayList2.get(i);
-                                EventListenerTiming eventListenerTiming = null;
-                                if (y) {
-                                    eventListenerTiming = new EventListenerTiming(eventListenerRegistration);
+                                EventListenerRegistration registration = matchingRegistrations.get(index);
+                                EventListenerTiming listenerTiming = null;
+                                if (timingEnabled) {
+                                    listenerTiming = new EventListenerTiming(registration);
                                 }
-                                eventListenerRegistration.dispatch(t, eventPriority);
-                                if (!y) continue;
-                                eventListenerTiming.finish();
-                                eventDispatchTrace.addListenerTiming(eventListenerTiming);
+                                registration.dispatch(event, priority);
+                                if (!timingEnabled) continue;
+                                listenerTiming.finish();
+                                dispatchTrace.addListenerTiming(listenerTiming);
                                 continue;
                             }
                             catch (Throwable throwable) {
@@ -140,67 +140,67 @@ public class EventBus {
         catch (Throwable throwable) {
             // empty catch block
         }
-        if (y) {
-            eventDispatchTrace.finish();
-            this.E.addTrace(eventDispatchTrace);
+        if (timingEnabled) {
+            dispatchTrace.finish();
+            this.timingHistory.addTrace(dispatchTrace);
         }
-        return t;
+        return event;
     }
 
-    private static ArrayList lambda$registerListener$0(Class clazz) {
-        return new ArrayList();
+    private static ArrayList<EventListenerRegistration> createRegistrationList(Class<? extends IEvent> eventType) {
+        return new ArrayList<>();
     }
 
     public boolean unregisterListener(EventListener eventListener) {
         if (eventListener == null) {
             return false;
         }
-        EventListenerRegistration eventListenerRegistration = this.k.remove(eventListener);
-        if (eventListenerRegistration == null) {
+        EventListenerRegistration registration = this.registrationsByListener.remove(eventListener);
+        if (registration == null) {
             return false;
         }
-        Collection<Class<? extends IEvent>> collection = eventListenerRegistration.getEventTypes();
-        if (collection == null || collection.isEmpty()) {
+        Collection<Class<? extends IEvent>> eventTypes = registration.getEventTypes();
+        if (eventTypes == null || eventTypes.isEmpty()) {
             return false;
         }
-        for (Class<? extends IEvent> clazz : collection) {
-            List list = this.j.get(clazz);
-            if (list == null) continue;
-            list.remove(eventListenerRegistration);
-            this.resolveEventListeners(clazz).decrementListenerCount();
+        for (Class<? extends IEvent> eventType : eventTypes) {
+            List<EventListenerRegistration> registrations = this.registrationsByEventType.get(eventType);
+            if (registrations == null) continue;
+            registrations.remove(registration);
+            this.resolveEventListeners(eventType).decrementListenerCount();
         }
         return true;
     }
 
     public static EventBus getInstance() {
-        return n;
+        return INSTANCE;
     }
 
     public EventBus() {
-        this.E = new EventTimingHistory();
+        this.timingHistory = new EventTimingHistory();
     }
 
     @SafeVarargs
-    public final void registerListener(EventListener eventListener, Predicate<IEvent> ... predicateArray) {
-        if (this.k.containsKey(eventListener)) {
+    public final void registerListener(EventListener eventListener, Predicate<IEvent> ... filters) {
+        if (this.registrationsByListener.containsKey(eventListener)) {
             return;
         }
-        EventListenerRegistration eventListenerRegistration = new EventListenerRegistration(eventListener, predicateArray);
-        this.k.put(eventListener, eventListenerRegistration);
-        for (Class<? extends IEvent> clazz : eventListenerRegistration.getEventTypes()) {
-            this.j.computeIfAbsent(clazz, EventBus::lambda$registerListener$0).add(eventListenerRegistration);
-            this.resolveEventListeners(clazz).incrementListenerCount();
+        EventListenerRegistration registration = new EventListenerRegistration(eventListener, filters);
+        this.registrationsByListener.put(eventListener, registration);
+        for (Class<? extends IEvent> eventType : registration.getEventTypes()) {
+            this.registrationsByEventType.computeIfAbsent(eventType, EventBus::createRegistrationList).add(registration);
+            this.resolveEventListeners(eventType).incrementListenerCount();
         }
     }
 
-    public static Method getFireMethod(Class<?> clazz) {
-        if (p == null) {
+    public static Method getFireMethod(Class<?> eventType) {
+        if (cachedFireMethod == null) {
             for (Method method : IEvent.class.getDeclaredMethods()) {
                 if (method.getReturnType() != Boolean.TYPE || method.getParameterCount() != 0) continue;
-                p = method;
+                cachedFireMethod = method;
                 break;
             }
         }
-        return p;
+        return cachedFireMethod;
     }
 }

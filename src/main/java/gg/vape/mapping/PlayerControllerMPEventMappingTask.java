@@ -21,14 +21,14 @@ extends JavassistMappingTask {
     }
 
     @Override
-    public void c() {
+    public void transform() {
         Object object;
         MappingMethod mappingMethod = Vape.INSTANCE.getMappings().hj.c;
         if (ForgeVersion.MC_1_12_2.v()) {
             this.O(mappingMethod, EventPlayerUseItem.class, "$3", "false");
         } else if (ForgeVersion.MC_1_12_2.d()) {
             object = ForgeVersion.MC_1_20_6.d() ? "$1, $2" : "$1, $3";
-            this.O(mappingMethod, PlayerUseItemCallback.class, (String)object, MappedClasses.zr.getName() + "." + Vape.INSTANCE.getMappings().RD.B.J());
+            this.O(mappingMethod, PlayerUseItemCallback.class, (String)object, MappedClasses.zr.getName() + "." + Vape.INSTANCE.getMappings().RD.B.getResolvedName());
         }
         this.c(Vape.INSTANCE.getMappings().hj.L, EventBedBreakerUpdate.class, "");
         if (!U) {

@@ -46,15 +46,15 @@ extends Mapping {
     }
 
     private void U(Object object) {
-        this.p.F(object);
+        this.p.invokeVoidNoArgs(object);
     }
 
     private Object q(Object object) {
-        return this.M.L(object, new Object[0]);
+        return this.M.invokeObject(object, new Object[0]);
     }
 
     private void i(Object object, Object object2, Object object3, boolean bl) {
-        this.O.c(object, object2, object3, bl);
+        this.O.invokeVoid(object, object2, object3, bl);
     }
 
 
@@ -77,7 +77,7 @@ extends Mapping {
             String string3 = "receivedPacketsQueue";
             MNetworkManager mNetworkManager3 = this;
             this.C = this.J(string3, bl3, clazz3);
-            if (Wrapper.c.isVanillaMinecraftPresent()) {
+            if (Wrapper.vapeInstance.isVanillaMinecraftPresent()) {
                 Class[] classArray = new Class[]{MappedClasses.Fm, DescUtils.getArrayType(MappedClasses.ZO)};
                 Class<Void> clazz4 = Void.TYPE;
                 boolean bl4 = true;
@@ -87,7 +87,7 @@ extends Mapping {
             } else {
                 Class[] classArray = new Class[]{MappedClasses.Fm, DescUtils.getArrayType(MappedClasses.ZO)};
                 Class<Void> clazz5 = Void.TYPE;
-                boolean bl5 = Wrapper.G;
+                boolean bl5 = Wrapper.isNativeAvailable;
                 String string5 = "func_150725_a";
                 MNetworkManager mNetworkManager5 = this;
                 this.O = this.Y(string5, bl5, clazz5, classArray);
@@ -109,7 +109,7 @@ extends Mapping {
         } else {
             Class[] classArray = new Class[]{MappedClasses.Fm};
             Class<Void> clazz8 = Void.TYPE;
-            boolean bl8 = Wrapper.G;
+            boolean bl8 = Wrapper.isNativeAvailable;
             String string8 = "func_179290_a";
             MNetworkManager mNetworkManager8 = this;
             this.O = this.Y(string8, bl8, clazz8, classArray);
@@ -144,11 +144,11 @@ extends Mapping {
             Class[] classArray5 = new Class[]{MappedClasses.FH, MappedClasses.Fm};
             Class<Void> clazz13 = Void.TYPE;
             boolean bl13 = false;
-            String string13 = Wrapper.G ? "a" : "channelRead0";
+            String string13 = Wrapper.isNativeAvailable ? "a" : "channelRead0";
             MNetworkManager mNetworkManager13 = this;
             this.a = this.Y(string13, bl13, clazz13, classArray5);
         }
-        if (this.a.h() && Wrapper.G && ForgeVersion.MC_26_1.v()) {
+        if (this.a.hasResolutionFailed() && Wrapper.isNativeAvailable && ForgeVersion.MC_26_1.v()) {
             Class[] classArray6 = new Class[]{MappedClasses.FH, MappedClasses.Fm};
             Class<Void> clazz14 = Void.TYPE;
             boolean bl14 = true;
@@ -167,7 +167,7 @@ extends Mapping {
     }
 
     private void r(Object object, Object object2) {
-        this.O.c(object, object2);
+        this.O.invokeVoid(object, object2);
     }
 
     public static Object U(MNetworkManager mNetworkManager, Object object) {

@@ -8,36 +8,36 @@ import java.util.List;
 
 public class FriendAliasEditInputComponent
 extends TrailingActionTextInputComponent {
-    final String[] pU;
-    final ClickGuiFriendsPage pC;
-    final TextButton pr;
-    final TextButton pg;
-    final FriendEntry p4;
+    final String[] savedAlias;
+    final ClickGuiFriendsPage friendsPage;
+    final TextButton cancelButton;
+    final TextButton saveButton;
+    final FriendEntry friendEntry;
 
     public FriendAliasEditInputComponent(ClickGuiFriendsPage clickGuiFriendsPage, String string, List list, String[] stringArray, TextButton textButton, TextButton textButton2, FriendEntry friendEntry) {
         super(string, list);
-        this.pC = clickGuiFriendsPage;
-        this.pU = stringArray;
-        this.pg = textButton;
-        this.pr = textButton2;
-        this.p4 = friendEntry;
+        this.friendsPage = clickGuiFriendsPage;
+        this.savedAlias = stringArray;
+        this.saveButton = textButton;
+        this.cancelButton = textButton2;
+        this.friendEntry = friendEntry;
     }
 
 
     @Override
     public void submit() {
         super.submit();
-        ClickGuiFriendsPage.updateFriendAlias(this.pC, this.p4, this.getText());
-        this.pU[0] = this.getText();
-        this.pg.setVisible(false);
-        this.pr.setVisible(false);
+        ClickGuiFriendsPage.updateFriendAlias(this.friendsPage, this.friendEntry, this.getText());
+        this.savedAlias[0] = this.getText();
+        this.saveButton.setVisible(false);
+        this.cancelButton.setVisible(false);
     }
 
     @Override
     public void setText(String text) {
         super.setText(text);
-        boolean bl = !text.equals(this.pU[0]);
-        this.pg.setVisible(bl);
-        this.pr.setVisible(bl);
+        boolean changed = !text.equals(this.savedAlias[0]);
+        this.saveButton.setVisible(changed);
+        this.cancelButton.setVisible(changed);
     }
 }

@@ -6,11 +6,11 @@ import java.awt.Color;
 
 public class OnlineModeToggleRightTextButton
 extends TextButton {
-    final OnlineModeToggleComponent YR;
+    private final OnlineModeToggleComponent toggle;
 
     public OnlineModeToggleRightTextButton(OnlineModeToggleComponent onlineModeToggleComponent, String string, double d, Color color, Color color2) {
         super(string, d, color, color2);
-        this.YR = onlineModeToggleComponent;
+        this.toggle = onlineModeToggleComponent;
     }
 
     @Override

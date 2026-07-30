@@ -5,7 +5,7 @@ import gg.vape.wrapper.Wrapper;
 public class PointOfView
 extends Wrapper {
     public static PointOfView[] F() {
-        Object[] objectArray = PointOfView.c.getMappingsMapperCompat().RZ.M();
+        Object[] objectArray = PointOfView.vapeInstance.getMappingsMapperCompat().RZ.M();
         PointOfView[] w7_0Array = new PointOfView[objectArray.length];
         for (int i = 0; i < objectArray.length; ++i) {
             w7_0Array[i] = new PointOfView(objectArray[i]);

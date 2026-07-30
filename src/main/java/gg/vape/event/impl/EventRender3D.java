@@ -6,19 +6,18 @@ import gg.vape.wrapper.impl.MatrixStack;
 
 public class EventRender3D
 extends EventRender3DBase {
-    private static final EventListeners K = new EventListeners();
+    private static final EventListeners EVENT_LISTENERS = new EventListeners();
 
     public static EventListeners getEventListeners() {
-        return K;
+        return EVENT_LISTENERS;
     }
 
     @Override
     public EventListeners getListeners() {
-        return K;
+        return EVENT_LISTENERS;
     }
 
     public EventRender3D(MatrixStack matrixStack, float f) {
         super(matrixStack, f);
     }
 }
-

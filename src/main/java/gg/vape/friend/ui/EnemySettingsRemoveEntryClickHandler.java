@@ -7,18 +7,18 @@ import gg.vape.ui.click.component.GuiClickListener;
 
 class EnemySettingsRemoveEntryClickHandler
 implements GuiClickListener {
-    final Enemy o;
-    final EnemySettingsFrame Y;
+    final Enemy enemy;
+    final EnemySettingsFrame frame;
 
     @Override
     public void onPrimaryClick() {
         Vape.INSTANCE.saveAndStop();
-        Vape.INSTANCE.getEnemyManager().s(this.o);
-        this.Y.Q$src$V$1u5tkk5();
+        Vape.INSTANCE.getEnemyManager().removeEnemy(this.enemy);
+        this.frame.refreshEntries();
     }
 
     EnemySettingsRemoveEntryClickHandler(EnemySettingsFrame enemySettingsFrame, Enemy enemy) {
-        this.Y = enemySettingsFrame;
-        this.o = enemy;
+        this.frame = enemySettingsFrame;
+        this.enemy = enemy;
     }
 }

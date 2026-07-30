@@ -13,15 +13,15 @@ extends Mapping {
     public MEnumHand() {
         super(MappedClasses.Yf);
         Class clazz = MappedClasses.Yf;
-        boolean bl = Wrapper.G;
+        boolean bl = Wrapper.isNativeAvailable;
         String string = "MAIN_HAND";
         MEnumHand mEnumHand = this;
-        this.g = this.u(string, bl, clazz);
+        this.g = this.registerStaticField(string, bl, clazz);
         Class clazz2 = MappedClasses.Yf;
-        boolean bl2 = Wrapper.G;
+        boolean bl2 = Wrapper.isNativeAvailable;
         String string2 = "OFF_HAND";
         MEnumHand mEnumHand2 = this;
-        this.w = this.u(string2, bl2, clazz2);
+        this.w = this.registerStaticField(string2, bl2, clazz2);
     }
 
     public Object c() {

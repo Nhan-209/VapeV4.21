@@ -26,13 +26,13 @@ import javassist.NotFoundException;
 public class EntityRendererEventMappingTask
 extends JavassistMappingTask {
     @Override
-    public void c() {
+    public void transform() {
         if (ForgeVersion.MC_1_21_4.b().y()) {
             EventInjectionSpec eventInjectionSpec = new EventInjectionSpec(Vape.INSTANCE.getMappings().RY.J, EventPreRenderTick.class);
-            eventInjectionSpec.d("$1");
-            eventInjectionSpec.o(false);
-            eventInjectionSpec.Z(true);
-            this.O(eventInjectionSpec);
+            eventInjectionSpec.setConstructorArguments("$1");
+            eventInjectionSpec.setCancelableReturnGuard(false);
+            eventInjectionSpec.setInsertBefore(true);
+            this.registerEventInjection(eventInjectionSpec);
             this.i();
         }
         if (ForgeVersion.MC_1_16_5.v()) {
@@ -47,7 +47,7 @@ extends JavassistMappingTask {
             this.c(Vape.INSTANCE.getMappings().RY.a, EventPreEntityRendererMouseUpdate.class, "");
             this.k(Vape.INSTANCE.getMappings().RY.a, EventPostEntityRendererMouseUpdate.class, "");
         }
-        if (ForgeVersion.MC_26_1.v() && Vape.INSTANCE.getMappings().RY.k != null && !Vape.INSTANCE.getMappings().RY.k.h()) {
+        if (ForgeVersion.MC_26_1.v() && Vape.INSTANCE.getMappings().RY.k != null && !Vape.INSTANCE.getMappings().RY.k.hasResolutionFailed()) {
             this.k(Vape.INSTANCE.getMappings().RY.k, EventMouseOverUpdate.class, "$1");
         }
         this.J(this::lambda$create$0);
@@ -93,10 +93,10 @@ extends JavassistMappingTask {
     private void i() {
         MappingMethod mappingMethod = Vape.INSTANCE.getMappings().RY.J;
         EventInjectionSpec eventInjectionSpec = new EventInjectionSpec(mappingMethod, EventPostRenderTick.class);
-        eventInjectionSpec.d("$1");
-        eventInjectionSpec.o(false);
-        eventInjectionSpec.Z(false);
-        this.O(eventInjectionSpec);
+        eventInjectionSpec.setConstructorArguments("$1");
+        eventInjectionSpec.setCancelableReturnGuard(false);
+        eventInjectionSpec.setInsertBefore(false);
+        this.registerEventInjection(eventInjectionSpec);
     }
 
     private void B$src$V$f0x8xm() throws CannotCompileException {
@@ -117,4 +117,3 @@ extends JavassistMappingTask {
         super(MappedClasses.FW);
     }
 }
-

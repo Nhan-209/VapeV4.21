@@ -6,16 +6,16 @@ import java.awt.Point;
 
 public class OnlineFriendsFramePopupOutsideClickListener
 implements GuiMouseListener {
-    final OnlineFriendsFrame j;
+    private final OnlineFriendsFrame friendsFrame;
 
     public OnlineFriendsFramePopupOutsideClickListener(OnlineFriendsFrame onlineFriendsFrame) {
-        this.j = onlineFriendsFrame;
+        this.friendsFrame = onlineFriendsFrame;
     }
 
     @Override
     public boolean Q(Point point) {
-        if (!this.j.q() && OnlineFriendsFrame.e(this.j).w$src$Z$e457mb()) {
-            OnlineFriendsFrame.e(this.j).R();
+        if (!this.friendsFrame.q() && OnlineFriendsFrame.getNotificationOverlay(this.friendsFrame).w$src$Z$e457mb()) {
+            OnlineFriendsFrame.getNotificationOverlay(this.friendsFrame).R();
             return true;
         }
         return false;

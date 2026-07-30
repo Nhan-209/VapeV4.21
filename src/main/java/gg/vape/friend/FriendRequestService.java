@@ -8,33 +8,32 @@ import gg.vape.ui.notification.NotificationMessage;
 import gg.vape.ui.notification.NotificationType;
 
 public class FriendRequestService {
-    public static void Z(String string) {
-        ZeusConnectionManager.T().u().Z(string, FriendRequestService::lambda$sendFriendRequest$0);
+    public static void sendFriendRequest(String username) {
+        ZeusConnectionManager.T().u().Z(username, FriendRequestService::lambda$sendFriendRequest$0);
     }
 
     private static void lambda$sendFriendRequest$0(FriendRequestResponsePacket friendRequestResponsePacket) {
-        String string;
+        String responseMessage;
         NotificationType notificationType;
-        if (friendRequestResponsePacket.n() == FriendRequestResponseStatus.SENT) {
+        if (friendRequestResponsePacket.getStatus() == FriendRequestResponseStatus.SENT) {
             notificationType = NotificationType.FRIENDINVITESENT;
-            string = "Friend invite sent";
-        } else if (friendRequestResponsePacket.n() == FriendRequestResponseStatus.ALREADY_SENT) {
+            responseMessage = "Friend invite sent";
+        } else if (friendRequestResponsePacket.getStatus() == FriendRequestResponseStatus.ALREADY_SENT) {
             notificationType = NotificationType.WARNING;
-            string = "You've already sent a friend request to this person";
-        } else if (friendRequestResponsePacket.n() == FriendRequestResponseStatus.SELF_REQUEST) {
+            responseMessage = "You've already sent a friend request to this person";
+        } else if (friendRequestResponsePacket.getStatus() == FriendRequestResponseStatus.SELF_REQUEST) {
             notificationType = NotificationType.WARNING;
-            string = "You cannot friend yourself";
-        } else if (friendRequestResponsePacket.n() == FriendRequestResponseStatus.ALREADY_FRIENDS) {
+            responseMessage = "You cannot friend yourself";
+        } else if (friendRequestResponsePacket.getStatus() == FriendRequestResponseStatus.ALREADY_FRIENDS) {
             notificationType = NotificationType.WARNING;
-            string = "You're already friends";
-        } else if (friendRequestResponsePacket.n() == FriendRequestResponseStatus.INVALID_USER) {
+            responseMessage = "You're already friends";
+        } else if (friendRequestResponsePacket.getStatus() == FriendRequestResponseStatus.INVALID_USER) {
             notificationType = NotificationType.WARNING;
-            string = "Failed to find user";
+            responseMessage = "Failed to find user";
         } else {
             notificationType = NotificationType.WARNING;
-            string = "Unknown error";
+            responseMessage = "Unknown error";
         }
-        OnlineFriendUiHelper.P(new NotificationMessage(notificationType, string));
+        OnlineFriendUiHelper.showNotification(new NotificationMessage(notificationType, responseMessage));
     }
 }
-

@@ -5,15 +5,15 @@ import gg.vape.event.EventListeners;
 
 public class EventEntityRendererMouseUpdateBase
 extends Event {
-    private static final EventListeners W = new EventListeners();
+    private static final EventListeners EVENT_LISTENERS = new EventListeners();
 
     @Override
     public EventListeners getListeners() {
-        return W;
+        return EVENT_LISTENERS;
     }
 
     public static EventListeners getEventListeners() {
-        return W;
+        return EVENT_LISTENERS;
     }
 
     @Override
@@ -21,4 +21,3 @@ extends Event {
         return super.fire();
     }
 }
-

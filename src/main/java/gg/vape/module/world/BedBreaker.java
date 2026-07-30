@@ -157,8 +157,8 @@ extends Mod {
             for (EnumFacing enumFacing2 : EnumFacing.t()) {
                 BlockPos blockPos2 = blockPos.offset(enumFacing2);
                 if (enumFacing2.Y() <= 1) continue;
-                double diffX = (double)blockPos2.P() + 0.5 - vec3d.Y();
-                double diffZ = (double)blockPos2.d() + 0.5 - vec3d.o();
+                double diffX = (double)blockPos2.P() + 0.5 - vec3d.getX();
+                double diffZ = (double)blockPos2.d() + 0.5 - vec3d.getZ();
                 double dist = Math.abs(diffX) + Math.abs(diffZ);
                 if (!(dist < bestDist)) continue;
                 bestDist = dist;
@@ -167,9 +167,9 @@ extends Mod {
         }
         this.selectedTarget.setObstructionPoint(vec3d);
         Vec3 vec3 = Minecraft.F().O(1.0f);
-        double eyeDist = vec3.distanceTo(vec3d.n());
+        double eyeDist = vec3.distanceTo(vec3d.toVec3());
         if (eyeDist < 4.5) {
-            RayTraceResult rayTraceResult = RayTraceResult.create(RayTraceResult_type.block(), vec3d.n(), enumFacing, blockPos);
+            RayTraceResult rayTraceResult = RayTraceResult.create(RayTraceResult_type.block(), vec3d.toVec3(), enumFacing, blockPos);
             Minecraft.O(rayTraceResult);
             SharedModuleControlClaims.mouseOverUpdate.setClaimed(true);
         } else {

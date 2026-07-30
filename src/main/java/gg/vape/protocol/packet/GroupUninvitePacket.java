@@ -8,13 +8,13 @@ import gg.vape.protocol.packet.ZeusTrackedPacket;
 public class GroupUninvitePacket
 extends ZeusTrackedPacket<GroupUninviteResponsePacket> {
     private static boolean u;
-    private UserModel N;
+    private UserModel uninvitedUser;
 
     public GroupUninvitePacket() {
     }
 
-    public UserModel d() {
-        return this.N;
+    public UserModel getUninvitedUser() {
+        return this.uninvitedUser;
     }
 
     public static void G(boolean bl) {
@@ -23,12 +23,12 @@ extends ZeusTrackedPacket<GroupUninviteResponsePacket> {
 
     @Override
     public void x(ZeusPacketBuffer gx_12) {
-        this.N = new UserModel(gx_12);
+        this.uninvitedUser = new UserModel(gx_12);
     }
 
 
-    public GroupUninvitePacket(UserModel oj_12) {
-        this.N = oj_12;
+    public GroupUninvitePacket(UserModel uninvitedUser) {
+        this.uninvitedUser = uninvitedUser;
     }
 
     public static boolean t() {
@@ -37,7 +37,7 @@ extends ZeusTrackedPacket<GroupUninviteResponsePacket> {
 
     @Override
     public void T(ZeusPacketBuffer gx_12) {
-        this.N.a(gx_12);
+        this.uninvitedUser.writeTo(gx_12);
     }
 
     public static boolean U() {
@@ -51,4 +51,3 @@ extends ZeusTrackedPacket<GroupUninviteResponsePacket> {
         }
     }
 }
-

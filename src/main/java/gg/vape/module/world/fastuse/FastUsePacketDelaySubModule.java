@@ -176,7 +176,7 @@ extends SubModule<FastUseModule> {
         eventPacketSend.setCancelled(true);
     }
 
-    @EventHandler(A=EventPriority.NORMAL)
+    @EventHandler(priority=EventPriority.NORMAL)
     public void onPacketSend(EventPacketSend eventPacketSend) {
         if (this.controlClaim.isClaimed()) {
             this.flushAll();
@@ -212,7 +212,7 @@ extends SubModule<FastUseModule> {
         }
     }
 
-    @EventHandler(A=EventPriority.HIGHEST)
+    @EventHandler(priority=EventPriority.HIGHEST)
     public void captureGroundPosition(EventPacketSend eventPacketSend) {
         C03PacketPlayer c03PacketPlayer;
         Packet packet = eventPacketSend.getPacket();

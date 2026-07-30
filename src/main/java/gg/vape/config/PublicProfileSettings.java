@@ -16,78 +16,78 @@ import gg.vape.value.NumberValue;
 import gg.vape.value.StringValue;
 
 public class PublicProfileSettings {
-    public NumberValue h;
-    public BooleanValue A;
-    private Profile O;
-    public ModeValue k;
-    public BooleanValue H;
-    public BindValue Y;
-    public BooleanValue m;
-    public BooleanValue o;
-    public BooleanValue R;
-    public final ModeOption P;
-    public BooleanValue u;
-    public final ModeOption M;
-    public StringValue L;
-    private static int s;
-    public BooleanValue U = BooleanValue.create(this, "Save to Cloud", false, "Logs into an account in offline mode.");
-    public ModeValue n;
-    public StringValue S;
-    public StringValue d;
-    public BooleanValue Z;
-    public BooleanValue r;
+    public NumberValue volume;
+    public BooleanValue profileSwitchNotifications;
+    private Profile selectedProfile;
+    public ModeValue language;
+    public BooleanValue friendNotifications;
+    public BindValue guiBind;
+    public BooleanValue muted;
+    public BooleanValue autoSave;
+    public BooleanValue notifications;
+    public final ModeOption centralGuiStyle;
+    public BooleanValue autoLoadModuleStates;
+    public final ModeOption framesGuiStyle;
+    public StringValue alternateAccounts;
+    private static int runtimeState;
+    public BooleanValue saveToCloud = BooleanValue.create(this, "Save to Cloud", false, "Logs into an account in offline mode.");
+    public ModeValue guiStyle;
+    public StringValue alteningKey;
+    public StringValue selectedProfileId;
+    public BooleanValue framePositionsPerProfile;
+    public BooleanValue toggleAlerts;
 
-    private void lambda$new$0(BooleanValue booleanValue) {
-        if (booleanValue.getEffectiveValue().booleanValue()) {
-            this.S.setValue("");
+    private void clearAlteningKeyWhenCloudEnabled(BooleanValue saveToCloudValue) {
+        if (saveToCloudValue.getEffectiveValue().booleanValue()) {
+            this.alteningKey.setValue("");
         }
     }
 
-    public static int c() {
-        int n = PublicProfileSettings.b();
+    public static int getDefaultRuntimeState() {
+        int currentState = PublicProfileSettings.getRuntimeState();
         return 0;
     }
 
-    public static void b(int n) {
-        s = n;
+    public static void setRuntimeState(int runtimeState) {
+        PublicProfileSettings.runtimeState = runtimeState;
     }
 
     public PublicProfileSettings() {
-        this.U.addChangeListener(this::lambda$new$0);
-        this.S = new PublicProfilePrimaryDirtyStringValue(this, this, "alteningKey", "");
-        this.u = BooleanValue.create(this, "Auto-load module states", true, "Automatically enable saved module states upon loading, and when selecting profiles");
-        this.L = new PublicProfileSecondaryDirtyStringValue(this, this, "alts", "");
-        this.d = (StringValue)((StringValue)new PublicProfileSelectedProfileStringValue(this, this, "selectedprofile_uuid", "").setBase64Encoded(true)).addAlias("selectedprofile");
-        this.o = BooleanValue.create(this, "Auto save", false, "Automatically sync your settings");
-        this.Z = BooleanValue.create(this, "Frame positions per profile", false, "Saves the positions of your GUI frames per profile");
-        this.k = (ModeValue)ModeValue.create((Object)this, "Language", FontSelector.j, FontSelector.j, FontSelector.S, FontSelector.c, FontSelector.a, FontSelector.P).setResettable(false);
-        this.h = NumberValue.create(this, "Volume", "#", "%", 0.0, 50.0, 100.0);
-        this.m = BooleanValue.create(this, "Muted", false, "Mutes all sounds");
-        this.Y = new PublicProfileSettingsBindValue(this, this, "GUI Bind", new PublicProfileSettingsBindSet(this, 161));
-        this.M = new ModeOption("Frames", 0.8);
-        this.P = new ModeOption("Central", 0.8);
-        this.n = ModeValue.create((Object)this, "GUI style", "Switch between the frames gui and the central gui", (ModeSelection)this.M, this.P, this.M);
-        this.R = BooleanValue.create(this, "Notifications", true, "Shows notifications");
-        this.r = BooleanValue.create(this, "Toggle alert", false, "Notifies you if a module is enabled/disabled.");
-        this.A = BooleanValue.create(this, "Profile switch", false, "Notifies you when you switch profiles");
-        this.H = BooleanValue.create(this, "Friend notifications", true, "Shows notifications related to friends");
+        this.saveToCloud.addChangeListener(this::clearAlteningKeyWhenCloudEnabled);
+        this.alteningKey = new PublicProfilePrimaryDirtyStringValue(this, this, "alteningKey", "");
+        this.autoLoadModuleStates = BooleanValue.create(this, "Auto-load module states", true, "Automatically enable saved module states upon loading, and when selecting profiles");
+        this.alternateAccounts = new PublicProfileSecondaryDirtyStringValue(this, this, "alts", "");
+        this.selectedProfileId = (StringValue)((StringValue)new PublicProfileSelectedProfileStringValue(this, this, "selectedprofile_uuid", "").setBase64Encoded(true)).addAlias("selectedprofile");
+        this.autoSave = BooleanValue.create(this, "Auto save", false, "Automatically sync your settings");
+        this.framePositionsPerProfile = BooleanValue.create(this, "Frame positions per profile", false, "Saves the positions of your GUI frames per profile");
+        this.language = (ModeValue)ModeValue.create((Object)this, "Language", FontSelector.j, FontSelector.j, FontSelector.S, FontSelector.c, FontSelector.a, FontSelector.P).setResettable(false);
+        this.volume = NumberValue.create(this, "Volume", "#", "%", 0.0, 50.0, 100.0);
+        this.muted = BooleanValue.create(this, "Muted", false, "Mutes all sounds");
+        this.guiBind = new PublicProfileSettingsBindValue(this, this, "GUI Bind", new PublicProfileSettingsBindSet(this, 161));
+        this.framesGuiStyle = new ModeOption("Frames", 0.8);
+        this.centralGuiStyle = new ModeOption("Central", 0.8);
+        this.guiStyle = ModeValue.create((Object)this, "GUI style", "Switch between the frames gui and the central gui", (ModeSelection)this.framesGuiStyle, this.centralGuiStyle, this.framesGuiStyle);
+        this.notifications = BooleanValue.create(this, "Notifications", true, "Shows notifications");
+        this.toggleAlerts = BooleanValue.create(this, "Toggle alert", false, "Notifies you if a module is enabled/disabled.");
+        this.profileSwitchNotifications = BooleanValue.create(this, "Profile switch", false, "Notifies you when you switch profiles");
+        this.friendNotifications = BooleanValue.create(this, "Friend notifications", true, "Shows notifications related to friends");
     }
 
-    public Profile t() {
-        return this.O;
+    public Profile getSelectedProfile() {
+        return this.selectedProfile;
     }
 
     static {
-        PublicProfileSettings.b(36);
+        PublicProfileSettings.setRuntimeState(36);
     }
 
-    public static Profile R(PublicProfileSettings publicProfileSettings, Profile profile) {
-        publicProfileSettings.O = profile;
-        return publicProfileSettings.O;
+    public static Profile setSelectedProfile(PublicProfileSettings settings, Profile profile) {
+        settings.selectedProfile = profile;
+        return settings.selectedProfile;
     }
 
-    public static int b() {
-        return s;
+    public static int getRuntimeState() {
+        return runtimeState;
     }
 
 }

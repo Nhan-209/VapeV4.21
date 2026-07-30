@@ -12,7 +12,7 @@ extends DebouncedTextInputComponent {
 
     @Override
     public void handleSubmitCooldown() {
-        OnlineFriendUiHelper.w(NotificationType.WARNING, lb);
+        OnlineFriendUiHelper.showNotification(NotificationType.WARNING, lb);
     }
 
     OnlineAccountLinkCodeInputComponent(OnlineAccountLinkCodePageComponent linkCodePage, String text, long cooldownMillis) {

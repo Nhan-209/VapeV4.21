@@ -39,9 +39,9 @@ implements NumericFilterCondition<AttackDamageFilterCondition> {
         return this.damage;
     }
 
-    public AttackDamageFilterCondition(int n, ComparisonOperator comparisonOperator) {
-        this.damage = n;
-        this.operator = comparisonOperator;
+    public AttackDamageFilterCondition(int damage, ComparisonOperator operator) {
+        this.damage = damage;
+        this.operator = operator;
     }
 
     @Override
@@ -66,14 +66,14 @@ implements NumericFilterCondition<AttackDamageFilterCondition> {
         if (itemStack.isNull()) {
             return false;
         }
-        float f = 0.0f;
-        ItemAttributeModifiers itemAttributeModifiers = itemStack.o();
-        if (itemAttributeModifiers.i() > 0) {
-            int n = ForgeVersion.MC_1_12_2.L() ? 1 : 0;
-            AttributeModifier attributeModifier = new AttributeModifier(itemAttributeModifiers.f().toArray()[n]);
-            f += (float)attributeModifier.getAmount();
+        float attackDamage = 0.0f;
+        ItemAttributeModifiers attributeModifiers = itemStack.o();
+        if (attributeModifiers.i() > 0) {
+            int attributeIndex = ForgeVersion.MC_1_12_2.L() ? 1 : 0;
+            AttributeModifier attributeModifier = new AttributeModifier(attributeModifiers.f().toArray()[attributeIndex]);
+            attackDamage += (float)attributeModifier.getAmount();
         }
-        return this.operator.compare(f, this.damage);
+        return this.operator.compare(attackDamage, this.damage);
     }
 
     @Override
@@ -81,8 +81,8 @@ implements NumericFilterCondition<AttackDamageFilterCondition> {
         return String.valueOf(this.damage);
     }
 
-    public AttackDamageFilterCondition withDamage(int n) {
-        this.damage = n;
+    public AttackDamageFilterCondition withDamage(int damage) {
+        this.damage = damage;
         return this;
     }
 

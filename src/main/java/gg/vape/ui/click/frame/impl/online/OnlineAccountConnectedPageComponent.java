@@ -28,12 +28,12 @@ extends OnlineConnectionSettingsPageComponent {
 
     private static String currentUsername() {
         AccountInfo accountInfo = Vape.INSTANCE == null ? null : Vape.INSTANCE.getAccountInfo();
-        return accountInfo == null || accountInfo.h() == null ? "User" : accountInfo.h();
+        return accountInfo == null || accountInfo.getUsername() == null ? "User" : accountInfo.getUsername();
     }
 
     private static long currentUserId() {
         AccountInfo accountInfo = Vape.INSTANCE == null ? null : Vape.INSTANCE.getAccountInfo();
-        return accountInfo == null ? -1L : accountInfo.i();
+        return accountInfo == null ? -1L : accountInfo.getUserId();
     }
 
     public OnlineAccountConnectedPageComponent() {
@@ -59,6 +59,6 @@ extends OnlineConnectionSettingsPageComponent {
         this.Gz.h(new SpacerComponent(27.0, 0.0), new Object[0]);
         this.Gz.h(this.Ge, new Object[0]);
         this.addChildren(new SpacerComponent(0.0, 10.0), this.Gc, this.Gz);
-        this.Ge.addClickListener(OnlineConnectionManager.T::I);
+        this.Ge.addClickListener(OnlineConnectionManager.INSTANCE::connect);
     }
 }

@@ -12,128 +12,128 @@ import java.util.Map;
 public class OnlineSettingsPayload
 implements RefreshableSettingsPayload {
     @SerializedName(value="inventorySwitchMode")
-    private Integer k;
+    private Integer inventorySwitchMode;
     @SerializedName(value="partyShowTarget")
-    private Boolean X;
+    private Boolean partyShowTarget;
     @SerializedName(value="autoLogin")
-    private Boolean x;
+    private Boolean autoLogin;
     @SerializedName(value="showSelf")
-    private Boolean S;
+    private Boolean showSelf;
     @SerializedName(value="showUsername")
-    private Boolean y;
+    private Boolean showUsername;
     @SerializedName(value="showInventoryKeybind")
-    private JsonArray D;
+    private JsonArray showInventoryKeybind;
     @SerializedName(value="friendStates")
-    private Map<Long, Boolean> m;
+    private Map<Long, Boolean> friendStates;
     @SerializedName(value="shareInventory")
-    private Boolean c;
-    public static final OnlineSettingsPayload j = new OnlineSettingsPayload();
+    private Boolean shareInventory;
+    public static final OnlineSettingsPayload DEFAULTS = new OnlineSettingsPayload();
     @SerializedName(value="showServer")
-    private Boolean R;
+    private Boolean showServer;
     @SerializedName(value="pingKeybind")
-    private JsonArray F;
+    private JsonArray pingKeybind;
 
-    public Boolean a() {
-        return this.y;
+    public Boolean getShowUsername() {
+        return this.showUsername;
     }
 
-    public Boolean T() {
-        if (this.S == null) {
-            this.S = OnlineSettingsPayload.j.S;
+    public Boolean getShowSelf() {
+        if (this.showSelf == null) {
+            this.showSelf = OnlineSettingsPayload.DEFAULTS.showSelf;
         }
-        return this.S;
+        return this.showSelf;
     }
 
-    public JsonArray b() {
-        return this.D;
+    public JsonArray getShowInventoryKeybind() {
+        return this.showInventoryKeybind;
     }
 
-    public Boolean k() {
-        return this.x;
+    public Boolean getAutoLogin() {
+        return this.autoLogin;
     }
 
-    public Boolean R() {
-        return this.X;
+    public Boolean getPartyShowTarget() {
+        return this.partyShowTarget;
     }
 
     static {
-        j.H();
+        DEFAULTS.initializeDefaults();
     }
 
-    public Boolean A() {
-        if (this.c == null) {
-            this.c = OnlineSettingsPayload.j.c;
+    public Boolean getShareInventory() {
+        if (this.shareInventory == null) {
+            this.shareInventory = OnlineSettingsPayload.DEFAULTS.shareInventory;
         }
-        return this.c;
-    }
-
-    @Override
-    public void H() {
-        if (this.x == null) {
-            this.x = (Boolean)OnlineConnectionManager.T.S().X$src$Lgg_vape_value_BooleanValue_$7rygmo().getDefaultValue();
-        }
-        if (this.m == null) {
-            this.m = new LinkedHashMap<Long, Boolean>();
-        }
-        if (this.R == null) {
-            this.R = (Boolean)OnlineConnectionManager.T.S().z().getDefaultValue();
-        }
-        if (this.y == null) {
-            this.y = (Boolean)OnlineConnectionManager.T.S().O().getDefaultValue();
-        }
-        if (this.X == null) {
-            this.X = (Boolean)OnlineConnectionManager.T.S().k$src$Lgg_vape_value_BooleanValue_$ffgfgd().getDefaultValue();
-        }
-        if (this.c == null) {
-            this.c = (Boolean)OnlineConnectionManager.T.S().l().getDefaultValue();
-        }
-        if (this.F == null) {
-            this.F = OnlineConnectionManager.T.S().p().serializeBoundInputs();
-        }
-        if (this.D == null) {
-            this.D = OnlineConnectionManager.T.S().k().serializeBoundInputs();
-        }
-        if (this.k == null) {
-            this.k = OnlineConnectionManager.T.S().r$src$Lgg_vape_value_ModeValue_$lqfla9().getSelectedIndex();
-        }
-        if (this.S == null) {
-            this.S = (Boolean)OnlineConnectionManager.T.S().j$src$Lgg_vape_value_BooleanValue_$1co7xi6().getDefaultValue();
-        }
-    }
-
-    public Boolean m() {
-        return this.R;
+        return this.shareInventory;
     }
 
     @Override
-    public void M() {
-        this.x = OnlineConnectionManager.T.S().X$src$Lgg_vape_value_BooleanValue_$7rygmo().getEffectiveValue();
-        this.m.clear();
-        for (OnlineFriend onlineFriend : Vape.INSTANCE.getOnlineFriendManager().g()) {
-            if (!onlineFriend.y()) continue;
-            this.m.put(onlineFriend.S().g(), true);
+    public void initializeDefaults() {
+        if (this.autoLogin == null) {
+            this.autoLogin = (Boolean)OnlineConnectionManager.INSTANCE.getSettings().getAutoLogin().getDefaultValue();
         }
-        this.R = OnlineConnectionManager.T.S().z().getEffectiveValue();
-        this.y = OnlineConnectionManager.T.S().O().getEffectiveValue();
-        this.X = OnlineConnectionManager.T.S().k$src$Lgg_vape_value_BooleanValue_$ffgfgd().getEffectiveValue();
-        this.c = OnlineConnectionManager.T.S().l().getEffectiveValue();
-        this.F = OnlineConnectionManager.T.S().p().serializeBoundInputs();
-        this.k = OnlineConnectionManager.T.S().r$src$Lgg_vape_value_ModeValue_$lqfla9().getSelectedIndex();
-        this.S = OnlineConnectionManager.T.S().j$src$Lgg_vape_value_BooleanValue_$1co7xi6().getEffectiveValue();
-        this.D = OnlineConnectionManager.T.S().k().serializeBoundInputs();
+        if (this.friendStates == null) {
+            this.friendStates = new LinkedHashMap<Long, Boolean>();
+        }
+        if (this.showServer == null) {
+            this.showServer = (Boolean)OnlineConnectionManager.INSTANCE.getSettings().getShareServer().getDefaultValue();
+        }
+        if (this.showUsername == null) {
+            this.showUsername = (Boolean)OnlineConnectionManager.INSTANCE.getSettings().getShareUsername().getDefaultValue();
+        }
+        if (this.partyShowTarget == null) {
+            this.partyShowTarget = (Boolean)OnlineConnectionManager.INSTANCE.getSettings().getTargetIndicators().getDefaultValue();
+        }
+        if (this.shareInventory == null) {
+            this.shareInventory = (Boolean)OnlineConnectionManager.INSTANCE.getSettings().getShareInventory().getDefaultValue();
+        }
+        if (this.pingKeybind == null) {
+            this.pingKeybind = OnlineConnectionManager.INSTANCE.getSettings().getPingBind().serializeBoundInputs();
+        }
+        if (this.showInventoryKeybind == null) {
+            this.showInventoryKeybind = OnlineConnectionManager.INSTANCE.getSettings().getInventoryDisplayBind().serializeBoundInputs();
+        }
+        if (this.inventorySwitchMode == null) {
+            this.inventorySwitchMode = OnlineConnectionManager.INSTANCE.getSettings().getInventorySwitchMode().getSelectedIndex();
+        }
+        if (this.showSelf == null) {
+            this.showSelf = (Boolean)OnlineConnectionManager.INSTANCE.getSettings().getShowSelf().getDefaultValue();
+        }
+    }
+
+    public Boolean getShowServer() {
+        return this.showServer;
+    }
+
+    @Override
+    public void refreshFromCurrentSettings() {
+        this.autoLogin = OnlineConnectionManager.INSTANCE.getSettings().getAutoLogin().getEffectiveValue();
+        this.friendStates.clear();
+        for (OnlineFriend onlineFriend : Vape.INSTANCE.getOnlineFriendManager().getFriends()) {
+            if (!onlineFriend.isSyncWithFriends()) continue;
+            this.friendStates.put(onlineFriend.getUser().getId(), true);
+        }
+        this.showServer = OnlineConnectionManager.INSTANCE.getSettings().getShareServer().getEffectiveValue();
+        this.showUsername = OnlineConnectionManager.INSTANCE.getSettings().getShareUsername().getEffectiveValue();
+        this.partyShowTarget = OnlineConnectionManager.INSTANCE.getSettings().getTargetIndicators().getEffectiveValue();
+        this.shareInventory = OnlineConnectionManager.INSTANCE.getSettings().getShareInventory().getEffectiveValue();
+        this.pingKeybind = OnlineConnectionManager.INSTANCE.getSettings().getPingBind().serializeBoundInputs();
+        this.inventorySwitchMode = OnlineConnectionManager.INSTANCE.getSettings().getInventorySwitchMode().getSelectedIndex();
+        this.showSelf = OnlineConnectionManager.INSTANCE.getSettings().getShowSelf().getEffectiveValue();
+        this.showInventoryKeybind = OnlineConnectionManager.INSTANCE.getSettings().getInventoryDisplayBind().serializeBoundInputs();
     }
 
 
-    public JsonArray K() {
-        return this.F;
+    public JsonArray getPingKeybind() {
+        return this.pingKeybind;
     }
 
-    public Integer x() {
-        return this.k;
+    public Integer getInventorySwitchMode() {
+        return this.inventorySwitchMode;
     }
 
-    public Map<Long, Boolean> O() {
-        return this.m;
+    public Map<Long, Boolean> getFriendStates() {
+        return this.friendStates;
     }
 }
 

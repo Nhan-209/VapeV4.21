@@ -7,11 +7,11 @@ import gg.vape.module.none.XRay;
 
 public class EventChunkRenderRebuild
 extends Event {
-    private static final EventListeners t = new EventListeners();
+    private static final EventListeners EVENT_LISTENERS = new EventListeners();
 
     @Override
     public boolean fire() {
-        XRay xRay = Vape.INSTANCE.getModManager().G();
+        XRay xRay = Vape.INSTANCE.getModManager().getXRayModule();
         if (xRay == null || !xRay.boolean_r()) {
             return false;
         }
@@ -20,13 +20,13 @@ extends Event {
     }
 
     public static EventListeners getEventListeners() {
-        return t;
+        return EVENT_LISTENERS;
     }
 
 
     @Override
     public EventListeners getListeners() {
-        return t;
+        return EVENT_LISTENERS;
     }
 }
 

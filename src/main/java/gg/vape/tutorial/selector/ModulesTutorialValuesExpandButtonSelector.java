@@ -9,16 +9,16 @@ import java.util.Arrays;
 
 public class ModulesTutorialValuesExpandButtonSelector
 extends TutorialTargetSelector<ModuleComponent> {
-    ModuleComponent t;
-    final ModulesTutorialPage W;
-    private static final String b = "AutoClicker";
+    private ModuleComponent selectedModule;
+    private final ModulesTutorialPage tutorialPage;
+    private static final String targetModuleName = "AutoClicker";
 
     @Override
-    public ArrayList<GuiComponent> v(GuiComponent guiComponent) {
-        if (this.o().isInstance(guiComponent)) {
-            ArrayList<GuiComponent> arrayList = super.v(guiComponent);
-            if (arrayList != null && this.t != null && this.t.equals(guiComponent)) {
-                return new ArrayList<GuiComponent>(Arrays.asList(this.t.getSettingsButton()));
+    public ArrayList<GuiComponent> findTargets(GuiComponent guiComponent) {
+        if (this.getTargetType().isInstance(guiComponent)) {
+            ArrayList<GuiComponent> arrayList = super.findTargets(guiComponent);
+            if (arrayList != null && this.selectedModule != null && this.selectedModule.equals(guiComponent)) {
+                return new ArrayList<GuiComponent>(Arrays.asList(this.selectedModule.getSettingsButton()));
             }
             return arrayList;
         }
@@ -27,21 +27,21 @@ extends TutorialTargetSelector<ModuleComponent> {
 
     public ModulesTutorialValuesExpandButtonSelector(ModulesTutorialPage modulesTutorialPage, Class clazz) {
         super(clazz);
-        this.W = modulesTutorialPage;
-        this.t = null;
+        this.tutorialPage = modulesTutorialPage;
+        this.selectedModule = null;
     }
 
 
-    public boolean V(ModuleComponent moduleComponent) {
-        if (moduleComponent.getModule().getName().equals(b)) {
-            this.t = moduleComponent;
+    private boolean matchesModule(ModuleComponent moduleComponent) {
+        if (moduleComponent.getModule().getName().equals(targetModuleName)) {
+            this.selectedModule = moduleComponent;
             return true;
         }
         return false;
     }
 
     @Override
-    public boolean X(ModuleComponent moduleComponent) {
-        return this.V(moduleComponent);
+    public boolean matches(ModuleComponent moduleComponent) {
+        return this.matchesModule(moduleComponent);
     }
 }

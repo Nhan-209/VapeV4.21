@@ -69,7 +69,7 @@ extends Mod {
         int hurtTime = event.getThePlayer().c$src$I$15a9iwo();
         boolean wasJustHurt = this.lastHurtTime <= 0 && hurtTime > 0;
         this.lastHurtTime = hurtTime;
-        if (this.requireMouseDown.getEffectiveValue().booleanValue() && this.mouseDown && !ClientSettings.H$src$Z$9w16bz(Minecraft.gameSettings().F())) {
+        if (this.requireMouseDown.getEffectiveValue().booleanValue() && this.mouseDown && !ClientSettings.isKeyBindingDown(Minecraft.gameSettings().F())) {
             this.mouseDown = false;
             this.resetSelectState();
         }

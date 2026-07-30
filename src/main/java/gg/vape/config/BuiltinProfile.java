@@ -10,52 +10,52 @@ import java.util.ArrayList;
 
 public abstract class BuiltinProfile
 extends Profile {
-    private static final String r;
-    private static GuiComponent[] Y;
+    private static final String CLIENT_VERSION;
+    private static GuiComponent[] sharedGuiComponents;
 
-    private static void F$src$V$1kb525t() {
-        ModuleProfileMetadataCodec moduleProfileMetadataCodec = Vape.INSTANCE.getModuleProfileMetadataCodec();
-        for (Mod mod : new ArrayList<Mod>(moduleProfileMetadataCodec.k())) {
-            moduleProfileMetadataCodec.v(mod);
+    private static void clearSelectedModules() {
+        ModuleProfileMetadataCodec metadataCodec = Vape.INSTANCE.getModuleProfileMetadataCodec();
+        for (Mod module : new ArrayList<Mod>(metadataCodec.getSelectedModules())) {
+            metadataCodec.removeModule(module);
         }
     }
 
-    public static GuiComponent[] y$src$ALgg_vape_ui_click_component_GuiComponent_$fbrch2() {
-        return Y;
+    public static GuiComponent[] getSharedGuiComponents() {
+        return sharedGuiComponents;
     }
 
-    public final BuiltinProfile J() {
-        BuiltinProfile.F$src$V$1kb525t();
-        this.O();
-        this.a();
+    public final BuiltinProfile applyPreset() {
+        BuiltinProfile.clearSelectedModules();
+        this.configureModules();
+        this.captureCurrentState();
         return this;
     }
 
-    protected final void B(Class<? extends Mod> clazz) {
+    protected final void selectModule(Class<? extends Mod> moduleClass) {
         ModManager modManager = Vape.INSTANCE.getModManager();
-        Mod mod = modManager.getMod(clazz);
-        if (mod == null) {
+        Mod module = modManager.getMod(moduleClass);
+        if (module == null) {
             return;
         }
-        Vape.INSTANCE.getModuleProfileMetadataCodec().a(mod);
+        Vape.INSTANCE.getModuleProfileMetadataCodec().addModule(module);
     }
 
-    protected abstract void O();
+    protected abstract void configureModules();
 
-    protected BuiltinProfile(String string) {
-        super(string, r);
+    protected BuiltinProfile(String name) {
+        super(name, CLIENT_VERSION);
     }
 
-    public abstract boolean E();
+    public abstract boolean isApplicable();
 
 
     static {
-        BuiltinProfile.b(null);
-        r = "4.21";
+        BuiltinProfile.setSharedGuiComponents(null);
+        CLIENT_VERSION = "4.21";
     }
 
-    public static void b(GuiComponent[] guiComponentArray) {
-        Y = guiComponentArray;
+    public static void setSharedGuiComponents(GuiComponent[] components) {
+        sharedGuiComponents = components;
     }
 }
 

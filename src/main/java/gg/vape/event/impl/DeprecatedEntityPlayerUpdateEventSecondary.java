@@ -4,8 +4,7 @@ import gg.vape.event.impl.DeprecatedEntityPlayerUpdateEventBase;
 
 public class DeprecatedEntityPlayerUpdateEventSecondary
 extends DeprecatedEntityPlayerUpdateEventBase {
-    public DeprecatedEntityPlayerUpdateEventSecondary(Object object) {
-        super(object);
+    public DeprecatedEntityPlayerUpdateEventSecondary(Object entityHandle) {
+        super(entityHandle);
     }
 }
-

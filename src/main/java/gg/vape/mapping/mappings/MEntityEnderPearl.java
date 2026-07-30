@@ -15,7 +15,7 @@ extends Mapping {
 
     public int k(Object object) {
         if (ForgeVersion.MC_1_17.d()) {
-            return this.T.Z(object, new Object[0]);
+            return this.T.invokeInt(object, new Object[0]);
         }
         return this.u.getInt(object);
     }

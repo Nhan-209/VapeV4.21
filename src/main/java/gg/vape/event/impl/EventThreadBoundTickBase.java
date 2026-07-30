@@ -5,11 +5,11 @@ import gg.vape.event.EventListeners;
 
 public class EventThreadBoundTickBase
 extends Event {
-    private static final EventListeners p = new EventListeners();
+    private static final EventListeners EVENT_LISTENERS = new EventListeners();
 
     @Override
     public EventListeners getListeners() {
-        return p;
+        return EVENT_LISTENERS;
     }
 
     @Override
@@ -18,7 +18,6 @@ extends Event {
     }
 
     public static EventListeners getEventListeners() {
-        return p;
+        return EVENT_LISTENERS;
     }
 }
-

@@ -45,7 +45,7 @@ extends Mapping {
             } else if (ForgeVersion.MC_1_7_10.Y()) {
                 Class[] classArray3 = new Class[]{MappedClasses.lf};
                 Class<Void> clazz3 = Void.TYPE;
-                boolean bl3 = Wrapper.G;
+                boolean bl3 = Wrapper.isNativeAvailable;
                 String string4 = "func_178606_a";
                 MVisGraph mVisGraph3 = this;
                 this.o = this.Y(string4, bl3, clazz3, classArray3);
@@ -64,7 +64,7 @@ extends Mapping {
         if (ForgeVersion.MC_1_12_2.d()) {
             Class[] classArray4 = new Class[]{MappedClasses.lf};
             Class<Void> clazz4 = Void.TYPE;
-            boolean bl4 = Wrapper.G;
+            boolean bl4 = Wrapper.isNativeAvailable;
             String string6 = "func_178606_a";
             MVisGraph mVisGraph4 = this;
             this.o = this.Y(string6, bl4, clazz4, classArray4);

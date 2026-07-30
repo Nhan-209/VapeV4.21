@@ -1,18 +1,17 @@
 package gg.vape.mapping;
 
 public interface MappingTask {
-    public void c();
+    void transform();
 
-    public void O();
+    void rollback();
 
-    public Class B();
+    Class getTargetClass();
 
-    public void K();
+    void prepare();
 
-    public boolean Q();
+    boolean isApplied();
 
-    public int J();
+    int commit();
 
-    public void j();
+    void serialize();
 }
-

@@ -9,9 +9,9 @@ extends EventInjectionSpec {
     private static final String h;
 
     @Override
-    public String n() {
-        String string = this.v().getName() + h;
-        return string;
+    public String buildInjectionCode() {
+        String callbackCode = this.getEventClass().getName() + h;
+        return callbackCode;
     }
 
     public InsertedCallbackEventInjectionSpec(MappingMethod mappingMethod, Class<? extends InsertedCallbackMarker> clazz) {
@@ -27,4 +27,3 @@ extends EventInjectionSpec {
         }
     }
 }
-

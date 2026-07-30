@@ -16,7 +16,7 @@ extends Mapping {
     }
 
     public Object C(Object object) {
-        return this.j.L(object, new Object[0]);
+        return this.j.invokeObject(object, new Object[0]);
     }
 
     public static void W(boolean bl) {
@@ -33,7 +33,7 @@ extends Mapping {
     }
 
     public Object A(Object object) {
-        return this.z.L(object, new Object[0]);
+        return this.z.invokeObject(object, new Object[0]);
     }
 
     public MTextureManagerHandle() {

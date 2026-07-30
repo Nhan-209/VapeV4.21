@@ -11,7 +11,7 @@ extends Mapping {
     private MappingField d;
 
     public int V() {
-        if (this.d.x()) {
+        if (this.d.hasResolutionFailed()) {
             return 1;
         }
         return this.d.getInt(null);
@@ -37,7 +37,7 @@ extends Mapping {
         boolean bl = false;
         String string2 = c;
         MGameSettingsGuiScaleValue mGameSettingsGuiScaleValue = this;
-        this.d = this.u(string2, bl, clazz);
+        this.d = this.registerStaticField(string2, bl, clazz);
         String string3 = string;
     }
 

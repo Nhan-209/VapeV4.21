@@ -35,8 +35,8 @@ implements Cloneable {
     public InventoryFilterConditionGroup(JsonObject jsonObject) {
         JsonArray jsonArray = jsonObject.getAsJsonArray("conditions");
         for (int i = 0; i < jsonArray.size(); ++i) {
-            JsonObject jsonObject2 = jsonArray.get(i).getAsJsonObject();
-            this.conditions.add(InventoryFilterCondition.fromJson(jsonObject2));
+            JsonObject conditionJson = jsonArray.get(i).getAsJsonObject();
+            this.conditions.add(InventoryFilterCondition.fromJson(conditionJson));
         }
     }
 
@@ -52,10 +52,10 @@ implements Cloneable {
         JsonObject jsonObject = new JsonObject();
         JsonArray jsonArray = new JsonArray();
         jsonObject.add("conditions", (JsonElement)jsonArray);
-        for (InventoryFilterCondition<?> inventoryFilterCondition : this.conditions) {
-            JsonObject jsonObject2 = inventoryFilterCondition.toJson();
-            if (jsonObject2 == null) continue;
-            jsonArray.add((JsonElement)jsonObject2);
+        for (InventoryFilterCondition<?> condition : this.conditions) {
+            JsonObject conditionJson = condition.toJson();
+            if (conditionJson == null) continue;
+            jsonArray.add((JsonElement)conditionJson);
         }
         return jsonObject;
     }

@@ -32,7 +32,7 @@ extends Mapping {
                 String string = "lowerChestInventory";
                 Class clazz2 = MappedClasses.zZ;
                 MGuiChest mGuiChest = this;
-                this.f = mGuiChest.X(clazz2, string, bl, clazz);
+                this.f = mGuiChest.registerInstanceFieldForOwner(clazz2, string, bl, clazz);
             } else {
                 Class clazz = MappedClasses.l0;
                 boolean bl = true;

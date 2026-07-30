@@ -9,8 +9,7 @@ extends EventBlockLayerOverride {
         return super.fire();
     }
 
-    public EventBlockLayerOverrideModern(Object object) {
-        super(object);
+    public EventBlockLayerOverrideModern(Object blockHandle) {
+        super(blockHandle);
     }
 }
-

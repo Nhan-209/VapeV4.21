@@ -34,7 +34,7 @@ extends SubModule<Scaffold> {
         if (Minecraft.currentScreen().isNotNull()) {
             return false;
         }
-        if (this.requireSneak.getEffectiveValue().booleanValue() && !ClientSettings.B(Minecraft.gameSettings().d$src$Lgg_vape_wrapper_impl_KeyBinding_$adn2z0())) {
+        if (this.requireSneak.getEffectiveValue().booleanValue() && !ClientSettings.isPhysicalKeyDown(Minecraft.gameSettings().d$src$Lgg_vape_wrapper_impl_KeyBinding_$adn2z0())) {
             return false;
         }
         if (player.S$src$Z$151gttj()) {
@@ -81,15 +81,15 @@ extends SubModule<Scaffold> {
         MovementInput movementInput = player.movementInput();
         GameSettings gameSettings = Minecraft.gameSettings();
         KeyBinding sneakKey = gameSettings.d$src$Lgg_vape_wrapper_impl_KeyBinding_$adn2z0();
-        this.sneakKeyWasDown = ClientSettings.B(sneakKey);
+        this.sneakKeyWasDown = ClientSettings.isPhysicalKeyDown(sneakKey);
         boolean shouldSneak = false;
         float forwardInput = movementInput.D();
         if (RotationManager.INSTANCE.hasAdaptiveController()) {
             forwardInput = 0.0f;
-            if (ClientSettings.B(gameSettings.Y())) {
+            if (ClientSettings.isPhysicalKeyDown(gameSettings.Y())) {
                 forwardInput += 1.0f;
             }
-            if (ClientSettings.B(gameSettings.s())) {
+            if (ClientSettings.isPhysicalKeyDown(gameSettings.s())) {
                 forwardInput -= 1.0f;
             }
         }

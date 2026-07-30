@@ -20,7 +20,7 @@ extends Mapping {
     private MappingField u;
 
     private void u(Object object) {
-        this.Z.F(object);
+        this.Z.invokeVoidNoArgs(object);
     }
 
     public static void z(MTessellator mTessellator, Object object) {
@@ -28,7 +28,7 @@ extends Mapping {
     }
 
     public void w(Object object, int n, int n2, int n3, int n4) {
-        this.N.c(object, n, n2, n3, n4);
+        this.N.invokeVoid(object, n, n2, n3, n4);
     }
 
     public static Object a(MTessellator mTessellator) {
@@ -36,15 +36,15 @@ extends Mapping {
     }
 
     private void O(Object object, double d, double d2, double d3, double d4, double d5) {
-        this.O.c(object, d, d2, d3, d4, d5);
+        this.O.invokeVoid(object, d, d2, d3, d4, d5);
     }
 
     private void C(Object object, int n) {
-        this.D.c(object, n);
+        this.D.invokeVoid(object, n);
     }
 
     private void Z(Object object, double d, double d2, double d3) {
-        this.w.c(object, d, d2, d3);
+        this.w.invokeVoid(object, d, d2, d3);
     }
 
     private Object Z(Object object) {
@@ -69,7 +69,7 @@ extends Mapping {
     }
 
     public boolean E$src$Z$1p5wubj() {
-        return this.A != null && !this.A.x();
+        return this.A != null && !this.A.hasResolutionFailed();
     }
 
     public static void k(MTessellator mTessellator, Object object, int n) {
@@ -77,7 +77,7 @@ extends Mapping {
     }
 
     private void c(Object object) {
-        this.e.F(object);
+        this.e.invokeVoidNoArgs(object);
     }
 
     public static void Y(MTessellator mTessellator, Object object) {
@@ -96,13 +96,13 @@ extends Mapping {
             boolean bl = true;
             String string = "INSTANCE";
             MTessellator mTessellator = this;
-            this.i = mTessellator.u(string, bl, clazz);
+            this.i = mTessellator.registerStaticField(string, bl, clazz);
         } else {
             Class clazz = MappedClasses.ZX;
             boolean bl = true;
             String string = "instance";
             MTessellator mTessellator = this;
-            this.i = mTessellator.u(string, bl, clazz);
+            this.i = mTessellator.registerStaticField(string, bl, clazz);
         }
         if (ForgeVersion.MC_1_7_10.Y()) {
             if (ForgeVersion.MC_1_21_0.H().y()) {
@@ -132,7 +132,7 @@ extends Mapping {
             boolean bl2 = true;
             String string = "renderingChunk";
             MTessellator mTessellator = this;
-            this.A = mTessellator.z(string, bl2, bl, clazz);
+            this.A = mTessellator.registerInstanceFieldWithSecondaryFlag(string, bl2, bl, clazz);
             Class[] classArray = new Class[]{Integer.TYPE, Integer.TYPE, Integer.TYPE, Integer.TYPE};
             Class<Void> clazz2 = Void.TYPE;
             boolean bl3 = true;

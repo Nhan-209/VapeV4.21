@@ -26,7 +26,7 @@ extends ClassTransformer {
 
 
     @Override
-    public void c() {
+    public void transform() {
         this.w();
     }
 }

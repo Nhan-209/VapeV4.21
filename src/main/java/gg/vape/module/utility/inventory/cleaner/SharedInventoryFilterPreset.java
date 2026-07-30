@@ -8,8 +8,8 @@ import org.jetbrains.annotations.Nullable;
 
 public class SharedInventoryFilterPreset
 extends InventoryFilterPreset {
-    public SharedInventoryFilterPreset(@Nullable UUID uUID, String string) {
-        super(uUID, string);
+    public SharedInventoryFilterPreset(@Nullable UUID id, String name) {
+        super(id, name);
     }
 
     public SharedInventoryFilterPreset copy() {

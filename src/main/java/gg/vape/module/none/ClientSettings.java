@@ -178,7 +178,7 @@ extends Mod {
 
     private void applyStandaloneMode(PublicProfileSettings publicProfileSettings) {
         if (this.activeStack == mainStack || this.activeStack == clickGuiFrameManager) {
-            if (publicProfileSettings.P.isSelected()) {
+            if (publicProfileSettings.centralGuiStyle.isSelected()) {
                 if (this.activeStack == clickGuiFrameManager) {
                     return;
                 }
@@ -218,7 +218,7 @@ extends Mod {
                 if (!ClientSettings.INSTANCE.activeStack.Y().contains(otherFrame) || otherFrame.equals(frame) || !otherFrame.V$src$Z$1xhop3l() || !(bounds = otherFrame.getBounds().y(2.0, 4.0)).J(candidateX, candidateY)) continue;
                 overlapsExistingFrame = true;
             }
-            if (!((candidateX += 2.0) + frame.A() > (double)Minecraft.G().T())) continue;
+            if (!((candidateX += 2.0) + frame.A() > (double)Minecraft.G().getScaledWidth())) continue;
             candidateX = 32.0;
             candidateY += 2.0;
         } while (overlapsExistingFrame);
@@ -408,8 +408,8 @@ extends Mod {
     }
 
     public void updateGuiScale() {
-        Vape.INSTANCE.getClientSettings().w.applyConfiguredColorTransform();
-        double currentGuiScale = Vape.INSTANCE.getClientSettings().s();
+        Vape.INSTANCE.getClientSettings().guiColor.applyConfiguredColorTransform();
+        double currentGuiScale = Vape.INSTANCE.getClientSettings().getGuiScaleFactor();
         if (this.lastGuiScale != currentGuiScale && this.lastGuiScale != -1.0) {
             FontManager fontManager = Vape.INSTANCE.getFontManager();
             for (Map<Integer, SmoothFontRenderer> map : fontManager.n().values()) {
@@ -438,7 +438,7 @@ extends Mod {
     }
 
     public void syncRainbowHue() {
-        MutableColor mutableColor = Vape.INSTANCE.getClientSettings().w.getMutableColor();
+        MutableColor mutableColor = Vape.INSTANCE.getClientSettings().guiColor.getMutableColor();
         float[] fArray = new float[3];
         Color.RGBtoHSB(mutableColor.getRed(), mutableColor.getGreen(), mutableColor.getBlue(), fArray);
         this.rainbowHue = fArray[0];
@@ -486,7 +486,7 @@ extends Mod {
         OpenGlBackendHolder.backend.setAlphaFunction(516, 0.0f);
         if (INSTANCE.isInputEnabled()) {
             OpenGlBackendHolder.backend.pushMatrix();
-            double guiScale = Vape.INSTANCE.getClientSettings().s();
+            double guiScale = Vape.INSTANCE.getClientSettings().getGuiScaleFactor();
             OpenGlBackendHolder.backend.scale(guiScale, guiScale, guiScale);
             if (INSTANCE.isInputEnabled()) {
                 this.renderFrames();
@@ -619,14 +619,14 @@ extends Mod {
     }
 
     public Color getAccentColor() {
-        if (Vape.INSTANCE.getClientSettings().w.isRainbowEnabled()) {
+        if (Vape.INSTANCE.getClientSettings().guiColor.isRainbowEnabled()) {
             this.rainbowHue = (float)((double)this.rainbowHue - 0.03);
             if (this.rainbowHue <= 0.0f) {
                 this.rainbowHue = 1.0f - -this.rainbowHue;
             }
             return ColorUtil.createReadableHsbColor((float)this.rainbowHue, (float)0.9f, (float)1.0f);
         }
-        return Vape.INSTANCE.getClientSettings().w.getMutableColor();
+        return Vape.INSTANCE.getClientSettings().guiColor.getMutableColor();
     }
 
     public static void initializeFrames() {
@@ -666,7 +666,7 @@ extends Mod {
         ClientSettings.registerFrame((Frame)new OnlineActivitySettingsFrame(), mainStack);
         ClientSettings.registerFrame((Frame)new EnemySettingsFrame(), mainStack);
         ClientSettings.registerFrame((Frame)new HotbarSlotRuleItemPickerFrame(), hotbarRuleEditorStack);
-        ClientSettings.registerFrame((Frame)ClientSettings.getFrame(HotbarSlotRuleItemPickerFrame.class).D$src$Lgg_vape_module_utility_inventory_HotbarSlotRule$dqviyt(), hotbarRuleEditorStack);
+        ClientSettings.registerFrame((Frame)ClientSettings.getFrame(HotbarSlotRuleItemPickerFrame.class).getItemListFrame(), hotbarRuleEditorStack);
         ClientSettings.registerFrame((Frame)new PublicProfilesFrame(), publicProfilesStack);
         ClientSettings.registerFrame((Frame)new HudModuleSelectorFrame(), hudEditorStack);
         ClientSettings.registerFrame((Frame)ClientSettings.getFrame(HudModuleSelectorFrame.class).getModuleListPanel(), hudEditorStack);
@@ -760,7 +760,7 @@ extends Mod {
             }
             lastScreenRect = screenBounds;
             OpenGlBackendHolder.backend.pushMatrix();
-            double guiScale = Vape.INSTANCE.getClientSettings().s();
+            double guiScale = Vape.INSTANCE.getClientSettings().getGuiScaleFactor();
             OpenGlBackendHolder.backend.scale(guiScale, guiScale, guiScale);
             try {
                 UI_EXECUTOR.runPending();
@@ -849,7 +849,7 @@ extends Mod {
 
     private void updateStandaloneState() {
         PublicProfileSettings publicProfileSettings = Vape.INSTANCE.getPublicProfileSettings();
-        if (publicProfileSettings.n.isPersistenceSuppressed()) {
+        if (publicProfileSettings.guiStyle.isPersistenceSuppressed()) {
             return;
         }
         UI_EXECUTOR.execute(() -> this.applyStandaloneMode(publicProfileSettings));
@@ -861,7 +861,7 @@ extends Mod {
         double rowHeight = 0.0;
         for (Frame frame : frameSnapshot) {
             if (!frame.J$src$Z$1eqdghz() || !frame.l$src$Z$193vdc5()) continue;
-            if (x + frame.A() > (double)Minecraft.G().T()) {
+            if (x + frame.A() > (double)Minecraft.G().getScaledWidth()) {
                 x = 24.0;
                 y += rowHeight + 8.0;
                 rowHeight = 0.0;
@@ -910,9 +910,9 @@ extends Mod {
         this.noSearchBarMode = new ModeOption("None", 0.8);
         this.searchBarStyle = ModeValue.create((Object)((Object)this), (String)"Search bar style", (String)"Switch between search bar styles", (ModeSelection)this.floatingSearchBarMode, (ModeSelection[])new ModeSelection[]{this.integratedSearchBarMode, this.noSearchBarMode, this.floatingSearchBarMode});
         PublicProfileSettings publicProfileSettings = Vape.INSTANCE.getPublicProfileSettings();
-        publicProfileSettings.R.addDependentValues(new Value[]{publicProfileSettings.r});
-        publicProfileSettings.R.addDependentValues(new Value[]{publicProfileSettings.A});
-        publicProfileSettings.R.addDependentValues(new Value[]{publicProfileSettings.H});
+        publicProfileSettings.notifications.addDependentValues(new Value[]{publicProfileSettings.toggleAlerts});
+        publicProfileSettings.notifications.addDependentValues(new Value[]{publicProfileSettings.profileSwitchNotifications});
+        publicProfileSettings.notifications.addDependentValues(new Value[]{publicProfileSettings.friendNotifications});
         this.searchBarStyle.addChangeListener(ClientSettings::onSearchBarStyleChanged);
         this.addValue(new Value[]{this.blurBackground, this.multiKeybinding, this.guiBindIndicator, this.showTooltips, this.rainbowSpeed, this.searchBarStyle});
     }
@@ -964,7 +964,7 @@ extends Mod {
     public void onTick() {
         if (!this.initialized) {
             this.initialized = true;
-            Vape.INSTANCE.getPublicProfileSettings().n.addChangeListener(this::onStandaloneModeChanged);
+            Vape.INSTANCE.getPublicProfileSettings().guiStyle.addChangeListener(this::onStandaloneModeChanged);
             this.updateStandaloneState();
         }
         try {

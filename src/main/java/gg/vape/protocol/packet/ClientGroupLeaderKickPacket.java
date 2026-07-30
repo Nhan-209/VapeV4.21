@@ -11,7 +11,7 @@ extends ZeusTrackedPacket<ClientGroupLeaderKickResponsePacket> {
 
     @Override
     public void T(ZeusPacketBuffer zeusPacketBuffer) {
-        zeusPacketBuffer.v(this.f);
+        zeusPacketBuffer.writeLong(this.f);
     }
 
     public ClientGroupLeaderKickPacket() {
@@ -19,7 +19,7 @@ extends ZeusTrackedPacket<ClientGroupLeaderKickResponsePacket> {
 
     @Override
     public void x(ZeusPacketBuffer zeusPacketBuffer) {
-        this.f = zeusPacketBuffer.long_a();
+        this.f = zeusPacketBuffer.readLong();
     }
 
     public long H() {
@@ -27,7 +27,7 @@ extends ZeusTrackedPacket<ClientGroupLeaderKickResponsePacket> {
     }
 
     public ClientGroupLeaderKickPacket(UserModel userModel) {
-        this.f = userModel.g();
+        this.f = userModel.getId();
     }
 }
 

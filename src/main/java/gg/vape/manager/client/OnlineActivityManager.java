@@ -23,232 +23,232 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.jetbrains.annotations.Nullable;
 
 public class OnlineActivityManager {
-    private final Map<Long, OnlineFriend> H;
-    private int R;
-    private final Map<Long, OnlineFriendActivityState> m;
-    private final Map<Long, Long> A = new ConcurrentHashMap<Long, Long>();
-    private int n;
-    private final Set<Long> S;
-    private final ArrayList<Integer> C;
-    private final Map<Long, Long> G;
+    private final Map<Long, OnlineFriend> pendingSubscriptions;
+    private int subscriptionFlushTick;
+    private final Map<Long, OnlineFriendActivityState> activityStatesByUserId;
+    private final Map<Long, Long> worldChangeCooldowns = new ConcurrentHashMap<Long, Long>();
+    private int snapshotTick;
+    private final Set<Long> reportedLocationUserIds;
+    private final ArrayList<Integer> reservedIntegers;
+    private final Map<Long, Long> nearbySinceByUserId;
 
     public OnlineActivityManager() {
-        this.m = new ConcurrentHashMap<Long, OnlineFriendActivityState>();
-        this.H = new ConcurrentHashMap<Long, OnlineFriend>();
-        this.G = new ConcurrentHashMap<Long, Long>();
-        this.S = new LinkedHashSet<Long>();
-        this.C = new ArrayList();
+        this.activityStatesByUserId = new ConcurrentHashMap<Long, OnlineFriendActivityState>();
+        this.pendingSubscriptions = new ConcurrentHashMap<Long, OnlineFriend>();
+        this.nearbySinceByUserId = new ConcurrentHashMap<Long, Long>();
+        this.reportedLocationUserIds = new LinkedHashSet<Long>();
+        this.reservedIntegers = new ArrayList();
     }
 
-    public boolean J(OnlineFriend onlineFriend) {
-        return this.o(onlineFriend.S().g());
+    public boolean isTracking(OnlineFriend onlineFriend) {
+        return this.isTracking(onlineFriend.getUser().getId());
     }
 
     /*
      * WARNING - Removed try catching itself - possible behaviour change.
      */
-    public void o(OnlineFriend onlineFriend) {
-        if (onlineFriend.S().g() == Vape.INSTANCE.getOnlineManager().r().S().g()) {
+    public void startTracking(OnlineFriend onlineFriend) {
+        if (onlineFriend.getUser().getId() == Vape.INSTANCE.getOnlineManager().getLocalFriend().getUser().getId()) {
             return;
         }
-        this.G.remove(onlineFriend.S().g());
-        Set<Long> set = this.S;
-        synchronized (set) {
-            this.S.remove(onlineFriend.S().g());
+        this.nearbySinceByUserId.remove(onlineFriend.getUser().getId());
+        Set<Long> reportedUsers = this.reportedLocationUserIds;
+        synchronized (reportedUsers) {
+            this.reportedLocationUserIds.remove(onlineFriend.getUser().getId());
         }
-        if (!this.m.containsKey(onlineFriend.S().g())) {
-            this.m.put(onlineFriend.S().g(), new OnlineFriendActivityState(onlineFriend));
+        if (!this.activityStatesByUserId.containsKey(onlineFriend.getUser().getId())) {
+            this.activityStatesByUserId.put(onlineFriend.getUser().getId(), new OnlineFriendActivityState(onlineFriend));
         }
     }
 
-    public void T() {
-        this.R(true);
+    public void resetForWorldChange() {
+        this.reset(true);
     }
 
-    public void e(ActivitySnapshotPayload activitySnapshotPayload) {
-        PartyState partyState = Vape.INSTANCE.getOnlineManager().y().j();
-        if (this.n++ % 20 == 19 || activitySnapshotPayload.g().L() == 10) {
+    public void tickLocalSnapshot(ActivitySnapshotPayload activitySnapshotPayload) {
+        PartyState partyState = Vape.INSTANCE.getOnlineManager().getPartyManager().getCurrentParty();
+        if (this.snapshotTick++ % 20 == 19 || activitySnapshotPayload.getHealth().getHurtTime() == 10) {
             if (partyState != null) {
                 ZeusConnectionManager.T().u().V(new ClientActivitySnapshotPacket(activitySnapshotPayload));
             }
-            this.n = 0;
+            this.snapshotTick = 0;
         }
-        this.z();
-        this.u();
+        this.decrementHurtTimers();
+        this.decrementSwingTimers();
     }
 
-    private void u() {
-        for (Long l : this.m.keySet()) {
-            OnlineFriendActivityState onlineFriendActivityState = this.m.get(l);
-            if (onlineFriendActivityState.p() <= 0) continue;
-            onlineFriendActivityState.z(onlineFriendActivityState.p() - 1);
-        }
-    }
-
-    private void z() {
-        for (Long l : this.m.keySet()) {
-            OnlineFriendActivityState onlineFriendActivityState = this.m.get(l);
-            if (onlineFriendActivityState.R() <= 0) continue;
-            onlineFriendActivityState.m(onlineFriendActivityState.R() - 1);
+    private void decrementSwingTimers() {
+        for (Long userId : this.activityStatesByUserId.keySet()) {
+            OnlineFriendActivityState activityState = this.activityStatesByUserId.get(userId);
+            if (activityState.getSwingProgressTicks() <= 0) continue;
+            activityState.setSwingProgressTicks(activityState.getSwingProgressTicks() - 1);
         }
     }
 
-    public Collection<OnlineFriendActivityState> X() {
-        return this.m.values();
+    private void decrementHurtTimers() {
+        for (Long userId : this.activityStatesByUserId.keySet()) {
+            OnlineFriendActivityState activityState = this.activityStatesByUserId.get(userId);
+            if (activityState.getHurtTime() <= 0) continue;
+            activityState.setHurtTime(activityState.getHurtTime() - 1);
+        }
+    }
+
+    public Collection<OnlineFriendActivityState> getActivityStates() {
+        return this.activityStatesByUserId.values();
     }
 
     /*
      * WARNING - Removed try catching itself - possible behaviour change.
      */
-    public void R(boolean bl) {
-        this.A.clear();
-        this.m.clear();
-        this.H.clear();
-        this.G.clear();
-        Set<Long> set = this.S;
-        synchronized (set) {
-            this.S.clear();
+    public void reset(boolean notifyServer) {
+        this.worldChangeCooldowns.clear();
+        this.activityStatesByUserId.clear();
+        this.pendingSubscriptions.clear();
+        this.nearbySinceByUserId.clear();
+        Set<Long> reportedUsers = this.reportedLocationUserIds;
+        synchronized (reportedUsers) {
+            this.reportedLocationUserIds.clear();
         }
-        this.R = 0;
-        PingManager.B.a();
-        if (bl) {
+        this.subscriptionFlushTick = 0;
+        PingManager.INSTANCE.clear();
+        if (notifyServer) {
             ZeusConnectionManager.T().u().B();
         }
     }
 
-    public void h(EntityPlayer entityPlayer) {
-        if (this.R++ % 20 == 19 && !this.H.isEmpty()) {
-            long[] lArray = new long[this.H.size()];
-            int n = 0;
-            for (Long l : this.H.keySet()) {
-                lArray[n++] = l;
+    public void flushPendingSubscriptionsAndInventory(EntityPlayer player) {
+        if (this.subscriptionFlushTick++ % 20 == 19 && !this.pendingSubscriptions.isEmpty()) {
+            long[] userIds = new long[this.pendingSubscriptions.size()];
+            int index = 0;
+            for (Long userId : this.pendingSubscriptions.keySet()) {
+                userIds[index++] = userId;
             }
-            this.H.clear();
-            ZeusConnectionManager.T().u().h(lArray);
-            this.R = 0;
+            this.pendingSubscriptions.clear();
+            ZeusConnectionManager.T().u().h(userIds);
+            this.subscriptionFlushTick = 0;
         }
-        OnlineFriendActivityState onlineFriendActivityState = Vape.INSTANCE.getOnlineManager().r().E();
-        PartyState partyState = Vape.INSTANCE.getOnlineManager().y().j();
-        OnlineInventoryTracker onlineInventoryTracker = Vape.INSTANCE.getOnlineManager().N();
-        if (partyState != null && !this.x()) {
-            int n;
-            boolean bl = !onlineInventoryTracker.F();
-            boolean bl2 = onlineInventoryTracker.g() % 20 == 19;
-            boolean bl3 = bl || bl2;
-            int n2 = onlineInventoryTracker.U();
-            Map<Integer, ActivityItemStack> map = onlineInventoryTracker.r(entityPlayer, bl3);
-            int n3 = onlineInventoryTracker.U();
-            for (n = 0; n < onlineInventoryTracker.e().length; ++n) {
-                onlineFriendActivityState.I()[n] = onlineInventoryTracker.e()[n];
+        OnlineFriendActivityState localActivityState = Vape.INSTANCE.getOnlineManager().getLocalFriend().getActivityState();
+        PartyState partyState = Vape.INSTANCE.getOnlineManager().getPartyManager().getCurrentParty();
+        OnlineInventoryTracker onlineInventoryTracker = Vape.INSTANCE.getOnlineManager().getInventoryTracker();
+        if (partyState != null && !this.isEmpty()) {
+            boolean initialScan = !onlineInventoryTracker.isInitialized();
+            boolean periodicFullScan = onlineInventoryTracker.getUnchangedTickCount() % 20 == 19;
+            boolean scanFullInventory = initialScan || periodicFullScan;
+            int previousHotbarSlot = onlineInventoryTracker.getSelectedHotbarSlot();
+            Map<Integer, ActivityItemStack> inventoryChanges = onlineInventoryTracker.collectChanges(player, scanFullInventory);
+            int currentHotbarSlot = onlineInventoryTracker.getSelectedHotbarSlot();
+            for (int armorSlot = 0; armorSlot < onlineInventoryTracker.getArmor().length; ++armorSlot) {
+                localActivityState.getArmor()[armorSlot] = onlineInventoryTracker.getArmor()[armorSlot];
             }
-            for (n = 0; n < onlineInventoryTracker.M().length; ++n) {
-                onlineFriendActivityState.N$src$ALgg_vape_friend_activity_ActivityItemStack_$1nvfl9h()[n] = onlineInventoryTracker.M()[n];
+            for (int inventorySlot = 0; inventorySlot < onlineInventoryTracker.getInventory().length; ++inventorySlot) {
+                localActivityState.getInventory()[inventorySlot] = onlineInventoryTracker.getInventory()[inventorySlot];
             }
-            if (n2 != n3) {
-                ZeusConnectionManager.T().u().Z(n3);
-                onlineFriendActivityState.D(n3);
+            if (previousHotbarSlot != currentHotbarSlot) {
+                ZeusConnectionManager.T().u().Z(currentHotbarSlot);
+                localActivityState.setHeldItemSlot(currentHotbarSlot);
             }
-            if (!map.isEmpty() || bl) {
-                if (bl) {
-                    onlineInventoryTracker.X();
+            if (!inventoryChanges.isEmpty() || initialScan) {
+                if (initialScan) {
+                    onlineInventoryTracker.sendSnapshot();
                 } else {
-                    onlineInventoryTracker.p(map);
+                    onlineInventoryTracker.sendChanges(inventoryChanges);
                 }
-                onlineInventoryTracker.A(0);
+                onlineInventoryTracker.setUnchangedTickCount(0);
             } else {
-                onlineInventoryTracker.A(onlineInventoryTracker.g() + 1);
+                onlineInventoryTracker.setUnchangedTickCount(onlineInventoryTracker.getUnchangedTickCount() + 1);
             }
         }
     }
 
     @Nullable
-    public OnlineFriendActivityState J(long l) {
-        return this.m.get(l);
+    public OnlineFriendActivityState getActivityState(long userId) {
+        return this.activityStatesByUserId.get(userId);
     }
 
-    public boolean o(long l) {
-        return this.m.containsKey(l);
+    public boolean isTracking(long userId) {
+        return this.activityStatesByUserId.containsKey(userId);
     }
 
 
     @Nullable
-    public OnlineFriendActivityState X(String string) {
-        for (OnlineFriendActivityState onlineFriendActivityState : this.X()) {
-            if (!string.equals(onlineFriendActivityState.a().I())) continue;
-            return onlineFriendActivityState;
+    public OnlineFriendActivityState getActivityStateByMinecraftUsername(String username) {
+        for (OnlineFriendActivityState activityState : this.getActivityStates()) {
+            if (!username.equals(activityState.getFriend().getMinecraftUsername())) continue;
+            return activityState;
         }
         return null;
     }
 
     @Nullable
-    public OnlineFriendActivityState m(OnlineFriend onlineFriend) {
-        return this.J(onlineFriend.S().g());
+    public OnlineFriendActivityState getActivityState(OnlineFriend onlineFriend) {
+        return this.getActivityState(onlineFriend.getUser().getId());
     }
 
-    public boolean x() {
-        return this.m.isEmpty();
+    public boolean isEmpty() {
+        return this.activityStatesByUserId.isEmpty();
     }
 
     /*
      * WARNING - Removed try catching itself - possible behaviour change.
      */
-    public void o(EntityPlayer entityPlayer, World world) {
+    public void tickNearbyFriends(EntityPlayer localPlayer, World world) {
         if (world.isNull()) {
             return;
         }
-        LocalOnlineFriend localOnlineFriend = Vape.INSTANCE.getOnlineManager().r();
-        LinkedHashSet<OnlineFriend> linkedHashSet = new LinkedHashSet<OnlineFriend>(Vape.INSTANCE.getOnlineFriendManager().g());
-        PartyState partyState = Vape.INSTANCE.getOnlineManager().y().j();
+        LocalOnlineFriend localOnlineFriend = Vape.INSTANCE.getOnlineManager().getLocalFriend();
+        LinkedHashSet<OnlineFriend> relevantFriends = new LinkedHashSet<OnlineFriend>(Vape.INSTANCE.getOnlineFriendManager().getFriends());
+        PartyState partyState = Vape.INSTANCE.getOnlineManager().getPartyManager().getCurrentParty();
         if (partyState != null) {
-            linkedHashSet.addAll(partyState.c());
+            relevantFriends.addAll(partyState.getMembers());
         }
-        LinkedHashMap<String, OnlineFriend> linkedHashMap = new LinkedHashMap<String, OnlineFriend>();
-        for (OnlineFriend onlineFriend : linkedHashSet) {
-            if (onlineFriend.S().g() == localOnlineFriend.S().g() || onlineFriend.I().isEmpty()) continue;
-            linkedHashMap.put(onlineFriend.I(), onlineFriend);
+        LinkedHashMap<String, OnlineFriend> friendsByMinecraftUsername = new LinkedHashMap<String, OnlineFriend>();
+        for (OnlineFriend onlineFriend : relevantFriends) {
+            if (onlineFriend.getUser().getId() == localOnlineFriend.getUser().getId() || onlineFriend.getMinecraftUsername().isEmpty()) continue;
+            friendsByMinecraftUsername.put(onlineFriend.getMinecraftUsername(), onlineFriend);
         }
-        for (Object object : world.X()) {
-            Long l;
-            EntityPlayer entityPlayer2 = new EntityPlayer(object);
-            OnlineFriend onlineFriend2 = (OnlineFriend)linkedHashMap.get(entityPlayer2.getName());
-            if (onlineFriend2 == null || entityPlayer2.l() < 20) continue;
-            Long l2 = this.A.get(onlineFriend2.S().g());
-            if (l2 != null) {
-                long l3 = System.currentTimeMillis() - l2;
-                if (l3 <= 2000L) continue;
-                this.A.remove(onlineFriend2.S().g());
+        for (Object playerHandle : world.X()) {
+            EntityPlayer nearbyPlayer = new EntityPlayer(playerHandle);
+            OnlineFriend nearbyFriend = friendsByMinecraftUsername.get(nearbyPlayer.getName());
+            if (nearbyFriend == null || nearbyPlayer.l() < 20) continue;
+            long userId = nearbyFriend.getUser().getId();
+            Long cooldownTimestamp = this.worldChangeCooldowns.get(userId);
+            if (cooldownTimestamp != null) {
+                long elapsed = System.currentTimeMillis() - cooldownTimestamp;
+                if (elapsed <= 2000L) continue;
+                this.worldChangeCooldowns.remove(userId);
             }
-            if ((l = this.G.get(onlineFriend2.S().g())) != null) {
-                long l4 = System.currentTimeMillis() - l;
-                if (l4 <= 2000L) continue;
-                Set<Long> set = this.S;
-                synchronized (set) {
-                    if (this.S.contains(onlineFriend2.S().g())) {
+            Long nearbySince = this.nearbySinceByUserId.get(userId);
+            if (nearbySince != null) {
+                long nearbyDuration = System.currentTimeMillis() - nearbySince;
+                if (nearbyDuration <= 2000L) continue;
+                Set<Long> reportedUsers = this.reportedLocationUserIds;
+                synchronized (reportedUsers) {
+                    if (this.reportedLocationUserIds.contains(userId)) {
                         continue;
                     }
-                    this.S.add(onlineFriend2.S().g());
-                    ZeusConnectionManager.T().u().R(onlineFriend2.S().g(), (int)entityPlayer2.z(), (int)entityPlayer2.N(), (int)entityPlayer2.h());
+                    this.reportedLocationUserIds.add(userId);
+                    ZeusConnectionManager.T().u().R(userId, (int)nearbyPlayer.z(), (int)nearbyPlayer.N(), (int)nearbyPlayer.h());
                     continue;
                 }
             }
-            if (this.J(onlineFriend2) || this.H.containsKey(onlineFriend2.S().g()) || this.G.containsKey(onlineFriend2.S().g())) continue;
-            this.G.put(onlineFriend2.S().g(), System.currentTimeMillis());
-            this.H.put(onlineFriend2.S().g(), onlineFriend2);
+            if (this.isTracking(nearbyFriend) || this.pendingSubscriptions.containsKey(userId) || this.nearbySinceByUserId.containsKey(userId)) continue;
+            this.nearbySinceByUserId.put(userId, System.currentTimeMillis());
+            this.pendingSubscriptions.put(userId, nearbyFriend);
         }
-        this.h(entityPlayer);
+        this.flushPendingSubscriptionsAndInventory(localPlayer);
     }
 
     /*
      * WARNING - Removed try catching itself - possible behaviour change.
      */
-    public void m(long l) {
-        this.A.put(l, System.currentTimeMillis() + 2000L);
-        this.m.remove(l);
-        this.H.remove(l);
-        this.G.remove(l);
-        Set<Long> set = this.S;
-        synchronized (set) {
-            this.S.remove(l);
+    public void removeTrackedUser(long userId) {
+        this.worldChangeCooldowns.put(userId, System.currentTimeMillis() + 2000L);
+        this.activityStatesByUserId.remove(userId);
+        this.pendingSubscriptions.remove(userId);
+        this.nearbySinceByUserId.remove(userId);
+        Set<Long> reportedUsers = this.reportedLocationUserIds;
+        synchronized (reportedUsers) {
+            this.reportedLocationUserIds.remove(userId);
         }
     }
 }

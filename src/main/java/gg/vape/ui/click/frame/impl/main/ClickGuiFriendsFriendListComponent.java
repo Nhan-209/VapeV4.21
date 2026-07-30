@@ -42,22 +42,22 @@ extends InteractiveComponent {
 
     private String getStatusText(boolean bl) {
         boolean bl2;
-        boolean bl3 = bl2 = this.friend.u() && this.friend.I() != null && !this.friend.I().isEmpty();
+        boolean bl3 = bl2 = this.friend.isVisible() && this.friend.getMinecraftUsername() != null && !this.friend.getMinecraftUsername().isEmpty();
         if (bl2) {
-            return this.friend.I();
+            return this.friend.getMinecraftUsername();
         }
-        OnlineStatus onlineStatus = this.friend.F();
+        OnlineStatus onlineStatus = this.friend.getStatus();
         if (onlineStatus != null) {
-            return onlineStatus.f();
+            return onlineStatus.getDisplayName();
         }
         return "";
     }
 
     private String getDisplayName(boolean bl) {
-        if (bl && this.friend.C() != null) {
-            return this.friend.C();
+        if (bl && this.friend.getDisplayName() != null) {
+            return this.friend.getDisplayName();
         }
-        String string = this.friend.C();
+        String string = this.friend.getDisplayName();
         return string != null ? string : "";
     }
 
@@ -66,7 +66,7 @@ extends InteractiveComponent {
     }
 
     private String getActivityText() {
-        String string = this.friend.v();
+        String string = this.friend.getMinecraftServer();
         if (string == null) {
             return "";
         }
@@ -181,7 +181,7 @@ extends InteractiveComponent {
         this.statusLabel.setMaxWidth(d);
         this.statusLabel.setText(string2);
         this.statusLabel.setVisible(!string2.isEmpty());
-        this.chatButton.setNotificationDotVisible(this.friend.r());
+        this.chatButton.setNotificationDotVisible(this.friend.hasUnreadMessage());
         this.statusIcon.setHovered(bl);
     }
 

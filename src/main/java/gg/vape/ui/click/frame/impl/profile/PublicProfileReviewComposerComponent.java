@@ -44,30 +44,30 @@ extends GuiComponent {
 
     private void lambda$submit$4(boolean bl, boolean bl2, ApiResponse apiResponse, Throwable throwable) {
         if (throwable != null) {
-            PublicProfileManager.b("Failed to leave review.");
+            PublicProfileManager.showWarning("Failed to leave review.");
             Vape.logThrowable(throwable);
             return;
         }
-        if (!apiResponse.t()) {
-            PublicProfileManager.b("Failed to leave review: " + apiResponse.N());
+        if (!apiResponse.isSuccessful()) {
+            PublicProfileManager.showWarning("Failed to leave review: " + apiResponse.getError());
             return;
         }
-        if (!ASSERTIONS_DISABLED && apiResponse.T() == null) {
+        if (!ASSERTIONS_DISABLED && apiResponse.getData() == null) {
             throw new AssertionError();
         }
         if (this.editingExistingReview) {
-            PublicProfileManager.M("Review updated!");
+            PublicProfileManager.showInfo("Review updated!");
         } else {
-            PublicProfileManager.M("Review posted!");
+            PublicProfileManager.showInfo("Review posted!");
         }
-        if (this.publicProfile.z() == null) {
+        if (this.publicProfile.getViewerReview() == null) {
             if (bl) {
-                this.publicProfile.E(this.publicProfile.J() + 1L);
+                this.publicProfile.setLikes(this.publicProfile.getLikes() + 1L);
             } else {
-                this.publicProfile.b(this.publicProfile.W() + 1L);
+                this.publicProfile.setDislikes(this.publicProfile.getDislikes() + 1L);
             }
         }
-        this.publicProfile.B((PublicProfileReview)apiResponse.T());
+        this.publicProfile.setViewerReview((PublicProfileReview)apiResponse.getData());
         this.reviewUpdatedCallback.run();
         if (bl2) {
             this.closeCallback.run();
@@ -78,7 +78,7 @@ extends GuiComponent {
         runnable.run();
         String string = this.feedbackInput.getText().trim();
         if (string.isEmpty() && !bl) {
-            PublicProfileManager.b("You must provide feedback when leaving a negative review!");
+            PublicProfileManager.showWarning("You must provide feedback when leaving a negative review!");
             return null;
         }
         return this.Y(bl, string, true);
@@ -121,7 +121,7 @@ extends GuiComponent {
         this.container = new PanelComponent(20.0, 20.0);
         this.container.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M("widthwrap");
         this.container.setShowDisabledOverlay(false);
-        this.avatar = new PublicProfileUserAvatarComponent(Vape.INSTANCE.getAccountInfo().i(), 15.0, 15.0);
+        this.avatar = new PublicProfileUserAvatarComponent(Vape.INSTANCE.getAccountInfo().getUserId(), 15.0, 15.0);
         this.avatar.setInset(2.0f);
         Color color = bl ? PublicProfileReviewComposerComponent.J.B : PublicProfileReviewComposerComponent.J.d;
         Color color2 = bl ? PublicProfileReviewComposerComponent.J.O : PublicProfileReviewComposerComponent.J.c;
@@ -135,9 +135,9 @@ extends GuiComponent {
         animatedCenteredTextLabelComponent.setFontScale(0.75);
         animatedCenteredTextLabelComponent.setClickListener(this::lambda$new$0);
         this.feedbackInput = new SmallTextInputComponent("");
-        PublicProfileReview publicProfileReview = publicProfile.z();
+        PublicProfileReview publicProfileReview = publicProfile.getViewerReview();
         if (publicProfileReview != null) {
-            this.feedbackInput.setText(publicProfileReview.I());
+            this.feedbackInput.setText(publicProfileReview.getMessage());
             this.feedbackInput.addKeyTypedListener((arg_0, arg_1) -> this.lambda$new$1(color, arg_0, arg_1));
             Runnable runnable3 = () -> this.lambda$new$2(bl);
             runnable3.run();
@@ -149,7 +149,7 @@ extends GuiComponent {
             this.container.addChildren(this.avatar, this.feedbackInput, new PaddedComponent(2.0, 0.0, 0.0, 0.0, this.actionLayout));
             this.addChildren(this.container);
             if (bl && !bl2) {
-                this.Y(true, publicProfileReview.I(), false);
+                this.Y(true, publicProfileReview.getMessage(), false);
             }
             return;
         }
@@ -179,7 +179,7 @@ extends GuiComponent {
     }
 
     private CompletableFuture<ApiResponse<PublicProfileReview>> Y(boolean bl, String string, boolean bl2) {
-        return ApiServices.d().R().m(this.publicProfile, bl, string).whenCompleteAsync((arg_0, arg_1) -> this.lambda$submit$4(bl, bl2, arg_0, arg_1), (Executor)ClientSettings.UI_EXECUTOR).exceptionally(PublicProfileReviewComposerComponent::lambda$submit$5);
+        return ApiServices.getInstance().getPublicProfileApi().createReview(this.publicProfile, bl, string).whenCompleteAsync((arg_0, arg_1) -> this.lambda$submit$4(bl, bl2, arg_0, arg_1), (Executor)ClientSettings.UI_EXECUTOR).exceptionally(PublicProfileReviewComposerComponent::lambda$submit$5);
     }
 
     public PublicProfileUserAvatarComponent g$src$Lgg_vape_ui_click_frame_impl_profile_PublicProfi$1wft5vq() {

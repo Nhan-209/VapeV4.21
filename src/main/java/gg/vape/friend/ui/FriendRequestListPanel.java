@@ -17,66 +17,66 @@ import java.util.HashMap;
 
 public class FriendRequestListPanel
 extends PanelComponent {
-    private HashMap<FriendRequest, FriendRequestRow> ln;
-    private final PanelComponent lT = new PanelComponent(100.0, 8.0);
-    private FriendRequestRowsPanel lr;
-    private final PanelComponent l2 = new PanelComponent(100.0, 90.0);
+    private HashMap<FriendRequest, FriendRequestRow> rowsByRequest;
+    private final PanelComponent headerPanel = new PanelComponent(100.0, 8.0);
+    private FriendRequestRowsPanel rowsPanel;
+    private final PanelComponent bodyPanel = new PanelComponent(100.0, 90.0);
 
 
-    public void W() {
-        ArrayList<FriendRequestRow> arrayList = new ArrayList<FriendRequestRow>(this.ln.values());
-        arrayList.sort(Comparator.comparing(FriendRequestListPanel::lambda$refreshList$0));
-        ArrayList<FriendRequestRow> arrayList2 = new ArrayList<FriendRequestRow>();
-        for (FriendRequestRow friendRequestRow : arrayList) {
-            if (!(friendRequestRow.y$src$Lgg_vape_friend_FriendRequest_$kilm25() instanceof IncomingFriendRequest)) continue;
-            arrayList2.add(friendRequestRow);
+    public void refreshList() {
+        ArrayList<FriendRequestRow> sortedRows = new ArrayList<FriendRequestRow>(this.rowsByRequest.values());
+        sortedRows.sort(Comparator.comparing(FriendRequestListPanel::getRequestDisplayName));
+        ArrayList<FriendRequestRow> orderedRows = new ArrayList<FriendRequestRow>();
+        for (FriendRequestRow friendRequestRow : sortedRows) {
+            if (!(friendRequestRow.getRequest() instanceof IncomingFriendRequest)) continue;
+            orderedRows.add(friendRequestRow);
         }
-        for (FriendRequestRow friendRequestRow : arrayList) {
-            if (!(friendRequestRow.y$src$Lgg_vape_friend_FriendRequest_$kilm25() instanceof OutgoingFriendRequest)) continue;
-            arrayList2.add(friendRequestRow);
+        for (FriendRequestRow friendRequestRow : sortedRows) {
+            if (!(friendRequestRow.getRequest() instanceof OutgoingFriendRequest)) continue;
+            orderedRows.add(friendRequestRow);
         }
-        this.lr.removeMarkedChildren();
-        this.lr.addChildren(arrayList2.toArray(new GuiComponent[0]));
+        this.rowsPanel.removeMarkedChildren();
+        this.rowsPanel.addChildren(orderedRows.toArray(new GuiComponent[0]));
     }
 
     @Override
     public double C() {
-        return this.lT.L() + (this.lr.d$src$D$ibccpu() + 2.0);
+        return this.headerPanel.L() + (this.rowsPanel.d$src$D$ibccpu() + 2.0);
     }
 
-    public void M(FriendRequest friendRequest) {
-        FriendRequestRow friendRequestRow = this.ln.remove(friendRequest);
+    public void removeRequest(FriendRequest friendRequest) {
+        FriendRequestRow friendRequestRow = this.rowsByRequest.remove(friendRequest);
         if (friendRequestRow == null) {
             return;
         }
-        this.W();
+        this.refreshList();
     }
 
-    public HashMap<FriendRequest, FriendRequestRow> Z$src$Ljava_util_HashMap_$1f9jru6() {
-        return this.ln;
+    public HashMap<FriendRequest, FriendRequestRow> getRowsByRequest() {
+        return this.rowsByRequest;
     }
 
-    public void z(FriendRequest friendRequest) {
+    public void addRequest(FriendRequest friendRequest) {
         FriendRequestRow friendRequestRow = friendRequest instanceof IncomingFriendRequest ? new IncomingFriendRequestRow((IncomingFriendRequest)friendRequest) : new OutgoingFriendRequestRow((OutgoingFriendRequest)friendRequest);
-        this.ln.put(friendRequest, friendRequestRow);
-        this.W();
+        this.rowsByRequest.put(friendRequest, friendRequestRow);
+        this.refreshList();
     }
 
-    private static String lambda$refreshList$0(FriendRequestRow friendRequestRow) {
-        return friendRequestRow.y$src$Lgg_vape_friend_FriendRequest_$kilm25().x().C();
+    private static String getRequestDisplayName(FriendRequestRow row) {
+        return row.getRequest().getFriend().getDisplayName();
     }
 
     public FriendRequestListPanel() {
         super(96.0, 16.0);
-        this.ln = new HashMap();
-        this.lr = new FriendRequestRowsPanel();
+        this.rowsByRequest = new HashMap();
+        this.rowsPanel = new FriendRequestRowsPanel();
         this.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M("wrap");
         this.setShowDisabledOverlay(false);
-        this.lT.setShowDisabledOverlay(false);
-        this.lT.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().Q(true);
-        this.l2.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M("wrap");
-        this.l2.addChildren(new SpacerComponent(1.0, 2.0), this.lr);
-        this.addChildren(this.lT, this.l2);
+        this.headerPanel.setShowDisabledOverlay(false);
+        this.headerPanel.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().Q(true);
+        this.bodyPanel.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M("wrap");
+        this.bodyPanel.addChildren(new SpacerComponent(1.0, 2.0), this.rowsPanel);
+        this.addChildren(this.headerPanel, this.bodyPanel);
     }
 
     @Override
@@ -88,12 +88,12 @@ extends PanelComponent {
     public void c() {
         super.c();
         SmoothFontRenderer smoothFontRenderer = this.getAlternateFontRenderer(0.7);
-        String string = this.lr.Z$src$I$1nljwqr() + " ";
-        String string2 = "PENDING REQUESTS";
-        double d = smoothFontRenderer.N(string) + 1.0;
-        double d2 = (this.lT.L() - smoothFontRenderer.d(string2)) / 2.0;
-        smoothFontRenderer.d(string, this.lT.G$src$D$1b2f02a() + 1.0, this.lT.n() + d2, FriendRequestListPanel.J.A);
-        smoothFontRenderer.d(string2, this.lT.G$src$D$1b2f02a() + d + 1.0, this.lT.n() + d2, FriendRequestListPanel.J.h);
+        String requestCountText = this.rowsPanel.getRowCount() + " ";
+        String headingText = "PENDING REQUESTS";
+        double countWidth = smoothFontRenderer.N(requestCountText) + 1.0;
+        double textOffsetY = (this.headerPanel.L() - smoothFontRenderer.d(headingText)) / 2.0;
+        smoothFontRenderer.d(requestCountText, this.headerPanel.G$src$D$1b2f02a() + 1.0, this.headerPanel.n() + textOffsetY, FriendRequestListPanel.J.A);
+        smoothFontRenderer.d(headingText, this.headerPanel.G$src$D$1b2f02a() + countWidth + 1.0, this.headerPanel.n() + textOffsetY, FriendRequestListPanel.J.h);
     }
 }
 

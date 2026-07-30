@@ -9,11 +9,11 @@ import java.awt.Color;
 
 public class OnlineCombatStatComparisonComponent
 extends SliderComponentBase {
-    private OnlineCombatStatsSettingsFrame O;
-    private int a;
-    private int R;
+    private final OnlineCombatStatsSettingsFrame statsFrame;
+    private int targetCount;
+    private int localCount;
 
-    private void P() {
+    private void renderComparison() {
         Color color;
         double d;
         double d2;
@@ -23,16 +23,16 @@ extends SliderComponentBase {
         String string2;
         StringBuilder stringBuilder;
         SmoothFontRenderer smoothFontRenderer2 = this.getFontRenderer(0.85);
-        int n = this.a - this.R;
+        int n = this.targetCount - this.localCount;
         int n2 = Math.abs(n);
         boolean bl = n < 0;
         boolean bl2 = n > 0;
-        boolean bl3 = this.O.isManagedByClickGui();
-        Color color2 = bl3 ? this.O.applyDefaultEditorAlpha(OnlineCombatStatComparisonComponent.J.Z) : OnlineCombatStatComparisonComponent.J.Z;
-        Color color3 = bl3 ? this.O.applyDefaultEditorAlpha(OnlineCombatStatComparisonComponent.J.h) : OnlineCombatStatComparisonComponent.J.h;
-        Color color4 = bl3 ? this.O.applyDefaultEditorAlpha(OnlineCombatStatComparisonComponent.J.l) : OnlineCombatStatComparisonComponent.J.l;
-        Color color5 = bl3 ? this.O.applyDefaultEditorAlpha(OnlineCombatStatComparisonComponent.J.B) : OnlineCombatStatComparisonComponent.J.B;
-        Color color6 = bl3 ? this.O.applyDefaultEditorAlpha(OnlineCombatStatComparisonComponent.J.d) : OnlineCombatStatComparisonComponent.J.d;
+        boolean bl3 = this.statsFrame.isManagedByClickGui();
+        Color color2 = bl3 ? this.statsFrame.applyDefaultEditorAlpha(OnlineCombatStatComparisonComponent.J.Z) : OnlineCombatStatComparisonComponent.J.Z;
+        Color color3 = bl3 ? this.statsFrame.applyDefaultEditorAlpha(OnlineCombatStatComparisonComponent.J.h) : OnlineCombatStatComparisonComponent.J.h;
+        Color color4 = bl3 ? this.statsFrame.applyDefaultEditorAlpha(OnlineCombatStatComparisonComponent.J.l) : OnlineCombatStatComparisonComponent.J.l;
+        Color color5 = bl3 ? this.statsFrame.applyDefaultEditorAlpha(OnlineCombatStatComparisonComponent.J.B) : OnlineCombatStatComparisonComponent.J.B;
+        Color color6 = bl3 ? this.statsFrame.applyDefaultEditorAlpha(OnlineCombatStatComparisonComponent.J.d) : OnlineCombatStatComparisonComponent.J.d;
         StringBuilder stringBuilder2 = new StringBuilder();
         if (bl2) {
             stringBuilder = stringBuilder2;
@@ -84,8 +84,8 @@ extends SliderComponentBase {
         }
         smoothFontRenderer.W(string, d2, d, color);
         smoothFontRenderer2.d(this.getLabel(), this.G$src$D$1b2f02a() + 10.0 + d4, d3, color2);
-        String string6 = this.a > 9 ? "" + this.a : "0" + this.a;
-        String string7 = this.R > 9 ? "" + this.R : "0" + this.R;
+        String string6 = this.targetCount > 9 ? "" + this.targetCount : "0" + this.targetCount;
+        String string7 = this.localCount > 9 ? "" + this.localCount : "0" + this.localCount;
         double d9 = smoothFontRenderer2.N(string6);
         double d10 = smoothFontRenderer2.N(string6);
         double d11 = smoothFontRenderer2.N("/");
@@ -96,27 +96,27 @@ extends SliderComponentBase {
         double d13 = this.n() + 22.5;
         double d14 = 6.0;
         GuiRenderPrimitives.C(this.G$src$D$1b2f02a() + 5.0, d13 - 0.5, this.A() - 10.0, 2.0, color4);
-        int n3 = this.a + this.R;
+        int n3 = this.targetCount + this.localCount;
         if (n3 == 0) {
             GuiRenderPrimitives.F("greenglowsquare", this.G$src$D$1b2f02a() + this.A() / 2.0, d13, 20.0, 20.0, Color.WHITE);
             return;
         }
         double d15 = (double)n2 / (double)n3;
         double d16 = this.A() / 2.0 - 5.0 - d14;
-        double d17 = this.a >= this.R ? this.G$src$D$1b2f02a() + 5.0 + d16 - d16 * d15 : this.G$src$D$1b2f02a() + 5.0 + d16 + d14 * 2.0 + d16 * d15;
-        if (this.a >= this.R) {
+        double d17 = this.targetCount >= this.localCount ? this.G$src$D$1b2f02a() + 5.0 + d16 - d16 * d15 : this.G$src$D$1b2f02a() + 5.0 + d16 + d14 * 2.0 + d16 * d15;
+        if (this.targetCount >= this.localCount) {
             GuiRenderPrimitives.C(d17, d13 - 0.5, this.G$src$D$1b2f02a() + this.A() / 2.0 - d17, 2.0, color5);
         } else {
             GuiRenderPrimitives.C(this.G$src$D$1b2f02a() + this.A() / 2.0, d13 - 0.5, d17 - this.G$src$D$1b2f02a() - this.A() / 2.0, 2.0, color6);
         }
-        GuiRenderPrimitives.F(this.a >= this.R ? "greenglowsquare" : "redglowsquare", this.G$src$D$1b2f02a() + this.A() / 2.0, d13, 20.0, 20.0, Color.WHITE);
-        GuiRenderPrimitives.F(this.a >= this.R ? "greenglowsquare" : "redglowsquare", d17, d13, 20.0, 20.0, Color.WHITE);
+        GuiRenderPrimitives.F(this.targetCount >= this.localCount ? "greenglowsquare" : "redglowsquare", this.G$src$D$1b2f02a() + this.A() / 2.0, d13, 20.0, 20.0, Color.WHITE);
+        GuiRenderPrimitives.F(this.targetCount >= this.localCount ? "greenglowsquare" : "redglowsquare", d17, d13, 20.0, 20.0, Color.WHITE);
     }
 
 
     public OnlineCombatStatComparisonComponent(String string, OnlineCombatStatsSettingsFrame onlineCombatStatsSettingsFrame) {
         super(string);
-        this.O = onlineCombatStatsSettingsFrame;
+        this.statsFrame = onlineCombatStatsSettingsFrame;
     }
 
     @Override
@@ -124,8 +124,8 @@ extends SliderComponentBase {
         return 30.0;
     }
 
-    public void N(int n) {
-        this.R = n;
+    public void setLocalCount(int count) {
+        this.localCount = count;
     }
 
     @Override
@@ -139,12 +139,12 @@ extends SliderComponentBase {
 
     @Override
     public void I() {
-        this.P();
+        this.renderComparison();
     }
 
     @Override
     public void H() {
-        this.P();
+        this.renderComparison();
     }
 
     @Override
@@ -155,8 +155,8 @@ extends SliderComponentBase {
     public void F() {
     }
 
-    public void n(int n) {
-        this.a = n;
+    public void setTargetCount(int count) {
+        this.targetCount = count;
     }
 }
 

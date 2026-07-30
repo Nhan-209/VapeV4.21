@@ -13,7 +13,7 @@ extends Mapping {
 
 
     public void t(Object object, boolean bl) {
-        this.X.c(object, bl);
+        this.X.invokeVoid(object, bl);
     }
 
     public MSetVisibility() {

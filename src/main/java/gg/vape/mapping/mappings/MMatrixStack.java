@@ -104,11 +104,11 @@ extends Mapping {
     }
 
     private void j(Object object) {
-        this.m.F(object);
+        this.m.invokeVoidNoArgs(object);
     }
 
     private void p(Object object, double d, double d2, double d3) {
-        this.M.c(object, d, d2, d3);
+        this.M.invokeVoid(object, d, d2, d3);
     }
 
     public static Object S(MMatrixStack mMatrixStack, Object object) {
@@ -116,7 +116,7 @@ extends Mapping {
     }
 
     private void x(Object object, Object object2) {
-        this.j.c(object, object2);
+        this.j.invokeVoid(object, object2);
     }
 
     public static void u(MMatrixStack mMatrixStack, Object object) {
@@ -136,7 +136,7 @@ extends Mapping {
     }
 
     private void g(Object object) {
-        this.B.F(object);
+        this.B.invokeVoidNoArgs(object);
     }
 
     public static void m(int[] nArray) {
@@ -144,15 +144,15 @@ extends Mapping {
     }
 
     private Object t() {
-        return this.D.O(new Object[0]);
+        return this.D.newInstance(new Object[0]);
     }
 
     private Object q(Object object) {
-        return this.i.L(object, new Object[0]);
+        return this.i.invokeObject(object, new Object[0]);
     }
 
     private void k(Object object, Object object2) {
-        this.Q.c(object, object2);
+        this.Q.invokeVoid(object, object2);
     }
 
     public static void o(MMatrixStack mMatrixStack, Object object, Object object2) {
@@ -168,7 +168,7 @@ extends Mapping {
     }
 
     private void v(Object object, float f, float f2, float f3) {
-        this.Z.c(object, Float.valueOf(f), Float.valueOf(f2), Float.valueOf(f3));
+        this.Z.invokeVoid(object, Float.valueOf(f), Float.valueOf(f2), Float.valueOf(f3));
     }
 
     public static Object U(MMatrixStack mMatrixStack) {
@@ -176,7 +176,7 @@ extends Mapping {
     }
 
     private void h(Object object) {
-        this.W.F(object);
+        this.W.invokeVoidNoArgs(object);
     }
 }
 

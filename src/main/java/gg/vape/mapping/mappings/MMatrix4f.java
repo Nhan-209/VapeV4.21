@@ -19,11 +19,11 @@ extends Mapping {
 
 
     private Object O(Object object, float f, float f2, float f3) {
-        return this.z.L(object, Float.valueOf(f), Float.valueOf(f2), Float.valueOf(f3));
+        return this.z.invokeObject(object, Float.valueOf(f), Float.valueOf(f2), Float.valueOf(f3));
     }
 
     private void z(Object object, FloatBuffer floatBuffer) {
-        this.X.c(object, floatBuffer);
+        this.X.invokeVoid(object, floatBuffer);
     }
 
     public static void l(MMatrix4f mMatrix4f, Object object, Matrix4f matrix4f) {
@@ -35,23 +35,23 @@ extends Mapping {
     }
 
     private Object b() {
-        return this.D.O(new Object[0]);
+        return this.D.newInstance(new Object[0]);
     }
 
     private void O(Object object, FloatBuffer floatBuffer) {
         if (ForgeVersion.MC_1_20_6.d()) {
-            this.M.L(object, floatBuffer);
+            this.M.invokeObject(object, floatBuffer);
             return;
         }
-        this.M.c(object, floatBuffer);
+        this.M.invokeVoid(object, floatBuffer);
     }
 
     private void e(Object object, Matrix4f matrix4f) {
         if (ForgeVersion.MC_1_20_6.d()) {
-            this.L.L(object, matrix4f.getObject());
+            this.L.invokeObject(object, matrix4f.getObject());
             return;
         }
-        this.L.c(object, matrix4f.getObject());
+        this.L.invokeVoid(object, matrix4f.getObject());
     }
 
     public static void d(MMatrix4f mMatrix4f, Object object, FloatBuffer floatBuffer) {
@@ -67,7 +67,7 @@ extends Mapping {
     }
 
     private Object Z(FloatBuffer floatBuffer) {
-        return this.X.O(floatBuffer);
+        return this.X.newInstance(floatBuffer);
     }
 
     public static void M(MMatrix4f mMatrix4f, Object object, FloatBuffer floatBuffer) {
@@ -116,7 +116,7 @@ extends Mapping {
                 } else {
                     Class[] classArray6 = new Class[]{MappedClasses.qr};
                     Class<Void> clazz6 = Void.TYPE;
-                    boolean bl6 = Wrapper.G;
+                    boolean bl6 = Wrapper.isNativeAvailable;
                     String string6 = "func_226595_a_";
                     MMatrix4f mMatrix4f6 = this;
                     this.L = this.Y(string6, bl6, clazz6, classArray6);

@@ -66,7 +66,7 @@ extends PopupSelectorComponent {
         panelComponent.t(panelComponent.L());
         this.popupContent.h(panelComponent, "widthwrap");
         for (Profile profile : profiles) {
-            IconTextActionRowComponent iconTextActionRowComponent = new IconTextActionRowComponent(profile.n$src$Ljava_lang_String_$xqhelw());
+            IconTextActionRowComponent iconTextActionRowComponent = new IconTextActionRowComponent(profile.getName());
             iconTextActionRowComponent.o(panelComponent.A());
             iconTextActionRowComponent.Y(12.0);
             iconTextActionRowComponent.setClickListener(() -> this.requestProfileSelectionConfirmation(profile));
@@ -111,9 +111,8 @@ extends PopupSelectorComponent {
         this.missingProfileWarning.S(this.n() - 1.0);
         this.selectedProfileLabel.K(this.derivedFromLabel.G$src$D$1b2f02a() + this.derivedFromLabel.getTextWidth() + 8.0);
         this.selectedProfileLabel.S(this.n() + 2.0);
-        this.selectedProfileLabel.setText(this.selectedProfile != null ? this.selectedProfile.n$src$Ljava_lang_String_$xqhelw() : "");
+        this.selectedProfileLabel.setText(this.selectedProfile != null ? this.selectedProfile.getName() : "");
         this.dropdownArrow.K(this.missingProfileWarning.V$src$Z$1xhop3l() ? this.missingProfileWarning.G$src$D$1b2f02a() + this.missingProfileWarning.A() + 4.0 : this.selectedProfileLabel.G$src$D$1b2f02a() + this.selectedProfileLabel.getRenderedWidth() + 2.0);
         this.dropdownArrow.S(this.n() + 2.0);
     }
 }
-

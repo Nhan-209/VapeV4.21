@@ -6,19 +6,19 @@ import gg.vape.wrapper.impl.EntityPlayerSP;
 
 public class EventLocalPlayerTickBase
 extends Event {
-    private final EntityPlayerSP e;
-    private static final EventListeners r = new EventListeners();
+    private final EntityPlayerSP player;
+    private static final EventListeners EVENT_LISTENERS = new EventListeners();
 
-    EventLocalPlayerTickBase(Object object) {
-        this.e = new EntityPlayerSP(object);
+    EventLocalPlayerTickBase(Object playerHandle) {
+        this.player = new EntityPlayerSP(playerHandle);
     }
 
     public EntityPlayerSP getPlayer() {
-        return this.e;
+        return this.player;
     }
 
     public static EventListeners getEventListeners() {
-        return r;
+        return EVENT_LISTENERS;
     }
 
     @Override
@@ -28,7 +28,6 @@ extends Event {
 
     @Override
     public EventListeners getListeners() {
-        return r;
+        return EVENT_LISTENERS;
     }
 }
-

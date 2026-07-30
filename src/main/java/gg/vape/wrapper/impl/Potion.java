@@ -2,8 +2,7 @@ package gg.vape.wrapper.impl;
 
 import gg.vape.mapping.mappings.MPotion;
 import gg.vape.wrapper.Wrapper;
-import gg.vape.wrapper.impl.ForgeVersion;
-import gg.vape.wrapper.impl.PotionEffect;
+
 import java.util.ArrayList;
 
 public class Potion
@@ -14,14 +13,14 @@ extends Wrapper {
 
     public boolean n() {
         if (ForgeVersion.MC_1_16_5.d()) {
-            for (Object e : Potion.c.getMappings().qU.W(this.I)) {
+            for (Object e : Potion.vapeInstance.getMappings().qU.W(this.I)) {
                 PotionEffect potionEffect = new PotionEffect(e);
                 if (potionEffect.i().p()) continue;
                 return true;
             }
             return false;
         }
-        return Potion.c.getMappings().qU.E(this.I);
+        return Potion.vapeInstance.getMappings().qU.E(this.I);
     }
 
     public int getId() {
@@ -29,18 +28,18 @@ extends Wrapper {
             return -1;
         }
         if (ForgeVersion.MC_1_12_2.d()) {
-            return MPotion.R(Potion.c.getMappings().qU, this.getObject());
+            return MPotion.R(Potion.vapeInstance.getMappings().qU, this.getObject());
         }
-        return MPotion.g(Potion.c.getMappings().qU, this.I);
+        return MPotion.g(Potion.vapeInstance.getMappings().qU, this.I);
     }
 
     public boolean isBadEffect() {
-        return MPotion.u(Potion.c.getMappings().qU, this.I);
+        return MPotion.u(Potion.vapeInstance.getMappings().qU, this.I);
     }
 
     public static Potion[] getPotionTypes() {
         if (ForgeVersion.MC_1_12_2.d()) {
-            Iterable iterable = (Iterable)MPotion.x(Potion.c.getMappings().qU);
+            Iterable iterable = (Iterable)MPotion.x(Potion.vapeInstance.getMappings().qU);
             ArrayList<Potion> arrayList = new ArrayList<Potion>();
             arrayList.add(null);
             for (Object t : iterable) {
@@ -49,7 +48,7 @@ extends Wrapper {
             }
             return arrayList.toArray(new Potion[arrayList.size()]);
         }
-        Object[] objectArray = MPotion.i(Potion.c.getMappings().qU);
+        Object[] objectArray = MPotion.i(Potion.vapeInstance.getMappings().qU);
         Potion[] potionArray = new Potion[objectArray.length];
         for (int i = 0; i < objectArray.length; ++i) {
             potionArray[i] = new Potion(objectArray[i]);
@@ -62,16 +61,16 @@ extends Wrapper {
         if (ForgeVersion.MC_1_16_5.d()) {
             return -1;
         }
-        return MPotion.H(Potion.c.getMappings().qU, this.I);
+        return MPotion.H(Potion.vapeInstance.getMappings().qU, this.I);
     }
 
     public String y$src$Ljava_lang_String_$yl6pfj() {
-        return MPotion.q(Potion.c.getMappings().qU, this.I);
+        return MPotion.q(Potion.vapeInstance.getMappings().qU, this.I);
     }
 
     public static Potion getPotionById(int n) {
         if (ForgeVersion.MC_1_12_2.d()) {
-            return new Potion(MPotion.Q(Potion.c.getMappings().qU, n));
+            return new Potion(MPotion.Q(Potion.vapeInstance.getMappings().qU, n));
         }
         return Potion.getPotionTypes()[n];
     }

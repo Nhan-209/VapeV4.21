@@ -9,52 +9,52 @@ import java.util.function.Supplier;
 import org.jetbrains.annotations.Nullable;
 
 public class OnlineFriendCache {
-    private final Map<Long, OnlineFriendListEntry> B;
-    private final Map<Long, OnlineFriend> K = new LinkedHashMap<Long, OnlineFriend>();
+    private final Map<Long, OnlineFriendListEntry> listEntriesByUserId;
+    private final Map<Long, OnlineFriend> friendsByUserId = new LinkedHashMap<Long, OnlineFriend>();
 
-    public OnlineFriendListEntry U(OnlineFriend yS, Supplier<OnlineFriendListEntry> supplier) {
-        long l = yS.S().g();
-        OnlineFriendListEntry mz_22 = this.P(l);
-        if (mz_22 != null) {
-            return mz_22;
+    public OnlineFriendListEntry getOrCreateListEntry(OnlineFriend onlineFriend, Supplier<OnlineFriendListEntry> supplier) {
+        long userId = onlineFriend.getUser().getId();
+        OnlineFriendListEntry listEntry = this.getListEntry(userId);
+        if (listEntry != null) {
+            return listEntry;
         }
-        mz_22 = supplier.get();
-        this.B.put(l, mz_22);
-        return mz_22;
+        listEntry = supplier.get();
+        this.listEntriesByUserId.put(userId, listEntry);
+        return listEntry;
     }
 
     public OnlineFriendCache() {
-        this.B = new LinkedHashMap<Long, OnlineFriendListEntry>();
+        this.listEntriesByUserId = new LinkedHashMap<Long, OnlineFriendListEntry>();
     }
 
     @Nullable
-    public OnlineFriendListEntry P(long l) {
-        return this.B.get(l);
+    public OnlineFriendListEntry getListEntry(long userId) {
+        return this.listEntriesByUserId.get(userId);
     }
 
-    public Collection<OnlineFriend> r() {
-        return this.K.values();
+    public Collection<OnlineFriend> getFriends() {
+        return this.friendsByUserId.values();
     }
 
 
-    public OnlineFriend Q(long l, Supplier<OnlineFriend> supplier) {
-        OnlineFriend yS = this.m(l);
-        if (yS != null) {
-            return yS;
+    public OnlineFriend getOrCreateFriend(long userId, Supplier<OnlineFriend> supplier) {
+        OnlineFriend onlineFriend = this.getFriend(userId);
+        if (onlineFriend != null) {
+            return onlineFriend;
         }
-        yS = supplier.get();
-        this.K.put(yS.S().g(), yS);
-        return yS;
+        onlineFriend = supplier.get();
+        this.friendsByUserId.put(onlineFriend.getUser().getId(), onlineFriend);
+        return onlineFriend;
     }
 
     @Nullable
-    public OnlineFriend m(long l) {
-        return this.K.get(l);
+    public OnlineFriend getFriend(long userId) {
+        return this.friendsByUserId.get(userId);
     }
 
-    public void C() {
-        this.K.clear();
-        this.B.clear();
+    public void clear() {
+        this.friendsByUserId.clear();
+        this.listEntriesByUserId.clear();
     }
 }
 

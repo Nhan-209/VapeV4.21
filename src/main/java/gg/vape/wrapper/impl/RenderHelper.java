@@ -3,7 +3,6 @@ package gg.vape.wrapper.impl;
 import gg.vape.mapping.mappings.MRenderHelper;
 import gg.vape.utils.render.OpenGlBackendHolder;
 import gg.vape.wrapper.Wrapper;
-import gg.vape.wrapper.impl.ForgeVersion;
 
 public class RenderHelper
 extends Wrapper {
@@ -16,12 +15,12 @@ extends Wrapper {
         if (ForgeVersion.MC_1_17.d()) {
             return;
         }
-        MRenderHelper.L(RenderHelper.c.getMappingsMapperCompat().x);
+        MRenderHelper.L(RenderHelper.vapeInstance.getMappingsMapperCompat().x);
     }
 
     public static void l() {
         if (ForgeVersion.MC_1_17.d()) {
-            MRenderHelper.M(RenderHelper.c.getMappingsMapperCompat().x);
+            MRenderHelper.M(RenderHelper.vapeInstance.getMappingsMapperCompat().x);
             return;
         }
         if (ForgeVersion.MC_1_16_5.d()) {
@@ -32,14 +31,14 @@ extends Wrapper {
             OpenGlBackendHolder.backend.popMatrix();
             return;
         }
-        MRenderHelper.M(RenderHelper.c.getMappingsMapperCompat().x);
+        MRenderHelper.M(RenderHelper.vapeInstance.getMappingsMapperCompat().x);
     }
 
     public static void e() {
         if (ForgeVersion.MC_1_17.d()) {
             return;
         }
-        MRenderHelper.Q(RenderHelper.c.getMappingsMapperCompat().x);
+        MRenderHelper.Q(RenderHelper.vapeInstance.getMappingsMapperCompat().x);
     }
 }
 

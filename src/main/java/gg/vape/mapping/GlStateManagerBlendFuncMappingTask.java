@@ -11,7 +11,7 @@ import javassist.CtBehavior;
 public class GlStateManagerBlendFuncMappingTask
 extends JavassistMappingTask {
     @Override
-    public void c() {
+    public void transform() {
         MappingMethod mappingMethod = Vape.INSTANCE.getMappings().Dt.O;
         CtBehavior ctBehavior = this.F(mappingMethod);
         try {
@@ -27,4 +27,3 @@ extends JavassistMappingTask {
         super(MappedClasses.K);
     }
 }
-

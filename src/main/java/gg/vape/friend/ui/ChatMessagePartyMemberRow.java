@@ -8,7 +8,6 @@ public class ChatMessagePartyMemberRow
 extends PartyMemberRow {
     public ChatMessagePartyMemberRow(OnlineFriend onlineFriend, PartyMemberStatusComponent partyMemberStatusComponent) {
         super(onlineFriend, partyMemberStatusComponent, false);
-        this.D$src$Lgg_vape_friend_ui_OnlineFriendAvatarComponent_$3ru3vc().setVisible(false);
+        this.getAvatar().setVisible(false);
     }
 }
-

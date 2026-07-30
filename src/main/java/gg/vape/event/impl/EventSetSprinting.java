@@ -6,26 +6,26 @@ import gg.vape.wrapper.impl.Entity;
 
 public class EventSetSprinting
 extends Event {
-    private final boolean V;
-    private final Entity n;
-    private static final EventListeners r = new EventListeners();
+    private final boolean newSprintingState;
+    private final Entity entity;
+    private static final EventListeners EVENT_LISTENERS = new EventListeners();
 
     public Entity getEntity() {
-        return this.n;
+        return this.entity;
     }
 
     @Override
     public EventListeners getListeners() {
-        return r;
+        return EVENT_LISTENERS;
     }
 
-    public EventSetSprinting(Object object, boolean bl) {
-        this.n = new Entity(object);
-        this.V = bl;
+    public EventSetSprinting(Object entityHandle, boolean newSprintingState) {
+        this.entity = new Entity(entityHandle);
+        this.newSprintingState = newSprintingState;
     }
 
     public boolean isNewStateSprinting() {
-        return this.V;
+        return this.newSprintingState;
     }
 
     @Override
@@ -34,7 +34,6 @@ extends Event {
     }
 
     public static EventListeners getEventListeners() {
-        return r;
+        return EVENT_LISTENERS;
     }
 }
-

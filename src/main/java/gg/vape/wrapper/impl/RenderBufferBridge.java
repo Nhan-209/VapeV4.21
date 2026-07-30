@@ -2,10 +2,7 @@ package gg.vape.wrapper.impl;
 
 import gg.vape.mapping.mappings.MRenderBufferBridge;
 import gg.vape.wrapper.Wrapper;
-import gg.vape.wrapper.impl.BlockStateBridge;
-import gg.vape.wrapper.impl.BlockStateContainerBridge;
-import gg.vape.wrapper.impl.ForgeVersion;
-import gg.vape.wrapper.impl.TextureObjectHandle;
+
 import java.util.Map;
 
 public class RenderBufferBridge
@@ -23,31 +20,31 @@ extends Wrapper {
             BlockStateBridge blockStateBridge = blockStateContainerBridge.C();
             return blockStateBridge.isNull() ? new TextureObjectHandle(null) : new TextureObjectHandle(blockStateBridge.d());
         }
-        return new TextureObjectHandle(MRenderBufferBridge.P(RenderBufferBridge.c.getMappings().Ca, this.I));
+        return new TextureObjectHandle(MRenderBufferBridge.P(RenderBufferBridge.vapeInstance.getMappings().Ca, this.I));
     }
 
     public int L(int n) {
-        return MRenderBufferBridge.J(RenderBufferBridge.c.getMappings().Ca, this.I, n);
+        return MRenderBufferBridge.J(RenderBufferBridge.vapeInstance.getMappings().Ca, this.I, n);
     }
 
     public void P(Object object) {
-        RenderBufferBridge.c.getMappings().Ca.o(this.I, object);
+        RenderBufferBridge.vapeInstance.getMappings().Ca.o(this.I, object);
     }
 
     public BlockStateContainerBridge P() {
         if (ForgeVersion.MC_26_1.v()) {
             return new BlockStateContainerBridge(null);
         }
-        return new BlockStateContainerBridge(MRenderBufferBridge.V(RenderBufferBridge.c.getMappings().Ca, this.I));
+        return new BlockStateContainerBridge(MRenderBufferBridge.V(RenderBufferBridge.vapeInstance.getMappings().Ca, this.I));
     }
 
 
     public void j() {
-        MRenderBufferBridge.v(RenderBufferBridge.c.getMappings().Ca, this.I);
+        MRenderBufferBridge.v(RenderBufferBridge.vapeInstance.getMappings().Ca, this.I);
     }
 
     public Map p() {
-        return MRenderBufferBridge.P$src$Ljava_util_Map_$14yo47i(RenderBufferBridge.c.getMappings().Ca, this.I);
+        return MRenderBufferBridge.P$src$Ljava_util_Map_$14yo47i(RenderBufferBridge.vapeInstance.getMappings().Ca, this.I);
     }
 }
 

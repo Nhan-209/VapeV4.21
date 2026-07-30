@@ -34,7 +34,7 @@ extends Mapping {
     }
 
     public Object H(Object object, Object object2) {
-        return this.B.L(object, object2);
+        return this.B.invokeObject(object, object2);
     }
 }
 

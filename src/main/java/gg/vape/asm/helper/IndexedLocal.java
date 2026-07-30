@@ -9,26 +9,26 @@ import org.objectweb.asm.tree.VarInsnNode;
 
 public class IndexedLocal
 extends Local {
-    int a;
+    int localOrdinal;
 
-    public IndexedLocal(int n) {
+    public IndexedLocal(int localOrdinal) {
         super("");
-        this.a = n;
+        this.localOrdinal = localOrdinal;
     }
 
     @Override
-    public void onTransform(ClassNode classNode, MethodNode methodNode) {
-        int n = 0;
-        for (LocalVariableNode localVariableNode : methodNode.localVariables) {
-            if (this.a == n) {
-                this.P = localVariableNode;
-                this.M = new VarInsnNode(EventBuilder.j(localVariableNode.desc), localVariableNode.index);
-                this.v.add(this.M);
-                this.d = new VarInsnNode(EventBuilder.o(localVariableNode.desc), localVariableNode.index);
-                this.H.add(this.d);
-                this.F = this.P.desc;
+    public void prepare(ClassNode classNode, MethodNode methodNode) {
+        int ordinal = 0;
+        for (LocalVariableNode candidate : methodNode.localVariables) {
+            if (this.localOrdinal == ordinal) {
+                this.localVariable = candidate;
+                this.loadInstruction = new VarInsnNode(EventBuilder.getLoadOpcode(candidate.desc), candidate.index);
+                this.loadInstructions.add(this.loadInstruction);
+                this.storeInstruction = new VarInsnNode(EventBuilder.getStoreOpcode(candidate.desc), candidate.index);
+                this.storeInstructions.add(this.storeInstruction);
+                this.resolvedDescriptor = this.localVariable.desc;
             }
-            ++n;
+            ++ordinal;
         }
     }
 

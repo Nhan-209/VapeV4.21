@@ -14,9 +14,9 @@ extends AbstractTextFilterCondition<LoreFilterCondition> {
         if (itemStack.isNull()) {
             return false;
         }
-        List<String> list = itemStack.z();
-        for (String string : list) {
-            if (!this.getMatchMode().matchesAny(string, this.getTexts())) continue;
+        List<String> loreLines = itemStack.z();
+        for (String loreLine : loreLines) {
+            if (!this.getMatchMode().matchesAny(loreLine, this.getTexts())) continue;
             return true;
         }
         return false;
@@ -35,8 +35,8 @@ extends AbstractTextFilterCondition<LoreFilterCondition> {
         super(jsonObject);
     }
 
-    public LoreFilterCondition(List<String> list, TextMatchMode textMatchMode) {
-        super(list, textMatchMode);
+    public LoreFilterCondition(List<String> texts, TextMatchMode matchMode) {
+        super(texts, matchMode);
     }
 
     public LoreFilterCondition copy() {

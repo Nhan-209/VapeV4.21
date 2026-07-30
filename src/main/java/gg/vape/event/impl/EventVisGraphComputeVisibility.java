@@ -8,15 +8,15 @@ import gg.vape.wrapper.impl.SetVisibility;
 
 public class EventVisGraphComputeVisibility
 extends Event {
-    private static final EventListeners G = new EventListeners();
+    private static final EventListeners EVENT_LISTENERS = new EventListeners();
 
     public static EventListeners getEventListeners() {
-        return G;
+        return EVENT_LISTENERS;
     }
 
     @Override
     public boolean fire() {
-        XRay xRay = Vape.INSTANCE.getModManager().G();
+        XRay xRay = Vape.INSTANCE.getModManager().getXRayModule();
         if (xRay == null || !xRay.boolean_r()) {
             return false;
         }
@@ -27,17 +27,17 @@ extends Event {
 
     @Override
     public EventListeners getListeners() {
-        return G;
+        return EVENT_LISTENERS;
     }
 
     public EventVisGraphComputeVisibility() {
     }
 
-    public EventVisGraphComputeVisibility(Object object) {
+    public EventVisGraphComputeVisibility(Object ignoredVisGraphHandle) {
     }
 
     public static Object getVisibility() {
-        SetVisibility setVisibility = new SetVisibility(Vape.INSTANCE.getMappingsMapperCompat().qy.z.O(new Object[0]));
+        SetVisibility setVisibility = new SetVisibility(Vape.INSTANCE.getMappingsMapperCompat().qy.z.newInstance(new Object[0]));
         setVisibility.n(true);
         return setVisibility.getObject();
     }

@@ -6,20 +6,20 @@ import gg.vape.ui.click.frame.impl.profile.ProfileListEntryComponent;
 
 public class SecondActiveProfileListEntrySelector
 extends TutorialTargetSelector<ProfileListEntryComponent> {
-    final ProfilesTutorialPage m;
+    private final ProfilesTutorialPage tutorialPage;
 
-    public boolean p(ProfileListEntryComponent profileListEntryComponent) {
+    private boolean matchesActiveProfile(ProfileListEntryComponent profileListEntryComponent) {
         return profileListEntryComponent.isActiveProfile();
     }
 
     @Override
-    public boolean X(ProfileListEntryComponent profileListEntryComponent) {
-        return this.p(profileListEntryComponent);
+    public boolean matches(ProfileListEntryComponent profileListEntryComponent) {
+        return this.matchesActiveProfile(profileListEntryComponent);
     }
 
     public SecondActiveProfileListEntrySelector(ProfilesTutorialPage profilesTutorialPage, Class clazz) {
         super(clazz);
-        this.m = profilesTutorialPage;
+        this.tutorialPage = profilesTutorialPage;
     }
 
 }

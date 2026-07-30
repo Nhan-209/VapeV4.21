@@ -9,15 +9,15 @@ import gg.vape.wrapper.impl.ItemStack;
 public class QuantityFilterCondition
 implements NumericFilterCondition<QuantityFilterCondition> {
     @Override
-    public QuantityFilterCondition parseValue(String string) throws NumberFormatException {
-        return this.parseAmount(string);
+    public QuantityFilterCondition parseValue(String value) throws NumberFormatException {
+        return this.parseAmount(value);
     }
 
     private int amount = 1;
     private ComparisonOperator operator = ComparisonOperator.EQUALS;
 
-    public QuantityFilterCondition parseAmount(String string) {
-        this.amount = Integer.parseInt(string);
+    public QuantityFilterCondition parseAmount(String value) {
+        this.amount = Integer.parseInt(value);
         return this;
     }
 
@@ -36,13 +36,13 @@ implements NumericFilterCondition<QuantityFilterCondition> {
     public QuantityFilterCondition() {
     }
 
-    public QuantityFilterCondition withOperator(ComparisonOperator comparisonOperator) {
-        this.operator = comparisonOperator;
+    public QuantityFilterCondition withOperator(ComparisonOperator operator) {
+        this.operator = operator;
         return this;
     }
 
-    public QuantityFilterCondition withAmount(int n) {
-        this.amount = n;
+    public QuantityFilterCondition withAmount(int amount) {
+        this.amount = amount;
         return this;
     }
 
@@ -63,9 +63,9 @@ implements NumericFilterCondition<QuantityFilterCondition> {
         return jsonObject;
     }
 
-    public QuantityFilterCondition(int n, ComparisonOperator comparisonOperator) {
-        this.amount = n;
-        this.operator = comparisonOperator;
+    public QuantityFilterCondition(int amount, ComparisonOperator operator) {
+        this.amount = amount;
+        this.operator = operator;
     }
 
     public QuantityFilterCondition(JsonObject jsonObject) {

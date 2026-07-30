@@ -33,10 +33,10 @@ extends ExprEditor {
         if (ForgeVersion.MC_1_7_10.L() && !methodCall.getMethodName().equals("glAlphaFunc")) {
             return;
         }
-        if (ForgeVersion.MC_1_7_10.Y() && ForgeVersion.MC_1_16_5.v() && !methodCall.getMethodName().equals(Vape.INSTANCE.getMappings().Dt.q.v())) {
+        if (ForgeVersion.MC_1_7_10.Y() && ForgeVersion.MC_1_16_5.v() && !methodCall.getMethodName().equals(Vape.INSTANCE.getMappings().Dt.q.getResolvedName())) {
             return;
         }
-        if (ForgeVersion.MC_1_16_5.d() && ForgeVersion.MC_1_17.v() && !methodCall.getMethodName().equals(Vape.INSTANCE.getMappings().f.v.v())) {
+        if (ForgeVersion.MC_1_16_5.d() && ForgeVersion.MC_1_17.v() && !methodCall.getMethodName().equals(Vape.INSTANCE.getMappings().f.v.getResolvedName())) {
             return;
         }
         methodCall.replace("{ $_ = $proceed($$); " + EventRender2D.class.getName() + "#create(); }");

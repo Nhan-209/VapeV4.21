@@ -56,7 +56,7 @@ extends Mod {
     private EntityOtherPlayerMP fakePlayer;
     private final ModeOption movementOnlyMode;
 
-    @EventHandler(A=EventPriority.LOW)
+    @EventHandler(priority=EventPriority.LOW)
     public void onPacketSend(EventPacketSend event) {
         try {
             EntityPlayerSP entityPlayerSP;
@@ -99,7 +99,7 @@ extends Mod {
                 this.flushPending = true;
                 if (this.fakePlayer != null && this.fakePlayer.isNotNull()) {
                     entityPlayerSP = Minecraft.thePlayer();
-                    this.fakePlayer.t(entityPlayerSP.z(), ClientSettings.H ? entityPlayerSP.N() : entityPlayerSP.N() - 1.5, entityPlayerSP.h(), entityPlayerSP.J(), entityPlayerSP.V());
+                    this.fakePlayer.t(entityPlayerSP.z(), ClientSettings.IS_LEGACY_1_7 ? entityPlayerSP.N() : entityPlayerSP.N() - 1.5, entityPlayerSP.h(), entityPlayerSP.J(), entityPlayerSP.V());
                     this.fakePlayer.z(entityPlayerSP.s());
                 }
                 this.packetCount = 0;
@@ -145,7 +145,7 @@ extends Mod {
                 this.fakePlayer.y(UUID.randomUUID());
             }
             this.fakePlayer.z(player.s());
-            this.fakePlayerEntityId = ClientSettings.f();
+            this.fakePlayerEntityId = ClientSettings.reserveEntityId();
             Minecraft.theWorld().D(this.fakePlayerEntityId, this.fakePlayer);
         }
     }
@@ -223,7 +223,7 @@ extends Mod {
                 color = Color.YELLOW;
                 firstBreadcrumb = false;
             }
-            RenderUtil.u(position.H - 0.1, position.B, position.i - 0.1,
+            RenderUtil.u(position.getX() - 0.1, position.getY(), position.getZ() - 0.1,
                     0.2, 0.0, 0.2, 1.0, Color.BLACK, color, renderX, renderY, renderZ);
         }
         if (!GuiRenderPrimitives.d()) {

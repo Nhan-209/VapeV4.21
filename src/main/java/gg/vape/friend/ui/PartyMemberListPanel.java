@@ -8,14 +8,14 @@ import gg.vape.ui.click.layout.ComponentLayout;
 
 public class PartyMemberListPanel
 extends PanelComponent {
-    private static int Au;
-    private WrappingTextLabelComponent AI;
+    private static int obfuscationSeed;
+    private final WrappingTextLabelComponent emptyStateLabel;
 
-    public void b(PartyMemberRow partyMemberRow) {
-        if (partyMemberRow.D$src$Z$qb6a9o()) {
-            this.h(partyMemberRow, "alignright");
+    public void addMessageRow(PartyMemberRow row) {
+        if (row.isLocalUser()) {
+            this.h(row, "alignright");
         } else {
-            this.h(partyMemberRow, new Object[0]);
+            this.h(row, new Object[0]);
         }
     }
 
@@ -23,35 +23,35 @@ extends PanelComponent {
     public void c() {
         super.c();
         if (this.f().isEmpty()) {
-            this.AI.setShowDisabledOverlay(false);
-            this.AI.setFontScale(0.75);
-            this.AI.K(this.G$src$D$1b2f02a() + 5.0);
-            this.AI.S(this.n() + (this.L() - 40.0) / 2.0);
-            this.AI.c();
+            this.emptyStateLabel.setShowDisabledOverlay(false);
+            this.emptyStateLabel.setFontScale(0.75);
+            this.emptyStateLabel.K(this.G$src$D$1b2f02a() + 5.0);
+            this.emptyStateLabel.S(this.n() + (this.L() - 40.0) / 2.0);
+            this.emptyStateLabel.c();
         }
     }
 
     static {
-        PartyMemberListPanel.P(10);
+        PartyMemberListPanel.setObfuscationSeed(10);
     }
 
-    public static int i$src$I$ovnrge() {
-        return Au;
+    public static int getObfuscationSeed() {
+        return obfuscationSeed;
     }
 
-    public static int p() {
-        int n = PartyMemberListPanel.i$src$I$ovnrge();
+    public static int getReservedZero() {
+        int reserved = PartyMemberListPanel.getObfuscationSeed();
         return 0;
     }
 
-    public static void P(int n) {
-        Au = n;
+    public static void setObfuscationSeed(int seed) {
+        obfuscationSeed = seed;
     }
 
-    public PartyMemberListPanel(double d, double d2) {
-        super(d, d2);
-        this.AI = new WrappingTextLabelComponent("No messages yet\nMessages do not save and will clear when your game closes", 0.75, PartyMemberListPanel.J.Z);
-        this.AI.setExplicitWidth(d - 10.0);
+    public PartyMemberListPanel(double width, double height) {
+        super(width, height);
+        this.emptyStateLabel = new WrappingTextLabelComponent("No messages yet\nMessages do not save and will clear when your game closes", 0.75, PartyMemberListPanel.J.Z);
+        this.emptyStateLabel.setExplicitWidth(width - 10.0);
         this.t(this.L());
         this.N(true);
         this.setShowDisabledOverlay(false);

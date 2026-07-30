@@ -5,7 +5,7 @@ import gg.vape.event.EventListeners;
 
 public class EventSendClickBlockToController
 extends Event {
-    private static final EventListeners E = new EventListeners();
+    private static final EventListeners EVENT_LISTENERS = new EventListeners();
 
     @Override
     public boolean fire() {
@@ -13,12 +13,11 @@ extends Event {
     }
 
     public static EventListeners getEventListeners() {
-        return E;
+        return EVENT_LISTENERS;
     }
 
     @Override
     public EventListeners getListeners() {
-        return E;
+        return EVENT_LISTENERS;
     }
 }
-

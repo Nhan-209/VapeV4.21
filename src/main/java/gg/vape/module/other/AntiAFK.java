@@ -72,7 +72,7 @@ extends Mod {
         this.movementDurationTimer.reset();
     }
 
-    @EventHandler(A=EventPriority.LOW)
+    @EventHandler(priority=EventPriority.LOW)
     public void onTick(EventPreTick eventPreTick) {
         EntityPlayerSP entityPlayerSP = eventPreTick.getThePlayer();
         if (Minecraft.thePlayer().isNull() || Minecraft.currentScreen().isInstance(MappedClasses.YS)) {

@@ -6,11 +6,11 @@ import gg.vape.wrapper.Wrapper;
 public class EntityEquipmentSlot
 extends Wrapper {
     public static EntityEquipmentSlot L() {
-        return new EntityEquipmentSlot(MEntityEquipmentSlot.Q(EntityEquipmentSlot.c.getMappingsMapperCompat().CY));
+        return new EntityEquipmentSlot(MEntityEquipmentSlot.Q(EntityEquipmentSlot.vapeInstance.getMappingsMapperCompat().CY));
     }
 
     public boolean v() {
-        return MEntityEquipmentSlot.S(EntityEquipmentSlot.c.getMappingsMapperCompat().CY, this.I);
+        return MEntityEquipmentSlot.S(EntityEquipmentSlot.vapeInstance.getMappingsMapperCompat().CY, this.I);
     }
 
     public EntityEquipmentSlot(Object object) {
@@ -18,7 +18,7 @@ extends Wrapper {
     }
 
     public int W() {
-        return MEntityEquipmentSlot.c(EntityEquipmentSlot.c.getMappingsMapperCompat().CY, this.I);
+        return MEntityEquipmentSlot.c(EntityEquipmentSlot.vapeInstance.getMappingsMapperCompat().CY, this.I);
     }
 }
 

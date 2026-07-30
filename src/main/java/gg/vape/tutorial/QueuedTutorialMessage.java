@@ -1,12 +1,11 @@
 package gg.vape.tutorial;
 
 public class QueuedTutorialMessage {
-    public String b;
-    public String E;
+    public final String title;
+    public final String message;
 
-    public QueuedTutorialMessage(String string, String string2) {
-        this.b = string;
-        this.E = string2;
+    public QueuedTutorialMessage(String title, String message) {
+        this.title = title;
+        this.message = message;
     }
 }
-

@@ -62,13 +62,13 @@ extends OnlineConnectionSettingsPageComponent {
     }
 
     private ApiResponse lambda$inputOnEnter$0(String string, ApiResponse apiResponse) {
-        if (apiResponse.t()) {
-            Vape.INSTANCE.getAccountInfo().y(string);
-            Vape.INSTANCE.getAccountInfo().f().X(true);
-            OnlineConnectionManager.T.I();
+        if (apiResponse.isSuccessful()) {
+            Vape.INSTANCE.getAccountInfo().setUsername(string);
+            Vape.INSTANCE.getAccountInfo().getEntitlements().setRegistered(true);
+            OnlineConnectionManager.INSTANCE.connect();
         } else {
-            this.M("Registration Error:\n" + apiResponse.N());
-            Vape.INSTANCE.getNotificationManager().show("Registration Error", apiResponse.N(), NotificationType.WARNING, 5000L);
+            this.M("Registration Error:\n" + apiResponse.getError());
+            Vape.INSTANCE.getNotificationManager().show("Registration Error", apiResponse.getError(), NotificationType.WARNING, 5000L);
         }
         return apiResponse;
     }
@@ -93,7 +93,7 @@ extends OnlineConnectionSettingsPageComponent {
                 this.q3 = false;
                 return;
             }
-            ApiServices.d().A(string).thenApplyAsync(arg_0 -> this.lambda$inputOnEnter$0(string, arg_0), (Executor)ClientSettings.UI_EXECUTOR).whenCompleteAsync(this::lambda$inputOnEnter$1, (Executor)ClientSettings.UI_EXECUTOR).exceptionally(this::lambda$inputOnEnter$2);
+            ApiServices.getInstance().registerOnlineAccount(string).thenApplyAsync(arg_0 -> this.lambda$inputOnEnter$0(string, arg_0), (Executor)ClientSettings.UI_EXECUTOR).whenCompleteAsync(this::lambda$inputOnEnter$1, (Executor)ClientSettings.UI_EXECUTOR).exceptionally(this::lambda$inputOnEnter$2);
         }
     }
 }

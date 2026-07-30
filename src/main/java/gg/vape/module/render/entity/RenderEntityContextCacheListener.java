@@ -23,7 +23,7 @@ implements EventListener {
         RenderEntityContextCache.clear();
     }
 
-    @EventHandler(A=EventPriority.LOWEST)
+    @EventHandler(priority=EventPriority.LOWEST)
     public void onTick(EventPreTick event) {
         ++this.tickCounter;
         if (this.tickCounter % 10L == 0L) {

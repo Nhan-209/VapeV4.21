@@ -11,8 +11,8 @@ import gg.vape.value.PlayerNameSuggestionProvider;
 
 public class AddFriendInputPanel
 extends FrameComponent {
-    CompactTextInputComponent FL = new AddFriendInputComponent(this, db);
-    private static final String db = "Minecraft username";
+    private static final String PLACEHOLDER = "Minecraft username";
+    private final CompactTextInputComponent usernameInput = new AddFriendInputComponent(this, PLACEHOLDER);
 
     @Override
     public void Y() {
@@ -24,8 +24,8 @@ extends FrameComponent {
     }
 
 
-    static void h(AddFriendInputPanel addFriendInputPanel) {
-        addFriendInputPanel.b$src$V$y3rl3d();
+    static void submitInput(AddFriendInputPanel panel) {
+        panel.addFriend();
     }
 
     @Override
@@ -37,27 +37,27 @@ extends FrameComponent {
         componentLayout.t(false);
         componentLayout.U(false);
         componentLayout.u(false);
-        this.FL.setSuggestionProvider(new PlayerNameSuggestionProvider());
-        this.addChildren(this.FL);
+        this.usernameInput.setSuggestionProvider(new PlayerNameSuggestionProvider());
+        this.addChildren(this.usernameInput);
     }
 
     @Override
     public void g(GuiMouseEvent guiMouseEvent) {
     }
 
-    private void b$src$V$y3rl3d() {
-        if (this.FL.getText() == "") {
+    private void addFriend() {
+        if (this.usernameInput.getText() == "") {
             return;
         }
-        if (!this.FL.hasNonBlankText()) {
-            this.FL.setText("");
+        if (!this.usernameInput.hasNonBlankText()) {
+            this.usernameInput.setText("");
             return;
         }
-        String[] stringArray = this.FL.getText().split(" ");
-        String string = stringArray[0];
-        String string2 = stringArray.length > 1 ? stringArray[1] : stringArray[0];
-        Vape.INSTANCE.getFriendManager().u(new Friend(string, string2));
-        this.FL.setText("");
+        String[] inputParts = this.usernameInput.getText().split(" ");
+        String username = inputParts[0];
+        String alias = inputParts.length > 1 ? inputParts[1] : inputParts[0];
+        Vape.INSTANCE.getFriendManager().addFriend(new Friend(username, alias));
+        this.usernameInput.setText("");
     }
 
     @Override

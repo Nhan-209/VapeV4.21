@@ -10,11 +10,11 @@ extends Wrapper {
     }
 
     public String F() {
-        return MKeyboardHandler.X(KeyboardHandler.c.getMappingsMapperCompat().CR, this.I);
+        return MKeyboardHandler.X(KeyboardHandler.vapeInstance.getMappingsMapperCompat().CR, this.I);
     }
 
     public void y(String string) {
-        MKeyboardHandler.f(KeyboardHandler.c.getMappingsMapperCompat().CR, this.I, string);
+        MKeyboardHandler.f(KeyboardHandler.vapeInstance.getMappingsMapperCompat().CR, this.I, string);
     }
 }
 

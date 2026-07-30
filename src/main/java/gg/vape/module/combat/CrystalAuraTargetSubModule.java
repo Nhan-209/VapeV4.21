@@ -650,7 +650,7 @@ extends SubModule<CrystalAura> {
         }
         Vec3 eyePosition = player.I$src$Lgg_vape_wrapper_impl_Vec3_$q14opk().addVector(0.0, player.X(), 0.0);
         if (this.state == CrystalAuraActionState.BREAKING_CRYSTAL && this.trackedCrystal != null && this.trackedCrystal.isNotNull() && !this.trackedCrystal.M$src$Z$ff28xj()) {
-            Vec3 crystalHitPoint = RotationUtil.M(eyePosition, this.trackedCrystal.R$src$Lgg_vape_wrapper_impl_AxisAlignedBB_$r19dfl(), 0.0, 0.0, 0.0).n();
+            Vec3 crystalHitPoint = RotationUtil.M(eyePosition, this.trackedCrystal.R$src$Lgg_vape_wrapper_impl_AxisAlignedBB_$r19dfl(), 0.0, 0.0, 0.0).toVec3();
             this.aimAt(eyePosition, crystalHitPoint);
         } else if (this.state == CrystalAuraActionState.BREAKING_CRYSTAL) {
             BlockData baseBlock = this.targetObsidian;

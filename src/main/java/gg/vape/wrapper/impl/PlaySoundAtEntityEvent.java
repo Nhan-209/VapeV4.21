@@ -9,7 +9,7 @@ extends Wrapper {
     }
 
     public String getName() {
-        return PlaySoundAtEntityEvent.c.getMappingsMapperCompat().C5.Z(this.I);
+        return PlaySoundAtEntityEvent.vapeInstance.getMappingsMapperCompat().C5.Z(this.I);
     }
 }
 

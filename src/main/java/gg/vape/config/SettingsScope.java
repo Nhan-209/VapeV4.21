@@ -10,53 +10,53 @@ public enum SettingsScope {
     GLOBAL("global", GlobalSettingsPayload.class),
     ONLINE("online", null);
 
-    private final String G;
-    private static final /* synthetic */ SettingsScope[] F;
+    private final String routeName;
+    private static final /* synthetic */ SettingsScope[] ENUM_VALUES;
     @Nullable
-    private final Class<? extends SettingsPayload> Z;
+    private final Class<? extends SettingsPayload> defaultPayloadClass;
     public static final List<SettingsScope> VALUES;
-    private static int[] A;
+    private static int[] runtimeState;
 
-    public String g() {
-        return this.G;
+    public String getRouteName() {
+        return this.routeName;
     }
 
     @Nullable
-    public static SettingsScope U(String string) {
-        for (SettingsScope settingsScope : VALUES) {
-            if (!settingsScope.g().equalsIgnoreCase(string)) continue;
-            return settingsScope;
+    public static SettingsScope fromRouteName(String routeName) {
+        for (SettingsScope scope : VALUES) {
+            if (!scope.getRouteName().equalsIgnoreCase(routeName)) continue;
+            return scope;
         }
         return null;
     }
 
-    public static int[] D() {
-        return A;
+    public static int[] getRuntimeState() {
+        return runtimeState;
     }
 
-    private SettingsScope(String string2, Class<? extends SettingsPayload> clazz) {
-        this.G = string2;
-        this.Z = clazz;
+    private SettingsScope(String routeName, Class<? extends SettingsPayload> defaultPayloadClass) {
+        this.routeName = routeName;
+        this.defaultPayloadClass = defaultPayloadClass;
     }
 
 
     @Nullable
-    public Class<? extends SettingsPayload> P() {
-        return this.Z;
+    public Class<? extends SettingsPayload> getDefaultPayloadClass() {
+        return this.defaultPayloadClass;
     }
 
-    public static void o(int[] nArray) {
-        A = nArray;
+    public static void setRuntimeState(int[] runtimeState) {
+        SettingsScope.runtimeState = runtimeState;
     }
 
     static {
-        if (SettingsScope.D() != null) {
-            SettingsScope.o(new int[5]);
+        if (SettingsScope.getRuntimeState() != null) {
+            SettingsScope.setRuntimeState(new int[5]);
         }
-        String[] stringArray = new String[]{"ONLINE", "global", "online", "GLOBAL"};
+        String[] serializedNames = new String[]{"ONLINE", "global", "online", "GLOBAL"};
 
 
-        F = new SettingsScope[]{GLOBAL, ONLINE};
+        ENUM_VALUES = new SettingsScope[]{GLOBAL, ONLINE};
         VALUES = Arrays.asList(SettingsScope.values());
     }
 }

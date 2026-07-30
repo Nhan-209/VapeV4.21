@@ -10,7 +10,7 @@ extends Mapping {
     private static final String b = "getBlockState";
 
     public Object n(Object object, Object object2) {
-        return this.X.L(object, object2);
+        return this.X.invokeObject(object, object2);
     }
 
     public MBlockReaderBridge() {

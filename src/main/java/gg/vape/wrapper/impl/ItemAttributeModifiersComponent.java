@@ -1,14 +1,14 @@
 package gg.vape.wrapper.impl;
 
 import gg.vape.wrapper.Wrapper;
-import gg.vape.wrapper.impl.ItemAttributeModifiersComponent$Entry;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class ItemAttributeModifiersComponent
 extends Wrapper {
     public List<Object> z() {
-        return ItemAttributeModifiersComponent.c.getMappingsMapperCompat().r.p(this.I);
+        return ItemAttributeModifiersComponent.vapeInstance.getMappingsMapperCompat().r.p(this.I);
     }
 
     public List<ItemAttributeModifiersComponent$Entry> P() {

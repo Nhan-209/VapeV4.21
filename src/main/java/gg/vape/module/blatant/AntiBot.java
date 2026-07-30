@@ -133,11 +133,11 @@ extends Mod {
 
     public char findColorCodeBeforeName(String playerName, String formattedName) {
         int nameIndex;
-        if (formattedName.contains(ClientSettings.F)
+        if (formattedName.contains(ClientSettings.FORMAT_CODE)
                 && (nameIndex = formattedName.indexOf(playerName)) > 0) {
             for (int index = nameIndex - 1; index >= 0; --index) {
                 String character = String.valueOf(formattedName.charAt(index));
-                if (character.equals(ClientSettings.F)) {
+                if (character.equals(ClientSettings.FORMAT_CODE)) {
                     char colorCode = formattedName.charAt(index + 1);
                     if (colorCode <= 'f') {
                         return colorCode;
@@ -367,7 +367,7 @@ extends Mod {
         }
         String playerName = renderEntityContext.getName();
         String formattedName = renderEntityContext.getTypeName();
-        if (formattedName.startsWith(ClientSettings.F)
+        if (formattedName.startsWith(ClientSettings.FORMAT_CODE)
                 && (colorCode = this.findColorCodeBeforeName(playerName, formattedName)) != COLOR_NONE) {
             return new MutableColor(this.colorForChar(colorCode));
         }
@@ -511,7 +511,7 @@ extends Mod {
         if (!this.isAntiBotEnabled()) {
             return false;
         }
-        if (!ClientSettings.H) {
+        if (!ClientSettings.IS_LEGACY_1_7) {
             return false;
         }
         if (entity.isInstance(MappedClasses.z5)) {

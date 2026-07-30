@@ -6,17 +6,17 @@ import java.awt.Color;
 
 class OnlineFriendActionIconButton
 extends IconActionButton {
-    final OnlineFriendActionPanel iF;
+    private final OnlineFriendActionPanel actionPanel;
 
     OnlineFriendActionIconButton(OnlineFriendActionPanel onlineFriendActionPanel, String string, double d, double d2, double d3, Color color, double d4) {
         super(string, d, d2, d3, color, d4);
-        this.iF = onlineFriendActionPanel;
+        this.actionPanel = onlineFriendActionPanel;
     }
 
 
     @Override
     public void setHovered(boolean hovered) {
-        if (OnlineFriendActionPanel.V(this.iF)) {
+        if (OnlineFriendActionPanel.isInviteDisabled(this.actionPanel)) {
             this.hovered = false;
             this.getIconColorAnimation().O();
             this.getBackgroundAnimation().O();

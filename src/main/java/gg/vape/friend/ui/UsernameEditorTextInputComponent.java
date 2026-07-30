@@ -15,9 +15,9 @@ extends DebouncedTextInputComponent {
         return 0.0f;
     }
 
-    private void lambda$enterEvent$0(String string) {
-        UsernameEditorPanel.t(this.editorPanel);
-        OnlineFriendUiHelper.P(new NotificationMessage(NotificationType.SUCCESS, "Name changed to " + string));
+    private void handleNameChangeSuccess(String newName) {
+        UsernameEditorPanel.toggleEditMode(this.editorPanel);
+        OnlineFriendUiHelper.showNotification(new NotificationMessage(NotificationType.SUCCESS, "Name changed to " + newName));
     }
 
     @Override
@@ -32,7 +32,7 @@ extends DebouncedTextInputComponent {
 
     @Override
     public void handleSubmitReady() {
-        UsernameEditorPanel.o(UsernameEditorPanel.I(this.editorPanel), this.getText(), this::lambda$enterEvent$0, UsernameEditorTextInputComponent::lambda$enterEvent$1);
+        UsernameEditorPanel.submitNameChange(UsernameEditorPanel.getRequestPending(this.editorPanel), this.getText(), this::handleNameChangeSuccess, UsernameEditorTextInputComponent::handleNameChangeError);
     }
 
     public UsernameEditorTextInputComponent(UsernameEditorPanel editorPanel, String text, long cooldownMillis) {
@@ -47,7 +47,7 @@ extends DebouncedTextInputComponent {
 
     @Override
     public void handleSubmitCooldown() {
-        OnlineFriendUiHelper.w(NotificationType.WARNING, "You are on cooldown!");
+        OnlineFriendUiHelper.showNotification(NotificationType.WARNING, "You are on cooldown!");
     }
 
     @Override
@@ -55,7 +55,7 @@ extends DebouncedTextInputComponent {
         return 82.0;
     }
 
-    private static void lambda$enterEvent$1(String string) {
-        OnlineFriendUiHelper.P(new NotificationMessage(NotificationType.ERROR, string));
+    private static void handleNameChangeError(String errorMessage) {
+        OnlineFriendUiHelper.showNotification(new NotificationMessage(NotificationType.ERROR, errorMessage));
     }
 }

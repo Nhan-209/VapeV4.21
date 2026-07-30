@@ -12,7 +12,7 @@ extends Mapping {
     private final MappingMethod Y;
 
     public Object G(boolean bl, Object object) {
-        return this.Y.L(null, bl, object);
+        return this.Y.invokeObject(null, bl, object);
     }
 
     public Object q() {
@@ -23,17 +23,17 @@ extends Mapping {
         super(MappedClasses.lj);
         Class[] classArray = new Class[]{Boolean.TYPE, MappedClasses.VK};
         MItemRenderContext mItemRenderContext = this;
-        this.Y = this.g(classArray);
+        this.Y = this.registerConstructor(classArray);
         Class clazz = MappedClasses.lj;
         boolean bl = true;
         String string = "NONE";
         MItemRenderContext mItemRenderContext2 = this;
-        this.X = this.u(string, bl, clazz);
+        this.X = this.registerStaticField(string, bl, clazz);
         Class clazz2 = MappedClasses.lj;
         boolean bl2 = true;
         String string2 = "DEFAULT";
         MItemRenderContext mItemRenderContext3 = this;
-        this.r = this.u(string2, bl2, clazz2);
+        this.r = this.registerStaticField(string2, bl2, clazz2);
     }
 
     public Object N() {

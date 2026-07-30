@@ -7,31 +7,30 @@ import org.jetbrains.annotations.Nullable;
 
 public class ProfileChangeEvent
 implements IEvent {
-    private static final EventListeners g = new EventListeners();
-    private final Profile q;
+    private static final EventListeners EVENT_LISTENERS = new EventListeners();
+    private final Profile newProfile;
     @Nullable
-    private final Profile A;
+    private final Profile previousProfile;
 
     public static EventListeners getEventListeners() {
-        return g;
+        return EVENT_LISTENERS;
     }
 
-    public ProfileChangeEvent(@Nullable Profile fo, Profile fo2) {
-        this.A = fo;
-        this.q = fo2;
+    public ProfileChangeEvent(@Nullable Profile previousProfile, Profile newProfile) {
+        this.previousProfile = previousProfile;
+        this.newProfile = newProfile;
     }
 
     public Profile getNewProfile() {
-        return this.q;
+        return this.newProfile;
     }
 
     @Override
     public EventListeners getListeners() {
-        return g;
+        return EVENT_LISTENERS;
     }
 
     public Profile getPreviousProfile() {
-        return this.A;
+        return this.previousProfile;
     }
 }
-

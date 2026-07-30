@@ -36,7 +36,7 @@ extends Mapping {
     }
 
     public Object e(Object object) {
-        return this.S.L(object, new Object[0]);
+        return this.S.invokeObject(object, new Object[0]);
     }
 
     public static int j() {

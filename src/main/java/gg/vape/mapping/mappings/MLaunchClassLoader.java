@@ -50,13 +50,13 @@ extends Mapping {
             String string = "INSTANCE";
             Class clazz2 = MappedClasses.D1;
             MLaunchClassLoader mLaunchClassLoader = this;
-            this.C = mLaunchClassLoader.s(clazz2, string, bl, clazz);
+            this.C = mLaunchClassLoader.registerStaticFieldForOwner(clazz2, string, bl, clazz);
             Class clazz3 = MappedClasses.uG;
             boolean bl2 = false;
             String string2 = "classLoader";
             Class clazz4 = MappedClasses.D1;
             MLaunchClassLoader mLaunchClassLoader2 = this;
-            this.g = this.X(clazz4, string2, bl2, clazz3);
+            this.g = this.registerInstanceFieldForOwner(clazz4, string2, bl2, clazz3);
             Class[] classArray = new Class[]{String.class, Function.class};
             Class<Class> clazz5 = Class.class;
             boolean bl3 = false;
@@ -69,7 +69,7 @@ extends Mapping {
             String string = "classLoader";
             Class clazz6 = MappedClasses.D1;
             MLaunchClassLoader mLaunchClassLoader = this;
-            this.g = mLaunchClassLoader.s(clazz6, string, bl, clazz);
+            this.g = mLaunchClassLoader.registerStaticFieldForOwner(clazz6, string, bl, clazz);
             Class<Map> clazz7 = Map.class;
             boolean bl4 = false;
             String string4 = "cachedClasses";

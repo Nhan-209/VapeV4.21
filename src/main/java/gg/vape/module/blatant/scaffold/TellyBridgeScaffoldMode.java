@@ -327,7 +327,7 @@ extends SubModule<Scaffold> {
             MovementInputHelper.releaseAllInput();
             return true;
         }
-        boolean backwardPressed = ClientSettings.B(this.backwardKey);
+        boolean backwardPressed = ClientSettings.isPhysicalKeyDown(this.backwardKey);
         boolean activationPressed = this.requireRightClick.getEffectiveValue() == false || KeyBindingInputState.isRightButtonDown();
         if (!backwardPressed || !activationPressed) {
             if (this.bridgingActive) {

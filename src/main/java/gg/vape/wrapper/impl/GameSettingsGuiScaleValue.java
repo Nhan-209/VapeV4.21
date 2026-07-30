@@ -5,10 +5,10 @@ import gg.vape.wrapper.Wrapper;
 public class GameSettingsGuiScaleValue
 extends Wrapper {
     public static int s() {
-        if (GameSettingsGuiScaleValue.c.getMappingsMapperCompat().Dv == null) {
+        if (GameSettingsGuiScaleValue.vapeInstance.getMappingsMapperCompat().Dv == null) {
             return 0;
         }
-        return GameSettingsGuiScaleValue.c.getMappingsMapperCompat().Dv.V();
+        return GameSettingsGuiScaleValue.vapeInstance.getMappingsMapperCompat().Dv.V();
     }
 
 

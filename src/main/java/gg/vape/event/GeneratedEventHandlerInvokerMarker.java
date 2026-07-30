@@ -1,6 +1,5 @@
 package gg.vape.event;
 
 public interface GeneratedEventHandlerInvokerMarker {
-    public void C(Object var1, Object var2);
+    public void invoke(Object listener, Object event);
 }
-

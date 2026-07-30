@@ -1,7 +1,5 @@
 package gg.vape.wrapper.impl;
 
-import gg.vape.wrapper.impl.Packet;
-
 public class SPacketHeldItemChange
 extends Packet {
     public SPacketHeldItemChange(Object object) {
@@ -9,7 +7,7 @@ extends Packet {
     }
 
     public static SPacketHeldItemChange x(int n) {
-        return new SPacketHeldItemChange(SPacketHeldItemChange.c.getMappingsMapperCompat().C6.h(n));
+        return new SPacketHeldItemChange(SPacketHeldItemChange.vapeInstance.getMappingsMapperCompat().C6.h(n));
     }
 }
 

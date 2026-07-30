@@ -15,7 +15,7 @@ extends Mapping {
         boolean bl = true;
         String string = b;
         MChestType mChestType = this;
-        this.V = this.u(string, bl, clazz);
+        this.V = this.registerStaticField(string, bl, clazz);
     }
 
     public Object u() {

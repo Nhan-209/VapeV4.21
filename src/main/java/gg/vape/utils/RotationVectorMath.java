@@ -47,9 +47,9 @@ public class RotationVectorMath {
         double d = vec3.getX() - vec32.getX();
         double d2 = vec3.getY() - vec32.getY();
         double d3 = vec3.getZ() - vec32.getZ();
-        double d4 = (double)FastAtanMath.r((float)d, (float)(-d3)) * 57.29577951308232;
+        double d4 = (double)FastAtanMath.atan2Approximation((float)d, (float)(-d3)) * 57.29577951308232;
         double d5 = Math.sqrt(d * d + d3 * d3);
-        double d6 = (double)FastAtanMath.r((float)d2, (float)d5) * 57.29577951308232;
+        double d6 = (double)FastAtanMath.atan2Approximation((float)d2, (float)d5) * 57.29577951308232;
         float f3 = RotationManager.INSTANCE.getMouseSensitivity();
         float f4 = f3 * 0.6f + 0.2f;
         float f5 = f4 * f4 * f4 * 8.0f;

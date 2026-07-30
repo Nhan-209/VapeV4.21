@@ -9,15 +9,15 @@ extends Wrapper {
     }
 
     public static GlStateManagerTexGenCoord T() {
-        return new GlStateManagerTexGenCoord(GlStateManagerTexGenCoord.c.getMappingsMapperCompat().R_.z());
+        return new GlStateManagerTexGenCoord(GlStateManagerTexGenCoord.vapeInstance.getMappingsMapperCompat().R_.z());
     }
 
     public static GlStateManagerTexGenCoord K() {
-        return new GlStateManagerTexGenCoord(GlStateManagerTexGenCoord.c.getMappingsMapperCompat().R_.m());
+        return new GlStateManagerTexGenCoord(GlStateManagerTexGenCoord.vapeInstance.getMappingsMapperCompat().R_.m());
     }
 
     public static GlStateManagerTexGenCoord c() {
-        return new GlStateManagerTexGenCoord(GlStateManagerTexGenCoord.c.getMappingsMapperCompat().R_.u());
+        return new GlStateManagerTexGenCoord(GlStateManagerTexGenCoord.vapeInstance.getMappingsMapperCompat().R_.u());
     }
 }
 

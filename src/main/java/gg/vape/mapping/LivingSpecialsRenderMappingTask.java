@@ -14,7 +14,7 @@ extends JavassistMappingTask {
 
 
     @Override
-    public void c() {
+    public void transform() {
         if (ForgeVersion.c() == ForgeVersion.MC_1_8_9.i()) {
             this.O(Vape.INSTANCE.getMappings().U.V, EventPreRenderLivingSpecials.class, "$1", "");
             return;

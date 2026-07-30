@@ -111,18 +111,18 @@ EventListener {
         if (this.bind.usesOwnKeybindStorage()) {
             this.bind.getBoundInputs().clear();
         }
-        if ((string = ConfigJsonUtils.P(jsonObject, "name")) != null && string.equalsIgnoreCase(this.getName())) {
+        if ((string = ConfigJsonUtils.getString(jsonObject, "name")) != null && string.equalsIgnoreCase(this.getName())) {
             Object object;
             JsonArray jsonArray;
             if (this.bind.usesOwnKeybindStorage()) {
-                jsonArray = ConfigJsonUtils.q(jsonObject, "keybinds_2");
+                jsonArray = ConfigJsonUtils.getJsonArray(jsonObject, "keybinds_2");
                 if (jsonArray != null) {
                     try {
                         this.bind.loadBoundInputs(jsonArray, false);
                     }
                     catch (Exception exception) {}
                 } else {
-                    jsonArray = ConfigJsonUtils.q(jsonObject, "keybinds");
+                    jsonArray = ConfigJsonUtils.getJsonArray(jsonObject, "keybinds");
                     if (jsonArray != null) {
                         try {
                             this.bind.loadBoundInputs(jsonArray, true);
@@ -135,7 +135,7 @@ EventListener {
                         }
                     }
                 }
-                if ((object = ConfigJsonUtils.P(jsonObject, "bind_mode")) != null && this.bind.supportsActivationMode()) {
+                if ((object = ConfigJsonUtils.getString(jsonObject, "bind_mode")) != null && this.bind.supportsActivationMode()) {
                     try {
                         this.bind.setActivationMode(BindActivationMode.valueOf((String)object));
                     }
@@ -157,7 +157,7 @@ EventListener {
                     }
                 }
             }
-            if ((object = ConfigJsonUtils.t(jsonObject, "visible")) != null) {
+            if ((object = ConfigJsonUtils.getBoolean(jsonObject, "visible")) != null) {
                 this.visible = (Boolean)object;
             }
         }
@@ -217,12 +217,12 @@ EventListener {
 
     public void syncSubModuleStates(boolean enabled, boolean bypassVisibilityCheck) {
         for (SubModule subModule : this.u()) {
-            if (subModule.J$src$Z$gcqtyf()) {
+            if (subModule.isSelectedSubModule()) {
                 if (subModule.r$src$Z$14eylz9() == enabled) continue;
                 subModule.setEnabled(enabled, bypassVisibilityCheck);
                 continue;
             }
-            if (!subModule.G()) continue;
+            if (!subModule.isParentEnabled()) continue;
             subModule.setEnabled(false, bypassVisibilityCheck);
         }
     }
@@ -248,7 +248,7 @@ EventListener {
 
     public void v(long l, boolean bl) {
         if (this.moduleRunnable != null) {
-            this.moduleRunnable.y(false);
+            this.moduleRunnable.setRunning(false);
         }
         this.moduleRunnable = new DelayedModuleToggleTask(this, l, bl);
         new Thread(this.moduleRunnable).start();
@@ -321,10 +321,10 @@ EventListener {
         }
         Object t = subModuleValue.getInstance();
         Object t2 = subModuleValue2.getInstance();
-        if (((SubModule)t).G()) {
+        if (((SubModule)t).isParentEnabled()) {
             ((Mod)t).Y(false);
         }
-        if (!((SubModule)t2).G()) {
+        if (!((SubModule)t2).isParentEnabled()) {
             ((Mod)t2).Y(true);
         }
     }
@@ -335,9 +335,9 @@ EventListener {
 
     public void K(boolean bl) {
         if (bl) {
-            Vape.INSTANCE.getModuleProfileMetadataCodec().a(this);
+            Vape.INSTANCE.getModuleProfileMetadataCodec().addModule(this);
         } else {
-            Vape.INSTANCE.getModuleProfileMetadataCodec().v(this);
+            Vape.INSTANCE.getModuleProfileMetadataCodec().removeModule(this);
         }
     }
 

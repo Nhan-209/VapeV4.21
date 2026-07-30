@@ -6,14 +6,14 @@ import gg.vape.ui.click.component.GuiComponent;
 
 public class EventKeyInputBase
 extends Event {
-    private static final EventListeners q = new EventListeners();
-    private static GuiComponent[] Q;
-    private final boolean B;
-    private final int V;
+    private static final EventListeners EVENT_LISTENERS = new EventListeners();
+    private static GuiComponent[] obfuscationState;
+    private final boolean down;
+    private final int key;
 
     @Override
     public EventListeners getListeners() {
-        return q;
+        return EVENT_LISTENERS;
     }
 
     @Override
@@ -21,33 +21,32 @@ extends Event {
         return super.fire();
     }
 
-    public static GuiComponent[] d() {
-        return Q;
+    public static GuiComponent[] getKeyInputObfuscationState() {
+        return obfuscationState;
     }
 
-    public EventKeyInputBase(int n, boolean bl) {
-        this.V = n;
-        this.B = bl;
+    public EventKeyInputBase(int key, boolean down) {
+        this.key = key;
+        this.down = down;
     }
 
     public static EventListeners getEventListeners() {
-        return q;
+        return EVENT_LISTENERS;
     }
 
     public boolean isDown() {
-        return this.B;
+        return this.down;
     }
 
-    public static void S(GuiComponent[] upArray) {
-        Q = upArray;
+    public static void setKeyInputObfuscationState(GuiComponent[] state) {
+        obfuscationState = state;
     }
 
     public int getKey() {
-        return this.V;
+        return this.key;
     }
 
     static {
-        EventKeyInputBase.S(new GuiComponent[1]);
+        EventKeyInputBase.setKeyInputObfuscationState(new GuiComponent[1]);
     }
 }
-

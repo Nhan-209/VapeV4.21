@@ -62,11 +62,11 @@ implements NumericFilterCondition<EnchantmentFilterCondition> {
         if (itemStack.isNull()) {
             return false;
         }
-        Map<Enchantment, Short> map = EnchantmentUtil.A(itemStack);
-        if (map.isEmpty()) {
+        Map<Enchantment, Short> enchantments = EnchantmentUtil.A(itemStack);
+        if (enchantments.isEmpty()) {
             return false;
         }
-        for (Map.Entry<Enchantment, Short> entry : map.entrySet()) {
+        for (Map.Entry<Enchantment, Short> entry : enchantments.entrySet()) {
             Enchantment enchantment = entry.getKey();
             if (!StringUtils.Q(enchantment.getTranslatedName(1)).equalsIgnoreCase(this.enchantment)) continue;
             if (this.mode == EnchantmentFilterMode.HAS) {
@@ -105,10 +105,10 @@ implements NumericFilterCondition<EnchantmentFilterCondition> {
     }
 
     public EnchantmentFilterCondition(JsonObject jsonObject) {
-        this.mode = EnchantmentFilterMode.fromName(ConfigJsonUtils.P(jsonObject, "mode"));
-        this.enchantment = ConfigJsonUtils.P(jsonObject, "enchantment");
-        Integer n = ConfigJsonUtils.r(jsonObject, "level");
-        this.level = n != null ? n : 1;
+        this.mode = EnchantmentFilterMode.fromName(ConfigJsonUtils.getString(jsonObject, "mode"));
+        this.enchantment = ConfigJsonUtils.getString(jsonObject, "enchantment");
+        Integer configuredLevel = ConfigJsonUtils.getInteger(jsonObject, "level");
+        this.level = configuredLevel != null ? configuredLevel : 1;
         this.operator = ComparisonOperator.fromName(jsonObject.get("operator").getAsString());
     }
 
@@ -121,11 +121,11 @@ implements NumericFilterCondition<EnchantmentFilterCondition> {
         return this.level;
     }
 
-    public EnchantmentFilterCondition(EnchantmentFilterMode enchantmentFilterMode, String string, int n, ComparisonOperator comparisonOperator) {
-        this.mode = enchantmentFilterMode;
-        this.enchantment = string;
-        this.level = n;
-        this.operator = comparisonOperator;
+    public EnchantmentFilterCondition(EnchantmentFilterMode mode, String enchantment, int level, ComparisonOperator operator) {
+        this.mode = mode;
+        this.enchantment = enchantment;
+        this.level = level;
+        this.operator = operator;
     }
 
 }

@@ -3,7 +3,6 @@ package gg.vape.mapping.mappings;
 import gg.vape.mapping.MappedClasses;
 import gg.vape.mapping.Mapping;
 import gg.vape.mapping.MappingField;
-import gg.vape.mapping.mappings.MPacketIdFactory;
 import gg.vape.ui.click.component.GuiComponent;
 import gg.vape.wrapper.Wrapper;
 import gg.vape.wrapper.impl.ForgeVersion;
@@ -24,9 +23,9 @@ extends Mapping {
     private MShortPacketFieldBridge(GuiComponent[] guiComponentArray) {
         super(MappedClasses.zy);
         if (guiComponentArray != null) {
-            if (ForgeVersion.MC_1_7_10.L() && !Wrapper.c.isVanillaMinecraftPresent()) {
+            if (ForgeVersion.MC_1_7_10.L() && !Wrapper.vapeInstance.isVanillaMinecraftPresent()) {
                 Class<Short> clazz = Short.TYPE;
-                boolean bl = Wrapper.G;
+                boolean bl = Wrapper.isNativeAvailable;
                 String string = "field_149534_b";
                 MShortPacketFieldBridge mShortPacketFieldBridge = this;
                 this.d = mShortPacketFieldBridge.J(string, bl, clazz);
@@ -41,7 +40,7 @@ extends Mapping {
         }
         if (!ForgeVersion.MC_1_7_10.L()) {
             Class<Short> clazz = Short.TYPE;
-            boolean bl = Wrapper.G;
+            boolean bl = Wrapper.isNativeAvailable;
             String string = "field_149534_b";
             MShortPacketFieldBridge mShortPacketFieldBridge = this;
             mShortPacketFieldBridge.J(string, bl, clazz);

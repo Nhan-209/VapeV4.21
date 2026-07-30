@@ -105,7 +105,7 @@ extends Mapping {
 
 
     private int o(Object object, Object object2) {
-        return this.U.Z(object, object2);
+        return this.U.invokeInt(object, object2);
     }
 
     public static float e(MItemArmor mItemArmor, Object object) {
@@ -145,7 +145,7 @@ extends Mapping {
 
     private int P(Object object) {
         if (ForgeVersion.MC_1_20_6.d()) {
-            return this.u.Z(object, new Object[0]);
+            return this.u.invokeInt(object, new Object[0]);
         }
         return this.T.getInt(object);
     }

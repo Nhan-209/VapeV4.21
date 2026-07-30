@@ -394,8 +394,8 @@ extends InteractiveComponent {
             this.dragging = false;
             ClientSettings.activeComponent = null;
             if (this.pendingOrderIndex != -1) {
-                Vape.INSTANCE.getModuleProfileMetadataCodec().k().remove(this.module);
-                Vape.INSTANCE.getModuleProfileMetadataCodec().k().add(this.pendingOrderIndex, this.module);
+                Vape.INSTANCE.getModuleProfileMetadataCodec().getSelectedModules().remove(this.module);
+                Vape.INSTANCE.getModuleProfileMetadataCodec().getSelectedModules().add(this.pendingOrderIndex, this.module);
             }
             VisibleModuleListFrame.e();
             this.pendingOrderIndex = -1;
@@ -475,4 +475,3 @@ extends InteractiveComponent {
         this.statusTimestamp = System.currentTimeMillis();
     }
 }
-

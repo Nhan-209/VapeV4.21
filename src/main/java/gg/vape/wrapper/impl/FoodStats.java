@@ -6,7 +6,7 @@ import gg.vape.wrapper.Wrapper;
 public class FoodStats
 extends Wrapper {
     public int getFoodLevel() {
-        return MFoodStats.g(FoodStats.c.getMappingsMapperCompat().DJ, this.I);
+        return MFoodStats.g(FoodStats.vapeInstance.getMappingsMapperCompat().DJ, this.I);
     }
 
     public FoodStats(Object object) {

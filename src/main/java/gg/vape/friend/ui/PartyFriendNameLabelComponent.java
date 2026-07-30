@@ -6,7 +6,7 @@ import java.awt.Color;
 
 public class PartyFriendNameLabelComponent
 extends TruncatedTextComponent {
-    final PartyFriendRowComponent i;
+    private final PartyFriendRowComponent row;
 
     @Override
     public double x() {
@@ -15,6 +15,6 @@ extends TruncatedTextComponent {
 
     public PartyFriendNameLabelComponent(PartyFriendRowComponent partyFriendRowComponent, String string, String string2, double d, double d2, Color color, boolean bl) {
         super(string, string2, d, d2, color, bl);
-        this.i = partyFriendRowComponent;
+        this.row = partyFriendRowComponent;
     }
 }

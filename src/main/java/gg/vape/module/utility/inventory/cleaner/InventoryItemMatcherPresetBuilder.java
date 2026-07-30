@@ -20,23 +20,23 @@ public class InventoryItemMatcherPresetBuilder {
         this.matchers = new ArrayList<InventoryItemMatcher>();
     }
 
-    public InventoryItemMatcherPresetBuilder addMatcher(InventoryItemMatcher inventoryItemMatcher) {
-        this.matchers.add(inventoryItemMatcher);
+    public InventoryItemMatcherPresetBuilder addMatcher(InventoryItemMatcher matcher) {
+        this.matchers.add(matcher);
         return this;
     }
 
-    public InventoryItemMatcherPresetBuilder addConditionGroup(InventoryFilterConditionGroup inventoryFilterConditionGroup) {
-        this.conditionGroups.add(inventoryFilterConditionGroup);
+    public InventoryItemMatcherPresetBuilder addConditionGroup(InventoryFilterConditionGroup conditionGroup) {
+        this.conditionGroups.add(conditionGroup);
         return this;
     }
 
-    public InventoryItemMatcherPresetBuilder name(String string) {
-        this.name = string;
+    public InventoryItemMatcherPresetBuilder name(String name) {
+        this.name = name;
         return this;
     }
 
-    public InventoryItemMatcherPresetBuilder addConditionGroup(InventoryFilterConditionGroupBuilder inventoryFilterConditionGroupBuilder) {
-        this.conditionGroups.add(inventoryFilterConditionGroupBuilder.build());
+    public InventoryItemMatcherPresetBuilder addConditionGroup(InventoryFilterConditionGroupBuilder groupBuilder) {
+        this.conditionGroups.add(groupBuilder.build());
         return this;
     }
 }

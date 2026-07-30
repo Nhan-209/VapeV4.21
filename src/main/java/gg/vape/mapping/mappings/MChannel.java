@@ -35,7 +35,7 @@ extends Mapping {
     }
 
     private boolean H(Object object) {
-        return this.q.e(object, new Object[0]);
+        return this.q.invokeBoolean(object, new Object[0]);
     }
 
     static {

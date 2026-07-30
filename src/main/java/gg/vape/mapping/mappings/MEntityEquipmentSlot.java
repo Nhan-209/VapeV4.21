@@ -18,7 +18,7 @@ extends Mapping {
     }
 
     private boolean N(Object object) {
-        return this.a.e(object, new Object[0]);
+        return this.a.invokeBoolean(object, new Object[0]);
     }
 
     public MEntityEquipmentSlot() {
@@ -51,7 +51,7 @@ extends Mapping {
         boolean bl3 = true;
         String string3 = "MAINHAND";
         MEntityEquipmentSlot mEntityEquipmentSlot3 = this;
-        this.W = this.u(string3, bl3, clazz3);
+        this.W = this.registerStaticField(string3, bl3, clazz3);
         if (ForgeVersion.MC_1_21_6.d()) {
             Class[] classArray = new Class[]{};
             Class<Boolean> clazz4 = Boolean.TYPE;

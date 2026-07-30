@@ -7,34 +7,34 @@ import gg.vape.wrapper.impl.EntityPlayer;
 
 public class EventPlayerTickBase
 extends Event {
-    private final Object T;
-    private static final EventListeners a = new EventListeners();
-    private EntityPlayer M;
+    private final Object playerHandle;
+    private static final EventListeners EVENT_LISTENERS = new EventListeners();
+    private EntityPlayer player;
 
-    EventPlayerTickBase(Object object) {
-        this.T = object;
+    EventPlayerTickBase(Object playerHandle) {
+        this.playerHandle = playerHandle;
     }
 
 
     @Override
     public EventListeners getListeners() {
-        return a;
+        return EVENT_LISTENERS;
     }
 
     public static EventListeners getEventListeners() {
-        return a;
+        return EVENT_LISTENERS;
     }
 
     public EntityPlayer getPlayer() {
-        if (this.M == null) {
-            this.M = new EntityPlayer(this.T);
+        if (this.player == null) {
+            this.player = new EntityPlayer(this.playerHandle);
         }
-        return this.M;
+        return this.player;
     }
 
     @Override
     public boolean fire() {
-        if (!MappedClasses.z5.isInstance(this.T)) {
+        if (!MappedClasses.z5.isInstance(this.playerHandle)) {
             return false;
         }
         return super.fire();

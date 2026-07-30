@@ -167,15 +167,15 @@ extends Mapping {
     }
 
     private boolean T(Object object) {
-        return this.jC.e(object, new Object[0]);
+        return this.jC.invokeBoolean(object, new Object[0]);
     }
 
     private Object l(Object object, float f) {
-        return this.D.L(object, Float.valueOf(f));
+        return this.D.invokeObject(object, Float.valueOf(f));
     }
 
     private void j(Object object, Object object2) {
-        this.p.c(object, object2);
+        this.p.invokeVoid(object, object2);
     }
 
     private void a(Object object, Object object2) {
@@ -212,7 +212,7 @@ extends Mapping {
     }
 
     private Object x(Object object) {
-        return this.jA.L(object, new Object[0]);
+        return this.jA.invokeObject(object, new Object[0]);
     }
 
     public static double u(MEntity mEntity, Object object) {
@@ -224,7 +224,7 @@ extends Mapping {
     }
 
     private boolean g(Object object) {
-        return this.jm.e(object, new Object[0]);
+        return this.jm.invokeBoolean(object, new Object[0]);
     }
 
     public static boolean A(MEntity mEntity, Object object, double d, double d2, double d3) {
@@ -232,7 +232,7 @@ extends Mapping {
     }
 
     private void v(Object object, boolean bl, boolean bl2, Object object2) {
-        this.jN.c(object, bl, bl2, object2);
+        this.jN.invokeVoid(object, bl, bl2, object2);
     }
 
     private double W(Object object) {
@@ -252,7 +252,7 @@ extends Mapping {
     }
 
     private boolean O(Object object) {
-        return this.jf.e(object, new Object[0]);
+        return this.jf.invokeBoolean(object, new Object[0]);
     }
 
     private Object n(Object object) {
@@ -276,7 +276,7 @@ extends Mapping {
     }
 
     private void u(Object object, double d, boolean bl, Object object2, Object object3) {
-        this.j.c(object, d, bl, object2, object3);
+        this.j.invokeVoid(object, d, bl, object2, object3);
     }
 
     private int j$src$I$hy2k2i(Object object) {
@@ -297,9 +297,9 @@ extends Mapping {
 
     private void D(Object object, float f, float f2, float f3, float f4) {
         if (ForgeVersion.MC_1_12_2.d()) {
-            this.jb.c(object, Float.valueOf(f), Float.valueOf(f2), Float.valueOf(f3), Float.valueOf(f4));
+            this.jb.invokeVoid(object, Float.valueOf(f), Float.valueOf(f2), Float.valueOf(f3), Float.valueOf(f4));
         } else {
-            this.jb.c(object, Float.valueOf(f), Float.valueOf(f3), Float.valueOf(f4));
+            this.jb.invokeVoid(object, Float.valueOf(f), Float.valueOf(f3), Float.valueOf(f4));
         }
     }
 
@@ -328,7 +328,7 @@ extends Mapping {
     }
 
     private void F(Object object, double d, double d2, double d3) {
-        this.j0.c(object, d, d2, d3);
+        this.j0.invokeVoid(object, d, d2, d3);
     }
 
     public static void k(MEntity mEntity, Object object, double d, boolean bl) {
@@ -360,7 +360,7 @@ extends Mapping {
     }
 
     private boolean s$src$Z$1p5r2b6(Object object) {
-        return this.o.e(object, new Object[0]);
+        return this.o.invokeBoolean(object, new Object[0]);
     }
 
     private void v(Object object, boolean bl) {
@@ -401,7 +401,7 @@ extends Mapping {
     }
 
     private UUID M(Object object) {
-        return (UUID)this.jX.L(object, new Object[0]);
+        return (UUID)this.jX.invokeObject(object, new Object[0]);
     }
 
     private void F(Object object, double d) {
@@ -421,7 +421,7 @@ extends Mapping {
     }
 
     private Object S$src$Ljava_lang_Object_$1pjyxam(Object object) {
-        return this.jV.L(object, new Object[0]);
+        return this.jV.invokeObject(object, new Object[0]);
     }
 
     public static double k(MEntity mEntity, Object object) {
@@ -460,7 +460,7 @@ extends Mapping {
     }
 
     private void l(Object object, Object object2, Object object3) {
-        this.jG.c(object, object2, object3);
+        this.jG.invokeVoid(object, object2, object3);
     }
 
     private float v$src$F$1fvxv49(Object object) {
@@ -500,7 +500,7 @@ extends Mapping {
     }
 
     private float d(Object object) {
-        return this.J.s(object, new Object[0]);
+        return this.J.invokeFloat(object, new Object[0]);
     }
 
     public static void O(MEntity mEntity, Object object) {
@@ -536,7 +536,7 @@ extends Mapping {
     }
 
     private void l(Object object, double d, boolean bl, Object object2, Object object3) {
-        this.j.c(object, d, bl, object2, object3);
+        this.j.invokeVoid(object, d, bl, object2, object3);
     }
 
     public static float h(MEntity mEntity, Object object) {
@@ -552,7 +552,7 @@ extends Mapping {
     }
 
     private boolean m$src$Z$8o9drg(Object object) {
-        return this.j_.e(object, new Object[0]);
+        return this.j_.invokeBoolean(object, new Object[0]);
     }
 
     public static boolean D$src$Z$tyo4m3(MEntity mEntity, Object object) {
@@ -564,7 +564,7 @@ extends Mapping {
     }
 
     private boolean x$src$Z$m112gn(Object object) {
-        return this.e.e(object, new Object[0]);
+        return this.e.invokeBoolean(object, new Object[0]);
     }
 
     private double r(Object object) {
@@ -572,11 +572,11 @@ extends Mapping {
     }
 
     private void u(Object object, boolean bl) {
-        this.jh.c(object, bl);
+        this.jh.invokeVoid(object, bl);
     }
 
     private void Y(Object object, double d, boolean bl) {
-        this.j.c(object, d, bl);
+        this.j.invokeVoid(object, d, bl);
     }
 
     public static boolean c$src$Z$1x2cbcq(MEntity mEntity, Object object) {
@@ -588,7 +588,7 @@ extends Mapping {
     }
 
     private boolean I$src$Z$1cwvkco(Object object) {
-        return this.x.e(object, new Object[0]);
+        return this.x.invokeBoolean(object, new Object[0]);
     }
 
     public static void q(MEntity mEntity, Object object, double d, boolean bl, Object object2, Object object3) {
@@ -596,7 +596,7 @@ extends Mapping {
     }
 
     private Object K(Object object) {
-        return this.jQ.L(object, new Object[0]);
+        return this.jQ.invokeObject(object, new Object[0]);
     }
 
     public static void K(MEntity mEntity, Object object, double d) {
@@ -608,7 +608,7 @@ extends Mapping {
     }
 
     private void j(Object object, double d, boolean bl, Object object2, Object object3) {
-        this.j.c(object, d, bl, object2, object3);
+        this.j.invokeVoid(object, d, bl, object2, object3);
     }
 
     private float t$src$F$apqm9z(Object object) {
@@ -616,7 +616,7 @@ extends Mapping {
     }
 
     private Object k(Object object) {
-        return this.l.L(object, new Object[0]);
+        return this.l.invokeObject(object, new Object[0]);
     }
 
     public static float H(MEntity mEntity, Object object) {
@@ -648,11 +648,11 @@ extends Mapping {
     }
 
     private boolean C(Object object, double d, double d2, double d3) {
-        return this.G.e(object, d, d2, d3);
+        return this.G.invokeBoolean(object, d, d2, d3);
     }
 
     private Object Q(Object object) {
-        return this.X.L(object, new Object[0]);
+        return this.X.invokeObject(object, new Object[0]);
     }
 
     public static void m(MEntity mEntity, Object object, double d) {
@@ -668,7 +668,7 @@ extends Mapping {
     }
 
     private String D$src$Ljava_lang_String_$baft5b(Object object) {
-        return (String)this.jA.L(object, new Object[0]);
+        return (String)this.jA.invokeObject(object, new Object[0]);
     }
 
     private double v(Object object) {
@@ -676,7 +676,7 @@ extends Mapping {
     }
 
     private void i$src$V$1we2zxo(Object object) {
-        this.ju.F(object);
+        this.ju.invokeVoidNoArgs(object);
     }
 
     private void Z(Object object, int n) {
@@ -684,14 +684,14 @@ extends Mapping {
     }
 
     private void z(Object object, boolean bl) {
-        this.jW.c(object, bl);
+        this.jW.invokeVoid(object, bl);
     }
 
     private void b(Object object) {
         if (this.a == null) {
             return;
         }
-        this.a.F(object);
+        this.a.invokeVoidNoArgs(object);
     }
 
     private void j(Object object, double d) {
@@ -755,7 +755,7 @@ extends Mapping {
     }
 
     private boolean C$src$Z$1vghxs2(Object object) {
-        return this.jr.e(object, new Object[0]);
+        return this.jr.invokeBoolean(object, new Object[0]);
     }
 
     public static float S(MEntity mEntity, Object object) {
@@ -767,7 +767,7 @@ extends Mapping {
     }
 
     private Object h(Object object, Object object2) {
-        return this.C.L(object, object2);
+        return this.C.invokeObject(object, object2);
     }
 
     public static Object g(MEntity mEntity, Object object) {
@@ -791,7 +791,7 @@ extends Mapping {
     }
 
     private Object Q(Object object, Object object2) {
-        return this.j4.L(object, object2);
+        return this.j4.invokeObject(object, object2);
     }
 
     private double w(Object object) {
@@ -807,7 +807,7 @@ extends Mapping {
     }
 
     private void S(Object object, Object object2, double d, double d2, double d3) {
-        this.j0.c(object, object2, d, d2, d3);
+        this.j0.invokeVoid(object, object2, d, d2, d3);
     }
 
     public static void u(MEntity mEntity, Object object, Object object2) {
@@ -823,7 +823,7 @@ extends Mapping {
     }
 
     private boolean B(Object object) {
-        return this.K.e(object, new Object[0]);
+        return this.K.invokeBoolean(object, new Object[0]);
     }
 
     public void k(Object object, float f) {
@@ -884,7 +884,7 @@ extends Mapping {
     }
 
     private void t$src$V$apqmnr(Object object) {
-        this.Y.F(object);
+        this.Y.invokeVoidNoArgs(object);
     }
 
     public static void E(MEntity mEntity, Object object, float f) {
@@ -960,7 +960,7 @@ extends Mapping {
     }
 
     private float getDistanceToEntity(Object object, Object object2) {
-        return this.jc.s(object, object2);
+        return this.jc.invokeFloat(object, object2);
     }
 
     private boolean n$src$Z$t9d06l(Object object) {
@@ -968,7 +968,7 @@ extends Mapping {
     }
 
     private boolean P(Object object) {
-        return this.Z.e(object, new Object[0]);
+        return this.Z.invokeBoolean(object, new Object[0]);
     }
 
     private float o(Object object) {
@@ -995,19 +995,19 @@ extends Mapping {
     }
 
     private Object t$src$Ljava_lang_Object_$6usez1(Object object) {
-        return this.jO.L(object, new Object[0]);
+        return this.jO.invokeObject(object, new Object[0]);
     }
 
     private Object u$src$Ljava_lang_Object_$v0z5bg(Object object) {
-        return this.jS.L(object, new Object[0]);
+        return this.jS.invokeObject(object, new Object[0]);
     }
 
     private Object h(Object object) {
-        return this.jt.L(object, new Object[0]);
+        return this.jt.invokeObject(object, new Object[0]);
     }
 
     private void S$src$V$15ojmja(Object object) {
-        this.js.F(object);
+        this.js.invokeVoidNoArgs(object);
     }
 
     private int X(Object object) {
@@ -1031,7 +1031,7 @@ extends Mapping {
     }
 
     private void V$src$V$weqftl(Object object) {
-        this.n.F(object);
+        this.n.invokeVoidNoArgs(object);
     }
 
     public static void f(MEntity mEntity, Object object, UUID uUID) {
@@ -1079,7 +1079,7 @@ extends Mapping {
     }
 
     private boolean k$src$Z$12j66wa(Object object) {
-        return this.jn.e(object, new Object[0]);
+        return this.jn.invokeBoolean(object, new Object[0]);
     }
 
     public static boolean T$src$Z$1iq6oh7(MEntity mEntity, Object object) {
@@ -1096,9 +1096,9 @@ extends Mapping {
 
     private void M(Object object, Object object2, boolean bl) {
         if (ForgeVersion.MC_1_8_9.d()) {
-            this.u.c(object, object2);
+            this.u.invokeVoid(object, object2);
         } else {
-            this.u.c(object, object2, bl);
+            this.u.invokeVoid(object, object2, bl);
         }
     }
 
@@ -1127,7 +1127,7 @@ extends Mapping {
     }
 
     private Object J(Object object) {
-        return this.jx.L(object, new Object[0]);
+        return this.jx.invokeObject(object, new Object[0]);
     }
 
     public static void i(MEntity mEntity, Object object, boolean bl) {
@@ -1139,19 +1139,19 @@ extends Mapping {
     }
 
     private boolean M$src$Z$1o86024(Object object) {
-        return this.jj.e(object, new Object[0]);
+        return this.jj.invokeBoolean(object, new Object[0]);
     }
 
     private boolean U(Object object, Object object2) {
-        return this.B1.e(object, object2);
+        return this.B1.invokeBoolean(object, object2);
     }
 
     private void a(Object object, double d, double d2, double d3) {
-        this.p.c(object, d, d2, d3);
+        this.p.invokeVoid(object, d, d2, d3);
     }
 
     private boolean N(Object object) {
-        return this.jI.e(object, new Object[0]);
+        return this.jI.invokeBoolean(object, new Object[0]);
     }
 
     public static boolean l$src$Z$kucgar(MEntity mEntity, Object object) {
@@ -1159,11 +1159,11 @@ extends Mapping {
     }
 
     private void N(Object object, float f, float f2) {
-        this.jY.c(object, Float.valueOf(f), Float.valueOf(f2));
+        this.jY.invokeVoid(object, Float.valueOf(f), Float.valueOf(f2));
     }
 
     private void C(Object object, int n, boolean bl) {
-        this.j2.c(object, n, bl);
+        this.j2.invokeVoid(object, n, bl);
     }
 
     private void K(Object object, boolean bl) {
@@ -1187,7 +1187,7 @@ extends Mapping {
     }
 
     private Object I$src$Ljava_lang_Object_$wxfrrs(Object object) {
-        return this.B.L(object, new Object[0]);
+        return this.B.invokeObject(object, new Object[0]);
     }
 
     private boolean Y(Object object) {
@@ -1218,7 +1218,7 @@ extends Mapping {
         if (ForgeVersion.MC_1_16_5.d()) {
             return this.jy.getFloat(object);
         }
-        return this.je.s(object, new Object[0]);
+        return this.je.invokeFloat(object, new Object[0]);
     }
 
     private double A(Object object) {
@@ -1234,12 +1234,12 @@ extends Mapping {
     }
 
     private void f(Object object, double d, double d2, double d3) {
-        this.j1.c(object, d, d2, d3);
+        this.j1.invokeVoid(object, d, d2, d3);
     }
 
     private float V(Object object) {
         if (ForgeVersion.MC_1_20_6.d()) {
-            return this.jU.s(object, new Object[0]);
+            return this.jU.invokeFloat(object, new Object[0]);
         }
         return this.jD.getFloat(object);
     }
@@ -1270,7 +1270,7 @@ extends Mapping {
     }
 
     private boolean r$src$Z$14knfw1(Object object) {
-        return this.jo.e(object, new Object[0]);
+        return this.jo.invokeBoolean(object, new Object[0]);
     }
 
     public static boolean M$src$Z$1grsbj8(MEntity mEntity, Object object) {
@@ -1298,7 +1298,7 @@ extends Mapping {
     }
 
     private boolean d$src$Z$10hoxwj(Object object) {
-        return this.jw.e(object, new Object[0]);
+        return this.jw.invokeBoolean(object, new Object[0]);
     }
 
     private double q(Object object) {
@@ -1310,7 +1310,7 @@ extends Mapping {
     }
 
     private void Z(Object object, float f, Object object2) {
-        this.jb.c(object, Float.valueOf(f), object2);
+        this.jb.invokeVoid(object, Float.valueOf(f), object2);
     }
 
     public static double Y(MEntity mEntity, Object object) {
@@ -1334,7 +1334,7 @@ extends Mapping {
     }
 
     private void J(Object object, boolean bl) {
-        this.W.c(object, bl);
+        this.W.invokeVoid(object, bl);
     }
 
     public static void i(MEntity mEntity, Object object, double d) {
@@ -1350,7 +1350,7 @@ extends Mapping {
     }
 
     private double q(Object object, Object object2) {
-        return this.v.F(object, object2);
+        return this.v.invokeDouble(object, object2);
     }
 
     public static boolean q$src$Z$1y0z9k(MEntity mEntity, Object object) {
@@ -1539,7 +1539,7 @@ extends Mapping {
             Class clazz31 = MappedClasses.Yr;
             String string31 = "getName";
             MEntity mEntity31 = this;
-            this.jA = ((MappingMethodBuilder)this.u(string31, clazz31, classArray2).Q(ForgeVersion.MC_1_21_4.n(), MappedClasses.Yp)).s();
+                this.jA = ((MappingMethodBuilder)this.methodBuilder(string31, clazz31, classArray2).setOwnerClassForVersion(ForgeVersion.MC_1_21_4.n(), MappedClasses.Yp)).buildMethod();
             Class[] classArray3 = new Class[]{Double.TYPE, Double.TYPE};
             Class<Void> clazz32 = Void.TYPE;
             boolean bl31 = true;
@@ -1578,29 +1578,29 @@ extends Mapping {
                 Class<Void> clazz37 = Void.TYPE;
                 String string37 = "updateFluidOnEyes";
                 MEntity mEntity37 = this;
-                this.a = ((MappingMethodBuilder)((MappingMethodBuilder)this.u(string37, clazz37, classArray8).A(ForgeVersion.MC_1_20_6.b(), "func_205012_q")).i(ForgeVersion.MC_1_20_6.b(), Wrapper.G)).s();
+                this.a = ((MappingMethodBuilder)((MappingMethodBuilder)this.methodBuilder(string37, clazz37, classArray8).setNameForVersion(ForgeVersion.MC_1_20_6.b(), "func_205012_q")).setMappedMemberForVersion(ForgeVersion.MC_1_20_6.b(), Wrapper.isNativeAvailable)).buildMethod();
             }
             Class[] classArray9 = new Class[]{};
             Class clazz38 = MappedClasses.lf;
             String string38 = "getBlockPosBelowThatAffectsMyMovement";
             MEntity mEntity38 = this;
-            this.l = ((MappingMethodBuilder)((MappingMethodBuilder)this.u(string38, clazz38, classArray9).A(ForgeVersion.MC_1_20_6.b(), "func_226270_aj_")).i(ForgeVersion.MC_1_20_6.b(), Wrapper.G)).s();
+                this.l = ((MappingMethodBuilder)((MappingMethodBuilder)this.methodBuilder(string38, clazz38, classArray9).setNameForVersion(ForgeVersion.MC_1_20_6.b(), "func_226270_aj_")).setMappedMemberForVersion(ForgeVersion.MC_1_20_6.b(), Wrapper.isNativeAvailable)).buildMethod();
             if (ForgeVersion.MC_1_21_4.d()) {
                 Class[] classArray10 = new Class[]{};
                 Class<Void> clazz39 = Void.TYPE;
                 String string39 = "checkBelowWorld";
                 MEntity mEntity39 = this;
-                this.js = this.u(string39, clazz39, classArray10).s();
+                this.js = this.methodBuilder(string39, clazz39, classArray10).buildMethod();
                 Class[] classArray11 = new Class[]{};
                 Class clazz40 = MappedClasses.lf;
                 String string40 = "getOnPosLegacy";
                 MEntity mEntity40 = this;
-                this.jV = this.u(string40, clazz40, classArray11).s();
+                this.jV = this.methodBuilder(string40, clazz40, classArray11).buildMethod();
                 Class[] classArray12 = new Class[]{MappedClasses.qP};
                 Class clazz41 = MappedClasses.qP;
                 String string41 = "collide";
                 MEntity mEntity41 = this;
-                this.j4 = this.u(string41, clazz41, classArray12).s();
+                this.j4 = this.methodBuilder(string41, clazz41, classArray12).buildMethod();
             }
             Class[] classArray13 = new Class[]{};
             Class<Double> clazz42 = Double.TYPE;
@@ -1663,7 +1663,7 @@ extends Mapping {
             Class clazz51 = MappedClasses.lf;
             String string51 = "blockPosition";
             MEntity mEntity51 = this;
-            this.jt = ((MappingMethodBuilder)this.u(string51, clazz51, classArray22).Q(ForgeVersion.MC_1_21_4.n(), MappedClasses.lD)).s();
+                this.jt = ((MappingMethodBuilder)this.methodBuilder(string51, clazz51, classArray22).setOwnerClassForVersion(ForgeVersion.MC_1_21_4.n(), MappedClasses.lD)).buildMethod();
             if (ForgeVersion.MC_1_20_6.d()) {
                 Class[] classArray23 = new Class[]{};
                 Class<Float> clazz52 = Float.TYPE;
@@ -1687,46 +1687,46 @@ extends Mapping {
                 Class<Void> clazz55 = Void.TYPE;
                 String string55 = "refreshDimensions";
                 MEntity mEntity55 = this;
-                this.Y = this.u(string55, clazz55, classArray26).s();
+                this.Y = this.methodBuilder(string55, clazz55, classArray26).buildMethod();
                 Class[] classArray27 = new Class[]{};
                 Class clazz56 = MappedClasses.Zl;
                 String string56 = "getInBlockState";
                 MEntity mEntity56 = this;
-                this.B = this.u(string56, clazz56, classArray27).s();
+                this.B = this.methodBuilder(string56, clazz56, classArray27).buildMethod();
                 Class clazz57 = MappedClasses.Zl;
                 String string57 = "inBlockState";
                 MEntity mEntity57 = this;
-                this.i = this.T(string57, clazz57).z();
+                this.i = this.fieldBuilder(string57, clazz57).buildField();
                 Class<Boolean> clazz58 = Boolean.TYPE;
                 String string58 = "minorHorizontalCollision";
                 MEntity mEntity58 = this;
-                this.jM = this.T(string58, clazz58).z();
+                this.jM = this.fieldBuilder(string58, clazz58).buildField();
                 Class<Boolean> clazz59 = Boolean.TYPE;
                 String string59 = "isInPowderSnow";
                 MEntity mEntity59 = this;
-                this.I = this.T(string59, clazz59).z();
+                this.I = this.fieldBuilder(string59, clazz59).buildField();
                 Class<Boolean> clazz60 = Boolean.TYPE;
                 String string60 = "wasInPowderSnow";
                 MEntity mEntity60 = this;
-                this.M = this.T(string60, clazz60).z();
+                this.M = this.fieldBuilder(string60, clazz60).buildField();
                 Class clazz61 = MappedClasses.qP;
                 String string61 = "stuckSpeedMultiplier";
                 MEntity mEntity61 = this;
-                this.T = this.T(string61, clazz61).z();
+                this.T = this.fieldBuilder(string61, clazz61).buildField();
                 Class[] classArray28 = new Class[]{MappedClasses.qP};
                 Class clazz62 = MappedClasses.qP;
                 String string62 = "limitPistonMovement";
                 MEntity mEntity62 = this;
-                this.C = this.u(string62, clazz62, classArray28).s();
+                this.C = this.methodBuilder(string62, clazz62, classArray28).buildMethod();
                 Class<Boolean> clazz63 = Boolean.TYPE;
                 String string63 = "verticalCollisionBelow";
                 MEntity mEntity63 = this;
-                this.jZ = this.T(string63, clazz63).z();
+                this.jZ = this.fieldBuilder(string63, clazz63).buildField();
                 Class[] classArray29 = new Class[]{Boolean.TYPE, Boolean.TYPE, MappedClasses.qP};
                 Class<Void> clazz64 = Void.TYPE;
                 String string64 = "setOnGroundWithMovement";
                 MEntity mEntity64 = this;
-                this.jN = this.u(string64, clazz64, classArray29).s();
+                this.jN = this.methodBuilder(string64, clazz64, classArray29).buildMethod();
             }
         } else {
             Class<Double> clazz65 = Double.TYPE;
@@ -1829,7 +1829,7 @@ extends Mapping {
         }
         if (ForgeVersion.MC_1_7_10.L()) {
             Class<Boolean> clazz83 = Boolean.TYPE;
-            boolean bl66 = Wrapper.G;
+            boolean bl66 = Wrapper.isNativeAvailable;
             String string83 = "field_70135_K";
             MEntity mEntity83 = this;
             this.z = this.J(string83, bl66, clazz83);
@@ -1838,7 +1838,7 @@ extends Mapping {
             String string84 = "yOffset";
             MEntity mEntity84 = this;
             this.jP = this.J(string84, bl67, clazz84);
-            if (Wrapper.c.isVanillaMinecraftPresent()) {
+            if (Wrapper.vapeInstance.isVanillaMinecraftPresent()) {
                 Class<Float> clazz85 = Float.TYPE;
                 boolean bl68 = true;
                 String string85 = "yOffset2";
@@ -1857,7 +1857,7 @@ extends Mapping {
             String string87 = "updateFallState";
             MEntity mEntity87 = this;
             this.j = this.Y(string87, bl70, clazz87, classArray);
-            if (Wrapper.c.isVanillaMinecraftPresent()) {
+            if (Wrapper.vapeInstance.isVanillaMinecraftPresent()) {
                 Class[] classArray36 = new Class[]{};
                 Class clazz88 = MappedClasses.Yr;
                 boolean bl71 = true;
@@ -1867,7 +1867,7 @@ extends Mapping {
             } else {
                 Class[] classArray37 = new Class[]{};
                 Class clazz89 = MappedClasses.Yr;
-                boolean bl72 = Wrapper.G;
+                boolean bl72 = Wrapper.isNativeAvailable;
                 String string89 = "func_145748_c_";
                 MEntity mEntity89 = this;
                 this.jO = this.Y(string89, bl72, clazz89, classArray37);
@@ -1882,7 +1882,7 @@ extends Mapping {
             if (ForgeVersion.MC_1_16_5.d()) {
                 Class[] classArray = new Class[]{Double.TYPE, Boolean.TYPE, MappedClasses.Zl, MappedClasses.lf};
                 Class<Void> clazz91 = Void.TYPE;
-                boolean bl74 = Wrapper.G;
+                boolean bl74 = Wrapper.isNativeAvailable;
                 String string91 = "func_184231_a";
                 MEntity mEntity91 = this;
                 this.j = this.Y(string91, bl74, clazz91, classArray);
@@ -1906,7 +1906,7 @@ extends Mapping {
                 Class clazz94 = MappedClasses.uk;
                 String string94 = "getBoundingBox";
                 MEntity mEntity94 = this;
-                this.jQ = ((MappingMethodBuilder)this.u(string94, clazz94, classArray).Q(ForgeVersion.MC_1_21_4.n(), MappedClasses.lD)).s();
+            this.jQ = ((MappingMethodBuilder)this.methodBuilder(string94, clazz94, classArray).setOwnerClassForVersion(ForgeVersion.MC_1_21_4.n(), MappedClasses.lD)).buildMethod();
             } else {
                 Class[] classArray = new Class[]{};
                 Class clazz95 = MappedClasses.uk;
@@ -1919,7 +1919,7 @@ extends Mapping {
             Class clazz96 = MappedClasses.Yr;
             String string96 = "getDisplayName";
             MEntity mEntity96 = this;
-            this.jO = ((MappingMethodBuilder)this.u(string96, clazz96, classArray).Q(ForgeVersion.MC_1_21_4.n(), MappedClasses.Yp)).s();
+            this.jO = ((MappingMethodBuilder)this.methodBuilder(string96, clazz96, classArray).setOwnerClassForVersion(ForgeVersion.MC_1_21_4.n(), MappedClasses.Yp)).buildMethod();
             Class[] classArray39 = new Class[]{MappedClasses.zc};
             Class<Void> clazz97 = Void.TYPE;
             boolean bl78 = true;
@@ -1959,13 +1959,13 @@ extends Mapping {
                 this.c = this.J(string102, bl83, clazz102);
                 Class[] classArray = new Class[]{MappedClasses.k, Double.TYPE, Double.TYPE, Double.TYPE};
                 Class<Void> clazz103 = Void.TYPE;
-                boolean bl84 = Wrapper.G;
+                boolean bl84 = Wrapper.isNativeAvailable;
                 String string103 = "func_70091_d";
                 MEntity mEntity103 = this;
                 this.j0 = this.Y(string103, bl84, clazz103, classArray);
                 Class[] classArray41 = new Class[]{Float.TYPE, Float.TYPE, Float.TYPE, Float.TYPE};
                 Class<Void> clazz104 = Void.TYPE;
-                boolean bl85 = Wrapper.G;
+                boolean bl85 = Wrapper.isNativeAvailable;
                 String string104 = "func_191958_b";
                 MEntity mEntity104 = this;
                 this.jb = this.Y(string104, bl85, clazz104, classArray41);
@@ -2068,7 +2068,7 @@ extends Mapping {
         } else if (ForgeVersion.MC_1_16_5.d()) {
             Class[] classArray50 = new Class[]{Double.TYPE, Double.TYPE, Double.TYPE};
             Class<Boolean> clazz120 = Boolean.TYPE;
-            boolean bl101 = Wrapper.G;
+            boolean bl101 = Wrapper.isNativeAvailable;
             String string120 = "isOffsetPositionInLiquid";
             MEntity mEntity120 = this;
             this.G = this.Y(string120, bl101, clazz120, classArray50);
@@ -2084,8 +2084,8 @@ extends Mapping {
         Class<Void> clazz122 = Void.TYPE;
         String string122 = "setPosition";
         MEntity mEntity122 = this;
-        this.j1 = ((MappingMethodBuilder)this.u(string122, clazz122, classArray52).A(ForgeVersion.MC_1_16_5.n(), "setPos")).s();
-        if (!Wrapper.G) {
+        this.j1 = ((MappingMethodBuilder)this.methodBuilder(string122, clazz122, classArray52).setNameForVersion(ForgeVersion.MC_1_16_5.n(), "setPos")).buildMethod();
+        if (!Wrapper.isNativeAvailable) {
             Class[] classArray53 = new Class[]{};
             Class<Boolean> clazz123 = Boolean.TYPE;
             boolean bl103 = false;
@@ -2108,13 +2108,13 @@ extends Mapping {
         Class<Boolean> clazz126 = Boolean.TYPE;
         String string126 = "inWater";
         MEntity mEntity126 = this;
-        this.g = ((MappingFieldBuilder)((MappingFieldBuilder)((MappingFieldBuilder)this.T(string126, clazz126).A(ForgeVersion.MC_1_16_5.S(), "field_70171_ac")).i(ForgeVersion.MC_1_16_5.S(), Wrapper.G)).A(ForgeVersion.MC_1_16_5.N(), "wasTouchingWater")).z();
+        this.g = ((MappingFieldBuilder)((MappingFieldBuilder)((MappingFieldBuilder)this.fieldBuilder(string126, clazz126).setNameForVersion(ForgeVersion.MC_1_16_5.S(), "field_70171_ac")).setMappedMemberForVersion(ForgeVersion.MC_1_16_5.S(), Wrapper.isNativeAvailable)).setNameForVersion(ForgeVersion.MC_1_16_5.N(), "wasTouchingWater")).buildField();
         if (ForgeVersion.MC_1_8_9.d() && ForgeVersion.MC_1_12_2.B()) {
             Class[] classArray56 = new Class[]{};
             Class<Boolean> clazz127 = Boolean.TYPE;
             String string127 = "handleWaterMovement";
             MEntity mEntity127 = this;
-            this.n = this.u(string127, clazz127, classArray56).s();
+        this.n = this.methodBuilder(string127, clazz127, classArray56).buildMethod();
         }
         if (ForgeVersion.MC_1_7_10.Y()) {
             Class[] classArray57 = new Class[]{};
@@ -2141,11 +2141,11 @@ extends Mapping {
         Class<UUID> clazz131 = UUID.class;
         String string131 = "getUniqueID";
         MEntity mEntity131 = this;
-        this.jX = ((MappingMethodBuilder)((MappingMethodBuilder)((MappingMethodBuilder)this.u(string131, clazz131, classArray60).A(ForgeVersion.MC_1_16_5.n(), "getUUID")).Q(ForgeVersion.MC_1_21_10.n(), MappedClasses.VM)).Q(ForgeVersion.MC_1_21_4.n(), MappedClasses.lD)).s();
+        this.jX = ((MappingMethodBuilder)((MappingMethodBuilder)((MappingMethodBuilder)this.methodBuilder(string131, clazz131, classArray60).setNameForVersion(ForgeVersion.MC_1_16_5.n(), "getUUID")).setOwnerClassForVersion(ForgeVersion.MC_1_21_10.n(), MappedClasses.VM)).setOwnerClassForVersion(ForgeVersion.MC_1_21_4.n(), MappedClasses.lD)).buildMethod();
         if (ForgeVersion.MC_1_16_5.d()) {
             Class[] classArray61 = new Class[]{Double.TYPE, Double.TYPE, Double.TYPE, Float.TYPE, Float.TYPE};
             Class<Void> clazz132 = Void.TYPE;
-            boolean bl109 = Wrapper.G;
+            boolean bl109 = Wrapper.isNativeAvailable;
             String string132 = "setPositionAndRotation";
             MEntity mEntity132 = this;
             this.ja = this.Y(string132, bl109, clazz132, classArray61);
@@ -2202,7 +2202,7 @@ extends Mapping {
     }
 
     private void O(Object object, double d, double d2, double d3, float f, float f2) {
-        this.ja.c(object, d, d2, d3, Float.valueOf(f), Float.valueOf(f2));
+        this.ja.invokeVoid(object, d, d2, d3, Float.valueOf(f), Float.valueOf(f2));
     }
 
     public static Object U$src$Ljava_lang_Object_$1vzpu7o(MEntity mEntity, Object object) {

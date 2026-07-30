@@ -66,7 +66,7 @@ extends Bendable {
 
     @Override
     public String getDisplayText() {
-        return String.format(BIND_DISPLAY_FORMAT, ClientSettings.F, ClientSettings.F, this.getBindText(), ClientSettings.F, ClientSettings.F, this.module.getName());
+        return String.format(BIND_DISPLAY_FORMAT, ClientSettings.FORMAT_CODE, ClientSettings.FORMAT_CODE, this.getBindText(), ClientSettings.FORMAT_CODE, ClientSettings.FORMAT_CODE, this.module.getName());
     }
 
     static {
@@ -77,7 +77,7 @@ extends Bendable {
 
     private boolean areOtherInputsDown(int triggeringInput) {
         for (int boundInput : this.getBoundInputs()) {
-            if (boundInput == triggeringInput || ClientSettings.l(boundInput)) continue;
+            if (boundInput == triggeringInput || ClientSettings.isInputDown(boundInput)) continue;
             return false;
         }
         return true;

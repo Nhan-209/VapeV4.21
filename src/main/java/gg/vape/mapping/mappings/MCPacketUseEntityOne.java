@@ -24,7 +24,7 @@ extends Mapping {
     }
 
     private Object X(Object object) {
-        return this.W.O(object);
+        return this.W.newInstance(object);
     }
 }
 

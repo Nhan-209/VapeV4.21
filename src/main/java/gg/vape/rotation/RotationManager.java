@@ -115,10 +115,10 @@ implements EventListener {
         KeyBinding leftKey = settings.g$src$Lgg_vape_wrapper_impl_KeyBinding_$qqn5n3();
         KeyBinding rightKey = settings.x$src$Lgg_vape_wrapper_impl_KeyBinding_$1cf7isg();
         KeyBinding backKey = settings.s();
-        boolean forward = useCurrentKeyState ? forwardKey.isKeyDown() : ClientSettings.B(forwardKey);
-        boolean left = useCurrentKeyState ? leftKey.isKeyDown() : ClientSettings.B(leftKey);
-        boolean right = useCurrentKeyState ? rightKey.isKeyDown() : ClientSettings.B(rightKey);
-        boolean back = useCurrentKeyState ? backKey.isKeyDown() : ClientSettings.B(backKey);
+        boolean forward = useCurrentKeyState ? forwardKey.isKeyDown() : ClientSettings.isPhysicalKeyDown(forwardKey);
+        boolean left = useCurrentKeyState ? leftKey.isKeyDown() : ClientSettings.isPhysicalKeyDown(leftKey);
+        boolean right = useCurrentKeyState ? rightKey.isKeyDown() : ClientSettings.isPhysicalKeyDown(rightKey);
+        boolean back = useCurrentKeyState ? backKey.isKeyDown() : ClientSettings.isPhysicalKeyDown(backKey);
         return this.adjustMovementYaw(yaw, forward, left, right, back);
     }
 
@@ -138,7 +138,7 @@ implements EventListener {
         }
     }
 
-    @EventHandler(A=EventPriority.LOWEST)
+    @EventHandler(priority=EventPriority.LOWEST)
     public void onPostLocalPlayerTick(EventPostLocalPlayerTick event) {
         EntityPlayerSP player = event.getPlayer();
         if (this.playerYawRestorePending) {
@@ -220,7 +220,7 @@ implements EventListener {
         return this.hasAdaptiveController() ? this.managedYaw : Minecraft.F().J();
     }
 
-    @EventHandler(A=EventPriority.LOWEST)
+    @EventHandler(priority=EventPriority.LOWEST)
     public void onPacketSend(EventPacketSend eventPacketSend) {
         if (ForgeVersion.MC_1_21_4.d() && this.hasAdaptiveController() && eventPacketSend.getPacket().isInstance(MappedClasses.Dg)) {
             S08PacketPlayerPosLook s08PacketPlayerPosLook = new S08PacketPlayerPosLook(eventPacketSend.getPacket());
@@ -233,7 +233,7 @@ implements EventListener {
         return this.activeController != null && this.activeController instanceof AdaptiveRotationController;
     }
 
-    @EventHandler(A=EventPriority.HIGHEST)
+    @EventHandler(priority=EventPriority.HIGHEST)
     public void onMouseOverUpdateHighest(EventMouseOverUpdate eventMouseOverUpdate) {
         if (this.hasAdaptiveController()) {
             this.applyManagedMouseOver();
@@ -256,7 +256,7 @@ implements EventListener {
         this.controllerUpdateAccumulator -= (double)wholeUpdates;
     }
 
-    @EventHandler(A=EventPriority.LOWEST)
+    @EventHandler(priority=EventPriority.LOWEST)
     public void onPreEntityRendererMouseUpdate(EventPreEntityRendererMouseUpdate eventPreEntityRendererMouseUpdate) {
         if (this.controllerHooksPending && this.activeController != null) {
             this.activeController.onPreMouseUpdate(eventPreEntityRendererMouseUpdate);
@@ -279,7 +279,7 @@ implements EventListener {
     @EventHandler
     public void onRender2D(EventRender2D event) {
         EntityPlayerSP player = event.getThePlayer();
-        if (!Vape.INSTANCE.getClientSettings().e.getEffectiveValue().booleanValue()
+        if (!Vape.INSTANCE.getClientSettings().aimIndicator.getEffectiveValue().booleanValue()
                 || player.isNull() || Minecraft.currentScreen().isNotNull()) {
             return;
         }
@@ -292,10 +292,10 @@ implements EventListener {
             OpenGlBackendHolder.backend.pushMatrix();
             RenderUtils.g();
             ScaledResolution resolution = new ScaledResolution();
-            float guiScale = 2.0f / (float)Minecraft.G().e();
+            float guiScale = 2.0f / (float)Minecraft.G().getScaleFactor();
             OpenGlBackendHolder.backend.translate(
-                    resolution.U() / 2.0 / (double)guiScale,
-                    resolution.X() / 2.0 / (double)guiScale,
+                    resolution.getScaledWidthDouble() / 2.0 / (double)guiScale,
+                    resolution.getScaledHeightDouble() / 2.0 / (double)guiScale,
                     centerZ);
             EntityLivingBase renderedPlayer = Minecraft.F();
             float partialTicks = Minecraft.getTimer().renderPartialTicks();
@@ -373,7 +373,7 @@ implements EventListener {
         }
     }
 
-    @EventHandler(A=EventPriority.HIGHEST)
+    @EventHandler(priority=EventPriority.HIGHEST)
     public void onMotionUpdate(EventPreMotion event) {
         if (this.hasAdaptiveController()) {
             EventMotion.setRotationYaw(this.managedYaw);
@@ -412,7 +412,7 @@ implements EventListener {
         this.normalReachRayTrace = this.rayTraceUsingManagedRotation(3.0, 0.0f, false);
     }
 
-    @EventHandler(A=EventPriority.HIGHEST)
+    @EventHandler(priority=EventPriority.HIGHEST)
     public void onRightClickMouse(EventRightClickMouse eventRightClickMouse) {
         if (this.hasAdaptiveController()) {
             this.applyManagedMouseOver();
@@ -425,16 +425,16 @@ implements EventListener {
         this.normalReachRayTrace = EMPTY_RAY_TRACE;
     }
 
-    @EventHandler(A=EventPriority.HIGHEST)
+    @EventHandler(priority=EventPriority.HIGHEST)
     public void onThreadBoundPreTick(EventThreadBoundPreTick eventThreadBoundPreTick) {
         if (this.hasAdaptiveController()) {
             this.applyManagedRotation(true);
         }
     }
 
-    @EventHandler(A=EventPriority.LOWEST)
+    @EventHandler(priority=EventPriority.LOWEST)
     public void onPreRenderWorldPass(EventPreRenderWorldPass eventPreRenderWorldPass) {
-        if (!Vape.INSTANCE.getClientSettings().c.getEffectiveValue().booleanValue()) {
+        if (!Vape.INSTANCE.getClientSettings().thirdPersonAimView.getEffectiveValue().booleanValue()) {
             return;
         }
         this.applyRenderRotation(eventPreRenderWorldPass.getPlayer());
@@ -476,15 +476,15 @@ implements EventListener {
         }
     }
 
-    @EventHandler(A=EventPriority.LOWEST)
+    @EventHandler(priority=EventPriority.LOWEST)
     public void onPostRenderWorldPass(EventPostRenderWorldPass eventPostRenderWorldPass) {
-        if (!Vape.INSTANCE.getClientSettings().c.getEffectiveValue().booleanValue()) {
+        if (!Vape.INSTANCE.getClientSettings().thirdPersonAimView.getEffectiveValue().booleanValue()) {
             return;
         }
         this.restoreRenderRotation(eventPostRenderWorldPass.getPlayer());
     }
 
-    @EventHandler(A=EventPriority.HIGHEST)
+    @EventHandler(priority=EventPriority.HIGHEST)
     public void onSendClickBlockToController(EventSendClickBlockToController eventSendClickBlockToController) {
         if (this.hasAdaptiveController()) {
             this.applyManagedMouseOver();
@@ -572,11 +572,11 @@ implements EventListener {
             player.z(this.managedYaw);
             player.C(this.managedPitch);
             double reachDistance = 3.0;
-            if (Vape.INSTANCE.getClientSettings().C.getEffectiveValue().booleanValue()) {
+            if (Vape.INSTANCE.getClientSettings().useReach.getEffectiveValue().booleanValue()) {
                 reachDistance = Vape.INSTANCE.getModManager().getMod(Reach.class).getReachDistance();
             }
             double hitBoxExpansion = 0.0;
-            if (Vape.INSTANCE.getClientSettings().A.getEffectiveValue().booleanValue()) {
+            if (Vape.INSTANCE.getClientSettings().useHitboxes.getEffectiveValue().booleanValue()) {
                 hitBoxExpansion = Vape.INSTANCE.getModManager().getMod(HitBoxes.class).getExpansionAmount();
             }
             MouseOverRayTraceUpdater.s((float)reachDistance, (float)hitBoxExpansion);
@@ -588,7 +588,7 @@ implements EventListener {
         Minecraft.O(this.cachedMouseOverRayTrace);
     }
 
-    @EventHandler(A=EventPriority.LOWEST)
+    @EventHandler(priority=EventPriority.LOWEST)
     public void onPacketReceive(EventPacketReceive event) {
         if (!this.hasAdaptiveController() || event.isCanceled()) {
             return;
@@ -627,21 +627,21 @@ implements EventListener {
         return this.normalReachRayTrace;
     }
 
-    @EventHandler(A=EventPriority.HIGHEST)
+    @EventHandler(priority=EventPriority.HIGHEST)
     public void onThreadBoundPostTick(EventThreadBoundPostTick eventThreadBoundPostTick) {
         if (this.hasAdaptiveController()) {
             this.applyManagedRotation(false);
         }
     }
 
-    @EventHandler(A=EventPriority.HIGHEST)
+    @EventHandler(priority=EventPriority.HIGHEST)
     public void onPreLocalPlayerTick(EventPreLocalPlayerTick event) {
         if (Minecraft.thePlayer().isNull()) {
             this.movementKeysRemapped = false;
             return;
         }
-        ModeSelection movementMode = (ModeSelection)Vape.INSTANCE.getClientSettings().o.getValue();
-        if (movementMode.equals(ClientSettings.O) || !this.isMovementCorrectionMode(movementMode)) {
+        ModeSelection movementMode = (ModeSelection)Vape.INSTANCE.getClientSettings().movementCorrection.getValue();
+        if (movementMode.equals(ClientSettings.NO_MOVEMENT_CORRECTION) || !this.isMovementCorrectionMode(movementMode)) {
             return;
         }
         GameSettings settings = Minecraft.gameSettings();
@@ -666,7 +666,7 @@ implements EventListener {
         this.savedRenderYawOffset = player.q$src$F$1u6qsjx();
         float referenceYaw = controller.getReferenceYaw();
         float movementYaw = this.adjustMovementYawFromBindings(referenceYaw, keyStateMismatch);
-        float appliedPlayerYaw = movementMode.equals(ClientSettings.u)
+        float appliedPlayerYaw = movementMode.equals(ClientSettings.SLOW_MOVEMENT_CORRECTION)
                 ? movementYaw + 180.0f : this.managedYaw;
         player.H(appliedPlayerYaw);
         player.z(appliedPlayerYaw);
@@ -709,7 +709,7 @@ implements EventListener {
     }
 
     private boolean isMovementCorrectionMode(ModeSelection mode) {
-        return mode.equals(ClientSettings.Y) || mode.equals(ClientSettings.u);
+        return mode.equals(ClientSettings.PROPER_MOVEMENT_CORRECTION) || mode.equals(ClientSettings.SLOW_MOVEMENT_CORRECTION);
     }
 
     private boolean hasMovementKeyStateMismatch(GameSettings settings) {
@@ -720,7 +720,7 @@ implements EventListener {
                 settings.s()
         };
         for (KeyBinding key : movementKeys) {
-            if (ClientSettings.B(key) != key.isKeyDown()) {
+            if (ClientSettings.isPhysicalKeyDown(key) != key.isKeyDown()) {
                 return true;
             }
         }
@@ -731,9 +731,9 @@ implements EventListener {
         return this.rayTraceUsingManagedRotation(distance, hitBoxExpansion, extendedReach, null);
     }
 
-    @EventHandler(A=EventPriority.LOWEST)
+    @EventHandler(priority=EventPriority.LOWEST)
     public void onRenderPlayerPre(EventRenderPlayerPre eventRenderPlayerPre) {
-        if (!Vape.INSTANCE.getClientSettings().c.getEffectiveValue().booleanValue()) {
+        if (!Vape.INSTANCE.getClientSettings().thirdPersonAimView.getEffectiveValue().booleanValue()) {
             return;
         }
         EntityPlayer player = eventRenderPlayerPre.getEntityPlayer();
@@ -765,7 +765,7 @@ implements EventListener {
         return result;
     }
 
-    @EventHandler(A=EventPriority.LOWEST)
+    @EventHandler(priority=EventPriority.LOWEST)
     public void onTick(EventPreTick event) {
         EntityPlayerSP player = event.getThePlayer();
         GuiScreen screen = event.getCurrentScreen();
@@ -870,7 +870,7 @@ implements EventListener {
         this.activeController = controller;
     }
 
-    @EventHandler(A=EventPriority.LOW)
+    @EventHandler(priority=EventPriority.LOW)
     public void onMouseOverUpdate(EventMouseOverUpdate eventMouseOverUpdate) {
         if (!this.rayTraceRefreshPending) {
             return;
@@ -915,9 +915,9 @@ implements EventListener {
         return result;
     }
 
-    @EventHandler(A=EventPriority.LOWEST)
+    @EventHandler(priority=EventPriority.LOWEST)
     public void onRenderPlayerPost(EventRenderPlayerPost eventRenderPlayerPost) {
-        if (!Vape.INSTANCE.getClientSettings().c.getEffectiveValue().booleanValue()) {
+        if (!Vape.INSTANCE.getClientSettings().thirdPersonAimView.getEffectiveValue().booleanValue()) {
             return;
         }
         EntityPlayer player = eventRenderPlayerPost.getEntityPlayer();

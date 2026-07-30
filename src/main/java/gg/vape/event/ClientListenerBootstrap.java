@@ -9,18 +9,17 @@ import java.util.List;
 import java.util.function.Predicate;
 
 public class ClientListenerBootstrap {
-    private final List<EventListener> W = Arrays.asList(new ForgeClientChatReceivedEvent(), new ClientListenerBootstrapEventListener());
+    private final List<EventListener> listeners = Arrays.asList(new ForgeClientChatReceivedEvent(), new ClientListenerBootstrapEventListener());
 
     public void registerListeners() {
-        for (EventListener qF2 : this.W) {
-            EventBus.getInstance().registerListener(qF2, new Predicate[0]);
+        for (EventListener listener : this.listeners) {
+            EventBus.getInstance().registerListener(listener, new Predicate[0]);
         }
     }
 
     public void unregisterListeners() {
-        for (EventListener qF2 : this.W) {
-            EventBus.getInstance().unregisterListener(qF2);
+        for (EventListener listener : this.listeners) {
+            EventBus.getInstance().unregisterListener(listener);
         }
     }
 }
-

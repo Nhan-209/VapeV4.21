@@ -33,9 +33,9 @@ extends ZeusTrackedPacket<ChatToFriendPacket> {
 
     @Override
     public void T(ZeusPacketBuffer zeusPacketBuffer) {
-        zeusPacketBuffer.U(this.n);
-        zeusPacketBuffer.y(this.N);
-        zeusPacketBuffer.v(this.l);
+        zeusPacketBuffer.writeEnum(this.n);
+        zeusPacketBuffer.writeString(this.N);
+        zeusPacketBuffer.writeLong(this.l);
     }
 
     public static GuiComponent[] A() {
@@ -60,9 +60,9 @@ extends ZeusTrackedPacket<ChatToFriendPacket> {
 
     @Override
     public void x(ZeusPacketBuffer zeusPacketBuffer) {
-        this.n = zeusPacketBuffer.Y(ChatToFriendStatus.class);
-        this.N = zeusPacketBuffer.v(255);
-        this.l = zeusPacketBuffer.long_a();
+        this.n = zeusPacketBuffer.readEnum(ChatToFriendStatus.class);
+        this.N = zeusPacketBuffer.readString(255);
+        this.l = zeusPacketBuffer.readLong();
     }
 
     static {

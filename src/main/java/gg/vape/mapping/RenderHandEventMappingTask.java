@@ -9,8 +9,8 @@ import gg.vape.mapping.MappedClasses;
 public class RenderHandEventMappingTask
 extends JavassistMappingTask {
     @Override
-    public void c() {
-        if (Vape.INSTANCE.getMappings().RY.x != null && !Vape.INSTANCE.getMappings().RY.x.h()) {
+    public void transform() {
+        if (Vape.INSTANCE.getMappings().RY.x != null && !Vape.INSTANCE.getMappings().RY.x.hasResolutionFailed()) {
             this.c(Vape.INSTANCE.getMappings().RY.x, EventPreRenderHand.class, "");
             this.k(Vape.INSTANCE.getMappings().RY.x, EventPostRenderHand.class, "");
         }

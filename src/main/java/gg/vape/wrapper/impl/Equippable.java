@@ -1,8 +1,7 @@
 package gg.vape.wrapper.impl;
 
 import gg.vape.wrapper.Wrapper;
-import gg.vape.wrapper.impl.EntityEquipmentSlot;
-import gg.vape.wrapper.impl.ResourceKey;
+
 import java.util.Optional;
 import org.jetbrains.annotations.Nullable;
 
@@ -18,7 +17,7 @@ extends Wrapper {
     }
 
     public Optional T() {
-        return Equippable.c.getMappings().C3.p(this.I);
+        return Equippable.vapeInstance.getMappings().C3.p(this.I);
     }
 
     public Equippable(Object object) {
@@ -27,7 +26,7 @@ extends Wrapper {
 
 
     public EntityEquipmentSlot m$src$Lgg_vape_wrapper_impl_EntityEquipmentSlot_$bzr9md() {
-        return new EntityEquipmentSlot(Equippable.c.getMappings().C3.G(this.I));
+        return new EntityEquipmentSlot(Equippable.vapeInstance.getMappings().C3.G(this.I));
     }
 }
 

@@ -3,31 +3,7 @@ package gg.vape.wrapper.impl;
 import gg.vape.mapping.MappedClasses;
 import gg.vape.mapping.mappings.MItemStack;
 import gg.vape.wrapper.Wrapper;
-import gg.vape.wrapper.impl.BlockPos;
-import gg.vape.wrapper.impl.BlockState;
-import gg.vape.wrapper.impl.DataComponentType;
-import gg.vape.wrapper.impl.DataComponentTypeBridge;
-import gg.vape.wrapper.impl.EmptyDataComponentMap;
-import gg.vape.wrapper.impl.EmptyItemAttributeModifiers;
-import gg.vape.wrapper.impl.Enchantment;
-import gg.vape.wrapper.impl.EnchantmentHelper;
-import gg.vape.wrapper.impl.EntityEquipmentSlot;
-import gg.vape.wrapper.impl.EntityPlayer;
-import gg.vape.wrapper.impl.EnumActionResult;
-import gg.vape.wrapper.impl.EnumHand;
-import gg.vape.wrapper.impl.ForgeVersion;
-import gg.vape.wrapper.impl.Holder;
-import gg.vape.wrapper.impl.ITextComponent;
-import gg.vape.wrapper.impl.Item;
-import gg.vape.wrapper.impl.ItemAttributeModifiers;
-import gg.vape.wrapper.impl.Minecraft;
-import gg.vape.wrapper.impl.PotionVersionRange;
-import gg.vape.wrapper.impl.TagBase;
-import gg.vape.wrapper.impl.TagCompound;
-import gg.vape.wrapper.impl.TagList;
-import gg.vape.wrapper.impl.VertexFormatElement;
-import gg.vape.wrapper.impl.World;
-import gg.vape.wrapper.impl.WorldClient;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -40,7 +16,7 @@ extends Wrapper {
     public String x() {
         if (ForgeVersion.MC_1_16_5.d()) {
             try {
-                ITextComponent iTextComponent = new ITextComponent(MItemStack.c(ItemStack.c.getMappings().q8, this.I));
+                ITextComponent iTextComponent = new ITextComponent(MItemStack.c(ItemStack.vapeInstance.getMappings().q8, this.I));
                 return iTextComponent.getFormattedText();
             }
             catch (Throwable throwable) {
@@ -49,7 +25,7 @@ extends Wrapper {
             }
         }
         try {
-            return MItemStack.k(ItemStack.c.getMappings().q8, this.I);
+            return MItemStack.k(ItemStack.vapeInstance.getMappings().q8, this.I);
         }
         catch (Exception exception) {
             return "";
@@ -58,18 +34,18 @@ extends Wrapper {
 
     public boolean W(ItemStack itemStack) {
         if (ForgeVersion.MC_1_17.d()) {
-            return ItemStack.c.getMappings().q8.e(this.I, itemStack.getItem().getObject());
+            return ItemStack.vapeInstance.getMappings().q8.e(this.I, itemStack.getItem().getObject());
         }
-        return ItemStack.c.getMappings().q8.e(this.I, itemStack.getObject());
+        return ItemStack.vapeInstance.getMappings().q8.e(this.I, itemStack.getObject());
     }
 
     public void i(Object object) {
-        ItemStack.c.getMappings().q8.D(this.I, object);
+        ItemStack.vapeInstance.getMappings().q8.D(this.I, object);
     }
 
     public boolean W(DataComponentTypeBridge dataComponentTypeBridge) {
         if (ForgeVersion.MC_1_21_4.d()) {
-            return ItemStack.c.getMappings().q8.Y(this.getObject(), dataComponentTypeBridge.getObject());
+            return ItemStack.vapeInstance.getMappings().q8.Y(this.getObject(), dataComponentTypeBridge.getObject());
         }
         return true;
     }
@@ -82,7 +58,7 @@ extends Wrapper {
             try {
                 Holder holder = Holder.A(item.getObject());
                 if (holder.isNotNull()) {
-                    Object object = ItemStack.c.getMappings().q8.j(holder.getObject(), 1, EmptyDataComponentMap.J().getObject());
+                    Object object = ItemStack.vapeInstance.getMappings().q8.j(holder.getObject(), 1, EmptyDataComponentMap.J().getObject());
                     return new ItemStack(object);
                 }
             }
@@ -91,7 +67,7 @@ extends Wrapper {
             }
             return new ItemStack(null);
         }
-        return new ItemStack(ItemStack.c.getMappings().q8.p(item.getObject()));
+        return new ItemStack(ItemStack.vapeInstance.getMappings().q8.p(item.getObject()));
     }
 
     @Override
@@ -100,7 +76,7 @@ extends Wrapper {
             return true;
         }
         if (ForgeVersion.MC_26_1.d()) {
-            return ItemStack.c.getMappings().q8.j(this.getObject());
+            return ItemStack.vapeInstance.getMappings().q8.j(this.getObject());
         }
         if (this.toString().contains("tile.air")) {
             return true;
@@ -113,15 +89,15 @@ extends Wrapper {
     }
 
     public void s(int n) {
-        MItemStack.b(ItemStack.c.getMappings().q8, this.I, n);
+        MItemStack.b(ItemStack.vapeInstance.getMappings().q8, this.I, n);
     }
 
     public void Y(int n) {
-        ItemStack.c.getMappings().q8.k(this.I, n);
+        ItemStack.vapeInstance.getMappings().q8.k(this.I, n);
     }
 
     public Object l() {
-        return ItemStack.c.getMappings().q8.r(this.I);
+        return ItemStack.vapeInstance.getMappings().q8.r(this.I);
     }
 
     public ItemStack(Object object) {
@@ -136,7 +112,7 @@ extends Wrapper {
             try {
                 Holder holder = item.Q();
                 if (holder.isNotNull()) {
-                    return new ItemStack(ItemStack.c.getMappings().q8.O(holder.getObject(), 1));
+                    return new ItemStack(ItemStack.vapeInstance.getMappings().q8.O(holder.getObject(), 1));
                 }
             }
             catch (Throwable throwable) {
@@ -148,18 +124,18 @@ extends Wrapper {
 
     public Object A(EntityPlayer entityPlayer, Object object) {
         if (ForgeVersion.MC_1_8_9.Y()) {
-            return MItemStack.g(ItemStack.c.getMappings().q8, this.I, entityPlayer.getObject(), object);
+            return MItemStack.g(ItemStack.vapeInstance.getMappings().q8, this.I, entityPlayer.getObject(), object);
         }
-        return MItemStack.X(ItemStack.c.getMappings().q8, this.I, entityPlayer.getObject(), (Boolean)object);
+        return MItemStack.X(ItemStack.vapeInstance.getMappings().q8, this.I, entityPlayer.getObject(), (Boolean)object);
     }
 
     public ItemStack k() {
-        return new ItemStack(MItemStack.J(ItemStack.c.getMappings().q8, this.I));
+        return new ItemStack(MItemStack.J(ItemStack.vapeInstance.getMappings().q8, this.I));
     }
 
     public boolean r() {
         if (ForgeVersion.MC_26_1.d()) {
-            return this.isNull() || ItemStack.c.getMappings().q8.j(this.getObject());
+            return this.isNull() || ItemStack.vapeInstance.getMappings().q8.j(this.getObject());
         }
         if (this.isNull()) {
             return true;
@@ -185,7 +161,7 @@ extends Wrapper {
     }
 
     public void v(Enchantment enchantment, int n) {
-        MItemStack.r(ItemStack.c.getMappings().q8, this.I, enchantment.getObject(), n);
+        MItemStack.r(ItemStack.vapeInstance.getMappings().q8, this.I, enchantment.getObject(), n);
     }
 
     public ArrayList<Enchantment> p() {
@@ -204,7 +180,7 @@ extends Wrapper {
     }
 
     public int y() {
-        return MItemStack.A(ItemStack.c.getMappings().q8, this.I);
+        return MItemStack.A(ItemStack.vapeInstance.getMappings().q8, this.I);
     }
 
     public ItemAttributeModifiers o() {
@@ -214,25 +190,25 @@ extends Wrapper {
             return emptyItemAttributeModifiers;
         }
         if (ForgeVersion.MC_1_12_2.d()) {
-            return new ItemAttributeModifiers(MItemStack.g(ItemStack.c.getMappings().q8, this.I, EntityEquipmentSlot.L().getObject()));
+            return new ItemAttributeModifiers(MItemStack.g(ItemStack.vapeInstance.getMappings().q8, this.I, EntityEquipmentSlot.L().getObject()));
         }
-        return new ItemAttributeModifiers(MItemStack.A$src$Ljava_lang_Object_$2ove6c(ItemStack.c.getMappings().q8, this.I));
+        return new ItemAttributeModifiers(MItemStack.A$src$Ljava_lang_Object_$2ove6c(ItemStack.vapeInstance.getMappings().q8, this.I));
     }
 
     public Holder H() {
         if (ForgeVersion.MC_26_1.d()) {
             return new Holder(null);
         }
-        return new Holder(MItemStack.M(ItemStack.c.getMappings().q8, this.I));
+        return new Holder(MItemStack.M(ItemStack.vapeInstance.getMappings().q8, this.I));
     }
 
     public float V(int n, int n2, int n3) {
         WorldClient worldClient = Minecraft.theWorld();
         if (ForgeVersion.MC_1_12_2.d()) {
             BlockState blockState = worldClient.getBlockState(BlockPos.create(n, n2, n3));
-            return MItemStack.u(ItemStack.c.getMappings().q8, this.I, blockState.getObject());
+            return MItemStack.u(ItemStack.vapeInstance.getMappings().q8, this.I, blockState.getObject());
         }
-        return MItemStack.u(ItemStack.c.getMappings().q8, this.I, worldClient.getBlockByPos(n, n2, n3).getObject());
+        return MItemStack.u(ItemStack.vapeInstance.getMappings().q8, this.I, worldClient.getBlockByPos(n, n2, n3).getObject());
     }
 
     static {
@@ -259,15 +235,15 @@ extends Wrapper {
     }
 
     public EnumActionResult C(World world, EntityPlayer entityPlayer, EnumHand enumHand) {
-        return new EnumActionResult(ItemStack.c.getMappings().q8.n(this.getObject(), world.getObject(), entityPlayer.getObject(), enumHand.getObject()));
+        return new EnumActionResult(ItemStack.vapeInstance.getMappings().q8.n(this.getObject(), world.getObject(), entityPlayer.getObject(), enumHand.getObject()));
     }
 
     public TagList a() {
-        return new TagList(MItemStack.H(ItemStack.c.getMappings().q8, this.I));
+        return new TagList(MItemStack.H(ItemStack.vapeInstance.getMappings().q8, this.I));
     }
 
     public void k(EntityEquipmentSlot entityEquipmentSlot, BiConsumer biConsumer) {
-        MItemStack.Q(ItemStack.c.getMappings().q8, this.I, entityEquipmentSlot.getObject(), biConsumer);
+        MItemStack.Q(ItemStack.vapeInstance.getMappings().q8, this.I, entityEquipmentSlot.getObject(), biConsumer);
     }
 
     private static Throwable a(Throwable throwable) {
@@ -275,19 +251,19 @@ extends Wrapper {
     }
 
     public int P() {
-        return MItemStack.l(ItemStack.c.getMappings().q8, this.I);
+        return MItemStack.l(ItemStack.vapeInstance.getMappings().q8, this.I);
     }
 
     public Item getItem() {
-        return new Item(ItemStack.c.getMappings().q8.V(this.I));
+        return new Item(ItemStack.vapeInstance.getMappings().q8.V(this.I));
     }
 
     public int L() {
-        return MItemStack.v(ItemStack.c.getMappings().q8, this.I);
+        return MItemStack.v(ItemStack.vapeInstance.getMappings().q8, this.I);
     }
 
     public Object w(DataComponentType dataComponentType) {
-        return MItemStack.A(ItemStack.c.getMappings().q8, this.I, dataComponentType.getObject());
+        return MItemStack.A(ItemStack.vapeInstance.getMappings().q8, this.I, dataComponentType.getObject());
     }
 
     public boolean x$src$Z$1nwfctq() {
@@ -303,7 +279,7 @@ extends Wrapper {
     }
 
     public int t() {
-        return ItemStack.c.getMappings().q8.n(this.I);
+        return ItemStack.vapeInstance.getMappings().q8.n(this.I);
     }
 
     public boolean e(ItemStack itemStack) {
@@ -314,6 +290,6 @@ extends Wrapper {
         if (ForgeVersion.MC_1_21_0.d()) {
             return this.getItem().A();
         }
-        return ItemStack.c.getMappings().q8.F(this.getObject());
+        return ItemStack.vapeInstance.getMappings().q8.F(this.getObject());
     }
 }

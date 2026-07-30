@@ -2,11 +2,7 @@ package gg.vape.wrapper.impl;
 
 import gg.vape.mapping.mappings.MAxisAlignedBB;
 import gg.vape.wrapper.Wrapper;
-import gg.vape.wrapper.impl.Entity;
-import gg.vape.wrapper.impl.EnumFacing;
-import gg.vape.wrapper.impl.ForgeVersion;
-import gg.vape.wrapper.impl.RayTraceResult;
-import gg.vape.wrapper.impl.Vec3;
+
 import java.util.Optional;
 
 public class AxisAlignedBB
@@ -15,15 +11,15 @@ extends Wrapper {
         if (ForgeVersion.MC_1_20_6.d()) {
             return AxisAlignedBB.create(this.getMinX() + d, this.getMinY() + d2, this.getMinZ() + d3, this.getMaxX() + d, this.getMaxY() + d2, this.getMaxZ() + d3);
         }
-        return new AxisAlignedBB(AxisAlignedBB.c.getMappingsCompat().RQ.B(this.I, d, d2, d3));
+        return new AxisAlignedBB(AxisAlignedBB.vapeInstance.getMappingsCompat().RQ.B(this.I, d, d2, d3));
     }
 
     public double getMaxX() {
-        return AxisAlignedBB.c.getMappingsCompat().RQ.k(this.I);
+        return AxisAlignedBB.vapeInstance.getMappingsCompat().RQ.k(this.I);
     }
 
     public AxisAlignedBB z(double d, double d2, double d3) {
-        return new AxisAlignedBB(MAxisAlignedBB.Z(AxisAlignedBB.c.getMappingsCompat().RQ, this.I, d, d2, d3));
+        return new AxisAlignedBB(MAxisAlignedBB.Z(AxisAlignedBB.vapeInstance.getMappingsCompat().RQ, this.I, d, d2, d3));
     }
 
     public AxisAlignedBB contract(double d, double d2, double d3) {
@@ -31,15 +27,15 @@ extends Wrapper {
     }
 
     public double getMaxZ() {
-        return AxisAlignedBB.c.getMappingsCompat().RQ.p(this.I);
+        return AxisAlignedBB.vapeInstance.getMappingsCompat().RQ.p(this.I);
     }
 
     public Optional b(Vec3 vec3, Vec3 vec32) {
-        return (Optional)MAxisAlignedBB.a(AxisAlignedBB.c.getMappingsCompat().RQ, this.I, vec3.getObject(), vec32.getObject());
+        return (Optional)MAxisAlignedBB.a(AxisAlignedBB.vapeInstance.getMappingsCompat().RQ, this.I, vec3.getObject(), vec32.getObject());
     }
 
     public double getMinX() {
-        return AxisAlignedBB.c.getMappingsCompat().RQ.z(this.I);
+        return AxisAlignedBB.vapeInstance.getMappingsCompat().RQ.z(this.I);
     }
 
     public AxisAlignedBB(Object object) {
@@ -47,14 +43,14 @@ extends Wrapper {
     }
 
     public double getMinZ() {
-        return AxisAlignedBB.c.getMappingsCompat().RQ.G(this.I);
+        return AxisAlignedBB.vapeInstance.getMappingsCompat().RQ.G(this.I);
     }
 
     public AxisAlignedBB k(double d, double d2, double d3) {
         if (ForgeVersion.MC_1_7_10.Y()) {
             return this.A(d, d2, d3);
         }
-        return new AxisAlignedBB(MAxisAlignedBB.c(AxisAlignedBB.c.getMappingsCompat().RQ, this.I, d, d2, d3));
+        return new AxisAlignedBB(MAxisAlignedBB.c(AxisAlignedBB.vapeInstance.getMappingsCompat().RQ, this.I, d, d2, d3));
     }
 
     public AxisAlignedBB addCoord(double d, double d2, double d3) {
@@ -97,11 +93,11 @@ extends Wrapper {
             Vec3 vec33 = vec3.addVector(d4 * d3, d4 * d2, d4 * d);
             return RayTraceResult.create(new Entity(null), vec33);
         }
-        return new RayTraceResult(AxisAlignedBB.c.getMappingsCompat().RQ.x(this.I, vec3.getObject(), vec32.getObject()));
+        return new RayTraceResult(AxisAlignedBB.vapeInstance.getMappingsCompat().RQ.x(this.I, vec3.getObject(), vec32.getObject()));
     }
 
     public AxisAlignedBB copy() {
-        return new AxisAlignedBB(MAxisAlignedBB.Y(AxisAlignedBB.c.getMappingsCompat().RQ, this.I));
+        return new AxisAlignedBB(MAxisAlignedBB.Y(AxisAlignedBB.vapeInstance.getMappingsCompat().RQ, this.I));
     }
 
     public AxisAlignedBB v(double d) {
@@ -109,15 +105,15 @@ extends Wrapper {
     }
 
     public double getMaxY() {
-        return AxisAlignedBB.c.getMappingsCompat().RQ.L(this.I);
+        return AxisAlignedBB.vapeInstance.getMappingsCompat().RQ.L(this.I);
     }
 
     private static EnumFacing u(AxisAlignedBB axisAlignedBB, Vec3 vec3, double[] dArray, EnumFacing enumFacing, double d, double d2, double d3) {
-        return new EnumFacing(MAxisAlignedBB.K(AxisAlignedBB.c.getMappingsCompat().RQ, axisAlignedBB.getObject(), vec3.getObject(), dArray, enumFacing.getObject(), d, d2, d3));
+        return new EnumFacing(MAxisAlignedBB.K(AxisAlignedBB.vapeInstance.getMappingsCompat().RQ, axisAlignedBB.getObject(), vec3.getObject(), dArray, enumFacing.getObject(), d, d2, d3));
     }
 
     public double getMinY() {
-        return AxisAlignedBB.c.getMappingsCompat().RQ.T(this.I);
+        return AxisAlignedBB.vapeInstance.getMappingsCompat().RQ.T(this.I);
     }
 
     public AxisAlignedBB expand(double d, double d2, double d3) {
@@ -139,7 +135,7 @@ extends Wrapper {
     }
 
     public AxisAlignedBB c(Vec3 vec3) {
-        return new AxisAlignedBB(MAxisAlignedBB.C(AxisAlignedBB.c.getMappingsCompat().RQ, this.I, vec3.getObject()));
+        return new AxisAlignedBB(MAxisAlignedBB.C(AxisAlignedBB.vapeInstance.getMappingsCompat().RQ, this.I, vec3.getObject()));
     }
 
     public AxisAlignedBB y(double d) {
@@ -147,11 +143,11 @@ extends Wrapper {
     }
 
     public static AxisAlignedBB create(double d, double d2, double d3, double d4, double d5, double d6) {
-        return new AxisAlignedBB(AxisAlignedBB.c.getMappingsCompat().RQ.init(d, d2, d3, d4, d5, d6));
+        return new AxisAlignedBB(AxisAlignedBB.vapeInstance.getMappingsCompat().RQ.init(d, d2, d3, d4, d5, d6));
     }
 
     public AxisAlignedBB I(double d) {
-        return new AxisAlignedBB(MAxisAlignedBB.v(AxisAlignedBB.c.getMappingsCompat().RQ, this.I, d));
+        return new AxisAlignedBB(MAxisAlignedBB.v(AxisAlignedBB.vapeInstance.getMappingsCompat().RQ, this.I, d));
     }
 
     /*
@@ -169,11 +165,11 @@ extends Wrapper {
     }
 
     public boolean intersects(AxisAlignedBB axisAlignedBB) {
-        return MAxisAlignedBB.e(AxisAlignedBB.c.getMappingsCompat().RQ, this.I, axisAlignedBB.getObject());
+        return MAxisAlignedBB.e(AxisAlignedBB.vapeInstance.getMappingsCompat().RQ, this.I, axisAlignedBB.getObject());
     }
 
     public boolean E(Vec3 vec3) {
-        return MAxisAlignedBB.j(AxisAlignedBB.c.getMappingsCompat().RQ, this.I, vec3.getObject());
+        return MAxisAlignedBB.j(AxisAlignedBB.vapeInstance.getMappingsCompat().RQ, this.I, vec3.getObject());
     }
 }
 

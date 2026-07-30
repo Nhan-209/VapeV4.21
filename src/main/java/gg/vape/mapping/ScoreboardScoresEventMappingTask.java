@@ -11,14 +11,13 @@ extends JavassistMappingTask {
     private static final String c = "$event.getScores();";
 
     @Override
-    public void c() {
+    public void transform() {
         EventInjectionSpec eventInjectionSpec = new EventInjectionSpec(Vape.INSTANCE.getMappings().Dz.P, EventScoreboardScores.class);
-        eventInjectionSpec.H(c);
-        this.O(eventInjectionSpec);
+        eventInjectionSpec.setReturnExpression(c);
+        this.registerEventInjection(eventInjectionSpec);
     }
 
     public ScoreboardScoresEventMappingTask() {
         super(MappedClasses.F6);
     }
 }
-

@@ -206,13 +206,13 @@ public class RotationUtil {
         KeyBinding keyBinding5 = gameSettings.r();
         KeyBinding keyBinding6 = gameSettings.d$src$Lgg_vape_wrapper_impl_KeyBinding_$adn2z0();
         KeyBinding keyBinding7 = gameSettings.O();
-        boolean bl = ClientSettings.B(gameSettings.x$src$Lgg_vape_wrapper_impl_KeyBinding_$1cf7isg());
-        boolean bl2 = ClientSettings.B(gameSettings.g$src$Lgg_vape_wrapper_impl_KeyBinding_$qqn5n3());
-        boolean bl3 = ClientSettings.B(gameSettings.Y());
-        boolean bl4 = ClientSettings.B(gameSettings.s());
-        boolean bl5 = ClientSettings.B(gameSettings.r());
-        boolean bl6 = ClientSettings.B(gameSettings.d$src$Lgg_vape_wrapper_impl_KeyBinding_$adn2z0());
-        boolean bl7 = ClientSettings.B(gameSettings.O());
+        boolean bl = ClientSettings.isPhysicalKeyDown(gameSettings.x$src$Lgg_vape_wrapper_impl_KeyBinding_$1cf7isg());
+        boolean bl2 = ClientSettings.isPhysicalKeyDown(gameSettings.g$src$Lgg_vape_wrapper_impl_KeyBinding_$qqn5n3());
+        boolean bl3 = ClientSettings.isPhysicalKeyDown(gameSettings.Y());
+        boolean bl4 = ClientSettings.isPhysicalKeyDown(gameSettings.s());
+        boolean bl5 = ClientSettings.isPhysicalKeyDown(gameSettings.r());
+        boolean bl6 = ClientSettings.isPhysicalKeyDown(gameSettings.d$src$Lgg_vape_wrapper_impl_KeyBinding_$adn2z0());
+        boolean bl7 = ClientSettings.isPhysicalKeyDown(gameSettings.O());
         KeyBinding.setKeyBindState(keyBinding, bl);
         if (bl) {
             KeyBinding.onTick(keyBinding);
@@ -299,7 +299,7 @@ public class RotationUtil {
 
     public static int N(EntityPlayer entityPlayer) {
         int n = 0;
-        if (ClientSettings.H) {
+        if (ClientSettings.IS_LEGACY_1_7) {
             NetHandlerPlayClientImpl netHandlerPlayClientImpl = Minecraft.thePlayer().sendQueue();
             List list = GuiPlayerTabOverlayBridge.O().E(netHandlerPlayClientImpl.getPlayerInfoMap());
             for (Object e : list) {
@@ -514,13 +514,13 @@ public class RotationUtil {
         float f = (float)(d4 - d);
         float f2 = (float)(d5 - d2);
         if ((double)f2 > 0.0 && (double)f > 0.0) {
-            d6 = Math.toDegrees(-FastAtanMath.l(f / f2));
+            d6 = Math.toDegrees(-FastAtanMath.atanApproximation(f / f2));
         } else if ((double)f2 > 0.0 && (double)f < 0.0) {
-            d6 = Math.toDegrees(-FastAtanMath.l(f / f2));
+            d6 = Math.toDegrees(-FastAtanMath.atanApproximation(f / f2));
         } else if ((double)f2 < 0.0 && (double)f > 0.0) {
-            d6 = -90.0 + Math.toDegrees(FastAtanMath.l(f2 / f));
+            d6 = -90.0 + Math.toDegrees(FastAtanMath.atanApproximation(f2 / f));
         } else if ((double)f2 < 0.0 && (double)f < 0.0) {
-            d6 = 90.0 + Math.toDegrees(FastAtanMath.l(f2 / f));
+            d6 = 90.0 + Math.toDegrees(FastAtanMath.atanApproximation(f2 / f));
         }
         double d7 = Math.abs(d6 - d3) % 360.0;
         double d8 = d7 > 180.0 ? 360.0 - d7 : d7;
@@ -782,11 +782,11 @@ public class RotationUtil {
     public static float S(double d, double d2, double d3, double d4) {
         double d5 = d3 - d;
         double d6 = d4 - d2;
-        float f = (float)Math.toDegrees(-FastAtanMath.l((float)(d5 / d6)));
+        float f = (float)Math.toDegrees(-FastAtanMath.atanApproximation((float)(d5 / d6)));
         if (d6 < 0.0 && d5 < 0.0) {
-            f = (float)(90.0 + Math.toDegrees(FastAtanMath.l((float)(d6 / d5))));
+            f = (float)(90.0 + Math.toDegrees(FastAtanMath.atanApproximation((float)(d6 / d5))));
         } else if (d6 < 0.0 && d5 > 0.0) {
-            f = (float)(-90.0 + Math.toDegrees(FastAtanMath.l((float)(d6 / d5))));
+            f = (float)(-90.0 + Math.toDegrees(FastAtanMath.atanApproximation((float)(d6 / d5))));
         }
         return f;
     }
@@ -851,7 +851,7 @@ public class RotationUtil {
         EntityPlayerSP entityPlayerSP = Minecraft.thePlayer();
         for (Object e : Minecraft.theWorld().z()) {
             EntityLivingBase entityLivingBase;
-            if (!MappedClasses.zm.isInstance(e) || !(entityLivingBase = new EntityLivingBase(e)).isInstance(MappedClasses.lG) || entityLivingBase.M$src$Z$ff28xj() || entityLivingBase.w$src$F$15l9epb() <= 0.0f || (double)entityLivingBase.getDistanceToEntity(entityPlayerSP) >= d || !Vape.INSTANCE.getClientSettings().g(entityLivingBase, false) || !((double)RotationUtil.N(entityLivingBase) < d2)) continue;
+            if (!MappedClasses.zm.isInstance(e) || !(entityLivingBase = new EntityLivingBase(e)).isInstance(MappedClasses.lG) || entityLivingBase.M$src$Z$ff28xj() || entityLivingBase.w$src$F$15l9epb() <= 0.0f || (double)entityLivingBase.getDistanceToEntity(entityPlayerSP) >= d || !Vape.INSTANCE.getClientSettings().isValidTarget(entityLivingBase, false) || !((double)RotationUtil.N(entityLivingBase) < d2)) continue;
             return entityLivingBase;
         }
         return null;
@@ -976,4 +976,3 @@ public class RotationUtil {
         return false;
     }
 }
-

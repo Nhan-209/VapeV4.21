@@ -6,22 +6,22 @@ import gg.vape.ui.click.component.GuiClickListener;
 
 class HotbarSlotRuleGroupSelectClickHandler
 implements GuiClickListener {
-    final HotbarSlotRuleGroupComponent n;
-    final HotbarSlotRuleEditorComponent l;
+    final HotbarSlotRuleGroupComponent group;
+    final HotbarSlotRuleEditorComponent editor;
 
 
     @Override
     public void onPrimaryClick() {
-        if (this.n.equals(HotbarSlotRuleEditorComponent.H(this.l)) && HotbarSlotRuleEditorComponent.N(this.l).size() > 0) {
-            this.l.f((HotbarSlotRuleGroupComponent)HotbarSlotRuleEditorComponent.N(this.l).get(0));
+        if (this.group.equals(HotbarSlotRuleEditorComponent.getSelectedGroupInternal(this.editor)) && HotbarSlotRuleEditorComponent.getGroupsInternal(this.editor).size() > 0) {
+            this.editor.selectGroup(HotbarSlotRuleEditorComponent.getGroupsInternal(this.editor).get(0));
         }
-        this.l.o(this.n);
-        this.l.w$src$V$j701ty();
+        this.editor.removeGroup(this.group);
+        this.editor.rebuildChildren();
     }
 
     HotbarSlotRuleGroupSelectClickHandler(HotbarSlotRuleEditorComponent hotbarSlotRuleEditorComponent, HotbarSlotRuleGroupComponent hotbarSlotRuleGroupComponent) {
-        this.l = hotbarSlotRuleEditorComponent;
-        this.n = hotbarSlotRuleGroupComponent;
+        this.editor = hotbarSlotRuleEditorComponent;
+        this.group = hotbarSlotRuleGroupComponent;
     }
 }
 

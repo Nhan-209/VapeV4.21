@@ -7,7 +7,7 @@ import gg.vape.mapping.ThreadBoundTickCallbackBase;
 public class ThreadBoundEventPreTickCallback
 extends ThreadBoundTickCallbackBase {
     public static void call() {
-        if (Thread.currentThread().equals(EventTickBase.S.getOwnerThread())) {
+        if (Thread.currentThread().equals(EventTickBase.PRE_TICK_EXECUTOR.getOwnerThread())) {
             new EventThreadBoundPreTick().fire();
         }
     }

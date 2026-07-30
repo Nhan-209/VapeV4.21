@@ -16,8 +16,8 @@ DescribedOption {
     public static final List<EnchantmentFilterMode> VALUES;
     private final String name;
 
-    public static EnchantmentFilterMode fromName(String string) {
-        return EnchantmentFilterMode.fromNameOrDefault(string, HAS);
+    public static EnchantmentFilterMode fromName(String name) {
+        return EnchantmentFilterMode.fromNameOrDefault(name, HAS);
     }
 
     @Override
@@ -34,21 +34,21 @@ DescribedOption {
         VALUES = Arrays.asList(EnchantmentFilterMode.values());
     }
 
-    private EnchantmentFilterMode(String string2, String string3) {
-        this.name = string2;
-        this.description = string3;
+    private EnchantmentFilterMode(String name, String description) {
+        this.name = name;
+        this.description = description;
     }
 
-    public static EnchantmentFilterMode fromNameOrDefault(String string, EnchantmentFilterMode enchantmentFilterMode) {
-        EnchantmentFilterMode enchantmentFilterMode2 = EnchantmentFilterMode.findByName(string);
-        return enchantmentFilterMode2 == null ? enchantmentFilterMode : enchantmentFilterMode2;
+    public static EnchantmentFilterMode fromNameOrDefault(String name, EnchantmentFilterMode fallback) {
+        EnchantmentFilterMode mode = EnchantmentFilterMode.findByName(name);
+        return mode == null ? fallback : mode;
     }
 
     @Nullable
-    public static EnchantmentFilterMode findByName(String string) {
-        for (EnchantmentFilterMode enchantmentFilterMode : VALUES) {
-            if (!enchantmentFilterMode.getName().equalsIgnoreCase(string)) continue;
-            return enchantmentFilterMode;
+    public static EnchantmentFilterMode findByName(String name) {
+        for (EnchantmentFilterMode mode : VALUES) {
+            if (!mode.getName().equalsIgnoreCase(name)) continue;
+            return mode;
         }
         return null;
     }

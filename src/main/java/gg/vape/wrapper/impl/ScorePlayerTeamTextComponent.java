@@ -2,8 +2,6 @@ package gg.vape.wrapper.impl;
 
 import gg.vape.Vape;
 import gg.vape.mapping.mappings.MStringTextComponent;
-import gg.vape.wrapper.impl.ForgeVersion;
-import gg.vape.wrapper.impl.MutableTextComponent;
 
 public class ScorePlayerTeamTextComponent
 extends MutableTextComponent {
@@ -16,18 +14,18 @@ extends MutableTextComponent {
         if (ForgeVersion.MC_1_20_6.v()) {
             Vape.notifyNativeStackTrace();
         }
-        return new ScorePlayerTeamTextComponent(MStringTextComponent.s(ScorePlayerTeamTextComponent.c.getMappings().Dh, string));
+        return new ScorePlayerTeamTextComponent(MStringTextComponent.s(ScorePlayerTeamTextComponent.vapeInstance.getMappings().Dh, string));
     }
 
     public String Y() {
         if (ForgeVersion.MC_1_16_5_ACTUAL.v()) {
             Vape.notifyNativeStackTrace();
         }
-        return ScorePlayerTeamTextComponent.c.getMappings().Dh.W(this.getObject());
+        return ScorePlayerTeamTextComponent.vapeInstance.getMappings().Dh.W(this.getObject());
     }
 
     public static ScorePlayerTeamTextComponent B(String string) {
-        return new ScorePlayerTeamTextComponent(ScorePlayerTeamTextComponent.c.getMappings().Dh.i(string));
+        return new ScorePlayerTeamTextComponent(ScorePlayerTeamTextComponent.vapeInstance.getMappings().Dh.i(string));
     }
 }
 

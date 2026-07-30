@@ -8,29 +8,29 @@ import gg.vape.friend.ui.IncomingFriendRequestDeclineClickHandler;
 
 public class IncomingFriendRequestRow
 extends FriendRequestRow {
-    private final IncomingFriendRequest Pm;
+    private final IncomingFriendRequest request;
 
-    public static void k(IncomingFriendRequestRow incomingFriendRequestRow) {
-        incomingFriendRequestRow.U$src$V$gqrbie();
+    public static void accept(IncomingFriendRequestRow row) {
+        row.acceptRequest();
     }
 
     public IncomingFriendRequestRow(IncomingFriendRequest incomingFriendRequest) {
         super(incomingFriendRequest, null);
-        this.Pm = incomingFriendRequest;
-        this.N$src$Lgg_vape_ui_click_component_gui_TextButton_$8z76vj().addClickListener(new IncomingFriendRequestAcceptClickHandler(this));
-        this.R$src$Lgg_vape_ui_click_component_PanelComponent_$61we3d().h(this.N$src$Lgg_vape_ui_click_component_gui_TextButton_$8z76vj(), new Object[0]);
-        this.N$src$Lgg_vape_ui_click_component_IconButtonComponent_$t1119y().addClickListener(new IncomingFriendRequestDeclineClickHandler(this));
+        this.request = incomingFriendRequest;
+        this.getAddButton().addClickListener(new IncomingFriendRequestAcceptClickHandler(this));
+        this.getActionPanel().h(this.getAddButton(), new Object[0]);
+        this.getCloseButton().addClickListener(new IncomingFriendRequestDeclineClickHandler(this));
     }
 
-    private void b$src$V$gxwn83() {
-        Vape.INSTANCE.getOnlineManager().D().X(this.Pm);
+    private void declineRequest() {
+        Vape.INSTANCE.getOnlineManager().getFriendRequestManager().declineIncomingRequest(this.request);
     }
 
-    private void U$src$V$gqrbie() {
-        Vape.INSTANCE.getOnlineManager().D().N(this.Pm);
+    private void acceptRequest() {
+        Vape.INSTANCE.getOnlineManager().getFriendRequestManager().acceptIncomingRequest(this.request);
     }
 
-    public static void v(IncomingFriendRequestRow incomingFriendRequestRow) {
-        incomingFriendRequestRow.b$src$V$gxwn83();
+    public static void decline(IncomingFriendRequestRow row) {
+        row.declineRequest();
     }
 }

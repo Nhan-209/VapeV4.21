@@ -8,18 +8,17 @@ implements Comparator<ItemStackData> {
     int targetSlot;
 
     @Override
-    public int compare(ItemStackData itemStackData, ItemStackData itemStackData2) {
-        int target = this.targetSlot;
-        int value1 = itemStackData.Y();
-        int value2 = itemStackData2.Y();
-        int distance1 = value1 > target ? value1 - target : target - value1;
-        int distance2 = value2 > target ? value2 - target : target - value2;
-        return distance1 < distance2 ? -1 : 0;
+    public int compare(ItemStackData firstItem, ItemStackData secondItem) {
+        int firstSlot = firstItem.getSlot();
+        int secondSlot = secondItem.getSlot();
+        int firstDistance = firstSlot > this.targetSlot ? firstSlot - this.targetSlot : this.targetSlot - firstSlot;
+        int secondDistance = secondSlot > this.targetSlot ? secondSlot - this.targetSlot : this.targetSlot - secondSlot;
+        return firstDistance < secondDistance ? -1 : 0;
     }
 
 
-    public ItemDataComparator(int target) {
-        this.targetSlot = target;
+    public ItemDataComparator(int targetSlot) {
+        this.targetSlot = targetSlot;
     }
 }
 

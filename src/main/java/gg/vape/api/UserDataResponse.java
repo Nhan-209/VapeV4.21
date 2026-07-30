@@ -13,68 +13,70 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nullable;
 
 public class UserDataResponse {
-    private final Map<UUID, RemoteProfileData> m;
+    private final Map<UUID, RemoteProfileData> profiles;
     @Nullable
-    private final JsonArray R;
-    private final Map<Long, PublicProfile> O;
+    private final JsonArray friends;
+    private final Map<Long, PublicProfile> publicProfiles;
     @Nullable
-    private final JsonArray J;
+    private final JsonArray otherData;
 
     @Nullable
-    public JsonArray D() {
-        return this.R;
+    public JsonArray getFriends() {
+        return this.friends;
     }
 
     @Nullable
     @Contract(value="!null -> !null; null -> null")
-    public static UserDataResponse S(@Nullable JsonElement jsonElement) {
-        if (jsonElement == null || jsonElement.isJsonNull()) {
+    public static UserDataResponse fromJson(@Nullable JsonElement dataElement) {
+        if (dataElement == null || dataElement.isJsonNull()) {
             return null;
         }
-        JsonObject jsonObject2 = jsonElement.getAsJsonObject();
-        LinkedHashMap<UUID, RemoteProfileData> linkedHashMap = new LinkedHashMap<UUID, RemoteProfileData>();
-        LinkedHashMap<Long, PublicProfile> linkedHashMap2 = new LinkedHashMap<Long, PublicProfile>();
-        JsonObject jsonObject3 = ConfigJsonUtils.E(jsonObject2, "profiles");
-        if (jsonObject3 != null) {
-            for (Map.Entry<String, JsonElement> entry : jsonObject3.entrySet()) {
+        JsonObject dataJson = dataElement.getAsJsonObject();
+        LinkedHashMap<UUID, RemoteProfileData> profiles = new LinkedHashMap<UUID, RemoteProfileData>();
+        LinkedHashMap<Long, PublicProfile> publicProfiles = new LinkedHashMap<Long, PublicProfile>();
+        JsonObject profilesJson = ConfigJsonUtils.getJsonObject(dataJson, "profiles");
+        if (profilesJson != null) {
+            for (Map.Entry<String, JsonElement> entry : profilesJson.entrySet()) {
                 RemoteProfileData remoteProfileData = RemoteProfileData.fromJson(entry.getValue());
                 if (remoteProfileData == null) continue;
-                linkedHashMap.put(UUID.fromString(entry.getKey()), remoteProfileData);
+                profiles.put(UUID.fromString(entry.getKey()), remoteProfileData);
             }
         }
-        JsonObject publicProfiles = ConfigJsonUtils.E(jsonObject2, "publicProfiles");
-        if (publicProfiles != null) {
-            for (Map.Entry<String, JsonElement> entry : publicProfiles.entrySet()) {
-                PublicProfile publicProfile = PublicProfile.k(entry.getValue());
+        JsonObject publicProfilesJson = ConfigJsonUtils.getJsonObject(dataJson, "publicProfiles");
+        if (publicProfilesJson != null) {
+            for (Map.Entry<String, JsonElement> entry : publicProfilesJson.entrySet()) {
+                PublicProfile publicProfile = PublicProfile.fromJson(entry.getValue());
                 if (publicProfile == null) continue;
-                linkedHashMap2.put(publicProfile.w(), publicProfile);
+                publicProfiles.put(publicProfile.getProfileId(), publicProfile);
             }
         }
-        return new UserDataResponse(ConfigJsonUtils.q(jsonObject2, "friends"), linkedHashMap, linkedHashMap2, ConfigJsonUtils.q(jsonObject2, "otherData"));
+        return new UserDataResponse(ConfigJsonUtils.getJsonArray(dataJson, "friends"), profiles, publicProfiles,
+                ConfigJsonUtils.getJsonArray(dataJson, "otherData"));
     }
 
     public String toString() {
-        return "FullPrivateDataResponse{friends=" + this.R + ", profiles=" + this.m + ", publicProfiles=" + this.O + ", otherData=" + this.J + '}';
+        return "FullPrivateDataResponse{friends=" + this.friends + ", profiles=" + this.profiles + ", publicProfiles=" + this.publicProfiles + ", otherData=" + this.otherData + '}';
     }
 
     @Nullable
-    public JsonArray y() {
-        return this.J;
+    public JsonArray getOtherData() {
+        return this.otherData;
     }
 
-    public Map<UUID, RemoteProfileData> F() {
-        return this.m;
+    public Map<UUID, RemoteProfileData> getProfiles() {
+        return this.profiles;
     }
 
 
-    public Map<Long, PublicProfile> s() {
-        return this.O;
+    public Map<Long, PublicProfile> getPublicProfiles() {
+        return this.publicProfiles;
     }
 
-    UserDataResponse(@Nullable JsonArray jsonArray, Map<UUID, RemoteProfileData> map, Map<Long, PublicProfile> map2, @Nullable JsonArray jsonArray2) {
-        this.R = jsonArray;
-        this.m = map;
-        this.O = map2;
-        this.J = jsonArray2;
+    UserDataResponse(@Nullable JsonArray friends, Map<UUID, RemoteProfileData> profiles,
+                     Map<Long, PublicProfile> publicProfiles, @Nullable JsonArray otherData) {
+        this.friends = friends;
+        this.profiles = profiles;
+        this.publicProfiles = publicProfiles;
+        this.otherData = otherData;
     }
 }

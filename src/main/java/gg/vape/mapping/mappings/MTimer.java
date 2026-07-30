@@ -48,7 +48,7 @@ extends Mapping {
         if (stringArray != null) {
             if (ForgeVersion.MC_1_12_2.d()) {
                 Class<Float> clazz = Float.TYPE;
-                boolean bl = Wrapper.G;
+                boolean bl = Wrapper.isNativeAvailable;
                 String string = "field_194148_c";
                 MTimer mTimer = this;
                 this.j = mTimer.J(string, bl, clazz);

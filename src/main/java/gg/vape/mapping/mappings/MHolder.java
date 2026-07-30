@@ -49,7 +49,7 @@ extends Mapping {
             boolean bl4 = true;
             String string4 = "direct";
             MHolder mHolder4 = this;
-            this.M = this.x(string4, bl4, clazz4, classArray4);
+            this.M = this.registerStaticMethod(string4, bl4, clazz4, classArray4);
             if (ForgeVersion.MC_1_21_0.d()) {
                 Class[] classArray5 = new Class[]{};
                 Class<String> clazz5 = String.class;
@@ -77,11 +77,11 @@ extends Mapping {
         boolean bl8 = true;
         String string8 = "direct";
         MHolder mHolder8 = this;
-        this.S = this.x(string8, bl8, clazz8, classArray8);
+        this.S = this.registerStaticMethod(string8, bl8, clazz8, classArray8);
     }
 
     private Object o(Object object) {
-        return this.C.L(object, new Object[0]);
+        return this.C.invokeObject(object, new Object[0]);
     }
 
     public static String F(MHolder mHolder, Object object) {
@@ -89,16 +89,16 @@ extends Mapping {
     }
 
     private boolean B(Object object, Object object2) {
-        return this.j.e(object, object2);
+        return this.j.invokeBoolean(object, object2);
     }
 
 
     private Object f(Object object) {
-        return this.K.L(object, new Object[0]);
+        return this.K.invokeObject(object, new Object[0]);
     }
 
     private String F(Object object) {
-        return (String)this.S.L(object, new Object[0]);
+        return (String)this.S.invokeObject(object, new Object[0]);
     }
 
     public static boolean q(MHolder mHolder, Object object, Object object2) {
@@ -110,7 +110,7 @@ extends Mapping {
     }
 
     private Object n(Object object) {
-        return this.M.L(null, object);
+        return this.M.invokeObject(null, object);
     }
 
     public static Object f(MHolder mHolder, Object object) {

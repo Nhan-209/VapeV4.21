@@ -21,7 +21,7 @@ extends Mapping {
     }
 
     public Object O(Object object, float f) {
-        return this.T.L(object, Float.valueOf(f));
+        return this.T.invokeObject(object, Float.valueOf(f));
     }
 
     public static Object u(MVector3f mVector3f, float f, float f2, float f3) {
@@ -73,7 +73,7 @@ extends Mapping {
     }
 
     private Object g(float f, float f2, float f3) {
-        return this.q.O(Float.valueOf(f), Float.valueOf(f2), Float.valueOf(f3));
+        return this.q.newInstance(Float.valueOf(f), Float.valueOf(f2), Float.valueOf(f3));
     }
 }
 

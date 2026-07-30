@@ -2,15 +2,7 @@ package gg.vape.wrapper.impl;
 
 import gg.vape.mapping.mappings.MItem;
 import gg.vape.wrapper.Wrapper;
-import gg.vape.wrapper.impl.DataComponentMap;
-import gg.vape.wrapper.impl.EntityLivingBase;
-import gg.vape.wrapper.impl.ForgeVersion;
-import gg.vape.wrapper.impl.Holder;
-import gg.vape.wrapper.impl.ITextComponent;
-import gg.vape.wrapper.impl.ItemStack;
-import gg.vape.wrapper.impl.RegistryNamespaced;
-import gg.vape.wrapper.impl.ResourceLocation;
-import gg.vape.wrapper.impl.TooltipFlagBridge;
+
 import java.util.List;
 import java.util.Map;
 
@@ -22,7 +14,7 @@ extends Wrapper {
         if (ForgeVersion.MC_1_20_6.d()) {
             return;
         }
-        MItem.V(Item.c.getMappings().CF, this.I, item.getObject(), TooltipFlagBridge.J().getObject(), list);
+        MItem.V(Item.vapeInstance.getMappings().CF, this.I, item.getObject(), TooltipFlagBridge.J().getObject(), list);
     }
 
     private static Throwable a(Throwable throwable) {
@@ -30,16 +22,16 @@ extends Wrapper {
     }
 
     public static Item T(int n) {
-        return new Item(MItem.W(Item.c.getMappings().CF, n));
+        return new Item(MItem.W(Item.vapeInstance.getMappings().CF, n));
     }
 
     public String O() {
-        return MItem.k(Item.c.getMappings().CF, this.getObject());
+        return MItem.k(Item.vapeInstance.getMappings().CF, this.getObject());
     }
 
     public static Map y() {
         if (ForgeVersion.MC_1_8_9.d()) {
-            return MItem.U(Item.c.getMappings().CF);
+            return MItem.U(Item.vapeInstance.getMappings().CF);
         }
         return null;
     }
@@ -48,11 +40,11 @@ extends Wrapper {
         if (ForgeVersion.MC_1_16_5.d()) {
             return false;
         }
-        return MItem.N(Item.c.getMappings().CF, this.I);
+        return MItem.N(Item.vapeInstance.getMappings().CF, this.I);
     }
 
     public Holder Q() {
-        return new Holder(MItem.F(Item.c.getMappings().CF, this.I));
+        return new Holder(MItem.F(Item.vapeInstance.getMappings().CF, this.I));
     }
 
     public int P() {
@@ -70,7 +62,7 @@ extends Wrapper {
     }
 
     public static RegistryNamespaced Y() {
-        return new RegistryNamespaced(MItem.Z(Item.c.getMappings().CF));
+        return new RegistryNamespaced(MItem.Z(Item.vapeInstance.getMappings().CF));
     }
 
     public static String L() {
@@ -78,7 +70,7 @@ extends Wrapper {
     }
 
     public static int f(Item item) {
-        return MItem.l(Item.c.getMappings().CF, item.getObject());
+        return MItem.l(Item.vapeInstance.getMappings().CF, item.getObject());
     }
 
     public static Item L(String string) {
@@ -96,7 +88,7 @@ extends Wrapper {
                 return null;
             }
         }
-        Object object = MItem.r(Item.c.getMappings().CF, string);
+        Object object = MItem.r(Item.vapeInstance.getMappings().CF, string);
         return object == null ? null : new Item(object);
     }
 
@@ -104,30 +96,30 @@ extends Wrapper {
         if (ForgeVersion.MC_1_20_6.d()) {
             return this.b().y();
         }
-        return MItem.d(Item.c.getMappings().CF, this.I);
+        return MItem.d(Item.vapeInstance.getMappings().CF, this.I);
     }
 
     public DataComponentMap g() {
-        return new DataComponentMap(MItem.K(Item.c.getMappings().CF, this.I));
+        return new DataComponentMap(MItem.K(Item.vapeInstance.getMappings().CF, this.I));
     }
 
     public int I(ItemStack itemStack, EntityLivingBase entityLivingBase) {
         if (ForgeVersion.MC_1_21_4.d()) {
-            return Item.c.getMappings().CF.c(this.I, itemStack.getObject(), entityLivingBase.getObject());
+            return Item.vapeInstance.getMappings().CF.c(this.I, itemStack.getObject(), entityLivingBase.getObject());
         }
-        return MItem.Q(Item.c.getMappings().CF, this.I, itemStack.getObject());
+        return MItem.Q(Item.vapeInstance.getMappings().CF, this.I, itemStack.getObject());
     }
 
     public String A() {
-        return MItem.X(Item.c.getMappings().CF, this.I);
+        return MItem.X(Item.vapeInstance.getMappings().CF, this.I);
     }
 
     public String h(ItemStack itemStack) {
         if (ForgeVersion.MC_1_16_5.d()) {
-            ITextComponent iTextComponent = new ITextComponent(MItem.h(Item.c.getMappings().CF, this.getObject(), itemStack.getObject()));
+            ITextComponent iTextComponent = new ITextComponent(MItem.h(Item.vapeInstance.getMappings().CF, this.getObject(), itemStack.getObject()));
             return iTextComponent.getFormattedText();
         }
-        return MItem.h(Item.c.getMappings().CF, this.getObject(), itemStack.getObject()).toString();
+        return MItem.h(Item.vapeInstance.getMappings().CF, this.getObject(), itemStack.getObject()).toString();
     }
 
     public static void H(String string) {
@@ -138,13 +130,13 @@ extends Wrapper {
         if (ForgeVersion.MC_1_21_0.d()) {
             return ITextComponent.P(this.A()).getFormattedText();
         }
-        ITextComponent iTextComponent = new ITextComponent(MItem.i(Item.c.getMappings().CF, this.I));
+        ITextComponent iTextComponent = new ITextComponent(MItem.i(Item.vapeInstance.getMappings().CF, this.I));
         return iTextComponent.getFormattedText();
     }
 
     public ItemStack b() {
         try {
-            return new ItemStack(MItem.z(Item.c.getMappings().CF, this.I));
+            return new ItemStack(MItem.z(Item.vapeInstance.getMappings().CF, this.I));
         }
         catch (Throwable throwable) {
             if (ForgeVersion.MC_26_1.d()) {
@@ -161,6 +153,6 @@ extends Wrapper {
     }
 
     public String getItemStackDisplayName(ItemStack itemStack) {
-        return MItem.o(Item.c.getMappings().CF, this.getObject(), itemStack.getObject());
+        return MItem.o(Item.vapeInstance.getMappings().CF, this.getObject(), itemStack.getObject());
     }
 }

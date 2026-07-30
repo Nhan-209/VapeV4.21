@@ -6,7 +6,7 @@ import gg.vape.protocol.packet.ZeusTrackedPacket;
 
 public class UserDisplayNamePacket
 extends ZeusTrackedPacket<UserDisplayNameResponsePacket> {
-    private String S;
+    private String displayName;
     private static boolean f;
 
     public static void Y(boolean bl) {
@@ -16,8 +16,8 @@ extends ZeusTrackedPacket<UserDisplayNameResponsePacket> {
     public UserDisplayNamePacket() {
     }
 
-    public String m() {
-        return this.S;
+    public String getDisplayName() {
+        return this.displayName;
     }
 
 
@@ -28,20 +28,20 @@ extends ZeusTrackedPacket<UserDisplayNameResponsePacket> {
 
     @Override
     public void T(ZeusPacketBuffer zeusPacketBuffer) {
-        zeusPacketBuffer.y(this.S);
+        zeusPacketBuffer.writeString(this.displayName);
     }
 
     public static boolean I() {
         return f;
     }
 
-    public UserDisplayNamePacket(String string) {
-        this.S = string;
+    public UserDisplayNamePacket(String displayName) {
+        this.displayName = displayName;
     }
 
     @Override
     public void x(ZeusPacketBuffer zeusPacketBuffer) {
-        this.S = zeusPacketBuffer.v(16);
+        this.displayName = zeusPacketBuffer.readString(16);
     }
 
     static {
@@ -50,4 +50,3 @@ extends ZeusTrackedPacket<UserDisplayNameResponsePacket> {
         }
     }
 }
-

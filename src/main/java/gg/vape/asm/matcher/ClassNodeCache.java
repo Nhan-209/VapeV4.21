@@ -8,51 +8,51 @@ import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.tree.ClassNode;
 
 public class ClassNodeCache {
-    private static Map<Class, ClassNode> P = new HashMap<Class, ClassNode>();
-    private static boolean w;
-    private static Map<Class, ClassMethodReferenceIndex> K;
+    private static Map<Class, ClassNode> classNodes = new HashMap<Class, ClassNode>();
+    private static boolean opaqueState;
+    private static Map<Class, ClassMethodReferenceIndex> referenceIndexes;
 
-    private static ClassMethodReferenceIndex lambda$getClassReferences$1(Class clazz, Class clazz2) {
-        ClassMethodReferenceIndex classMethodReferenceIndex = new ClassMethodReferenceIndex(ClassNodeCache.j(clazz));
-        return K.put(clazz, classMethodReferenceIndex);
+    private static ClassMethodReferenceIndex cacheClassReferences(Class targetClass, Class ignoredKey) {
+        ClassMethodReferenceIndex referenceIndex = new ClassMethodReferenceIndex(ClassNodeCache.getClassNode(targetClass));
+        return referenceIndexes.put(targetClass, referenceIndex);
     }
 
-    public static void V(boolean bl) {
-        w = bl;
+    public static void setOpaqueState(boolean state) {
+        opaqueState = state;
     }
 
-    private static ClassNode lambda$getClassNode$0(Class clazz, Class clazz2) {
-        Class clazz3 = clazz;
-        byte[] byArray = ClassBytecodeCache.getClassBytecode(clazz3);
-        ClassReader classReader = new ClassReader(byArray);
+    private static ClassNode cacheClassNode(Class targetClass, Class ignoredKey) {
+        byte[] bytecode = ClassBytecodeCache.getClassBytecode(targetClass);
+        ClassReader classReader = new ClassReader(bytecode);
         ClassNode classNode = new ClassNode();
         classReader.accept(classNode, 0);
-        return P.put(clazz, classNode);
+        return classNodes.put(targetClass, classNode);
     }
 
 
-    public static boolean g() {
-        return w;
+    public static boolean getOpaqueState() {
+        return opaqueState;
     }
 
-    public static boolean R() {
-        boolean bl = ClassNodeCache.g();
+    public static boolean opaquePredicate() {
+        boolean state = ClassNodeCache.getOpaqueState();
         return false;
     }
 
     static {
-        K = new HashMap<Class, ClassMethodReferenceIndex>();
-        ClassNodeCache.V(true);
+        referenceIndexes = new HashMap<Class, ClassMethodReferenceIndex>();
+        ClassNodeCache.setOpaqueState(true);
     }
 
-    public static ClassNode j(Class clazz) {
-        P.computeIfAbsent(clazz, arg_0 -> ClassNodeCache.lambda$getClassNode$0(clazz, arg_0));
-        return P.get(clazz);
+    public static ClassNode getClassNode(Class targetClass) {
+        classNodes.computeIfAbsent(targetClass, ignoredKey -> ClassNodeCache.cacheClassNode(targetClass, ignoredKey));
+        return classNodes.get(targetClass);
     }
 
-    public static ClassMethodReferenceIndex g(Class clazz) {
-        K.computeIfAbsent(clazz, arg_0 -> ClassNodeCache.lambda$getClassReferences$1(clazz, arg_0));
-        return K.get(clazz);
+    public static ClassMethodReferenceIndex getClassReferences(Class targetClass) {
+        referenceIndexes.computeIfAbsent(targetClass,
+                ignoredKey -> ClassNodeCache.cacheClassReferences(targetClass, ignoredKey));
+        return referenceIndexes.get(targetClass);
     }
 }
 

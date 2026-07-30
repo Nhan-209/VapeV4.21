@@ -8,54 +8,56 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class AccountInfo {
-    private final long J;
-    private final Date x;
-    private final boolean v;
-    private final AccountEntitlements f;
+    private final long userId;
+    private final Date accountCreationDate;
+    private final boolean profilesEnabled;
+    private final AccountEntitlements entitlements;
     @Nullable
-    private String I;
+    private String username;
 
 
-    public void y(@NotNull String string) {
-        this.I = string;
+    public void setUsername(@NotNull String username) {
+        this.username = username;
     }
 
-    public boolean r() {
-        return this.v;
+    public boolean hasProfilesEnabled() {
+        return this.profilesEnabled;
     }
 
     @Nullable
-    public String h() {
-        return this.I;
+    public String getUsername() {
+        return this.username;
     }
 
-    public long i() {
-        return this.J;
+    public long getUserId() {
+        return this.userId;
     }
 
-    public AccountEntitlements f() {
-        return this.f;
+    public AccountEntitlements getEntitlements() {
+        return this.entitlements;
     }
 
-    public Date Z() {
-        return this.x;
+    public Date getAccountCreationDate() {
+        return this.accountCreationDate;
     }
 
     @Nullable
     @Contract(value="!null -> !null; null -> null")
-    public static AccountInfo O(@Nullable AccountInfoResponse ig_02) {
-        if (ig_02 == null) {
+    public static AccountInfo fromResponse(@Nullable AccountInfoResponse response) {
+        if (response == null) {
             return null;
         }
-        return new AccountInfo(ig_02.z(), ig_02.S(), ig_02.M(), ig_02.W(), AccountEntitlements.t(ig_02));
+        return new AccountInfo(response.getUserId(), response.getUsername(), response.getAccountCreationDate(),
+                response.hasProfilesEnabled(), AccountEntitlements.fromResponse(response));
     }
 
-    AccountInfo(long l, @Nullable String string, Date date, boolean bl, AccountEntitlements accountEntitlements) {
-        this.J = l;
-        this.I = string;
-        this.x = date;
-        this.v = bl;
-        this.f = accountEntitlements;
+    AccountInfo(long userId, @Nullable String username, Date accountCreationDate, boolean profilesEnabled,
+                AccountEntitlements entitlements) {
+        this.userId = userId;
+        this.username = username;
+        this.accountCreationDate = accountCreationDate;
+        this.profilesEnabled = profilesEnabled;
+        this.entitlements = entitlements;
     }
 }
 

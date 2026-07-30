@@ -14,10 +14,10 @@ import java.util.List;
 
 public class FriendEntriesPanel
 extends PanelComponent {
-    private static final String db;
-    private double Ri;
-    private static boolean Rx;
-    private boolean R4;
+    private static final String LAYOUT_MODE;
+    private double contentHeight;
+    private static boolean obfuscationFlag;
+    private boolean refreshPending;
 
     @Override
     public double x() {
@@ -28,15 +28,15 @@ extends PanelComponent {
         super(99.0, 110.0);
         this.F(FrameScrollbarPlacement.INSIDE);
         this.setShowDisabledOverlay(false);
-        this.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M(db);
+        this.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M(LAYOUT_MODE);
     }
 
     @Override
     public void c() {
         super.c();
-        if (this.R4) {
-            this.w$src$V$h6k7cb();
-            this.R4 = false;
+        if (this.refreshPending) {
+            this.refreshList();
+            this.refreshPending = false;
         }
     }
 
@@ -44,17 +44,16 @@ extends PanelComponent {
     public void g(GuiMouseEvent guiMouseEvent) {
     }
 
-    public void n(FriendListEntryRow friendListEntryRow) {
+    public void removeEntry(FriendListEntryRow friendListEntryRow) {
         this.removeChild(friendListEntryRow);
     }
 
-    private void w$src$V$h6k7cb() {
+    private void refreshList() {
         this.removeMarkedChildren();
         for (FriendEntry friendEntry : Vape.INSTANCE.getFriendManager().getFriends()) {
-            Object object;
-            if (friendEntry instanceof ExternalFriend && (((ExternalFriend)(object = (ExternalFriend)friendEntry)).d().F() == OnlineStatus.OFFLINE || OnlineConnectionManager.T.Q$src$Z$x2tw73())) continue;
-            object = new FriendListEntryRow(friendEntry);
-            this.h((GuiComponent)object, new Object[0]);
+            if (friendEntry instanceof ExternalFriend && (((ExternalFriend)friendEntry).getOnlineFriend().getStatus() == OnlineStatus.OFFLINE || OnlineConnectionManager.INSTANCE.isManualDisconnectRequested())) continue;
+            FriendListEntryRow entryRow = new FriendListEntryRow(friendEntry);
+            this.h(entryRow, new Object[0]);
         }
     }
 
@@ -67,12 +66,12 @@ extends PanelComponent {
             if (!guiComponent.V$src$Z$1xhop3l()) continue;
             d += guiComponent.L();
         }
-        this.Ri = d;
+        this.contentHeight = d;
         this.t(112.0);
     }
 
-    public static boolean J$src$Z$ghtgqi() {
-        return Rx;
+    public static boolean isObfuscationFlagSet() {
+        return obfuscationFlag;
     }
 
     @Override
@@ -83,31 +82,31 @@ extends PanelComponent {
     public void v() {
     }
 
-    public void F(FriendListEntryRow friendListEntryRow) {
+    public void addEntry(FriendListEntryRow friendListEntryRow) {
         this.h(friendListEntryRow, new Object[0]);
     }
 
     @Override
     public double C() {
-        return this.Ri;
+        return this.contentHeight;
     }
 
-    public void k$src$V$gzyo7z() {
-        this.R4 = true;
+    public void requestRefresh() {
+        this.refreshPending = true;
     }
 
-    public static void L(boolean bl) {
-        Rx = bl;
+    public static void setObfuscationFlag(boolean flag) {
+        obfuscationFlag = flag;
     }
 
-    public static boolean R() {
-        boolean bl = FriendEntriesPanel.J$src$Z$ghtgqi();
+    public static boolean getObfuscationConstant() {
+        boolean flag = FriendEntriesPanel.isObfuscationFlagSet();
         return false;
     }
 
     static {
-        FriendEntriesPanel.L(true);
-        db = "wrap";
+        FriendEntriesPanel.setObfuscationFlag(true);
+        LAYOUT_MODE = "wrap";
     }
 }
 

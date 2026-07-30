@@ -32,7 +32,7 @@ extends Mapping {
         boolean bl = false;
         String string = b;
         MBlockLayerOverrideFallbackHook mBlockLayerOverrideFallbackHook = this;
-        this.Z = this.x(string, bl, clazz, classArray);
+        this.Z = this.registerStaticMethod(string, bl, clazz, classArray);
     }
 
     static {

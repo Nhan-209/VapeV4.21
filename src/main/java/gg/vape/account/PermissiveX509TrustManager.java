@@ -6,18 +6,18 @@ import javax.net.ssl.X509TrustManager;
 
 class PermissiveX509TrustManager
 implements X509TrustManager {
-    final MicrosoftSessionAuthenticator e;
+    final MicrosoftSessionAuthenticator authenticator;
 
-    PermissiveX509TrustManager(MicrosoftSessionAuthenticator wj_02) {
-        this.e = wj_02;
+    PermissiveX509TrustManager(MicrosoftSessionAuthenticator authenticator) {
+        this.authenticator = authenticator;
     }
 
     @Override
-    public void checkServerTrusted(X509Certificate[] x509CertificateArray, String string) {
+    public void checkServerTrusted(X509Certificate[] certificateChain, String authType) {
     }
 
     @Override
-    public void checkClientTrusted(X509Certificate[] x509CertificateArray, String string) {
+    public void checkClientTrusted(X509Certificate[] certificateChain, String authType) {
     }
 
     @Override
@@ -25,4 +25,3 @@ implements X509TrustManager {
         return null;
     }
 }
-

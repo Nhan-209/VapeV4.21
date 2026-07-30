@@ -37,11 +37,11 @@ extends PanelComponent {
         IconTextActionRowComponent iconTextActionRowComponent = new IconTextActionRowComponent("Current settings");
         iconTextActionRowComponent.o(this.A());
         iconTextActionRowComponent.setClickListener(() -> {
-            UUID uUID = Vape.INSTANCE.getProfilesManager().M().P$src$Ljava_util_UUID_$kdhg08();
+            UUID uUID = Vape.INSTANCE.getProfilesManager().getActiveProfile().getOnlineId();
             Profile profile = new Profile("Current settings", "4.21");
-            profile.B(true);
-            profile.K(uUID);
-            profile.a();
+            profile.setDraft(true);
+            profile.setOnlineId(uUID);
+            profile.captureCurrentState();
             publicProfilesFrame.O(null);
             publicProfilesFrame.e(profile);
         });
@@ -60,10 +60,10 @@ extends PanelComponent {
         panelComponent.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M("wrap");
         panelComponent.t(panelComponent.L());
         this.h(panelComponent, "widthwrap");
-        List<Profile> list = Vape.INSTANCE.getPublicProfileManager().T();
-        for (Profile profile : Vape.INSTANCE.getProfilesManager().b()) {
+        List<Profile> list = Vape.INSTANCE.getPublicProfileManager().getDerivedProfiles();
+        for (Profile profile : Vape.INSTANCE.getProfilesManager().getProfiles()) {
             if (list.contains(profile)) continue;
-            IconTextActionRowComponent iconTextActionRowComponent2 = new IconTextActionRowComponent(profile.n$src$Ljava_lang_String_$xqhelw());
+            IconTextActionRowComponent iconTextActionRowComponent2 = new IconTextActionRowComponent(profile.getName());
             iconTextActionRowComponent2.o(this.A());
             iconTextActionRowComponent2.setClickListener(() -> {
                 publicProfilesFrame.O(null);

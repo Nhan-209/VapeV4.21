@@ -15,7 +15,7 @@ extends Mapping {
         boolean bl = true;
         String string = b;
         MMappedFieldSingletonWrapper mMappedFieldSingletonWrapper = this;
-        this.i = this.u(string, bl, clazz);
+        this.i = this.registerStaticField(string, bl, clazz);
     }
 
     public static MappingField W(MMappedFieldSingletonWrapper mMappedFieldSingletonWrapper) {

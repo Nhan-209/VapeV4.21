@@ -5,7 +5,7 @@ import gg.vape.wrapper.Wrapper;
 public class Util
 extends Wrapper {
     public static long Q() {
-        return Util.c.getMappingsMapperCompat().Rf.b();
+        return Util.vapeInstance.getMappingsMapperCompat().Rf.b();
     }
 
     public Util(Object object) {
@@ -13,7 +13,7 @@ extends Wrapper {
     }
 
     public static void g() {
-        Util.c.getMappingsMapperCompat().Rf.v();
+        Util.vapeInstance.getMappingsMapperCompat().Rf.v();
     }
 }
 

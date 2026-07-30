@@ -59,11 +59,11 @@ extends Mapping {
         if (this.F != null) {
             return this.F.getObject(object).toString();
         }
-        return this.L.L(object, new Object[0]);
+        return this.L.invokeObject(object, new Object[0]);
     }
 
     public Object e(Object object) {
-        return this.I.L(object, new Object[0]);
+        return this.I.invokeObject(object, new Object[0]);
     }
 
     public static MappingField R(MEnumFacing mEnumFacing) {
@@ -87,7 +87,7 @@ extends Mapping {
     }
 
     public int p(Object object) {
-        return this.g.Z(object, new Object[0]);
+        return this.g.invokeInt(object, new Object[0]);
     }
 
     public MEnumFacing() {
@@ -109,7 +109,7 @@ extends Mapping {
             boolean bl2 = false;
             String string2 = "values";
             MEnumFacing mEnumFacing2 = this;
-            this.P = this.x(string2, bl2, clazz2, classArray2);
+            this.P = this.registerStaticMethod(string2, bl2, clazz2, classArray2);
             Class<Integer> clazz3 = Integer.TYPE;
             boolean bl3 = true;
             String string3 = "opposite";
@@ -138,7 +138,7 @@ extends Mapping {
                 boolean bl7 = true;
                 String string7 = "HORIZONTALS";
                 MEnumFacing mEnumFacing7 = this;
-                this.k = this.u(string7, bl7, clazz7);
+                this.k = this.registerStaticField(string7, bl7, clazz7);
             }
         } else {
             Class<String> clazz = String.class;
@@ -146,17 +146,17 @@ extends Mapping {
             String string = "name";
             Class<Enum> clazz8 = Enum.class;
             MEnumFacing mEnumFacing = this;
-            this.F = mEnumFacing.X(clazz8, string, bl, clazz);
+            this.F = mEnumFacing.registerInstanceFieldForOwner(clazz8, string, bl, clazz);
             if (Vape.INSTANCE.isVanillaMinecraftPresent()) {
                 Class clazz9 = MappedClasses.q0;
                 String string8 = "faceList";
                 MEnumFacing mEnumFacing8 = this;
-                this.C = ((MappingFieldBuilder)this.T(string8, clazz9).H(true)).J(1).z();
+                this.C = ((MappingFieldBuilder)this.fieldBuilder(string8, clazz9).setStaticMember(true)).setArrayDimensions(1).buildField();
             } else {
                 Class clazz10 = MappedClasses.q0;
                 String string9 = "field_82609_l";
                 MEnumFacing mEnumFacing9 = this;
-                this.C = ((MappingFieldBuilder)((MappingFieldBuilder)this.T(string9, clazz10).H(true)).S(Wrapper.G)).J(1).z();
+                this.C = ((MappingFieldBuilder)((MappingFieldBuilder)this.fieldBuilder(string9, clazz10).setStaticMember(true)).setMappedMember(Wrapper.isNativeAvailable)).setArrayDimensions(1).buildField();
             }
             Class<Integer> clazz11 = Integer.TYPE;
             boolean bl8 = true;
@@ -188,32 +188,32 @@ extends Mapping {
         boolean bl = true;
         String string = "DOWN";
         MEnumFacing mEnumFacing = this;
-        this.n = mEnumFacing.u(string, bl, clazz); 
+        this.n = mEnumFacing.registerStaticField(string, bl, clazz);
         Class clazz16 = MappedClasses.q0;
         boolean bl13 = true;
         String string15 = "UP";
         MEnumFacing mEnumFacing15 = this;
-        this.s = this.u(string15, bl13, clazz16);
+        this.s = this.registerStaticField(string15, bl13, clazz16);
         Class clazz17 = MappedClasses.q0;
         boolean bl14 = true;
         String string16 = "NORTH";
         MEnumFacing mEnumFacing16 = this;
-        this.o = this.u(string16, bl14, clazz17);
+        this.o = this.registerStaticField(string16, bl14, clazz17);
         Class clazz18 = MappedClasses.q0;
         boolean bl15 = true;
         String string17 = "SOUTH";
         MEnumFacing mEnumFacing17 = this;
-        this.K = this.u(string17, bl15, clazz18);
+        this.K = this.registerStaticField(string17, bl15, clazz18);
         Class clazz19 = MappedClasses.q0;
         boolean bl16 = true;
         String string18 = "WEST";
         MEnumFacing mEnumFacing18 = this;
-        this.p = this.u(string18, bl16, clazz19);
+        this.p = this.registerStaticField(string18, bl16, clazz19);
         Class clazz20 = MappedClasses.q0;
         boolean bl17 = true;
         String string19 = "EAST";
         MEnumFacing mEnumFacing19 = this;
-        this.b = this.u(string19, bl17, clazz20);
+        this.b = this.registerStaticField(string19, bl17, clazz20);
     }
 
     public int V(Object object) {
@@ -237,7 +237,7 @@ extends Mapping {
     }
 
     public int S(Object object) {
-        return this.x.Z(object, new Object[0]);
+        return this.x.invokeInt(object, new Object[0]);
     }
 }
 

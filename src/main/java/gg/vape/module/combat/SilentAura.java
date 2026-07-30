@@ -245,7 +245,7 @@ extends Mod {
                 return false;
             }
             RayTraceResult rayTraceResult = RayTraceUtil.o();
-            if (rayTraceResult.isNotNull() && rayTraceResult.isBlockHit() && ClientSettings.M()) {
+            if (rayTraceResult.isNotNull() && rayTraceResult.isBlockHit() && ClientSettings.isAttackButtonDown()) {
                 KeyBinding keyBinding = Minecraft.gameSettings().F();
                 KeyBindingHelper.updateKeyBinding(keyBinding, true, false);
                 return true;
@@ -345,7 +345,7 @@ extends Mod {
         }
     }
 
-    @EventHandler(A=EventPriority.LOWEST)
+    @EventHandler(priority=EventPriority.LOWEST)
     public void onTick(EventPreTick eventPreTick) {
         this.breakingBlocks = this.handleBreakBlocks();
         if (this.perfectSwingAttackPending) {
@@ -397,7 +397,7 @@ extends Mod {
                 }
             }
         }
-        if (!InputEventDispatcher.getInstance().getFocusState().isFocused() || this.requireMouseDown.getEffectiveValue().booleanValue() && !ClientSettings.M()) {
+        if (!InputEventDispatcher.getInstance().getFocusState().isFocused() || this.requireMouseDown.getEffectiveValue().booleanValue() && !ClientSettings.isAttackButtonDown()) {
             this.resetTargeting();
             return;
         }
@@ -423,7 +423,7 @@ extends Mod {
         for (Object entityObject : loadedEntities) {
             Entity entity = new Entity(entityObject);
             EntityLivingBase candidate;
-            if (ClientSettings.H && entity.isInstance(MappedClasses.FT)
+            if (ClientSettings.IS_LEGACY_1_7 && entity.isInstance(MappedClasses.FT)
                     || !entity.isInstance(MappedClasses.zm)
                     || !this.isValidTarget(candidate = new EntityLivingBase(entityObject))) {
                 continue;
@@ -479,9 +479,9 @@ extends Mod {
             Vec3d closestPoint = RotationUtil.T(Minecraft.thePlayer(), target.R$src$Lgg_vape_wrapper_impl_AxisAlignedBB_$r19dfl(), 0.0, 0.0, 0.0);
             double motionX = target.z() - target.f();
             double motionZ = target.h() - target.R();
-            double currentX = closestPoint.Y();
+            double currentX = closestPoint.getX();
             double currentY = target.N();
-            double currentZ = closestPoint.o();
+            double currentZ = closestPoint.getZ();
             double previousX = currentX - motionX;
             double previousY = target.H();
             double previousZ = currentZ - motionZ;

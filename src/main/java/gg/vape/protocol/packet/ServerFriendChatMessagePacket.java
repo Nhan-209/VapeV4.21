@@ -6,43 +6,42 @@ import gg.vape.protocol.packet.ZeusSerializablePacket;
 
 public class ServerFriendChatMessagePacket
 implements ZeusSerializablePacket {
-    private UserModel M;
-    private String r;
-    private long g;
+    private UserModel sender;
+    private String message;
+    private long messageTimestamp;
 
     public ServerFriendChatMessagePacket() {
     }
 
-    public String h() {
-        return this.r;
+    public String getMessage() {
+        return this.message;
     }
 
-    public long g() {
-        return this.g;
+    public long getMessageTimestamp() {
+        return this.messageTimestamp;
     }
 
-    public UserModel C() {
-        return this.M;
+    public UserModel getSender() {
+        return this.sender;
     }
 
     @Override
     public void S(ZeusPacketBuffer zeusPacketBuffer) {
-        this.M = new UserModel(zeusPacketBuffer);
-        this.r = zeusPacketBuffer.v(255);
-        this.g = zeusPacketBuffer.long_a();
+        this.sender = new UserModel(zeusPacketBuffer);
+        this.message = zeusPacketBuffer.readString(255);
+        this.messageTimestamp = zeusPacketBuffer.readLong();
     }
 
     @Override
     public void o(ZeusPacketBuffer zeusPacketBuffer) {
-        this.M.a(zeusPacketBuffer);
-        zeusPacketBuffer.y(this.r);
-        zeusPacketBuffer.v(this.g);
+        this.sender.writeTo(zeusPacketBuffer);
+        zeusPacketBuffer.writeString(this.message);
+        zeusPacketBuffer.writeLong(this.messageTimestamp);
     }
 
-    public ServerFriendChatMessagePacket(UserModel userModel, String string) {
-        this.M = userModel;
-        this.r = string;
-        this.g = System.currentTimeMillis();
+    public ServerFriendChatMessagePacket(UserModel sender, String message) {
+        this.sender = sender;
+        this.message = message;
+        this.messageTimestamp = System.currentTimeMillis();
     }
 }
-

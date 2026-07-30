@@ -7,11 +7,11 @@ import java.awt.Color;
 
 class UsernameEditorCurrentNameLabel
 extends TextLabelComponent {
-    final UsernameEditorPanel Q;
+    private final UsernameEditorPanel editorPanel;
 
     UsernameEditorCurrentNameLabel(UsernameEditorPanel usernameEditorPanel, String string, double d, double d2, double d3, double d4, boolean bl, boolean bl2, Color color, GuiComponent guiComponent) {
         super(string, d, d2, d3, d4, bl, bl2, color, guiComponent);
-        this.Q = usernameEditorPanel;
+        this.editorPanel = usernameEditorPanel;
     }
 
     @Override

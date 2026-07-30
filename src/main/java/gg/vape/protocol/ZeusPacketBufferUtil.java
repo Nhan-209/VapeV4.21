@@ -7,7 +7,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 
 public class ZeusPacketBufferUtil {
-    public static int P(ByteBuf byteBuf) {
+    public static int readVarInt(ByteBuf byteBuf) {
         byte by;
         int n = 0;
         int n2 = 0;
@@ -20,40 +20,40 @@ public class ZeusPacketBufferUtil {
         return n;
     }
 
-    public static void L(ByteBuf byteBuf, int n) {
-        while ((n & 0xFFFFFF80) != 0) {
-            byteBuf.writeByte(n & 0x7F | 0x80);
-            n >>>= 7;
+    public static void writeVarInt(ByteBuf byteBuf, int value) {
+        while ((value & 0xFFFFFF80) != 0) {
+            byteBuf.writeByte(value & 0x7F | 0x80);
+            value >>>= 7;
         }
-        byteBuf.writeByte(n);
+        byteBuf.writeByte(value);
     }
 
-    public static <E extends Enum<E>> E z(ByteBuf byteBuf, Class<E> clazz) {
-        return (E)((Enum[])clazz.getEnumConstants())[ZeusPacketBufferUtil.P(byteBuf)];
+    public static <E extends Enum<E>> E readEnum(ByteBuf byteBuf, Class<E> enumType) {
+        return (E)((Enum[])enumType.getEnumConstants())[ZeusPacketBufferUtil.readVarInt(byteBuf)];
     }
 
-    public static void T(ByteBuf byteBuf, String string) {
-        byte[] byArray = string.getBytes(StandardCharsets.UTF_8);
+    public static void writeString(ByteBuf byteBuf, String value) {
+        byte[] byArray = value.getBytes(StandardCharsets.UTF_8);
         if (byArray.length > Short.MAX_VALUE) {
-            throw new EncoderException("String too big (was " + string.length() + " bytes encoded, max " + Short.MAX_VALUE + ")");
+            throw new EncoderException("String too big (was " + value.length() + " bytes encoded, max " + Short.MAX_VALUE + ")");
         }
-        ZeusPacketBufferUtil.L(byteBuf, byArray.length);
+        ZeusPacketBufferUtil.writeVarInt(byteBuf, byArray.length);
         byteBuf.writeBytes(byArray);
     }
 
-    public static UUID l(ByteBuf byteBuf) {
+    public static UUID readUuid(ByteBuf byteBuf) {
         return new UUID(byteBuf.readLong(), byteBuf.readLong());
     }
 
-    public static void z(ByteBuf byteBuf, UUID uUID) {
-        byteBuf.writeLong(uUID.getMostSignificantBits());
-        byteBuf.writeLong(uUID.getLeastSignificantBits());
+    public static void writeUuid(ByteBuf byteBuf, UUID uuid) {
+        byteBuf.writeLong(uuid.getMostSignificantBits());
+        byteBuf.writeLong(uuid.getLeastSignificantBits());
     }
 
-    public static String Y(ByteBuf byteBuf, int n) {
-        int n2 = ZeusPacketBufferUtil.P(byteBuf);
-        if (n2 > n * 4) {
-            throw new DecoderException("The received encoded string buffer length is longer than maximum allowed (" + n2 + " > " + n * 4 + ")");
+    public static String readString(ByteBuf byteBuf, int maxCharacters) {
+        int n2 = ZeusPacketBufferUtil.readVarInt(byteBuf);
+        if (n2 > maxCharacters * 4) {
+            throw new DecoderException("The received encoded string buffer length is longer than maximum allowed (" + n2 + " > " + maxCharacters * 4 + ")");
         }
         if (n2 < 0) {
             throw new DecoderException("The received encoded string buffer length is less than zero! Weird string!");
@@ -61,17 +61,17 @@ public class ZeusPacketBufferUtil {
         byte[] byArray = new byte[n2];
         byteBuf.readBytes(byArray);
         String string = new String(byArray, StandardCharsets.UTF_8);
-        if (string.length() > n) {
-            throw new DecoderException("The received string length is longer than maximum allowed (" + n2 + " > " + n + ")");
+        if (string.length() > maxCharacters) {
+            throw new DecoderException("The received string length is longer than maximum allowed (" + n2 + " > " + maxCharacters + ")");
         }
         return string;
     }
 
-    public static void R(ByteBuf byteBuf, Enum<?> enum_) {
-        ZeusPacketBufferUtil.L(byteBuf, enum_.ordinal());
+    public static void writeEnum(ByteBuf byteBuf, Enum<?> value) {
+        ZeusPacketBufferUtil.writeVarInt(byteBuf, value.ordinal());
     }
 
-    private static RuntimeException a(RuntimeException runtimeException) {
+    private static RuntimeException preserveRuntimeException(RuntimeException runtimeException) {
         return runtimeException;
     }
 }

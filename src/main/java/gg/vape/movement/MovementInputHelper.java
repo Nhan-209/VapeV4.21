@@ -178,9 +178,9 @@ public class MovementInputHelper {
 
     public static boolean isPhysicalMovementInputActive() {
         GameSettings settings = Minecraft.gameSettings();
-        return ClientSettings.B(settings.x$src$Lgg_vape_wrapper_impl_KeyBinding_$1cf7isg())
-                || ClientSettings.B(settings.g$src$Lgg_vape_wrapper_impl_KeyBinding_$qqn5n3())
-                || ClientSettings.B(settings.Y()) || ClientSettings.B(settings.s());
+        return ClientSettings.isPhysicalKeyDown(settings.x$src$Lgg_vape_wrapper_impl_KeyBinding_$1cf7isg())
+                || ClientSettings.isPhysicalKeyDown(settings.g$src$Lgg_vape_wrapper_impl_KeyBinding_$qqn5n3())
+                || ClientSettings.isPhysicalKeyDown(settings.Y()) || ClientSettings.isPhysicalKeyDown(settings.s());
     }
 
     public static void releaseMovementKeys() {
@@ -217,15 +217,15 @@ public class MovementInputHelper {
         KeyBinding sprintKey = settings.r();
         KeyBinding sneakKey = settings.d$src$Lgg_vape_wrapper_impl_KeyBinding_$adn2z0();
         KeyBinding jumpKey = settings.O();
-        setKeyPressed(leftKey, ClientSettings.B(leftKey));
-        setKeyPressed(rightKey, ClientSettings.B(rightKey));
-        setKeyPressed(forwardKey, ClientSettings.B(forwardKey));
-        setKeyPressed(backwardKey, ClientSettings.B(backwardKey));
+        setKeyPressed(leftKey, ClientSettings.isPhysicalKeyDown(leftKey));
+        setKeyPressed(rightKey, ClientSettings.isPhysicalKeyDown(rightKey));
+        setKeyPressed(forwardKey, ClientSettings.isPhysicalKeyDown(forwardKey));
+        setKeyPressed(backwardKey, ClientSettings.isPhysicalKeyDown(backwardKey));
         if (includeSprint) {
-            setKeyPressed(sprintKey, ClientSettings.B(sprintKey));
+            setKeyPressed(sprintKey, ClientSettings.isPhysicalKeyDown(sprintKey));
         }
-        setKeyPressed(sneakKey, ClientSettings.B(sneakKey));
-        setKeyPressed(jumpKey, ClientSettings.B(jumpKey));
+        setKeyPressed(sneakKey, ClientSettings.isPhysicalKeyDown(sneakKey));
+        setKeyPressed(jumpKey, ClientSettings.isPhysicalKeyDown(jumpKey));
     }
 
     public static float getMovementYaw(EntityPlayer player) {

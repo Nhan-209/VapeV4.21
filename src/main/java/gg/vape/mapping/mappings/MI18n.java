@@ -25,24 +25,24 @@ extends Mapping {
             boolean bl = true;
             String string3 = "field_239501_a_";
             MI18n mI18n = this;
-            this.j = mI18n.u(string3, bl, clazz);
+            this.j = mI18n.registerStaticField(string3, bl, clazz);
         } else {
             Class clazz = MappedClasses.Fn;
             boolean bl = true;
             String string4 = "i18nLocale";
             MI18n mI18n = this;
-            this.j = mI18n.u(string4, bl, clazz);
+            this.j = mI18n.registerStaticField(string4, bl, clazz);
         }
         Class[] classArray = new Class[]{String.class, Object[].class};
         Class<String> clazz = String.class;
         boolean bl = true;
         String string5 = "format";
         MI18n mI18n = this;
-        this.c = mI18n.x(string5, bl, clazz, classArray); 
+        this.c = mI18n.registerStaticMethod(string5, bl, clazz, classArray);
     }
 
     public String R(String string, Object ... objectArray) {
-        return (String)this.c.L(null, string, objectArray);
+        return (String)this.c.invokeObject(null, string, objectArray);
     }
 
     public Object S() {

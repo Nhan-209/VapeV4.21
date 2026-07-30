@@ -16,11 +16,11 @@ extends Mapping {
         boolean bl = true;
         String string = b;
         MTrajectoriesItemBridge mTrajectoriesItemBridge = this;
-        this.T = this.x(string, bl, clazz, classArray);
+        this.T = this.registerStaticMethod(string, bl, clazz, classArray);
     }
 
     public boolean g(Object object) {
-        return this.T.e(null, object);
+        return this.T.invokeBoolean(null, object);
     }
 }
 

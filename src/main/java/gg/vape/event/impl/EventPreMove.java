@@ -29,12 +29,11 @@ extends EventMove {
         return super.getZ();
     }
 
-    public EventPreMove(double d, double d2, double d3) {
-        super(d, d2, d3);
+    public EventPreMove(double x, double y, double z) {
+        super(x, y, z);
     }
 
-    public EventPreMove(Object object) {
-        this(new Vec3(object).getX(), new Vec3(object).getY(), new Vec3(object).getZ());
+    public EventPreMove(Object vectorHandle) {
+        this(new Vec3(vectorHandle).getX(), new Vec3(vectorHandle).getY(), new Vec3(vectorHandle).getZ());
     }
 }
-

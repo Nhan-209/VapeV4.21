@@ -1,8 +1,6 @@
 package gg.vape.wrapper.impl;
 
 import gg.vape.mapping.mappings.MEntityPotion;
-import gg.vape.wrapper.impl.EntityEnderPearl;
-import gg.vape.wrapper.impl.ItemStack;
 
 public class EntityPotion
 extends EntityEnderPearl {
@@ -11,7 +9,7 @@ extends EntityEnderPearl {
     }
 
     public ItemStack getPotion() {
-        return new ItemStack(MEntityPotion.s(EntityPotion.c.getMappingsMapperCompat().hf, this.getObject()));
+        return new ItemStack(MEntityPotion.s(EntityPotion.vapeInstance.getMappingsMapperCompat().hf, this.getObject()));
     }
 }
 

@@ -5,7 +5,7 @@ import gg.vape.wrapper.Wrapper;
 public class ITooltipFlag
 extends Wrapper {
     public static ITooltipFlag n() {
-        return new ITooltipFlag(ITooltipFlag.c.getMappingsMapperCompat().qh.s());
+        return new ITooltipFlag(ITooltipFlag.vapeInstance.getMappingsMapperCompat().qh.s());
     }
 
     public ITooltipFlag(Object object) {

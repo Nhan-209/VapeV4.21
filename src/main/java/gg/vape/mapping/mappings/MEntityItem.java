@@ -17,7 +17,7 @@ extends Mapping {
 
 
     private Object Z(Object object) {
-        return this.l.L(object, new Object[0]);
+        return this.l.invokeObject(object, new Object[0]);
     }
 
     public MEntityItem() {

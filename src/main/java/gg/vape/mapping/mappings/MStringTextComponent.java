@@ -15,7 +15,7 @@ extends Mapping {
     private MappingMethod E;
 
     private Object n(String string) {
-        return this.E.L(null, string);
+        return this.E.invokeObject(null, string);
     }
 
     public static Object s(MStringTextComponent mStringTextComponent, String string) {
@@ -23,11 +23,11 @@ extends Mapping {
     }
 
     public Object i(String string) {
-        return this.I.O(string);
+        return this.I.newInstance(string);
     }
 
     public String W(Object object) {
-        return (String)this.P.L(object, new Object[0]);
+        return (String)this.P.invokeObject(object, new Object[0]);
     }
 
     public MStringTextComponent() {
@@ -67,12 +67,12 @@ extends Mapping {
             Class<?> clazz3 = MappedClasses.YD;
             String string3 = "create";
             MStringTextComponent mStringTextComponent3 = this;
-            this.E = ((MappingMethodBuilder)((MappingMethodBuilder)this.u(string3, clazz3, classArray3).H(true)).y(MappedClasses.YD)).s();
+            this.E = ((MappingMethodBuilder)((MappingMethodBuilder)this.methodBuilder(string3, clazz3, classArray3).setStaticMember(true)).setOwnerClass(MappedClasses.YD)).buildMethod();
             Class[] classArray4 = new Class[]{};
             Class<String> clazz4 = String.class;
             String string4 = "text";
             MStringTextComponent mStringTextComponent4 = this;
-            this.P = ((MappingMethodBuilder)this.u(string4, clazz4, classArray4).y(MappedClasses.YD)).s();
+            this.P = ((MappingMethodBuilder)this.methodBuilder(string4, clazz4, classArray4).setOwnerClass(MappedClasses.YD)).buildMethod();
         } else if (ForgeVersion.MC_1_16_5_ACTUAL.d()) {
             Class[] classArray5 = new Class[]{};
             Class<String> clazz5 = String.class;

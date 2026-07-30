@@ -14,74 +14,73 @@ import java.util.Set;
 
 public final class FriendAliasEventListener
 extends FriendAliasDisplayNameListener {
-    private void Y(ITextComponent t3_02) {
-        Set<TextComponentString> set = this.J(t3_02, new HashSet<TextComponentString>());
-        for (TextComponentString tl_22 : set) {
-            String string = tl_22.getText();
-            String string2 = this.G(string, this.e());
-            if (string2 == null || string.equalsIgnoreCase(string2)) continue;
-            tl_22.setText(string2);
+    private void replaceAliasesInComponent(ITextComponent component) {
+        Set<TextComponentString> textComponents = this.collectTextComponents(component, new HashSet<TextComponentString>());
+        for (TextComponentString textComponent : textComponents) {
+            String text = textComponent.getText();
+            String replacedText = this.getReplacedDisplayName(text, this.getTargetedFriends());
+            if (replacedText == null || text.equalsIgnoreCase(replacedText)) continue;
+            textComponent.setText(replacedText);
         }
     }
 
 
     @EventHandler
-    public void D(EventNameFormat qr_02) {
-        if (!(this.N() && this.u() && this.S())) {
+    public void onNameFormat(EventNameFormat event) {
+        if (!(this.isAliasEnabled() && this.isAliasSpoofEnabled() && this.hasFriends())) {
             return;
         }
-        ITextComponent t3_02 = qr_02.getDisplayName();
-        if (t3_02.isNull() || !t3_02.isInstance(MappedClasses.z9)) {
+        ITextComponent displayName = event.getDisplayName();
+        if (displayName.isNull() || !displayName.isInstance(MappedClasses.z9)) {
             return;
         }
-        TextComponentString tl_22 = new TextComponentString(t3_02.getObject());
-        this.Y(tl_22);
-        for (ITextComponent t3_03 : tl_22.G()) {
-            if (t3_03.isNull() || !t3_03.isInstance(MappedClasses.z9)) continue;
-            TextComponentString tl_23 = new TextComponentString(t3_03.getObject());
-            this.Y(tl_23);
+        TextComponentString rootText = new TextComponentString(displayName.getObject());
+        this.replaceAliasesInComponent(rootText);
+        for (ITextComponent sibling : rootText.G()) {
+            if (sibling.isNull() || !sibling.isInstance(MappedClasses.z9)) continue;
+            TextComponentString siblingText = new TextComponentString(sibling.getObject());
+            this.replaceAliasesInComponent(siblingText);
         }
     }
 
     @EventHandler
-    public void Y(EventChat qA) {
-        if (!this.u() || !this.S()) {
+    public void onChat(EventChat event) {
+        if (!this.isAliasSpoofEnabled() || !this.hasFriends()) {
             return;
         }
-        this.Y(qA.getMessage());
+        this.replaceAliasesInComponent(event.getMessage());
     }
 
     @EventHandler
-    public void c(EventPlayerTabOverlayDisplayNameLegacy ez_22) {
-        if (!(this.N() && this.u() && this.S())) {
+    public void onLegacyTabDisplayName(EventPlayerTabOverlayDisplayNameLegacy event) {
+        if (!(this.isAliasEnabled() && this.isAliasSpoofEnabled() && this.hasFriends())) {
             return;
         }
-        String string = ez_22.getDisplayName();
-        String string2 = this.G(string, this.e());
-        if (string2 != null && !string.equalsIgnoreCase(string2)) {
-            ez_22.setDisplayName(string2);
+        String displayName = event.getDisplayName();
+        String replacedName = this.getReplacedDisplayName(displayName, this.getTargetedFriends());
+        if (replacedName != null && !displayName.equalsIgnoreCase(replacedName)) {
+            event.setDisplayName(replacedName);
         }
     }
 
-    private Set<TextComponentString> J(ITextComponent t3_02, Set<TextComponentString> set) {
-        if (t3_02.isInstance(MappedClasses.ux)) {
-            ChestStealInventoryState translationComponent = new ChestStealInventoryState(t3_02.getObject());
-            for (Object object : translationComponent.getSiblings()) {
-                ITextComponent t3_03 = new ITextComponent(object);
-                if (t3_03.isNull() || !t3_03.isInstance(MappedClasses.Yr)) continue;
-                this.J(t3_03, set);
+    private Set<TextComponentString> collectTextComponents(ITextComponent component, Set<TextComponentString> result) {
+        if (component.isInstance(MappedClasses.ux)) {
+            ChestStealInventoryState translationComponent = new ChestStealInventoryState(component.getObject());
+            for (Object siblingHandle : translationComponent.getSiblings()) {
+                ITextComponent sibling = new ITextComponent(siblingHandle);
+                if (sibling.isNull() || !sibling.isInstance(MappedClasses.Yr)) continue;
+                this.collectTextComponents(sibling, result);
             }
         }
-        for (ITextComponent t3_04 : t3_02.G()) {
-            Object object;
-            if (t3_04.isNull() || !t3_04.isInstance(MappedClasses.z9)) continue;
-            object = new TextComponentString(t3_04.getObject());
-            this.J((ITextComponent)object, set);
+        for (ITextComponent sibling : component.G()) {
+            if (sibling.isNull() || !sibling.isInstance(MappedClasses.z9)) continue;
+            TextComponentString textComponent = new TextComponentString(sibling.getObject());
+            this.collectTextComponents(textComponent, result);
         }
-        if (t3_02.isInstance(MappedClasses.z9)) {
-            set.add(new TextComponentString(t3_02.getObject()));
+        if (component.isInstance(MappedClasses.z9)) {
+            result.add(new TextComponentString(component.getObject()));
         }
-        return set;
+        return result;
     }
 }
 

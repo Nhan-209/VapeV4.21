@@ -7,11 +7,11 @@ import java.util.Set;
 public class PotionVersionRange
 extends Wrapper {
     public Set i() {
-        return (Set)MPotionVersionRange.F(PotionVersionRange.c.getMappingsMapperCompat().Cu, this.I);
+        return (Set)MPotionVersionRange.F(PotionVersionRange.vapeInstance.getMappingsMapperCompat().Cu, this.I);
     }
 
     public static PotionVersionRange W() {
-        return new PotionVersionRange(MPotionVersionRange.h(PotionVersionRange.c.getMappingsMapperCompat().Cu));
+        return new PotionVersionRange(MPotionVersionRange.h(PotionVersionRange.vapeInstance.getMappingsMapperCompat().Cu));
     }
 
     public PotionVersionRange(Object object) {

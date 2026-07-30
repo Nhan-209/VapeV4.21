@@ -144,10 +144,10 @@ extends Mod {
             ItemStack stack = stacks.get(index);
             String line = stack.x();
             if (this.showDistance.getEffectiveValue().booleanValue() && index == 0) {
-                line = ClientSettings.F + "a[" + ClientSettings.F + "f" + (int)player.getDistanceToEntity(entityItem) + ClientSettings.F + "a]" + ClientSettings.F + "r " + line;
+                line = ClientSettings.FORMAT_CODE + "a[" + ClientSettings.FORMAT_CODE + "f" + (int)player.getDistanceToEntity(entityItem) + ClientSettings.FORMAT_CODE + "a]" + ClientSettings.FORMAT_CODE + "r " + line;
             }
             if (stack.P() > 1 && stack.t() > 1) {
-                line = line + ClientSettings.F + "r x" + stack.t();
+                line = line + ClientSettings.FORMAT_CODE + "r x" + stack.t();
             }
             maxHalfWidth = Math.max(fontRenderer.getStringWidth(line) / 2, maxHalfWidth);
             lines[index] = line;

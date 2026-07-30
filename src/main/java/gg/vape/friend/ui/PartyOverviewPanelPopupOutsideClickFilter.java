@@ -7,18 +7,18 @@ import java.awt.Point;
 
 public class PartyOverviewPanelPopupOutsideClickFilter
 implements GuiMouseListener {
-    final PopupFrame v;
-    final PartyDetailsPanel I;
+    private final PopupFrame popupFrame;
+    private final PartyDetailsPanel detailsPanel;
 
 
     public PartyOverviewPanelPopupOutsideClickFilter(PartyDetailsPanel partyDetailsPanel, PopupFrame popupFrame) {
-        this.I = partyDetailsPanel;
-        this.v = popupFrame;
+        this.detailsPanel = partyDetailsPanel;
+        this.popupFrame = popupFrame;
     }
 
     @Override
     public boolean Q(Point point) {
-        if (this.I.L$src$Lgg_vape_ui_click_frame_Frame_$1djx6sa().getBounds().R(point) && !this.v.getBounds().R(point)) {
+        if (this.detailsPanel.L$src$Lgg_vape_ui_click_frame_Frame_$1djx6sa().getBounds().R(point) && !this.popupFrame.getBounds().R(point)) {
             return true;
         }
         return GuiMouseListener.super.Q(point);

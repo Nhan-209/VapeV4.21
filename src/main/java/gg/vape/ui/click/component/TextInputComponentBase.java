@@ -584,7 +584,7 @@ implements FocusableComponent {
     }
 
     private SmoothFontRenderer getTextFontRenderer() {
-        double uiScale = Vape.INSTANCE.getClientSettings().s();
+        double uiScale = Vape.INSTANCE.getClientSettings().getGuiScaleFactor();
         if (this.cachedFontRenderer == null || this.cachedUiScale != uiScale) {
             this.cachedFontRenderer = this.alternateFontEnabled ? this.getAlternateFontRenderer(this.fontScale) : this.getFontRenderer((double)this.fontScale);
             this.cachedUiScale = uiScale;

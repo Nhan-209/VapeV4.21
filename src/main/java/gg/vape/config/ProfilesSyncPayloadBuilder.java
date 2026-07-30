@@ -10,43 +10,43 @@ import java.util.UUID;
 import org.jetbrains.annotations.Nullable;
 
 public class ProfilesSyncPayloadBuilder {
-    private static int X;
+    private static int runtimeState;
 
-    public static void e(int n) {
-        X = n;
+    public static void setRuntimeState(int runtimeState) {
+        ProfilesSyncPayloadBuilder.runtimeState = runtimeState;
     }
 
-    public static int G() {
-        int n = ProfilesSyncPayloadBuilder.O();
+    public static int getDefaultRuntimeState() {
+        int currentState = ProfilesSyncPayloadBuilder.getRuntimeState();
         return 0;
     }
 
 
     static {
-        ProfilesSyncPayloadBuilder.e(99);
+        ProfilesSyncPayloadBuilder.setRuntimeState(99);
     }
 
-    public static JsonObject T(@Nullable List<Profile> list, @Nullable List<UUID> list2) {
-        JsonObject jsonObject = new JsonObject();
-        JsonArray jsonArray = new JsonArray();
-        if (list != null) {
-            for (Profile object : list) {
-                jsonArray.add((JsonElement)object.C(true));
+    public static JsonObject build(@Nullable List<Profile> updatedProfiles, @Nullable List<UUID> deletedProfileIds) {
+        JsonObject payload = new JsonObject();
+        JsonArray updatedProfilesJson = new JsonArray();
+        if (updatedProfiles != null) {
+            for (Profile profile : updatedProfiles) {
+                updatedProfilesJson.add((JsonElement)profile.toJson(true));
             }
         }
-        JsonArray jsonArray2 = new JsonArray();
-        if (list2 != null) {
-            for (UUID uUID : list2) {
-                jsonArray2.add((JsonElement)new JsonPrimitive(uUID.toString()));
+        JsonArray deletedProfilesJson = new JsonArray();
+        if (deletedProfileIds != null) {
+            for (UUID profileId : deletedProfileIds) {
+                deletedProfilesJson.add((JsonElement)new JsonPrimitive(profileId.toString()));
             }
         }
-        jsonObject.add("updatedProfiles", (JsonElement)jsonArray);
-        jsonObject.add("deletedProfiles", (JsonElement)jsonArray2);
-        return jsonObject;
+        payload.add("updatedProfiles", (JsonElement)updatedProfilesJson);
+        payload.add("deletedProfiles", (JsonElement)deletedProfilesJson);
+        return payload;
     }
 
-    public static int O() {
-        return X;
+    public static int getRuntimeState() {
+        return runtimeState;
     }
 }
 

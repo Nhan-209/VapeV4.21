@@ -17,16 +17,16 @@ DescribedOption {
     private final String description;
     private final String name;
 
-    private InventoryFilterAction(String string2, String string3) {
-        this.name = string2;
-        this.description = string3;
+    private InventoryFilterAction(String name, String description) {
+        this.name = name;
+        this.description = description;
     }
 
     @Nullable
-    public static InventoryFilterAction findByName(String string) {
-        for (InventoryFilterAction inventoryFilterAction : VALUES) {
-            if (!inventoryFilterAction.getName().equalsIgnoreCase(string)) continue;
-            return inventoryFilterAction;
+    public static InventoryFilterAction findByName(String name) {
+        for (InventoryFilterAction action : VALUES) {
+            if (!action.getName().equalsIgnoreCase(name)) continue;
+            return action;
         }
         return null;
     }
@@ -40,9 +40,9 @@ DescribedOption {
         return this.name;
     }
 
-    public static InventoryFilterAction fromName(String string) {
-        InventoryFilterAction inventoryFilterAction = InventoryFilterAction.findByName(string);
-        return inventoryFilterAction != null ? inventoryFilterAction : REMOVE;
+    public static InventoryFilterAction fromName(String name) {
+        InventoryFilterAction action = InventoryFilterAction.findByName(name);
+        return action != null ? action : REMOVE;
     }
 
 

@@ -7,16 +7,16 @@ import gg.vape.module.none.XRay;
 
 public class EventVisGraphSetOpaqueCube
 extends Event {
-    private static final EventListeners x = new EventListeners();
+    private static final EventListeners EVENT_LISTENERS = new EventListeners();
 
     @Override
     public EventListeners getListeners() {
-        return x;
+        return EVENT_LISTENERS;
     }
 
     @Override
     public boolean fire() {
-        XRay xRay = Vape.INSTANCE.getModManager().G();
+        XRay xRay = Vape.INSTANCE.getModManager().getXRayModule();
         if (xRay == null || !xRay.boolean_r()) {
             return false;
         }
@@ -25,7 +25,7 @@ extends Event {
     }
 
     public static EventListeners getEventListeners() {
-        return x;
+        return EVENT_LISTENERS;
     }
 
 }

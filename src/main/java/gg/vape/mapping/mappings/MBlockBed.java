@@ -27,7 +27,7 @@ extends Mapping {
     }
 
     private Object f(Object object, Object object2) {
-        return this.M.L(null, object, object2);
+        return this.M.invokeObject(null, object, object2);
     }
 
     public MBlockBed() {
@@ -42,7 +42,7 @@ extends Mapping {
                 boolean bl = true;
                 String string = "PART";
                 MBlockBed mBlockBed = this;
-                this.V = mBlockBed.u(string, bl, clazz);
+                this.V = mBlockBed.registerStaticField(string, bl, clazz);
             }
             return;
         }
@@ -52,14 +52,14 @@ extends Mapping {
             boolean bl = true;
             String string = "getBedDirection";
             MBlockBed mBlockBed = this;
-            this.M = mBlockBed.x(string, bl, clazz, classArray);
+            this.M = mBlockBed.registerStaticMethod(string, bl, clazz, classArray);
         }
         if (ForgeVersion.MC_1_7_10.Y()) {
             Class clazz = MappedClasses.Vh;
             boolean bl = true;
             String string = "PART";
             MBlockBed mBlockBed = this;
-            this.V = mBlockBed.u(string, bl, clazz);
+            this.V = mBlockBed.registerStaticField(string, bl, clazz);
         }
     }
 }

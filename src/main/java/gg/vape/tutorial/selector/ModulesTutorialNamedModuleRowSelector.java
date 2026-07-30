@@ -6,20 +6,20 @@ import gg.vape.ui.click.component.module.ModuleComponent;
 
 public class ModulesTutorialNamedModuleRowSelector
 extends TutorialTargetSelector<ModuleComponent> {
-    final ModulesTutorialPage c;
-    private static final String b = "AutoClicker";
+    private final ModulesTutorialPage tutorialPage;
+    private static final String targetModuleName = "AutoClicker";
 
-    public boolean J(ModuleComponent moduleComponent) {
-        return moduleComponent.getModule().getName().equals(b);
+    private boolean matchesModule(ModuleComponent moduleComponent) {
+        return moduleComponent.getModule().getName().equals(targetModuleName);
     }
 
     @Override
-    public boolean X(ModuleComponent moduleComponent) {
-        return this.J(moduleComponent);
+    public boolean matches(ModuleComponent moduleComponent) {
+        return this.matchesModule(moduleComponent);
     }
 
     public ModulesTutorialNamedModuleRowSelector(ModulesTutorialPage modulesTutorialPage, Class clazz) {
         super(clazz);
-        this.c = modulesTutorialPage;
+        this.tutorialPage = modulesTutorialPage;
     }
 }

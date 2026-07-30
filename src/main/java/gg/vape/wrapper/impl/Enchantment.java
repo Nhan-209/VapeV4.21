@@ -3,9 +3,7 @@ package gg.vape.wrapper.impl;
 import gg.vape.mapping.mappings.MEnchantment;
 import gg.vape.utils.EnchantmentUtil;
 import gg.vape.wrapper.Wrapper;
-import gg.vape.wrapper.impl.ForgeVersion;
-import gg.vape.wrapper.impl.Holder;
-import gg.vape.wrapper.impl.ITextComponent;
+
 import java.util.ArrayList;
 
 public class Enchantment
@@ -40,7 +38,7 @@ extends Wrapper {
 
     public static Enchantment getEnchantmentById(int n) {
         if (ForgeVersion.MC_1_12_2.d() && ForgeVersion.MC_1_16_5.v()) {
-            return new Enchantment(MEnchantment.k(Enchantment.c.getMappings().RC, n));
+            return new Enchantment(MEnchantment.k(Enchantment.vapeInstance.getMappings().RC, n));
         }
         for (Enchantment enchantment : EnchantmentUtil.Y) {
             if (enchantment == null || enchantment.isNull() || enchantment.getId() != n) continue;
@@ -63,9 +61,9 @@ extends Wrapper {
             return -1;
         }
         if (ForgeVersion.MC_1_12_2.d()) {
-            return MEnchantment.m(Enchantment.c.getMappings().RC, this.I);
+            return MEnchantment.m(Enchantment.vapeInstance.getMappings().RC, this.I);
         }
-        return MEnchantment.o(Enchantment.c.getMappings().RC, this.I);
+        return MEnchantment.o(Enchantment.vapeInstance.getMappings().RC, this.I);
     }
 
     public static Enchantment[] getEnchantments() {
@@ -76,7 +74,7 @@ extends Wrapper {
             return new Enchantment[0];
         }
         if (ForgeVersion.MC_1_12_2.d()) {
-            Iterable iterable = (Iterable)MEnchantment.N(Enchantment.c.getMappings().RC);
+            Iterable iterable = (Iterable)MEnchantment.N(Enchantment.vapeInstance.getMappings().RC);
             ArrayList<Enchantment> arrayList = new ArrayList<Enchantment>();
             for (Object t : iterable) {
                 Enchantment enchantment = new Enchantment(t);
@@ -84,7 +82,7 @@ extends Wrapper {
             }
             return arrayList.toArray(new Enchantment[arrayList.size()]);
         }
-        Object[] objectArray = MEnchantment.x(Enchantment.c.getMappings().RC);
+        Object[] objectArray = MEnchantment.x(Enchantment.vapeInstance.getMappings().RC);
         if (objectArray == null) {
             return new Enchantment[0];
         }
@@ -182,14 +180,14 @@ extends Wrapper {
         }
         if (ForgeVersion.MC_1_21_0.d()) {
             Holder holder = Holder.A(this.getObject());
-            ITextComponent iTextComponent = new ITextComponent(MEnchantment.O(Enchantment.c.getMappings().RC, holder.getObject(), n));
+            ITextComponent iTextComponent = new ITextComponent(MEnchantment.O(Enchantment.vapeInstance.getMappings().RC, holder.getObject(), n));
             return iTextComponent.getFormattedText();
         }
         if (ForgeVersion.MC_1_16_5.d()) {
-            ITextComponent iTextComponent = new ITextComponent(MEnchantment.J(Enchantment.c.getMappings().RC, this.I, n));
+            ITextComponent iTextComponent = new ITextComponent(MEnchantment.J(Enchantment.vapeInstance.getMappings().RC, this.I, n));
             return iTextComponent.getFormattedText();
         }
-        return MEnchantment.E(Enchantment.c.getMappings().RC, this.I, n);
+        return MEnchantment.E(Enchantment.vapeInstance.getMappings().RC, this.I, n);
     }
 
     public static Enchantment punch() {

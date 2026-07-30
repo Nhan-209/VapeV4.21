@@ -13,7 +13,7 @@ extends Mapping {
     private final MappingMethod n;
 
     private Object B(Object object, Object object2, float f, Predicate<Object> predicate) {
-        return this.n.L(object, object2, Float.valueOf(f), predicate);
+        return this.n.invokeObject(object, object2, Float.valueOf(f), predicate);
     }
 
 

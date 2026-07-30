@@ -87,7 +87,7 @@ extends Mod {
     private boolean isValidArrowOwner(EntityPlayerSP player, Entity owner) {
         if (owner != null && owner.isNotNull() && owner.isInstance(MappedClasses.Yl)) {
             EntityPlayer ownerPlayer = new EntityPlayer(owner);
-            return !Vape.INSTANCE.getClientSettings().e(player, ownerPlayer)
+            return !Vape.INSTANCE.getClientSettings().isTeammate(player, ownerPlayer)
                     && !Vape.INSTANCE.getFriendManager().isFriend(ownerPlayer);
         }
         return true;
@@ -184,7 +184,7 @@ extends Mod {
             positionZ += velocityZ;
             Vec3d nearestArrowPoint = RotationUtil.T(
                     player, arrowBox.expand(1.0, 1.0, 1.0), 0.0, 0.0, 0.0);
-            double distance = player.i(nearestArrowPoint.H, nearestArrowPoint.B, nearestArrowPoint.i);
+            double distance = player.i(nearestArrowPoint.getX(), nearestArrowPoint.getY(), nearestArrowPoint.getZ());
             if (distance <= 4.0 && distance < closestDistance) {
                 closestDistance = distance;
             }
@@ -280,7 +280,7 @@ extends Mod {
         Vec3d predictedPosition = this.predictArrowPosition(arrow);
         float currentDistance = player.getDistanceToEntity(arrow);
         double predictedDistance = player.i(
-                predictedPosition.H, predictedPosition.B, predictedPosition.i);
+                predictedPosition.getX(), predictedPosition.getY(), predictedPosition.getZ());
         double nextDistance = player.i(arrow.z() + previousMotionX,
                 arrow.N() + previousMotionY, arrow.h() + previousMotionZ);
         boolean incoming = predictedDistance < currentDistance && nextDistance < currentDistance;
@@ -399,7 +399,7 @@ extends Mod {
         double velocityZ = this.targetArrow.T();
         Vec3d aimPoint = RotationUtil.T(
                 player, expandedArrowBox.expand(-1.0, -1.0, -1.0), 0.0, 0.0, 0.0);
-        float[] aimRotation = this.computeRotationTo(aimPoint.H, aimPoint.B, aimPoint.i);
+        float[] aimRotation = this.computeRotationTo(aimPoint.getX(), aimPoint.getY(), aimPoint.getZ());
         if (this.rotationController == null) {
             this.rotationController = this.silentAim.getEffectiveValue()
                     ? new AdaptiveRotationController()
@@ -438,7 +438,7 @@ extends Mod {
         Vec3d attackPoint = RotationUtil.T(player,
                 predictedArrowBox.expand(collisionBorder - 0.5, collisionBorder - 0.5, collisionBorder - 0.5),
                 0.0, 0.0, 0.0);
-        float[] attackRotation = this.computeRotationTo(attackPoint.H, attackPoint.B, attackPoint.i);
+        float[] attackRotation = this.computeRotationTo(attackPoint.getX(), attackPoint.getY(), attackPoint.getZ());
         float originalYaw = player.J();
         float originalPitch = player.V();
         if (ForgeVersion.MC_1_16_5.v()) {

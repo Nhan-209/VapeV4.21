@@ -23,7 +23,7 @@ extends Mapping {
     }
 
     public Object Q(Object object, List list, Object object2) {
-        return this.D.O(object, list, object2);
+        return this.D.newInstance(object, list, object2);
     }
 
     public MTextComponentBaseBridge() {
@@ -42,7 +42,7 @@ extends Mapping {
             this.b = this.Y(string, bl, clazz, classArray);
             Class[] classArray2 = new Class[]{MappedClasses.YT, List.class, MappedClasses.Va};
             MTextComponentBaseBridge mTextComponentBaseBridge2 = this;
-            this.D = this.g(classArray2);
+            this.D = this.registerConstructor(classArray2);
         }
     }
 
@@ -51,7 +51,7 @@ extends Mapping {
     }
 
     public Object X(Object object, Object object2) {
-        return this.b.L(object, object2);
+        return this.b.invokeObject(object, object2);
     }
 
 }

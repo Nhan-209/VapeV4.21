@@ -10,57 +10,57 @@ import gg.vape.ui.click.component.PanelComponent;
 
 public class OnlineFriendDetailsPanel
 extends PanelComponent {
-    private final OnlineFriend jx;
-    private boolean jB = false;
-    private OnlineChatPanel j9;
-    private final OnlineFriendCard jO;
-    private final OnlineFriendActionPanel jv;
+    private final OnlineFriend friend;
+    private boolean showingChat;
+    private final OnlineChatPanel chatPanel;
+    private final OnlineFriendCard friendCard;
+    private final OnlineFriendActionPanel actionPanel;
 
     public OnlineFriendDetailsPanel(OnlineFriendCard onlineFriendCard, OnlineFriend onlineFriend) {
         super(99.0, onlineFriendCard.L());
-        this.jx = onlineFriend;
-        this.jv = new OnlineFriendActionPanel(onlineFriend);
-        this.jO = onlineFriendCard;
-        this.j9 = new OnlineChatPanel(new DirectFriendChatSender(onlineFriend));
+        this.friend = onlineFriend;
+        this.actionPanel = new OnlineFriendActionPanel(onlineFriend);
+        this.friendCard = onlineFriendCard;
+        this.chatPanel = new OnlineChatPanel(new DirectFriendChatSender(onlineFriend));
         this.setShowDisabledOverlay(false);
-        this.addChildren(this.jv);
+        this.addChildren(this.actionPanel);
     }
 
-    public OnlineChatPanel o$src$Lgg_vape_friend_ui_OnlineChatPanel_$15yewwy() {
-        return this.j9;
+    public OnlineChatPanel getChatPanel() {
+        return this.chatPanel;
     }
 
-    public OnlineFriendActionPanel j$src$Lgg_vape_friend_ui_OnlineFriendActionPanel_$1bao1mp() {
-        return this.jv;
+    public OnlineFriendActionPanel getActionPanel() {
+        return this.actionPanel;
     }
 
     @Override
     public double C() {
-        return this.jB ? this.j9.L() : this.jv.L();
+        return this.showingChat ? this.chatPanel.L() : this.actionPanel.L();
     }
 
     @Override
     public void c() {
         super.c();
-        if (this.jx.F() == OnlineStatus.ONLINE) {
-            this.j9.g$src$Lgg_vape_friend_ui_OnlineChatInputComponent_$1pydg2z().setInputEnabled(true);
+        if (this.friend.getStatus() == OnlineStatus.ONLINE) {
+            this.chatPanel.getChatInput().setInputEnabled(true);
         } else {
-            this.j9.g$src$Lgg_vape_friend_ui_OnlineChatInputComponent_$1pydg2z().setInputEnabled(false);
+            this.chatPanel.getChatInput().setInputEnabled(false);
         }
     }
 
 
-    public void N$src$V$16a20lf() {
-        this.jB = true;
-        this.removeChild(this.jv);
-        this.addChildren(this.j9);
+    public void showChat() {
+        this.showingChat = true;
+        this.removeChild(this.actionPanel);
+        this.addChildren(this.chatPanel);
         this.H(true);
     }
 
-    public void K$src$V$168emtc() {
-        this.jB = false;
-        this.removeChild(this.j9);
-        this.addChildren(this.jv);
+    public void showActions() {
+        this.showingChat = false;
+        this.removeChild(this.chatPanel);
+        this.addChildren(this.actionPanel);
         this.H(true);
     }
 }

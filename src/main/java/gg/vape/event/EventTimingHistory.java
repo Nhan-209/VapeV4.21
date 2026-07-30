@@ -6,29 +6,28 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class EventTimingHistory {
-    private final ConcurrentHashMap<EventDispatchTrace, Long> O = new ConcurrentHashMap();
-    private TimerUtil v = new TimerUtil();
+    private final ConcurrentHashMap<EventDispatchTrace, Long> traces = new ConcurrentHashMap();
+    private final TimerUtil cleanupTimer = new TimerUtil();
 
-    private static boolean lambda$cleanupOldEvents$0(long l, Map.Entry entry) {
-        boolean bl = l - ((EventDispatchTrace)entry.getKey()).getStartNanos() > 10000000000L;
-        return bl;
+    private static boolean isExpired(long nowNanos, Map.Entry<EventDispatchTrace, Long> entry) {
+        return nowNanos - entry.getKey().getStartNanos() > 10000000000L;
     }
 
     public void addTrace(EventDispatchTrace eventDispatchTrace) {
-        this.O.put(eventDispatchTrace, eventDispatchTrace.getDurationNanos());
-        if (this.v.hasTimeElapsed(1000L)) {
-            this.v.reset();
+        this.traces.put(eventDispatchTrace, eventDispatchTrace.getDurationNanos());
+        if (this.cleanupTimer.hasTimeElapsed(1000L)) {
+            this.cleanupTimer.reset();
             this.cleanupExpiredTraces();
         }
     }
 
     public ConcurrentHashMap<EventDispatchTrace, Long> getTraces() {
-        return this.O;
+        return this.traces;
     }
 
     private void cleanupExpiredTraces() {
-        long l = System.nanoTime();
-        this.O.entrySet().removeIf(arg_0 -> EventTimingHistory.lambda$cleanupOldEvents$0(l, arg_0));
+        long nowNanos = System.nanoTime();
+        this.traces.entrySet().removeIf(entry -> EventTimingHistory.isExpired(nowNanos, entry));
     }
 
 }

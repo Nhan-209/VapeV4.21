@@ -24,7 +24,7 @@ extends Mapping {
     }
 
     private Object W(UUID uUID, String string) {
-        return this.e.O(uUID, string);
+        return this.e.newInstance(uUID, string);
     }
 
     public static void n(String[] stringArray) {
@@ -36,7 +36,7 @@ extends Mapping {
         if (ForgeVersion.MC_1_21_10.d()) {
             return (UUID)this.U.getObject(object);
         }
-        return (UUID)this.u.L(object, new Object[0]);
+        return (UUID)this.u.invokeObject(object, new Object[0]);
     }
 
     private String K(Object object) {

@@ -6,11 +6,11 @@ import gg.vape.utils.MouseOverRayTraceUpdater;
 
 public class EventMouseOverUpdate
 extends Event {
-    private static final EventListeners S = new EventListeners();
+    private static final EventListeners EVENT_LISTENERS = new EventListeners();
 
     @Override
     public EventListeners getListeners() {
-        return S;
+        return EVENT_LISTENERS;
     }
 
     public EventMouseOverUpdate(float f) {
@@ -23,7 +23,6 @@ extends Event {
     }
 
     public static EventListeners getEventListeners() {
-        return S;
+        return EVENT_LISTENERS;
     }
 }
-

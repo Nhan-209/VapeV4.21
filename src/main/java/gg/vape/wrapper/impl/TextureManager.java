@@ -2,9 +2,6 @@ package gg.vape.wrapper.impl;
 
 import gg.vape.mapping.mappings.MTextureManager;
 import gg.vape.wrapper.Wrapper;
-import gg.vape.wrapper.impl.ForgeVersion;
-import gg.vape.wrapper.impl.ResourceLocation;
-import gg.vape.wrapper.impl.TextureObject;
 
 public class TextureManager
 extends Wrapper {
@@ -17,11 +14,11 @@ extends Wrapper {
         if (ForgeVersion.MC_1_21_0.d()) {
             return;
         }
-        MTextureManager.Y(TextureManager.c.getMappingsMapperCompat().DW, this.I, resourceLocation.getObject());
+        MTextureManager.Y(TextureManager.vapeInstance.getMappingsMapperCompat().DW, this.I, resourceLocation.getObject());
     }
 
     public TextureObject G(ResourceLocation resourceLocation) {
-        return new TextureObject(MTextureManager.a(TextureManager.c.getMappingsMapperCompat().DW, this.I, resourceLocation.getObject()));
+        return new TextureObject(MTextureManager.a(TextureManager.vapeInstance.getMappingsMapperCompat().DW, this.I, resourceLocation.getObject()));
     }
 }
 

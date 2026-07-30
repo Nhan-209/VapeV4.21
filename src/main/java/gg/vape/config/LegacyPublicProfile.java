@@ -6,60 +6,60 @@ import org.jetbrains.annotations.Nullable;
 
 public class LegacyPublicProfile
 extends Profile {
-    private boolean Y = false;
-    private int F;
+    private boolean marked = false;
+    private int useCount;
 
     @Override
-    public JsonObject C(boolean bl) {
-        JsonObject jsonObject = super.C(bl);
-        return jsonObject;
+    public JsonObject toJson(boolean includeLocalData) {
+        JsonObject object = super.toJson(includeLocalData);
+        return object;
     }
 
     @Override
-    public Profile e(JsonObject jsonObject) {
-        super.e(jsonObject);
-        if (jsonObject.get("uses") != null) {
-            this.F = jsonObject.get("uses").getAsInt();
+    public Profile loadJson(JsonObject object) {
+        super.loadJson(object);
+        if (object.get("uses") != null) {
+            this.useCount = object.get("uses").getAsInt();
         }
         return this;
     }
 
-    public LegacyPublicProfile(String string, String string2) {
-        super(string, string2);
+    public LegacyPublicProfile(String name, String clientVersion) {
+        super(name, clientVersion);
     }
 
 
     @Override
-    public int D() {
-        return this.F;
+    public int getUseCount() {
+        return this.useCount;
     }
 
-    public boolean j() {
-        return this.Y;
+    public boolean isMarked() {
+        return this.marked;
     }
 
     @Nullable
-    public static String S(String string) {
-        String string2 = string.trim();
-        if (string2.isEmpty()) {
+    public static String normalizeTag(String tag) {
+        String normalizedTag = tag.trim();
+        if (normalizedTag.isEmpty()) {
             return null;
         }
-        return string2;
+        return normalizedTag;
     }
 
     @Nullable
-    public static String e(@Nullable String string) {
-        if (string == null) {
+    public static String validateTag(@Nullable String tag) {
+        if (tag == null) {
             return "You must input a valid tag";
         }
-        if (string.length() > 16) {
+        if (tag.length() > 16) {
             return "Tags must be 16 characters or less";
         }
         return null;
     }
 
-    public void E(boolean bl) {
-        this.Y = bl;
+    public void setMarked(boolean marked) {
+        this.marked = marked;
     }
 }
 

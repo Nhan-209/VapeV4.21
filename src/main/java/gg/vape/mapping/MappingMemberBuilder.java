@@ -6,156 +6,156 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 public abstract class MappingMemberBuilder<T extends MappingMemberBuilder, C> {
-    private MinecraftVersionConstraint R;
-    private String t;
-    private boolean L;
-    private Class z;
-    private boolean u;
-    private final Map<MinecraftVersionConstraint, Class<?>> p;
-    private boolean H;
-    private static int[] F;
-    private Mapping C;
-    private final Map<MinecraftVersionConstraint, Boolean> T;
-    private Class<?> o;
-    private final Map<MinecraftVersionConstraint, String> K;
-    private final Map<MinecraftVersionConstraint, Class> f = new LinkedHashMap<MinecraftVersionConstraint, Class>();
+    private MinecraftVersionConstraint skippedVersionConstraint;
+    private String defaultMemberName;
+    private boolean defaultMappedMember;
+    private Class defaultOwnerClass;
+    private boolean staticMember;
+    private final Map<MinecraftVersionConstraint, Class<?>> versionedTypes;
+    private boolean secondaryMember;
+    private static int[] obfuscationState;
+    private Mapping mappingOwner;
+    private final Map<MinecraftVersionConstraint, Boolean> versionedMappedMemberFlags;
+    private Class<?> defaultType;
+    private final Map<MinecraftVersionConstraint, String> versionedNames;
+    private final Map<MinecraftVersionConstraint, Class> versionedOwnerClasses = new LinkedHashMap<MinecraftVersionConstraint, Class>();
 
-    public static void D(int[] nArray) {
-        F = nArray;
+    public static void setObfuscationState(int[] state) {
+        obfuscationState = state;
     }
 
     public MappingMemberBuilder() {
-        this.K = new LinkedHashMap<MinecraftVersionConstraint, String>();
-        this.T = new LinkedHashMap<MinecraftVersionConstraint, Boolean>();
-        this.p = new LinkedHashMap();
+        this.versionedNames = new LinkedHashMap<MinecraftVersionConstraint, String>();
+        this.versionedMappedMemberFlags = new LinkedHashMap<MinecraftVersionConstraint, Boolean>();
+        this.versionedTypes = new LinkedHashMap();
     }
 
-    public T H(boolean bl) {
-        this.u = bl;
+    public T setStaticMember(boolean staticMember) {
+        this.staticMember = staticMember;
         return (T)this;
     }
 
-    public String Y() {
-        if (!this.K.isEmpty()) {
-            for (Map.Entry<MinecraftVersionConstraint, String> entry : this.K.entrySet()) {
+    public String getMemberName() {
+        if (!this.versionedNames.isEmpty()) {
+            for (Map.Entry<MinecraftVersionConstraint, String> entry : this.versionedNames.entrySet()) {
                 if (!entry.getKey().y()) continue;
                 return entry.getValue();
             }
         }
-        return this.t;
+        return this.defaultMemberName;
     }
 
-    public abstract C F();
+    public abstract C build();
 
-    public T X(MinecraftVersionConstraint minecraftVersionConstraint, Class<?> clazz) {
-        this.p.put(minecraftVersionConstraint, clazz);
+    public T setTypeForVersion(MinecraftVersionConstraint versionConstraint, Class<?> type) {
+        this.versionedTypes.put(versionConstraint, type);
         return (T)this;
     }
 
-    public Class<?> X() {
-        if (!this.p.isEmpty()) {
-            for (Map.Entry<MinecraftVersionConstraint, Class<?>> entry : this.p.entrySet()) {
+    public Class<?> getType() {
+        if (!this.versionedTypes.isEmpty()) {
+            for (Map.Entry<MinecraftVersionConstraint, Class<?>> entry : this.versionedTypes.entrySet()) {
                 if (!entry.getKey().y()) continue;
                 return entry.getValue();
             }
         }
-        return this.o;
+        return this.defaultType;
     }
 
-    public Mapping w() {
-        return this.C;
+    public Mapping getMappingOwner() {
+        return this.mappingOwner;
     }
 
-    public static int[] N() {
-        return F;
+    public static int[] getObfuscationState() {
+        return obfuscationState;
     }
 
-    public T v(String string) {
-        this.t = string;
+    public T setMemberName(String memberName) {
+        this.defaultMemberName = memberName;
         return (T)this;
     }
 
 
-    public T A(MinecraftVersionConstraint minecraftVersionConstraint, String string) {
-        this.K.put(minecraftVersionConstraint, string);
+    public T setNameForVersion(MinecraftVersionConstraint versionConstraint, String memberName) {
+        this.versionedNames.put(versionConstraint, memberName);
         return (T)this;
     }
 
-    public T F(boolean bl) {
-        this.H = bl;
+    public T setSecondaryMember(boolean secondaryMember) {
+        this.secondaryMember = secondaryMember;
         return (T)this;
     }
 
-    public T T(MinecraftVersionConstraint minecraftVersionConstraint) {
-        this.R = minecraftVersionConstraint;
+    public T skipForVersion(MinecraftVersionConstraint versionConstraint) {
+        this.skippedVersionConstraint = versionConstraint;
         return (T)this;
     }
 
-    public T Q(MinecraftVersionConstraint minecraftVersionConstraint, Class clazz) {
-        this.f.put(minecraftVersionConstraint, clazz);
+    public T setOwnerClassForVersion(MinecraftVersionConstraint versionConstraint, Class ownerClass) {
+        this.versionedOwnerClasses.put(versionConstraint, ownerClass);
         return (T)this;
     }
 
-    public boolean c() {
-        return this.R != null && this.R.y();
+    public boolean shouldSkipBuild() {
+        return this.skippedVersionConstraint != null && this.skippedVersionConstraint.y();
     }
 
     static {
-        if (MappingMemberBuilder.N() != null) {
-            MappingMemberBuilder.D(new int[3]);
+        if (MappingMemberBuilder.getObfuscationState() != null) {
+            MappingMemberBuilder.setObfuscationState(new int[3]);
         }
     }
 
-    public boolean z$src$Z$103hrpe() {
-        if (!this.T.isEmpty()) {
-            for (Map.Entry<MinecraftVersionConstraint, Boolean> entry : this.T.entrySet()) {
+    public boolean isMappedMember() {
+        if (!this.versionedMappedMemberFlags.isEmpty()) {
+            for (Map.Entry<MinecraftVersionConstraint, Boolean> entry : this.versionedMappedMemberFlags.entrySet()) {
                 if (!entry.getKey().y()) continue;
                 return entry.getValue();
             }
         }
-        return this.L;
+        return this.defaultMappedMember;
     }
 
-    public Class F$src$Ljava_lang_Class_$100ldxh() {
-        if (!this.f.isEmpty()) {
-            for (Map.Entry<MinecraftVersionConstraint, Class> entry : this.f.entrySet()) {
+    public Class getOwnerClass() {
+        if (!this.versionedOwnerClasses.isEmpty()) {
+            for (Map.Entry<MinecraftVersionConstraint, Class> entry : this.versionedOwnerClasses.entrySet()) {
                 if (!entry.getKey().y()) continue;
                 return entry.getValue();
             }
         }
-        return this.z;
+        return this.defaultOwnerClass;
     }
 
-    public boolean B() {
-        return this.H;
+    public boolean isSecondaryMember() {
+        return this.secondaryMember;
     }
 
-    public T i(MinecraftVersionConstraint minecraftVersionConstraint, boolean bl) {
-        this.T.put(minecraftVersionConstraint, bl);
+    public T setMappedMemberForVersion(MinecraftVersionConstraint versionConstraint, boolean mappedMember) {
+        this.versionedMappedMemberFlags.put(versionConstraint, mappedMember);
         return (T)this;
     }
 
-    public T e(Mapping mapping) {
-        this.C = mapping;
+    public T setMappingOwner(Mapping mappingOwner) {
+        this.mappingOwner = mappingOwner;
         return (T)this;
     }
 
-    public boolean D() {
-        return this.u;
+    public boolean isStaticMember() {
+        return this.staticMember;
     }
 
-    public T l(Class<?> clazz) {
-        this.o = clazz;
+    public T setType(Class<?> type) {
+        this.defaultType = type;
         return (T)this;
     }
 
-    public T y(Class clazz) {
-        this.z = clazz;
+    public T setOwnerClass(Class ownerClass) {
+        this.defaultOwnerClass = ownerClass;
         return (T)this;
     }
 
-    public T S(boolean bl) {
-        this.L = bl;
+    public T setMappedMember(boolean mappedMember) {
+        this.defaultMappedMember = mappedMember;
         return (T)this;
     }
 }

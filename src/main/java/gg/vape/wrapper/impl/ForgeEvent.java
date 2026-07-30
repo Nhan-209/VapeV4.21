@@ -5,7 +5,7 @@ import gg.vape.wrapper.Wrapper;
 public class ForgeEvent
 extends Wrapper {
     public void setCancelled(boolean bl) {
-        ForgeEvent.c.getMappingsMapperCompat().qv.setCanceled(this.getObject(), bl);
+        ForgeEvent.vapeInstance.getMappingsMapperCompat().qv.setCanceled(this.getObject(), bl);
     }
 
     public ForgeEvent(Object object) {

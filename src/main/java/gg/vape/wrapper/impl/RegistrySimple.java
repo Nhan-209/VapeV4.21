@@ -7,11 +7,11 @@ import java.util.Set;
 public class RegistrySimple
 extends Wrapper {
     public Object S(Object object) {
-        return MRegistrySimple.s(RegistrySimple.c.getMappings().hD, this.I, object);
+        return MRegistrySimple.s(RegistrySimple.vapeInstance.getMappings().hD, this.I, object);
     }
 
     public Set D() {
-        return RegistrySimple.c.getMappings().hD.g(this.I);
+        return RegistrySimple.vapeInstance.getMappings().hD.g(this.I);
     }
 
     public RegistrySimple(Object object) {

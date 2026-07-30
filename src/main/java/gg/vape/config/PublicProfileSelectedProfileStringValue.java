@@ -9,37 +9,37 @@ import java.util.UUID;
 
 public class PublicProfileSelectedProfileStringValue
 extends StringValue {
-    final PublicProfileSettings s;
-    private static final String d = " has no online uuid";
+    final PublicProfileSettings settings;
+    private static final String MISSING_ONLINE_UUID_SUFFIX = " has no online uuid";
 
 
-    public String D() {
-        Profile profile = Vape.INSTANCE.getProfilesManager().M();
-        UUID uUID = profile.P$src$Ljava_util_UUID_$kdhg08();
-        if (uUID == null) {
-            Vape.debugLog(profile.n$src$Ljava_lang_String_$xqhelw() + d);
+    public String getActiveProfileId() {
+        Profile activeProfile = Vape.INSTANCE.getProfilesManager().getActiveProfile();
+        UUID onlineId = activeProfile.getOnlineId();
+        if (onlineId == null) {
+            Vape.debugLog(activeProfile.getName() + MISSING_ONLINE_UUID_SUFFIX);
             return "";
         }
-        return uUID.toString();
+        return onlineId.toString();
     }
 
-    public PublicProfileSelectedProfileStringValue(PublicProfileSettings publicProfileSettings, Object object, String string, String string2) {
-        super(object, string, string2);
-        this.s = publicProfileSettings;
+    public PublicProfileSelectedProfileStringValue(PublicProfileSettings settings, Object owner, String name, String defaultValue) {
+        super(owner, name, defaultValue);
+        this.settings = settings;
     }
 
-    public void Z(String string) {
-        super.setValue(string);
-        boolean bl = StringUtils.n(string);
-        if (bl) {
-            Profile profile = Vape.INSTANCE.getProfilesManager().H(UUID.fromString(string));
+    public void setSelectedProfile(String profileIdentifier) {
+        super.setValue(profileIdentifier);
+        boolean isUuid = StringUtils.n(profileIdentifier);
+        if (isUuid) {
+            Profile profile = Vape.INSTANCE.getProfilesManager().getProfileByOnlineId(UUID.fromString(profileIdentifier));
             if (profile != null) {
-                PublicProfileSettings.R(this.s, profile);
+                PublicProfileSettings.setSelectedProfile(this.settings, profile);
             }
         } else {
-            Profile profile = Vape.INSTANCE.getProfilesManager().G(string);
+            Profile profile = Vape.INSTANCE.getProfilesManager().getProfileByName(profileIdentifier);
             if (profile != null) {
-                PublicProfileSettings.R(this.s, profile);
+                PublicProfileSettings.setSelectedProfile(this.settings, profile);
             }
         }
     }

@@ -32,27 +32,27 @@ extends GuiComponent {
 
     @Override
     public void g(GuiMouseEvent guiMouseEvent) {
-        ClientSettings.getFrame(HotbarSlotRuleItemPickerFrame.class).y(this);
-        if (this.editor.q$src$Lgg_vape_module_utility_inventory_HotbarSlotRule$1uq9d6u().equals(this)) {
+        ClientSettings.getFrame(HotbarSlotRuleItemPickerFrame.class).setGroupComponent(this);
+        if (this.editor.getSelectedGroup().equals(this)) {
             HotbarSlotRuleItemPickerFrame hotbarSlotRuleItemPickerFrame = ClientSettings.getFrame(HotbarSlotRuleItemPickerFrame.class);
             if (ClientSettings.INSTANCE.getActiveStack() instanceof ClickGuiFrameManager) {
                 ClickGuiFrameManager clickGuiFrameManager = (ClickGuiFrameManager)ClientSettings.INSTANCE.getActiveStack();
-                hotbarSlotRuleItemPickerFrame.O(clickGuiFrameManager);
+                hotbarSlotRuleItemPickerFrame.setParentStackManager(clickGuiFrameManager);
                 clickGuiFrameManager.setSidecarFrame(hotbarSlotRuleItemPickerFrame);
-                clickGuiFrameManager.q(hotbarSlotRuleItemPickerFrame.D$src$Lgg_vape_module_utility_inventory_HotbarSlotRule$dqviyt());
-                clickGuiFrameManager.R(hotbarSlotRuleItemPickerFrame, hotbarSlotRuleItemPickerFrame.D$src$Lgg_vape_module_utility_inventory_HotbarSlotRule$dqviyt());
+                clickGuiFrameManager.q(hotbarSlotRuleItemPickerFrame.getItemListFrame());
+                clickGuiFrameManager.R(hotbarSlotRuleItemPickerFrame, hotbarSlotRuleItemPickerFrame.getItemListFrame());
             } else {
-                hotbarSlotRuleItemPickerFrame.O(ClientSettings.INSTANCE.getActiveStack());
+                hotbarSlotRuleItemPickerFrame.setParentStackManager(ClientSettings.INSTANCE.getActiveStack());
                 hotbarSlotRuleItemPickerFrame.t(true, false);
                 ClientSettings.INSTANCE.switchFrameStack(ClientSettings.hotbarRuleEditorStack);
                 RectData rectData = new RectData(0.0, 0.0, Minecraft.J(), Minecraft.h());
                 ClientSettings.INSTANCE.refreshFrameLayouts();
             }
         }
-        this.editor.f(this);
+        this.editor.selectGroup(this);
     }
 
-    public List<HotbarSlotRule> u$src$Ljava_util_List_$1u5n2i3() {
+    public List<HotbarSlotRule> getRules() {
         return this.rules;
     }
 
@@ -63,7 +63,7 @@ extends GuiComponent {
 
     @Override
     public void H() {
-        boolean selected = this.editor.q$src$Lgg_vape_module_utility_inventory_HotbarSlotRule$1uq9d6u() != null && this.u$src$Ljava_util_List_$1u5n2i3().equals(this.editor.q$src$Lgg_vape_module_utility_inventory_HotbarSlotRule$1uq9d6u().u$src$Ljava_util_List_$1u5n2i3());
+        boolean selected = this.editor.getSelectedGroup() != null && this.getRules().equals(this.editor.getSelectedGroup().getRules());
         GuiRenderPrimitives.d(this.G$src$D$1b2f02a() + 5.0, this.n() + 1.0, this.A() - 10.0, this.L() - 2.0, selected ? HotbarSlotRuleGroupComponent.J.K : HotbarSlotRuleGroupComponent.J.m);
         double iconX = this.G$src$D$1b2f02a() + 10.0;
         for (HotbarSlotRule hotbarSlotRule : this.rules) {
@@ -86,12 +86,12 @@ extends GuiComponent {
         HotbarSlotRuleGroupComponent.V(null);
     }
 
-    public HotbarSlotRuleGroupComponent Q(GuiClickListener guiClickListener) {
+    public HotbarSlotRuleGroupComponent addCloseListener(GuiClickListener guiClickListener) {
         this.closeButton.addClickListener(guiClickListener);
         return this;
     }
 
-    public JsonObject b$src$Lcom_google_gson_JsonObject_$1jm30j() {
+    public JsonObject toJson() {
         JsonObject jsonObject = new JsonObject();
         JsonArray jsonArray = new JsonArray();
         for (HotbarSlotRule hotbarSlotRule : this.rules) {
@@ -119,8 +119,8 @@ extends GuiComponent {
     public void u() {
     }
 
-    public void O(List<HotbarSlotRule> list) {
-        this.rules = list;
+    public void setRules(List<HotbarSlotRule> rules) {
+        this.rules = rules;
     }
 
     public HotbarSlotRuleGroupComponent(HotbarSlotRuleEditorComponent hotbarSlotRuleEditorComponent, List<HotbarSlotRule> list) {
@@ -129,12 +129,12 @@ extends GuiComponent {
         this.addChildren(this.closeButton);
     }
 
-    public void W(JsonObject jsonObject) {
+    public void loadJson(JsonObject jsonObject) {
         JsonArray jsonArray = jsonObject.getAsJsonArray("hotbars");
         int n = jsonArray.size();
         for (int i = 0; i < n; ++i) {
             JsonObject jsonObject2 = jsonArray.get(i).getAsJsonObject();
-            this.u$src$Ljava_util_List_$1u5n2i3().get(i).loadJson(jsonObject2);
+            this.getRules().get(i).loadJson(jsonObject2);
         }
     }
 

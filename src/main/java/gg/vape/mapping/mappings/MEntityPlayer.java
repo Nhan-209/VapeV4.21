@@ -5,7 +5,6 @@ import gg.vape.mapping.Mapping;
 import gg.vape.mapping.MappingField;
 import gg.vape.mapping.MappingMethod;
 import gg.vape.mapping.MappingMethodBuilder;
-import gg.vape.mapping.mappings.MModelPlayer;
 import gg.vape.wrapper.Wrapper;
 import gg.vape.wrapper.impl.ForgeVersion;
 
@@ -60,7 +59,7 @@ extends Mapping {
     }
 
     private void Y(Object object) {
-        this.x.F(object);
+        this.x.invokeVoidNoArgs(object);
     }
 
     private void U(Object object, int n) {
@@ -87,7 +86,7 @@ extends Mapping {
     }
 
     private void y(Object object) {
-        this.f.F(object);
+        this.f.invokeVoidNoArgs(object);
     }
 
     private double e(Object object) {
@@ -111,7 +110,7 @@ extends Mapping {
     }
 
     private boolean U(Object object) {
-        return this.A.e(object, new Object[0]);
+        return this.A.invokeBoolean(object, new Object[0]);
     }
 
     public static int W(MEntityPlayer mEntityPlayer, Object object) {
@@ -119,7 +118,7 @@ extends Mapping {
     }
 
     private Object M(Object object) {
-        return this.n.L(object, new Object[0]);
+        return this.n.invokeObject(object, new Object[0]);
     }
 
     public static void B(MEntityPlayer mEntityPlayer, Object object, double d) {
@@ -135,7 +134,7 @@ extends Mapping {
     }
 
     private float t(Object object) {
-        return this.G.s(object, new Object[0]);
+        return this.G.invokeFloat(object, new Object[0]);
     }
 
     public static void A(MEntityPlayer mEntityPlayer, Object object) {
@@ -152,7 +151,7 @@ extends Mapping {
     }
 
     private void U(Object object, Object object2, int n) {
-        this.P.c(object, object2, n);
+        this.P.invokeVoid(object, object2, n);
     }
 
     public static double S(MEntityPlayer mEntityPlayer, Object object) {
@@ -160,11 +159,11 @@ extends Mapping {
     }
 
     private void x(Object object) {
-        this.o.F(object);
+        this.o.invokeVoidNoArgs(object);
     }
 
     private boolean J$src$Z$7hqll6(Object object) {
-        return this.V.e(object, new Object[0]);
+        return this.V.invokeBoolean(object, new Object[0]);
     }
 
     private double T(Object object) {
@@ -180,7 +179,7 @@ extends Mapping {
     }
 
     private void w(Object object, Object object2) {
-        this.W.c(object, object2);
+        this.W.invokeVoid(object, object2);
     }
 
     private void A(Object object, double d) {
@@ -188,7 +187,7 @@ extends Mapping {
     }
 
     private boolean s(Object object) {
-        return this.z.e(object, new Object[0]);
+        return this.z.invokeBoolean(object, new Object[0]);
     }
 
     public static Object S$src$Ljava_lang_Object_$1jlt9bo(MEntityPlayer mEntityPlayer, Object object) {
@@ -224,7 +223,7 @@ extends Mapping {
     }
 
     private int Z$src$I$1gqwc0b(Object object) {
-        return this.L.Z(object, new Object[0]);
+        return this.L.invokeInt(object, new Object[0]);
     }
 
     private Object a(Object object) {
@@ -236,7 +235,7 @@ extends Mapping {
     }
 
     private boolean p(Object object) {
-        return this.v.e(object, new Object[0]);
+        return this.v.invokeBoolean(object, new Object[0]);
     }
 
     private double h(Object object) {
@@ -244,11 +243,11 @@ extends Mapping {
     }
 
     private void e(Object object, Object object2) {
-        this.O.c(object, object2);
+        this.O.invokeVoid(object, object2);
     }
 
     private Object t$src$Ljava_lang_Object_$wqt06k(Object object) {
-        return this.K.L(object, new Object[0]);
+        return this.K.invokeObject(object, new Object[0]);
     }
 
     public static boolean L(MEntityPlayer mEntityPlayer, Object object) {
@@ -256,7 +255,7 @@ extends Mapping {
     }
 
     private void I$src$V$1lxr11p(Object object) {
-        this.e.F(object);
+        this.e.invokeVoidNoArgs(object);
     }
 
     public static void J(MEntityPlayer mEntityPlayer, Object object, double d) {
@@ -276,11 +275,11 @@ extends Mapping {
     }
 
     private boolean v$src$Z$1owtcdy(Object object) {
-        return this.B.e(object, new Object[0]);
+        return this.B.invokeBoolean(object, new Object[0]);
     }
 
     private void t$src$V$jqm3g8(Object object) {
-        this.b.F(object);
+        this.b.invokeVoidNoArgs(object);
     }
 
     private void U(Object object, double d) {
@@ -292,15 +291,15 @@ extends Mapping {
     }
 
     private void T(Object object, Object object2) {
-        this.y.c(object, object2);
+        this.y.invokeVoid(object, object2);
     }
 
     private Object I(Object object) {
-        return this.F.L(object, new Object[0]);
+        return this.F.invokeObject(object, new Object[0]);
     }
 
     private boolean r(Object object) {
-        return this.a.e(object, new Object[0]);
+        return this.a.invokeBoolean(object, new Object[0]);
     }
 
     public static Object s$src$Ljava_lang_Object_$11essic(MEntityPlayer mEntityPlayer, Object object) {
@@ -316,7 +315,7 @@ extends Mapping {
     }
 
     private float j(Object object, float f) {
-        return this.r.s(object, Float.valueOf(f));
+        return this.r.invokeFloat(object, Float.valueOf(f));
     }
 
     public static double s(MEntityPlayer mEntityPlayer, Object object) {
@@ -328,7 +327,7 @@ extends Mapping {
     }
 
     private boolean Q(Object object) {
-        return this.Z.e(object, new Object[0]);
+        return this.Z.invokeBoolean(object, new Object[0]);
     }
 
     public static boolean v$src$Z$p2dyxb(MEntityPlayer mEntityPlayer, Object object) {
@@ -434,14 +433,14 @@ extends Mapping {
                 String string17 = "activeItemStackUseCount";
                 Class clazz16 = MappedClasses.zm;
                 MEntityPlayer mEntityPlayer15 = this;
-                this.J = this.X(clazz16, string17, bl15, clazz15);
+                this.J = this.registerInstanceFieldForOwner(clazz16, string17, bl15, clazz15);
             } else {
                 Class<Integer> clazz17 = Integer.TYPE;
                 boolean bl16 = true;
                 String string18 = "itemInUseCount";
                 Class clazz18 = MappedClasses.zm;
                 MEntityPlayer mEntityPlayer16 = this;
-                this.J = this.X(clazz18, string18, bl16, clazz17);
+                this.J = this.registerInstanceFieldForOwner(clazz18, string18, bl16, clazz17);
             }
             Class[] classArray = new Class[]{};
             Class<Void> clazz19 = Void.TYPE;
@@ -461,26 +460,26 @@ extends Mapping {
             String string21 = "getHeldItemMainhand";
             Class clazz22 = MappedClasses.zm;
             MEntityPlayer mEntityPlayer19 = this;
-            this.F = this.W(clazz22, string21, bl19, clazz21, classArray3);
+            this.F = this.registerInstanceMethodForOwner(clazz22, string21, bl19, clazz21, classArray3);
             Class[] classArray4 = new Class[]{};
             Class<Boolean> clazz23 = Boolean.TYPE;
             boolean bl20 = true;
             String string22 = "isActiveItemStackBlocking";
             Class clazz24 = MappedClasses.zm;
             MEntityPlayer mEntityPlayer20 = this;
-            this.B = this.W(clazz24, string22, bl20, clazz23, classArray4);
+            this.B = this.registerInstanceMethodForOwner(clazz24, string22, bl20, clazz23, classArray4);
             Class[] classArray5 = new Class[]{};
             Class<Boolean> clazz25 = Boolean.TYPE;
             String string23 = "isHandActive";
             MEntityPlayer mEntityPlayer21 = this;
-            this.V = ((MappingMethodBuilder)((MappingMethodBuilder)((MappingMethodBuilder)this.u(string23, clazz25, classArray5).y(MappedClasses.z5)).A(ForgeVersion.MC_1_16_5.n(), "isUsingItem")).Q(ForgeVersion.MC_1_21_4.n(), MappedClasses.P)).s();
+            this.V = ((MappingMethodBuilder)((MappingMethodBuilder)((MappingMethodBuilder)this.methodBuilder(string23, clazz25, classArray5).setOwnerClass(MappedClasses.z5)).setNameForVersion(ForgeVersion.MC_1_16_5.n(), "isUsingItem")).setOwnerClassForVersion(ForgeVersion.MC_1_21_4.n(), MappedClasses.P)).buildMethod();
             Class[] classArray6 = new Class[]{};
             Class<Integer> clazz26 = Integer.TYPE;
             boolean bl21 = true;
             String string24 = "getItemInUseMaxCount";
             Class clazz27 = MappedClasses.zm;
             MEntityPlayer mEntityPlayer22 = this;
-            this.L = this.W(clazz27, string24, bl21, clazz26, classArray6);
+            this.L = this.registerInstanceMethodForOwner(clazz27, string24, bl21, clazz26, classArray6);
         } else {
             Class<Integer> clazz28 = Integer.TYPE;
             boolean bl22 = true;
@@ -540,7 +539,7 @@ extends Mapping {
             String string34 = "isSleeping";
             Class clazz38 = MappedClasses.zm;
             MEntityPlayer mEntityPlayer32 = this;
-            this.z = this.W(clazz38, string34, bl31, clazz37, classArray);
+            this.z = this.registerInstanceMethodForOwner(clazz38, string34, bl31, clazz37, classArray);
             Class[] classArray11 = new Class[]{};
             Class<Boolean> clazz39 = Boolean.TYPE;
             boolean bl32 = true;
@@ -553,14 +552,14 @@ extends Mapping {
             String string36 = "updateSwimming";
             Class clazz41 = MappedClasses.zc;
             MEntityPlayer mEntityPlayer34 = this;
-            this.b = this.W(clazz41, string36, bl33, clazz40, classArray12);
+            this.b = this.registerInstanceMethodForOwner(clazz41, string36, bl33, clazz40, classArray12);
             Class[] classArray13 = new Class[]{};
             Class<Boolean> clazz42 = Boolean.TYPE;
             boolean bl34 = true;
             String string37 = "isSwimming";
             Class clazz43 = MappedClasses.zc;
             MEntityPlayer mEntityPlayer35 = this;
-            this.A = this.W(clazz43, string37, bl34, clazz42, classArray13);
+            this.A = this.registerInstanceMethodForOwner(clazz43, string37, bl34, clazz42, classArray13);
             Class[] classArray14 = new Class[]{};
             Class<Void> clazz44 = Void.TYPE;
             boolean bl35 = true;
@@ -578,12 +577,12 @@ extends Mapping {
             String string40 = "getTeam";
             Class clazz47 = MappedClasses.zc;
             MEntityPlayer mEntityPlayer38 = this;
-            this.K = this.W(clazz47, string40, bl37, clazz46, classArray15);
+            this.K = this.registerInstanceMethodForOwner(clazz47, string40, bl37, clazz46, classArray15);
             Class[] classArray16 = new Class[]{};
             Class<Boolean> clazz48 = Boolean.TYPE;
             String string41 = "isAffectedByFluids";
             MEntityPlayer mEntityPlayer39 = this;
-            this.a = ((MappingMethodBuilder)((MappingMethodBuilder)((MappingMethodBuilder)this.u(string41, clazz48, classArray16).A(ForgeVersion.MC_1_20_6.b(), "func_241208_cS_")).i(ForgeVersion.MC_1_20_6.b(), Wrapper.G)).y(MappedClasses.P)).s();
+            this.a = ((MappingMethodBuilder)((MappingMethodBuilder)((MappingMethodBuilder)this.methodBuilder(string41, clazz48, classArray16).setNameForVersion(ForgeVersion.MC_1_20_6.b(), "func_241208_cS_")).setMappedMemberForVersion(ForgeVersion.MC_1_20_6.b(), Wrapper.isNativeAvailable)).setOwnerClass(MappedClasses.P)).buildMethod();
         } else {
             Class clazz49 = MappedClasses.X;
             boolean bl38 = true;
@@ -618,23 +617,23 @@ extends Mapping {
             Class<Boolean> clazz54 = Boolean.TYPE;
             String string47 = "hasClientLoaded";
             MEntityPlayer mEntityPlayer45 = this;
-            this.Z = ((MappingMethodBuilder)this.u(string47, clazz54, classArray).T(ForgeVersion.MC_1_21_11.n())).s();
+            this.Z = ((MappingMethodBuilder)this.methodBuilder(string47, clazz54, classArray).skipForVersion(ForgeVersion.MC_1_21_11.n())).buildMethod();
             Class[] classArray18 = new Class[]{MappedClasses.qP, MappedClasses.k};
             Class clazz55 = MappedClasses.qP;
             String string48 = "maybeBackOffFromEdge";
             MEntityPlayer mEntityPlayer46 = this;
-            this.N = ((MappingMethodBuilder)this.u(string48, clazz55, classArray18).y(MappedClasses.zc)).s();
+            this.N = ((MappingMethodBuilder)this.methodBuilder(string48, clazz55, classArray18).setOwnerClass(MappedClasses.zc)).buildMethod();
             Class[] classArray19 = new Class[]{};
             Class<Float> clazz56 = Float.TYPE;
             String string49 = "getBlockSpeedFactor";
             MEntityPlayer mEntityPlayer47 = this;
-            this.G = ((MappingMethodBuilder)this.u(string49, clazz56, classArray19).y(MappedClasses.zc)).s();
+            this.G = ((MappingMethodBuilder)this.methodBuilder(string49, clazz56, classArray19).setOwnerClass(MappedClasses.zc)).buildMethod();
         }
         Class[] classArray = new Class[]{};
         Class<Float> clazz57 = Float.TYPE;
         String string50 = "getAIMoveSpeed";
         MEntityPlayer mEntityPlayer48 = this;
-        this.j = ((MappingMethodBuilder)((MappingMethodBuilder)this.u(string50, clazz57, classArray).A(ForgeVersion.MC_1_16_5.n(), "getSpeed")).Q(ForgeVersion.MC_1_21_4.n(), MappedClasses.P)).s();
+        this.j = ((MappingMethodBuilder)((MappingMethodBuilder)this.methodBuilder(string50, clazz57, classArray).setNameForVersion(ForgeVersion.MC_1_16_5.n(), "getSpeed")).setOwnerClassForVersion(ForgeVersion.MC_1_21_4.n(), MappedClasses.P)).buildMethod();
         Class[] classArray20 = new Class[]{};
         Class<Void> clazz58 = Void.TYPE;
         boolean bl43 = true;
@@ -671,7 +670,7 @@ extends Mapping {
         String string56 = "onEnchantmentCritical";
         MEntityPlayer mEntityPlayer54 = this;
         this.y = this.Y(string56, bl48, clazz63, classArray25);
-        if (!Wrapper.G) {
+        if (!Wrapper.isNativeAvailable) {
             Class[] classArray26 = new Class[]{};
             Class<Void> clazz64 = Void.TYPE;
             boolean bl49 = false;
@@ -714,7 +713,7 @@ extends Mapping {
     }
 
     private Object E(Object object) {
-        return this.d.L(object, new Object[0]);
+        return this.d.invokeObject(object, new Object[0]);
     }
 
     public static Object p(MEntityPlayer mEntityPlayer, Object object) {
@@ -730,11 +729,11 @@ extends Mapping {
     }
 
     private Object p(Object object, Object object2, Object object3) {
-        return this.N.L(object, object2, object3);
+        return this.N.invokeObject(object, object2, object3);
     }
 
     private float J(Object object) {
-        return this.j.s(object, new Object[0]);
+        return this.j.invokeFloat(object, new Object[0]);
     }
 
     public static void o(MEntityPlayer mEntityPlayer, Object object, Object object2) {

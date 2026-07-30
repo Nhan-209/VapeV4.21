@@ -75,8 +75,8 @@ extends FrameStackManager {
         }
         if (this.overlaySelector.V$src$Z$1xhop3l()) {
             this.clearMainLayerHudFrames();
-            this.overlaySelector.K((double)Minecraft.J() / 4.0 / Vape.INSTANCE.getClientSettings().s() - this.overlaySelector.A() / 2.0);
-            this.overlaySelector.S((double)Minecraft.h() / 2.0 / Vape.INSTANCE.getClientSettings().s() - this.overlaySelector.L() - 5.0);
+            this.overlaySelector.K((double)Minecraft.J() / 4.0 / Vape.INSTANCE.getClientSettings().getGuiScaleFactor() - this.overlaySelector.A() / 2.0);
+            this.overlaySelector.S((double)Minecraft.h() / 2.0 / Vape.INSTANCE.getClientSettings().getGuiScaleFactor() - this.overlaySelector.L() - 5.0);
             this.syncOverlayLayerHudFrames();
         } else {
             this.clearOverlayLayerHudFrames();

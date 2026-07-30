@@ -7,12 +7,12 @@ import gg.vape.wrapper.impl.Minecraft;
 
 public class EventRenderTickBase
 extends Event {
-    private static final EventListeners G = new EventListeners();
-    private final float L;
-    private static String Y;
+    private static final EventListeners EVENT_LISTENERS = new EventListeners();
+    private final float partialTicks;
+    private static String obfuscationState;
 
     public static EventListeners getEventListeners() {
-        return G;
+        return EVENT_LISTENERS;
     }
 
     @Override
@@ -20,33 +20,32 @@ extends Event {
         return super.fire();
     }
 
-    EventRenderTickBase(float f) {
-        this.L = f == -1.0f ? Minecraft.getTimer().renderPartialTicks() : f;
+    EventRenderTickBase(float partialTicks) {
+        this.partialTicks = partialTicks == -1.0f ? Minecraft.getTimer().renderPartialTicks() : partialTicks;
     }
 
     public float getTicks() {
-        return this.L;
+        return this.partialTicks;
     }
 
-    public static String P() {
-        return Y;
+    public static String getObfuscationState() {
+        return obfuscationState;
     }
 
     EventRenderTickBase(DeltaTracker deltaTracker) {
-        this.L = deltaTracker.b(false);
+        this.partialTicks = deltaTracker.b(false);
     }
 
-    public static void r(String string) {
-        Y = string;
+    public static void setObfuscationState(String state) {
+        obfuscationState = state;
     }
 
     @Override
     public EventListeners getListeners() {
-        return G;
+        return EVENT_LISTENERS;
     }
 
     static {
-        EventRenderTickBase.r("qQGv3b");
+        EventRenderTickBase.setObfuscationState("qQGv3b");
     }
 }
-

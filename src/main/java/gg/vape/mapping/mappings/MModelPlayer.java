@@ -50,7 +50,7 @@ extends Mapping {
     }
 
     private void A(Object object, float f) {
-        this.x.c(object, Float.valueOf(f));
+        this.x.invokeVoid(object, Float.valueOf(f));
     }
 
     public static boolean u(MModelPlayer mModelPlayer, Object object) {
@@ -59,11 +59,11 @@ extends Mapping {
 
 
     private float p(Object object) {
-        return this.H.s(object, new Object[0]);
+        return this.H.invokeFloat(object, new Object[0]);
     }
 
     private float k(Object object) {
-        return this.u.s(object, new Object[0]);
+        return this.u.invokeFloat(object, new Object[0]);
     }
 
     public MModelPlayer() {
@@ -212,11 +212,11 @@ extends Mapping {
     }
 
     private void L(Object object, float f) {
-        this.P.c(object, Float.valueOf(f));
+        this.P.invokeVoid(object, Float.valueOf(f));
     }
 
     private Object b() {
-        return this.n.O(new Object[0]);
+        return this.n.newInstance(new Object[0]);
     }
 
     public static void y(MModelPlayer mModelPlayer, Object object, boolean bl) {

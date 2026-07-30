@@ -6,14 +6,14 @@ import gg.vape.ui.click.component.GuiClickListener;
 
 class PartyInviteCountBadgeToggleInvitesClickHandler
 implements GuiClickListener {
-    final PartyInviteCountBadge I;
+    private final PartyInviteCountBadge badge;
 
     @Override
     public void onPrimaryClick() {
-        OnlineFriendUiHelper.N(this.I).Y$src$Lgg_vape_friend_ui_PartyInvitesPanel_$1o49ve3().n$src$V$179hdlo();
+        OnlineFriendUiHelper.findOnlineFriendsFrame(this.badge).getPartyInvitesPanel().toggleExpanded();
     }
 
     PartyInviteCountBadgeToggleInvitesClickHandler(PartyInviteCountBadge partyInviteCountBadge) {
-        this.I = partyInviteCountBadge;
+        this.badge = partyInviteCountBadge;
     }
 }

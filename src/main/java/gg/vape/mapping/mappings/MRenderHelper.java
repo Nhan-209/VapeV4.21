@@ -13,16 +13,16 @@ extends Mapping {
     private MappingMethod h;
 
     private void I() {
-        this.h.F(null);
+        this.h.invokeVoidNoArgs(null);
     }
 
     private void Z() {
-        this.Y.F(null);
+        this.Y.invokeVoidNoArgs(null);
     }
 
 
     private void W() {
-        this.E.F(null);
+        this.E.invokeVoidNoArgs(null);
     }
 
     public static void L(MRenderHelper mRenderHelper) {
@@ -50,13 +50,13 @@ extends Mapping {
             boolean bl = true;
             String string = "disableStandardItemLighting";
             MRenderHelper mRenderHelper = this;
-            this.h = mRenderHelper.x(string, bl, clazz, classArray);
+            this.h = mRenderHelper.registerStaticMethod(string, bl, clazz, classArray);
             Class[] classArray2 = new Class[]{};
             Class<Void> clazz2 = Void.TYPE;
             boolean bl2 = true;
             String string2 = "enableStandardItemLighting";
             MRenderHelper mRenderHelper2 = this;
-            this.E = this.x(string2, bl2, clazz2, classArray2);
+            this.E = this.registerStaticMethod(string2, bl2, clazz2, classArray2);
         }
         if (ForgeVersion.MC_1_16_5.d()) {
             if (ForgeVersion.MC_1_17.d() && ForgeVersion.MC_1_21_6.v()) {
@@ -65,13 +65,13 @@ extends Mapping {
                 boolean bl = true;
                 String string = "setupForFlatItems";
                 MRenderHelper mRenderHelper = this;
-                this.Y = mRenderHelper.x(string, bl, clazz, classArray);
+                this.Y = mRenderHelper.registerStaticMethod(string, bl, clazz, classArray);
                 Class[] classArray3 = new Class[]{};
                 Class<Void> clazz3 = Void.TYPE;
                 boolean bl3 = true;
                 String string3 = "setupFor3DItems";
                 MRenderHelper mRenderHelper3 = this;
-                this.E = this.x(string3, bl3, clazz3, classArray3);
+                this.E = this.registerStaticMethod(string3, bl3, clazz3, classArray3);
             }
         } else {
             Class[] classArray = new Class[]{};
@@ -79,7 +79,7 @@ extends Mapping {
             boolean bl = true;
             String string = "enableGUIStandardItemLighting";
             MRenderHelper mRenderHelper = this;
-            this.Y = mRenderHelper.x(string, bl, clazz, classArray);
+            this.Y = mRenderHelper.registerStaticMethod(string, bl, clazz, classArray);
         }
     }
 }

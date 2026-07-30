@@ -6,26 +6,25 @@ import gg.vape.wrapper.impl.ItemRenderer;
 
 public class EventRenderItemInFirstPerson
 extends Event {
-    private final Object b;
-    public final float H;
-    private static final EventListeners n = new EventListeners();
+    private final Object itemRendererHandle;
+    public final float partialTicks;
+    private static final EventListeners EVENT_LISTENERS = new EventListeners();
 
-    public EventRenderItemInFirstPerson(Object object, float f) {
-        this.b = object;
-        this.H = f;
+    public EventRenderItemInFirstPerson(Object itemRendererHandle, float partialTicks) {
+        this.itemRendererHandle = itemRendererHandle;
+        this.partialTicks = partialTicks;
     }
 
     public ItemRenderer getItemRenderer() {
-        return new ItemRenderer(this.b);
+        return new ItemRenderer(this.itemRendererHandle);
     }
 
     @Override
     public EventListeners getListeners() {
-        return n;
+        return EVENT_LISTENERS;
     }
 
     public static EventListeners getEventListeners() {
-        return n;
+        return EVENT_LISTENERS;
     }
 }
-

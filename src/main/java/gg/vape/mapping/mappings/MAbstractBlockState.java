@@ -13,7 +13,7 @@ extends Mapping {
     private MappingMethod d;
 
     private boolean j(Object object, Object object2, Object object3) {
-        return this.d.e(object, object2, object3);
+        return this.d.invokeBoolean(object, object2, object3);
     }
 
     public MAbstractBlockState() {
@@ -33,13 +33,13 @@ extends Mapping {
             } else {
                 Class[] classArray = new Class[]{MappedClasses.zJ, MappedClasses.lf};
                 Class clazz = MappedClasses.la;
-                boolean bl = Wrapper.G;
+                boolean bl = Wrapper.isNativeAvailable;
                 String string = "func_196954_c";
                 MAbstractBlockState mAbstractBlockState = this;
                 this.B = mAbstractBlockState.Y(string, bl, clazz, classArray);
                 Class[] classArray2 = new Class[]{MappedClasses.zJ, MappedClasses.lf};
                 Class<Boolean> clazz2 = Boolean.TYPE;
-                boolean bl2 = Wrapper.G;
+                boolean bl2 = Wrapper.isNativeAvailable;
                 String string2 = "func_229980_m_";
                 MAbstractBlockState mAbstractBlockState2 = this;
                 this.d = this.Y(string2, bl2, clazz2, classArray2);
@@ -48,7 +48,7 @@ extends Mapping {
         }
         Class[] classArray = new Class[]{MappedClasses.zJ, MappedClasses.lf};
         Class<Boolean> clazz = Boolean.TYPE;
-        boolean bl = Wrapper.G;
+        boolean bl = Wrapper.isNativeAvailable;
         String string = "func_229980_m_";
         MAbstractBlockState mAbstractBlockState = this;
         this.d = mAbstractBlockState.Y(string, bl, clazz, classArray); 
@@ -59,7 +59,7 @@ extends Mapping {
     }
 
     private Object I(Object object, Object object2, Object object3) {
-        return this.B.L(object, object2, object3);
+        return this.B.invokeObject(object, object2, object3);
     }
 
     public static boolean R(MAbstractBlockState mAbstractBlockState, Object object, Object object2, Object object3) {

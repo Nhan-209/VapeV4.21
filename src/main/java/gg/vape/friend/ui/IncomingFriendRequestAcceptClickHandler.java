@@ -5,14 +5,14 @@ import gg.vape.ui.click.component.GuiClickListener;
 
 public class IncomingFriendRequestAcceptClickHandler
 implements GuiClickListener {
-    final IncomingFriendRequestRow G;
+    final IncomingFriendRequestRow row;
 
     @Override
     public void onPrimaryClick() {
-        IncomingFriendRequestRow.k(this.G);
+        IncomingFriendRequestRow.accept(this.row);
     }
 
-    public IncomingFriendRequestAcceptClickHandler(IncomingFriendRequestRow mo_12) {
-        this.G = mo_12;
+    public IncomingFriendRequestAcceptClickHandler(IncomingFriendRequestRow row) {
+        this.row = row;
     }
 }

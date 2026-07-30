@@ -5,7 +5,6 @@ import gg.vape.mapping.MappedClasses;
 import gg.vape.mapping.Mapping;
 import gg.vape.mapping.MappingField;
 import gg.vape.mapping.MappingMethod;
-import gg.vape.mapping.mappings.MSPacketEntityVelocity;
 import gg.vape.wrapper.Wrapper;
 import gg.vape.wrapper.impl.ForgeVersion;
 import java.util.Set;
@@ -77,17 +76,17 @@ extends Mapping {
                 this.Q = this.J(string5, bl5, clazz5);
             } else {
                 Class<Double> clazz = Double.TYPE;
-                boolean bl = Wrapper.G;
+                boolean bl = Wrapper.isNativeAvailable;
                 String string = "field_148940_a";
                 MSPacketPlayerPosLook mSPacketPlayerPosLook = this;
                 this.o = mSPacketPlayerPosLook.J(string, bl, clazz);
                 Class<Double> clazz6 = Double.TYPE;
-                boolean bl6 = Wrapper.G;
+                boolean bl6 = Wrapper.isNativeAvailable;
                 String string6 = "field_148938_b";
                 MSPacketPlayerPosLook mSPacketPlayerPosLook6 = this;
                 this.K = this.J(string6, bl6, clazz6);
                 Class<Double> clazz7 = Double.TYPE;
-                boolean bl7 = Wrapper.G;
+                boolean bl7 = Wrapper.isNativeAvailable;
                 String string7 = "field_148939_c";
                 MSPacketPlayerPosLook mSPacketPlayerPosLook7 = this;
                 this.Q = this.J(string7, bl7, clazz7);
@@ -95,7 +94,7 @@ extends Mapping {
             if (ForgeVersion.MC_1_7_10.Y()) {
                 Class[] classArray = new Class[]{};
                 Class<Set> clazz = Set.class;
-                boolean bl = Wrapper.G;
+                boolean bl = Wrapper.isNativeAvailable;
                 String string = "func_179834_f";
                 MSPacketPlayerPosLook mSPacketPlayerPosLook = this;
                 this.v = mSPacketPlayerPosLook.Y(string, bl, clazz, classArray);
@@ -120,12 +119,12 @@ extends Mapping {
                 this.z = this.J(string8, bl8, clazz8);
             } else {
                 Class<Float> clazz = Float.TYPE;
-                boolean bl = Wrapper.G;
+                boolean bl = Wrapper.isNativeAvailable;
                 String string = "field_148936_d";
                 MSPacketPlayerPosLook mSPacketPlayerPosLook = this;
                 this.i = mSPacketPlayerPosLook.J(string, bl, clazz);
                 Class<Float> clazz9 = Float.TYPE;
-                boolean bl9 = Wrapper.G;
+                boolean bl9 = Wrapper.isNativeAvailable;
                 String string9 = "field_148937_e";
                 MSPacketPlayerPosLook mSPacketPlayerPosLook9 = this;
                 this.z = this.J(string9, bl9, clazz9);
@@ -162,7 +161,7 @@ extends Mapping {
     }
 
     public Object w(Object object) {
-        return this.v.L(object, new Object[0]);
+        return this.v.invokeObject(object, new Object[0]);
     }
 }
 

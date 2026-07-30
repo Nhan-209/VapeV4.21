@@ -2,17 +2,14 @@ package gg.vape.wrapper.impl;
 
 import gg.vape.mapping.mappings.MEnumCreatureAttribute;
 import gg.vape.wrapper.Wrapper;
-import gg.vape.wrapper.impl.EntityPlayer;
-import gg.vape.wrapper.impl.ForgeVersion;
-import gg.vape.wrapper.impl.Minecraft;
 
 public class DamageSource
 extends Wrapper {
     public static DamageSource C(EntityPlayer entityPlayer) {
         if (ForgeVersion.MC_1_20_6.d()) {
-            return new DamageSource(MEnumCreatureAttribute.X(DamageSource.c.getMappings().hW, Minecraft.theWorld().q(), entityPlayer.getObject()));
+            return new DamageSource(MEnumCreatureAttribute.X(DamageSource.vapeInstance.getMappings().hW, Minecraft.theWorld().q(), entityPlayer.getObject()));
         }
-        return new DamageSource(MEnumCreatureAttribute.X(DamageSource.c.getMappings().hW, null, entityPlayer.getObject()));
+        return new DamageSource(MEnumCreatureAttribute.X(DamageSource.vapeInstance.getMappings().hW, null, entityPlayer.getObject()));
     }
 
 
@@ -21,7 +18,7 @@ extends Wrapper {
     }
 
     public static DamageSource m$src$Lgg_vape_wrapper_impl_DamageSource_$z0ibym() {
-        return new DamageSource(MEnumCreatureAttribute.E(DamageSource.c.getMappings().hW));
+        return new DamageSource(MEnumCreatureAttribute.E(DamageSource.vapeInstance.getMappings().hW));
     }
 }
 

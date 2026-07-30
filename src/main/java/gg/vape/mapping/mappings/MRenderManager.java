@@ -31,7 +31,7 @@ extends Mapping {
     }
 
     private Object K(Object object, Object object2) {
-        return this.l.L(object, object2);
+        return this.l.invokeObject(object, object2);
     }
 
     public static double t(MRenderManager mRenderManager, Object object) {
@@ -94,7 +94,7 @@ extends Mapping {
             boolean bl = true;
             String string = "instance";
             MRenderManager mRenderManager = this;
-            this.d = mRenderManager.u(string, bl, clazz);
+            this.d = mRenderManager.registerStaticField(string, bl, clazz);
         }
         if (ForgeVersion.MC_1_8_9.L()) {
             if (Vape.INSTANCE.isVanillaMinecraftPresent()) {
@@ -107,7 +107,7 @@ extends Mapping {
             } else {
                 Class[] classArray = new Class[]{MappedClasses.zc, Double.TYPE, Double.TYPE, Double.TYPE, Float.TYPE, Float.TYPE, Boolean.TYPE};
                 Class<Boolean> clazz = Boolean.TYPE;
-                boolean bl = Wrapper.G;
+                boolean bl = Wrapper.isNativeAvailable;
                 String string = "func_147939_a";
                 MRenderManager mRenderManager = this;
                 this.W = mRenderManager.Y(string, bl, clazz, classArray);

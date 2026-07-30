@@ -38,7 +38,7 @@ extends PublicProfileFilterTokenSelectorComponent {
                     return;
                 }
             }
-            if ((string = LegacyPublicProfile.e(string2 = LegacyPublicProfile.S(string2))) != null) {
+            if ((string = LegacyPublicProfile.validateTag(string2 = LegacyPublicProfile.normalizeTag(string2))) != null) {
                 Vape.INSTANCE.getNotificationManager().show("Tag Error", string, NotificationType.WARNING, 5000L);
                 return;
             }

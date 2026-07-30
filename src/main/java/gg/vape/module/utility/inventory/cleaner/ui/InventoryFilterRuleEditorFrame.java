@@ -178,14 +178,14 @@ extends Frame {
         panelComponent4.setShowDisabledOverlay(false);
         panelComponent4.C$src$V$nadrmg();
         panelComponent4.h(new SpacerComponent(5.0, 0.0), new Object[0]);
-        for (InventoryFilterLogicalOperator object3 : InventoryFilterLogicalOperator.values()) {
-            interactiveComponent = new TextButton(object3.getName().toUpperCase(), 0.65, InventoryFilterRuleEditorFrame.J.B, InventoryFilterRuleEditorFrame.J.O, 58.0, 9.0);
+        for (InventoryFilterLogicalOperator logicalOperator : InventoryFilterLogicalOperator.values()) {
+            interactiveComponent = new TextButton(logicalOperator.getName().toUpperCase(), 0.65, InventoryFilterRuleEditorFrame.J.B, InventoryFilterRuleEditorFrame.J.O, 58.0, 9.0);
             ((TextButton)interactiveComponent).setDeriveTextColorFromBackground(false);
             ((TextButton)interactiveComponent).setNormalTextColor(Color.WHITE);
             ((TextButton)interactiveComponent).setCornerRadius(1.0f);
             ((TextLabel)interactiveComponent).setUseAlternateFont(true);
             interactiveComponent.setExplicitWidth(((TextLabel)interactiveComponent).getTextWidth() + 10.0);
-            interactiveComponent.setClickListener(() -> this.addConditionGroup(object3, editedPreset, rule, currentPreset, newlyAddedRule));
+            interactiveComponent.setClickListener(() -> this.addConditionGroup(logicalOperator, editedPreset, rule, currentPreset, newlyAddedRule));
             PaddedComponent paddedComponent = new PaddedComponent(1.0, 0.0, 0.0, 3.0, interactiveComponent);
             paddedComponent.C$src$V$nadrmg();
             panelComponent4.h(paddedComponent, new Object[0]);
@@ -254,8 +254,8 @@ extends Frame {
         this.closePopup();
     }
 
-    private static void updatePresetName(InventoryFilterPreset inventoryFilterPreset, SmallTextInputComponent smallTextInputComponent, char c, int n) {
-        inventoryFilterPreset.setName(smallTextInputComponent.getText().trim());
+    private static void updatePresetName(InventoryFilterPreset preset, SmallTextInputComponent nameInput, char character, int keyCode) {
+        preset.setName(nameInput.getText().trim());
     }
 
     private void deletePresetConfirmed(InventoryFilterPreset inventoryFilterPreset, InventoryFilterRule inventoryFilterRule) {
@@ -269,8 +269,8 @@ extends Frame {
     }
 
 
-    private void refreshRule(InventoryFilterRule inventoryFilterRule, InventoryFilterPreset inventoryFilterPreset, InventoryFilterPreset inventoryFilterPreset2, boolean bl) {
-        this.showRuleEditor(inventoryFilterRule, inventoryFilterPreset, inventoryFilterPreset2, bl, true);
+    private void refreshRule(InventoryFilterRule rule, InventoryFilterPreset currentPreset, InventoryFilterPreset editedPreset, boolean newlyAddedRule) {
+        this.showRuleEditor(rule, currentPreset, editedPreset, newlyAddedRule, true);
     }
 
     public InventoryFilterRuleEditorFrame() {
@@ -288,16 +288,15 @@ extends Frame {
         this.h(this.rootComponent, new Object[0]);
     }
 
-    private void applySharedPreset(boolean bl, InventoryFilterPreset inventoryFilterPreset, InventoryFilterRule inventoryFilterRule, InventoryFilterPreset inventoryFilterPreset2) {
-        SharedInventoryFilterPreset sharedInventoryFilterPreset;
-        SharedInventoryFilterPreset sharedInventoryFilterPreset2 = bl ? new SharedInventoryFilterPreset(inventoryFilterPreset) : (SharedInventoryFilterPreset)inventoryFilterPreset;
-        boolean bl2 = inventoryFilterRule instanceof SlotInventoryFilterRule;
-        inventoryFilterRule.setPreset(sharedInventoryFilterPreset2);
-        SharedInventoryFilterPreset sharedInventoryFilterPreset3 = sharedInventoryFilterPreset = inventoryFilterPreset2 instanceof SharedInventoryFilterPreset ? (SharedInventoryFilterPreset)inventoryFilterPreset2 : null;
-        if (bl2) {
-            Vape.INSTANCE.getInventoryFilterPresetRegistry().getSlotRulePresets().replace(sharedInventoryFilterPreset, sharedInventoryFilterPreset2);
+    private void applySharedPreset(boolean createSharedPreset, InventoryFilterPreset editedPreset, InventoryFilterRule rule, InventoryFilterPreset currentPreset) {
+        SharedInventoryFilterPreset newSharedPreset = createSharedPreset ? new SharedInventoryFilterPreset(editedPreset) : (SharedInventoryFilterPreset)editedPreset;
+        boolean slotRule = rule instanceof SlotInventoryFilterRule;
+        rule.setPreset(newSharedPreset);
+        SharedInventoryFilterPreset previousSharedPreset = currentPreset instanceof SharedInventoryFilterPreset ? (SharedInventoryFilterPreset)currentPreset : null;
+        if (slotRule) {
+            Vape.INSTANCE.getInventoryFilterPresetRegistry().getSlotRulePresets().replace(previousSharedPreset, newSharedPreset);
         } else {
-            Vape.INSTANCE.getInventoryFilterPresetRegistry().getItemRulePresets().replace(sharedInventoryFilterPreset, sharedInventoryFilterPreset2);
+            Vape.INSTANCE.getInventoryFilterPresetRegistry().getItemRulePresets().replace(previousSharedPreset, newSharedPreset);
         }
         this.closePopup();
     }
@@ -311,14 +310,14 @@ extends Frame {
         return "Rule Editor";
     }
 
-    private void addConditionGroup(InventoryFilterLogicalOperator inventoryFilterLogicalOperator, InventoryFilterPreset inventoryFilterPreset, InventoryFilterRule inventoryFilterRule, InventoryFilterPreset inventoryFilterPreset2, boolean bl) {
-        EmptyInventoryFilterCondition emptyInventoryFilterCondition = new EmptyInventoryFilterCondition();
-        if (inventoryFilterLogicalOperator == InventoryFilterLogicalOperator.OR || inventoryFilterPreset.getConditionGroups().isEmpty()) {
-            inventoryFilterPreset.addConditionGroup(InventoryFilterConditionGroup.builder().addCondition(emptyInventoryFilterCondition).build());
-        } else if (inventoryFilterLogicalOperator == InventoryFilterLogicalOperator.AND) {
-            InventoryFilterConditionGroup inventoryFilterConditionGroup = inventoryFilterPreset.getConditionGroups().get(inventoryFilterPreset.getConditionGroups().size() - 1);
-            inventoryFilterConditionGroup.addCondition(emptyInventoryFilterCondition);
+    private void addConditionGroup(InventoryFilterLogicalOperator logicalOperator, InventoryFilterPreset editedPreset, InventoryFilterRule rule, InventoryFilterPreset currentPreset, boolean newlyAddedRule) {
+        EmptyInventoryFilterCondition emptyCondition = new EmptyInventoryFilterCondition();
+        if (logicalOperator == InventoryFilterLogicalOperator.OR || editedPreset.getConditionGroups().isEmpty()) {
+            editedPreset.addConditionGroup(InventoryFilterConditionGroup.builder().addCondition(emptyCondition).build());
+        } else if (logicalOperator == InventoryFilterLogicalOperator.AND) {
+            InventoryFilterConditionGroup lastGroup = editedPreset.getConditionGroups().get(editedPreset.getConditionGroups().size() - 1);
+            lastGroup.addCondition(emptyCondition);
         }
-        this.showRuleEditor(inventoryFilterRule, inventoryFilterPreset2, inventoryFilterPreset, bl, true);
+        this.showRuleEditor(rule, currentPreset, editedPreset, newlyAddedRule, true);
     }
 }

@@ -7,25 +7,25 @@ import gg.vape.wrapper.impl.ITextComponent;
 
 public class EventNameFormat
 extends Event {
-    private static final EventListeners Y = new EventListeners();
-    private ITextComponent c;
-    private final EntityPlayer F;
+    private static final EventListeners EVENT_LISTENERS = new EventListeners();
+    private ITextComponent displayName;
+    private final EntityPlayer player;
 
     public EntityPlayer getPlayer() {
-        return this.F;
+        return this.player;
     }
 
-    public EventNameFormat(EntityPlayer entityPlayer, ITextComponent iTextComponent) {
-        this.F = entityPlayer;
-        this.c = iTextComponent;
+    public EventNameFormat(EntityPlayer player, ITextComponent displayName) {
+        this.player = player;
+        this.displayName = displayName;
     }
 
     public static EventListeners getEventListeners() {
-        return Y;
+        return EVENT_LISTENERS;
     }
 
     public ITextComponent getDisplayName() {
-        return this.c;
+        return this.displayName;
     }
 
     @Override
@@ -33,13 +33,12 @@ extends Event {
         return super.fire();
     }
 
-    public void setDisplayName(ITextComponent iTextComponent) {
-        this.c = iTextComponent;
+    public void setDisplayName(ITextComponent displayName) {
+        this.displayName = displayName;
     }
 
     @Override
     public EventListeners getListeners() {
-        return Y;
+        return EVENT_LISTENERS;
     }
 }
-

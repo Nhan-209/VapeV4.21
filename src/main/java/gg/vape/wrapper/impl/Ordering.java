@@ -10,7 +10,7 @@ extends Wrapper {
     }
 
     public List E(Iterable iterable) {
-        return Ordering.c.getMappingsMapperCompat().qm.n(this.I, iterable);
+        return Ordering.vapeInstance.getMappingsMapperCompat().qm.n(this.I, iterable);
     }
 }
 

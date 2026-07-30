@@ -10,7 +10,7 @@ extends Wrapper {
 
     public static EnumWorldBlockLayer v() {
         if (s == null) {
-            s = new EnumWorldBlockLayer(MEnumWorldBlockLayer.U(EnumWorldBlockLayer.c.getMappingsMapperCompat().hA));
+            s = new EnumWorldBlockLayer(MEnumWorldBlockLayer.U(EnumWorldBlockLayer.vapeInstance.getMappingsMapperCompat().hA));
         }
         return s;
     }
@@ -22,7 +22,7 @@ extends Wrapper {
 
     public static EnumWorldBlockLayer W() {
         if (z == null) {
-            z = new EnumWorldBlockLayer(MEnumWorldBlockLayer.g(EnumWorldBlockLayer.c.getMappingsMapperCompat().hA));
+            z = new EnumWorldBlockLayer(MEnumWorldBlockLayer.g(EnumWorldBlockLayer.vapeInstance.getMappingsMapperCompat().hA));
         }
         return z;
     }

@@ -6,27 +6,26 @@ import gg.vape.protocol.packet.ZeusSerializablePacket;
 
 public class PresenceStateUpdatePacket
 implements ZeusSerializablePacket {
-    private PresenceState L;
+    private PresenceState presenceState;
 
     @Override
-    public void S(ZeusPacketBuffer gx_12) {
-        this.L = gx_12.Y(PresenceState.class);
+    public void S(ZeusPacketBuffer packetBuffer) {
+        this.presenceState = packetBuffer.readEnum(PresenceState.class);
     }
 
     public PresenceStateUpdatePacket() {
     }
 
-    public PresenceStateUpdatePacket(PresenceState yE) {
-        this.L = yE;
+    public PresenceStateUpdatePacket(PresenceState presenceState) {
+        this.presenceState = presenceState;
     }
 
     @Override
-    public void o(ZeusPacketBuffer gx_12) {
-        gx_12.U(this.L);
+    public void o(ZeusPacketBuffer packetBuffer) {
+        packetBuffer.writeEnum(this.presenceState);
     }
 
-    public PresenceState n() {
-        return this.L;
+    public PresenceState getPresenceState() {
+        return this.presenceState;
     }
 }
-

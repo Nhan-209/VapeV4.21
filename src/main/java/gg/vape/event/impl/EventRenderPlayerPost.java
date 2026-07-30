@@ -9,56 +9,56 @@ import gg.vape.wrapper.impl.RenderPlayer;
 
 public class EventRenderPlayerPost
 extends Event {
-    private final RenderPlayer A;
-    private final EntityPlayer b;
-    private static final EventListeners Z = new EventListeners();
-    private final MatrixStack n;
-    private final float m;
+    private final RenderPlayer renderer;
+    private final EntityPlayer player;
+    private static final EventListeners EVENT_LISTENERS = new EventListeners();
+    private final MatrixStack matrixStack;
+    private final float partialTicks;
 
     @Override
     public EventListeners getListeners() {
-        return Z;
+        return EVENT_LISTENERS;
     }
 
-    public EventRenderPlayerPost(Object object, Object object2, float f, Object object3) {
-        this.A = new RenderPlayer(object);
-        this.b = new EntityPlayer(object2);
-        this.m = f;
-        this.n = new MatrixStack(object3);
+    public EventRenderPlayerPost(Object rendererHandle, Object playerHandle, float partialTicks, Object matrixStackHandle) {
+        this.renderer = new RenderPlayer(rendererHandle);
+        this.player = new EntityPlayer(playerHandle);
+        this.partialTicks = partialTicks;
+        this.matrixStack = new MatrixStack(matrixStackHandle);
     }
 
     public EntityPlayer getEntityPlayer() {
-        return this.b;
+        return this.player;
     }
 
     public static EventListeners getEventListeners() {
-        return Z;
+        return EVENT_LISTENERS;
     }
 
-    public EventRenderPlayerPost(Object object, Object object2, float f) {
-        this.A = new RenderPlayer(object);
-        this.b = new EntityPlayer(object2);
-        this.m = f;
-        this.n = null;
+    public EventRenderPlayerPost(Object rendererHandle, Object playerHandle, float partialTicks) {
+        this.renderer = new RenderPlayer(rendererHandle);
+        this.player = new EntityPlayer(playerHandle);
+        this.partialTicks = partialTicks;
+        this.matrixStack = null;
     }
 
     public MatrixStack getMatrixStack() {
-        return this.n;
+        return this.matrixStack;
     }
 
-    public EventRenderPlayerPost(Object object, Object object2, Object object3) {
-        this.A = new RenderPlayer(object3);
-        this.b = new EntityPlayer(object);
-        this.n = new MatrixStack(object2);
-        this.m = Minecraft.getTimer().renderPartialTicks();
+    public EventRenderPlayerPost(Object playerHandle, Object matrixStackHandle, Object rendererHandle) {
+        this.renderer = new RenderPlayer(rendererHandle);
+        this.player = new EntityPlayer(playerHandle);
+        this.matrixStack = new MatrixStack(matrixStackHandle);
+        this.partialTicks = Minecraft.getTimer().renderPartialTicks();
     }
 
     public RenderPlayer getRenderer() {
-        return this.A;
+        return this.renderer;
     }
 
     public float getPartialTicks() {
-        return this.m;
+        return this.partialTicks;
     }
 
     @Override
@@ -66,4 +66,3 @@ extends Event {
         return super.fire();
     }
 }
-

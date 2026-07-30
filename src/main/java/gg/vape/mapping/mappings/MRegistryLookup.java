@@ -40,16 +40,16 @@ extends Mapping {
     }
 
     public Optional<Object> f(Object object, Object object2) {
-        return (Optional)this.u.L(object, object2);
+        return (Optional)this.u.invokeObject(object, object2);
     }
 
 
     public Optional<Object> W(Object object, Object object2) {
-        return (Optional)this.e.L(object, object2);
+        return (Optional)this.e.invokeObject(object, object2);
     }
 
     public Object Y(Object object, Object object2) {
-        return this.T.L(object, object2);
+        return this.T.invokeObject(object, object2);
     }
 }
 

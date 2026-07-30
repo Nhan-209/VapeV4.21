@@ -113,7 +113,7 @@ extends Mod {
 
     @Override
     public void onDisable() {
-        EventRenderWorldPassExecutorDrain.E.execute(this::reloadRenderers);
+        EventRenderWorldPassExecutorDrain.EXECUTOR.execute(this::reloadRenderers);
         Minecraft.gameSettings().y(this.savedGamma);
     }
 

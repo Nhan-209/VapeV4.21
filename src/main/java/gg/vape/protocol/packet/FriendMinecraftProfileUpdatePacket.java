@@ -13,9 +13,9 @@ implements ZeusSerializablePacket {
 
     @Override
     public void S(ZeusPacketBuffer zeusPacketBuffer) {
-        this.p = zeusPacketBuffer.long_a();
-        this.Q = zeusPacketBuffer.N();
-        this.v = zeusPacketBuffer.v(16);
+        this.p = zeusPacketBuffer.readLong();
+        this.Q = zeusPacketBuffer.readUuid();
+        this.v = zeusPacketBuffer.readString(16);
     }
 
     public FriendMinecraftProfileUpdatePacket() {
@@ -26,7 +26,7 @@ implements ZeusSerializablePacket {
     }
 
     public FriendMinecraftProfileUpdatePacket(UserModel userModel, UUID uUID, String string) {
-        this.p = userModel.g();
+        this.p = userModel.getId();
         this.Q = uUID;
         this.v = string;
     }
@@ -41,9 +41,9 @@ implements ZeusSerializablePacket {
 
     @Override
     public void o(ZeusPacketBuffer zeusPacketBuffer) {
-        zeusPacketBuffer.v(this.p);
-        zeusPacketBuffer.r(this.Q);
-        zeusPacketBuffer.y(this.v);
+        zeusPacketBuffer.writeLong(this.p);
+        zeusPacketBuffer.writeUuid(this.Q);
+        zeusPacketBuffer.writeString(this.v);
     }
 }
 

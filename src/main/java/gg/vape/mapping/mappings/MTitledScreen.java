@@ -44,7 +44,7 @@ extends Mapping {
             }
             Class[] classArray = new Class[]{MappedClasses.Y, Integer.TYPE, Integer.TYPE, MappedClasses.uQ};
             Class<Void> clazz = Void.TYPE;
-            boolean bl = Wrapper.G;
+            boolean bl = Wrapper.isNativeAvailable;
             String string = "func_96136_a";
             MTitledScreen mTitledScreen = this;
             this.c = mTitledScreen.Y(string, bl, clazz, classArray);
@@ -101,27 +101,27 @@ extends Mapping {
                 String string = "renderGameOverlay";
                 Class clazz4 = MappedClasses.Zj;
                 MTitledScreen mTitledScreen = this;
-                this.d = mTitledScreen.W(clazz4, string, bl, clazz, classArray);
+                this.d = mTitledScreen.registerInstanceMethodForOwner(clazz4, string, bl, clazz, classArray);
             }
-            if (!Wrapper.G && !this.d.h() && Vape.INSTANCE.isMappingsRemapped()) {
+            if (!Wrapper.isNativeAvailable && !this.d.hasResolutionFailed() && Vape.INSTANCE.isMappingsRemapped()) {
                 if (ForgeVersion.MC_1_16_5.d()) {
                     if (MappedClasses.DC != null) {
                         Class[] classArray = new Class[]{MappedClasses.DQ, Float.TYPE};
                         Class<Void> clazz = Void.TYPE;
                         boolean bl = false;
-                        String string = this.d.v();
+                        String string = this.d.getResolvedName();
                         Class clazz5 = MappedClasses.DC;
                         MTitledScreen mTitledScreen = this;
-                        this.d = mTitledScreen.W(clazz5, string, bl, clazz, classArray);
+                        this.d = mTitledScreen.registerInstanceMethodForOwner(clazz5, string, bl, clazz, classArray);
                     }
                 } else {
                     Class[] classArray = new Class[]{Float.TYPE};
                     Class<Void> clazz = Void.TYPE;
                     boolean bl = false;
-                    String string = this.d.v();
+                    String string = this.d.getResolvedName();
                     Class clazz6 = MappedClasses.DC;
                     MTitledScreen mTitledScreen = this;
-                    this.d = mTitledScreen.W(clazz6, string, bl, clazz, classArray);
+                    this.d = mTitledScreen.registerInstanceMethodForOwner(clazz6, string, bl, clazz, classArray);
                 }
             }
         } else {
@@ -131,15 +131,15 @@ extends Mapping {
             String string = "renderGameOverlay";
             Class clazz7 = MappedClasses.Zj;
             MTitledScreen mTitledScreen = this;
-            this.d = mTitledScreen.W(clazz7, string, bl, clazz, classArray);
-            if (!Wrapper.G && !this.d.h() && Vape.INSTANCE.isMappingsRemapped()) {
+            this.d = mTitledScreen.registerInstanceMethodForOwner(clazz7, string, bl, clazz, classArray);
+            if (!Wrapper.isNativeAvailable && !this.d.hasResolutionFailed() && Vape.INSTANCE.isMappingsRemapped()) {
                 Class[] classArray3 = new Class[]{Float.TYPE, Boolean.TYPE, Integer.TYPE, Integer.TYPE};
                 Class<Void> clazz8 = Void.TYPE;
                 boolean bl4 = false;
-                String string4 = this.d.v();
+                String string4 = this.d.getResolvedName();
                 Class clazz9 = MappedClasses.DC;
                 MTitledScreen mTitledScreen4 = this;
-                this.d = this.W(clazz9, string4, bl4, clazz8, classArray3);
+                this.d = this.registerInstanceMethodForOwner(clazz9, string4, bl4, clazz8, classArray3);
             }
         }
         if (ForgeVersion.MC_1_16_5.d()) {
@@ -157,7 +157,7 @@ extends Mapping {
             } else {
                 Class[] classArray = new Class[]{MappedClasses.DQ, MappedClasses.Y};
                 Class<Void> clazz = Void.TYPE;
-                boolean bl = Wrapper.G;
+                boolean bl = Wrapper.isNativeAvailable;
                 String string = "func_238447_a_";
                 MTitledScreen mTitledScreen = this;
                 this.c = mTitledScreen.Y(string, bl, clazz, classArray);
@@ -173,7 +173,7 @@ extends Mapping {
                 String string5 = "title";
                 Class clazz11 = MappedClasses.zK;
                 MTitledScreen mTitledScreen5 = this;
-                this.n = this.X(clazz11, string5, bl5, clazz10);
+                this.n = this.registerInstanceFieldForOwner(clazz11, string5, bl5, clazz10);
             } else {
                 Class clazz = MappedClasses.Yr;
                 boolean bl = true;
@@ -182,7 +182,7 @@ extends Mapping {
                 this.n = mTitledScreen.J(string, bl, clazz);
             }
         } else if (ForgeVersion.MC_1_7_10.L()) {
-            if (Wrapper.c.isVanillaMinecraftPresent()) {
+            if (Wrapper.vapeInstance.isVanillaMinecraftPresent()) {
                 Class[] classArray = new Class[]{MappedClasses.Y, Integer.TYPE, Integer.TYPE, MappedClasses.uQ};
                 Class<Void> clazz = Void.TYPE;
                 boolean bl = true;
@@ -192,7 +192,7 @@ extends Mapping {
             } else {
                 Class[] classArray = new Class[]{MappedClasses.Y, Integer.TYPE, Integer.TYPE, MappedClasses.uQ};
                 Class<Void> clazz = Void.TYPE;
-                boolean bl = Wrapper.G;
+                boolean bl = Wrapper.isNativeAvailable;
                 String string = "func_96136_a";
                 MTitledScreen mTitledScreen = this;
                 this.c = mTitledScreen.Y(string, bl, clazz, classArray);

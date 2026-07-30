@@ -30,7 +30,7 @@ extends AnimationsMode {
         if (!((Animations)this.getParent()).isHoldingSword()) {
             return false;
         }
-        if (((Animations)this.getParent()).requiresMouseDown() && !ClientSettings.V()) {
+        if (((Animations)this.getParent()).requiresMouseDown() && !ClientSettings.isUseItemButtonDown()) {
             return false;
         }
         return this.chance.getRandomValue() >= Math.random() * 100.0;

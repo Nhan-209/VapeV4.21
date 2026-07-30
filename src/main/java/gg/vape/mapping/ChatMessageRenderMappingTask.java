@@ -10,7 +10,7 @@ import gg.vape.mapping.MappingMethod;
 public class ChatMessageRenderMappingTask
 extends JavassistMappingTask {
     @Override
-    public void c() {
+    public void transform() {
         this.H();
     }
 
@@ -20,11 +20,11 @@ extends JavassistMappingTask {
 
     private void H() {
         MappingMethod mappingMethod = Vape.INSTANCE.getMappings().qd.T;
-        if (mappingMethod != null && !mappingMethod.h()) {
+        if (mappingMethod != null && !mappingMethod.hasResolutionFailed()) {
             EventInjectionSpec eventInjectionSpec = new EventInjectionSpec(mappingMethod, EventChatMessageRender.class);
-            eventInjectionSpec.d("$0, $1, $2, $3");
-            eventInjectionSpec.V("$1 = (" + MappedClasses.Yr.getName() + ") $event.getOutputContentComponent();");
-            this.O(eventInjectionSpec);
+            eventInjectionSpec.setConstructorArguments("$0, $1, $2, $3");
+            eventInjectionSpec.setAfterCode("$1 = (" + MappedClasses.Yr.getName() + ") $event.getOutputContentComponent();");
+            this.registerEventInjection(eventInjectionSpec);
         }
     }
 

@@ -134,7 +134,7 @@ extends SubModule<HitSelect> {
             }
             eventClickMouse.setCancelled(true);
             this.cancelUse = true;
-            ClientSettings.D(target);
+            ClientSettings.applyAttackEffects(target);
         }
     }
 

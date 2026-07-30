@@ -12,8 +12,8 @@ extends EventRenderTickBase {
         return super.fire();
     }
 
-    public EventPreRenderTick(Object object) {
-        super(new DeltaTracker(object));
+    public EventPreRenderTick(Object deltaTrackerHandle) {
+        super(new DeltaTracker(deltaTrackerHandle));
     }
 
     public EventPreRenderTick(float f) {

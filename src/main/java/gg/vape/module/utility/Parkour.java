@@ -47,7 +47,7 @@ extends Mod {
         }
         MovementInput movementInput = localPlayer.movementInput();
         boolean movingForward = movementInput.D() > 0.0f
-                || ClientSettings.B(Minecraft.gameSettings().Y());
+                || ClientSettings.isPhysicalKeyDown(Minecraft.gameSettings().Y());
         if (movingForward && localPlayer.b$src$Z$fqlxe4()) {
             AxisAlignedBB boundingBox;
             if (ForgeVersion.MC_1_8_9.d()) {

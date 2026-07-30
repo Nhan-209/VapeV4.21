@@ -65,7 +65,7 @@ extends SubModule<FastUseModule> {
 
 
     private void flushPackets() {
-        if (this.queuedPackets.isEmpty() || !Thread.currentThread().equals(EventTickBase.S.getOwnerThread())) {
+        if (this.queuedPackets.isEmpty() || !Thread.currentThread().equals(EventTickBase.PRE_TICK_EXECUTOR.getOwnerThread())) {
             return;
         }
         this.flushing.set(true);
@@ -78,7 +78,7 @@ extends SubModule<FastUseModule> {
         this.dispatchGuard.o(eventPacketSend);
     }
 
-    @EventHandler(A=EventPriority.LOW)
+    @EventHandler(priority=EventPriority.LOW)
     public void onPacketSend(EventPacketSend eventPacketSend) {
         Entity entity;
         UseEntityPacketBridge useEntityPacketBridge;
@@ -102,7 +102,7 @@ extends SubModule<FastUseModule> {
             if (packet.isInstance(MappedClasses.u7)) {
                 shouldFlush = true;
             }
-            if (!Thread.currentThread().equals(EventTickBase.S.getOwnerThread())) {
+            if (!Thread.currentThread().equals(EventTickBase.PRE_TICK_EXECUTOR.getOwnerThread())) {
                 shouldFlush = false;
             }
             if (shouldFlush) {

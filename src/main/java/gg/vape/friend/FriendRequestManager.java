@@ -22,154 +22,154 @@ import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnmodifiableView;
 
 public class FriendRequestManager {
-    private final Map<OnlineFriend, IncomingFriendRequest> q = new LinkedHashMap<OnlineFriend, IncomingFriendRequest>();
-    private final Map<OnlineFriend, OutgoingFriendRequest> t = new LinkedHashMap<OnlineFriend, OutgoingFriendRequest>();
+    private final Map<OnlineFriend, IncomingFriendRequest> incomingRequests = new LinkedHashMap<OnlineFriend, IncomingFriendRequest>();
+    private final Map<OnlineFriend, OutgoingFriendRequest> outgoingRequests = new LinkedHashMap<OnlineFriend, OutgoingFriendRequest>();
 
     /*
      * WARNING - Removed try catching itself - possible behaviour change.
      */
-    public void i(FriendRequest friendRequest) {
+    public void removeRequest(FriendRequest friendRequest) {
         if (friendRequest instanceof IncomingFriendRequest) {
-            Map<OnlineFriend, IncomingFriendRequest> map = this.q;
+            Map<OnlineFriend, IncomingFriendRequest> map = this.incomingRequests;
             synchronized (map) {
-                this.q.remove(friendRequest.x());
-                this.k().M(friendRequest);
+                this.incomingRequests.remove(friendRequest.getFriend());
+                this.getRequestListPanel().removeRequest(friendRequest);
             }
         }
         if (friendRequest instanceof OutgoingFriendRequest) {
-            Map<OnlineFriend, OutgoingFriendRequest> map = this.t;
+            Map<OnlineFriend, OutgoingFriendRequest> map = this.outgoingRequests;
             synchronized (map) {
-                this.t.remove(friendRequest.x());
-                this.k().M(friendRequest);
+                this.outgoingRequests.remove(friendRequest.getFriend());
+                this.getRequestListPanel().removeRequest(friendRequest);
             }
         }
     }
 
     private void lambda$cancelOutgoingRequest$2(OutgoingFriendRequest outgoingFriendRequest, FriendRequestUpdateResponsePacket friendRequestUpdateResponsePacket) {
-        if (friendRequestUpdateResponsePacket.l() != FriendRequestUpdateStatus.DECLINED) {
-            this.O(outgoingFriendRequest);
+        if (friendRequestUpdateResponsePacket.getStatus() != FriendRequestUpdateStatus.DECLINED) {
+            this.addRequest(outgoingFriendRequest);
         }
     }
 
-    public void y(OnlineFriend onlineFriend) {
+    public void removeRequestsForFriend(OnlineFriend onlineFriend) {
         OutgoingFriendRequest outgoingFriendRequest;
-        IncomingFriendRequest incomingFriendRequest = this.q.get(onlineFriend);
+        IncomingFriendRequest incomingFriendRequest = this.incomingRequests.get(onlineFriend);
         if (incomingFriendRequest != null) {
-            this.i(incomingFriendRequest);
+            this.removeRequest(incomingFriendRequest);
         }
-        if ((outgoingFriendRequest = this.t.get(onlineFriend)) != null) {
-            this.i(outgoingFriendRequest);
+        if ((outgoingFriendRequest = this.outgoingRequests.get(onlineFriend)) != null) {
+            this.removeRequest(outgoingFriendRequest);
         }
     }
 
-    public @UnmodifiableView Set<FriendRequest> B() {
+    public @UnmodifiableView Set<FriendRequest> getAllRequests() {
         LinkedHashSet<FriendRequest> linkedHashSet = new LinkedHashSet<FriendRequest>();
-        linkedHashSet.addAll(this.q.values());
-        linkedHashSet.addAll(this.t.values());
+        linkedHashSet.addAll(this.incomingRequests.values());
+        linkedHashSet.addAll(this.outgoingRequests.values());
         return linkedHashSet;
     }
 
-    public boolean J(OnlineFriend onlineFriend) {
-        return this.t.containsKey(onlineFriend);
+    public boolean hasOutgoingRequest(OnlineFriend onlineFriend) {
+        return this.outgoingRequests.containsKey(onlineFriend);
     }
 
-    public void g() {
-        ArrayList<FriendRequest> arrayList = new ArrayList<FriendRequest>();
-        arrayList.addAll(this.q.values());
-        arrayList.addAll(this.t.values());
-        for (FriendRequest friendRequest : arrayList) {
-            this.i(friendRequest);
+    public void clear() {
+        ArrayList<FriendRequest> requests = new ArrayList<FriendRequest>();
+        requests.addAll(this.incomingRequests.values());
+        requests.addAll(this.outgoingRequests.values());
+        for (FriendRequest friendRequest : requests) {
+            this.removeRequest(friendRequest);
         }
     }
 
-    private FriendRequestListPanel k() {
-        return ClientSettings.getFrame(OnlineFriendsFrame.class).o$src$Lgg_vape_friend_ui_FriendRequestsPanel_$8g38ub().k$src$Lgg_vape_friend_ui_FriendRequestListPanel_$1poeaqd();
+    private FriendRequestListPanel getRequestListPanel() {
+        return ClientSettings.getFrame(OnlineFriendsFrame.class).getFriendRequestsPanel().getRequestListPanel();
     }
 
-    public void X(IncomingFriendRequest incomingFriendRequest) {
-        this.i(incomingFriendRequest);
-        ZeusConnectionManager.T().u().Y(incomingFriendRequest.C(), false, arg_0 -> this.lambda$declineIncomingRequest$1(incomingFriendRequest, arg_0));
+    public void declineIncomingRequest(IncomingFriendRequest incomingFriendRequest) {
+        this.removeRequest(incomingFriendRequest);
+        ZeusConnectionManager.T().u().Y(incomingFriendRequest.getId(), false, response -> this.lambda$declineIncomingRequest$1(incomingFriendRequest, response));
     }
 
 
-    public void w(long l) {
+    public void removeRequestById(long requestId) {
         FriendRequest friendRequest = null;
-        for (IncomingFriendRequest friendRequest2 : this.q.values()) {
-            if (friendRequest2.C() != l) continue;
+        for (IncomingFriendRequest friendRequest2 : this.incomingRequests.values()) {
+            if (friendRequest2.getId() != requestId) continue;
             friendRequest = friendRequest2;
             break;
         }
         if (friendRequest != null) {
-            this.i(friendRequest);
+            this.removeRequest(friendRequest);
         } else {
-            for (OutgoingFriendRequest outgoingFriendRequest : this.t.values()) {
-                if (outgoingFriendRequest.C() != l) continue;
+            for (OutgoingFriendRequest outgoingFriendRequest : this.outgoingRequests.values()) {
+                if (outgoingFriendRequest.getId() != requestId) continue;
                 friendRequest = outgoingFriendRequest;
                 break;
             }
             if (friendRequest == null) {
                 return;
             }
-            this.i(friendRequest);
+            this.removeRequest(friendRequest);
         }
     }
 
-    public @UnmodifiableView Set<FriendRequest> I() {
-        return new LinkedHashSet<FriendRequest>(this.q.values());
+    public @UnmodifiableView Set<FriendRequest> getIncomingRequests() {
+        return new LinkedHashSet<FriendRequest>(this.incomingRequests.values());
     }
 
     private void lambda$declineIncomingRequest$1(IncomingFriendRequest incomingFriendRequest, FriendRequestUpdateResponsePacket friendRequestUpdateResponsePacket) {
-        if (friendRequestUpdateResponsePacket.l() != FriendRequestUpdateStatus.DECLINED) {
-            this.O(incomingFriendRequest);
+        if (friendRequestUpdateResponsePacket.getStatus() != FriendRequestUpdateStatus.DECLINED) {
+            this.addRequest(incomingFriendRequest);
         }
     }
 
-    public void Y(OutgoingFriendRequest outgoingFriendRequest) {
-        this.i(outgoingFriendRequest);
-        ZeusConnectionManager.T().u().Y(outgoingFriendRequest.C(), false, arg_0 -> this.lambda$cancelOutgoingRequest$2(outgoingFriendRequest, arg_0));
+    public void cancelOutgoingRequest(OutgoingFriendRequest outgoingFriendRequest) {
+        this.removeRequest(outgoingFriendRequest);
+        ZeusConnectionManager.T().u().Y(outgoingFriendRequest.getId(), false, response -> this.lambda$cancelOutgoingRequest$2(outgoingFriendRequest, response));
     }
 
-    public void N(IncomingFriendRequest incomingFriendRequest) {
-        this.i(incomingFriendRequest);
-        ZeusConnectionManager.T().u().Y(incomingFriendRequest.C(), true, arg_0 -> this.lambda$acceptIncomingRequest$0(incomingFriendRequest, arg_0));
+    public void acceptIncomingRequest(IncomingFriendRequest incomingFriendRequest) {
+        this.removeRequest(incomingFriendRequest);
+        ZeusConnectionManager.T().u().Y(incomingFriendRequest.getId(), true, response -> this.lambda$acceptIncomingRequest$0(incomingFriendRequest, response));
     }
 
     private void lambda$acceptIncomingRequest$0(IncomingFriendRequest incomingFriendRequest, FriendRequestUpdateResponsePacket friendRequestUpdateResponsePacket) {
-        if (friendRequestUpdateResponsePacket.l() != FriendRequestUpdateStatus.ACCEPTED) {
-            this.O(incomingFriendRequest);
+        if (friendRequestUpdateResponsePacket.getStatus() != FriendRequestUpdateStatus.ACCEPTED) {
+            this.addRequest(incomingFriendRequest);
         }
     }
 
     /*
      * WARNING - Removed try catching itself - possible behaviour change.
      */
-    public void O(FriendRequest friendRequest) {
+    public void addRequest(FriendRequest friendRequest) {
         if (friendRequest instanceof IncomingFriendRequest) {
-            Map<OnlineFriend, IncomingFriendRequest> map = this.q;
+            Map<OnlineFriend, IncomingFriendRequest> map = this.incomingRequests;
             synchronized (map) {
-                this.q.put(friendRequest.x(), (IncomingFriendRequest)friendRequest);
-                this.k().z(friendRequest);
-                if (OnlineConnectionManager.T.V().hasTimeElapsed(5000L)) {
-                    Vape.INSTANCE.getNotificationManager().show("Friend request", "Incoming friend request from " + friendRequest.x().C(), NotificationType.FRIENDS_NEW_REQUEST, 4000L);
+                this.incomingRequests.put(friendRequest.getFriend(), (IncomingFriendRequest)friendRequest);
+                this.getRequestListPanel().addRequest(friendRequest);
+                if (OnlineConnectionManager.INSTANCE.getFriendRequestNotificationTimer().hasTimeElapsed(5000L)) {
+                    Vape.INSTANCE.getNotificationManager().show("Friend request", "Incoming friend request from " + friendRequest.getFriend().getDisplayName(), NotificationType.FRIENDS_NEW_REQUEST, 4000L);
                 }
             }
         }
         if (friendRequest instanceof OutgoingFriendRequest) {
-            Map<OnlineFriend, OutgoingFriendRequest> map = this.t;
+            Map<OnlineFriend, OutgoingFriendRequest> map = this.outgoingRequests;
             synchronized (map) {
-                this.t.put(friendRequest.x(), (OutgoingFriendRequest)friendRequest);
-                this.k().z(friendRequest);
+                this.outgoingRequests.put(friendRequest.getFriend(), (OutgoingFriendRequest)friendRequest);
+                this.getRequestListPanel().addRequest(friendRequest);
             }
         }
     }
 
     @Nullable
-    public FriendRequest o(OnlineFriend onlineFriend) {
-        IncomingFriendRequest incomingFriendRequest = this.q.get(onlineFriend);
+    public FriendRequest getRequestForFriend(OnlineFriend onlineFriend) {
+        IncomingFriendRequest incomingFriendRequest = this.incomingRequests.get(onlineFriend);
         if (incomingFriendRequest != null) {
             return incomingFriendRequest;
         }
-        OutgoingFriendRequest outgoingFriendRequest = this.t.get(onlineFriend);
+        OutgoingFriendRequest outgoingFriendRequest = this.outgoingRequests.get(onlineFriend);
         return outgoingFriendRequest;
     }
 }

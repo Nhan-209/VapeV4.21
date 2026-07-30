@@ -43,7 +43,7 @@ extends Mapping {
         if (this.r == null) {
             return;
         }
-        this.r.c(object, bl);
+        this.r.invokeVoid(object, bl);
     }
 
     public static void m(MFramebuffer mFramebuffer, Object object) {
@@ -55,7 +55,7 @@ extends Mapping {
         if (this.P == null) {
             return;
         }
-        this.P.F(object);
+        this.P.invokeVoidNoArgs(object);
     }
 
     private void k(Object object, int n, int n2, boolean bl) {
@@ -63,10 +63,10 @@ extends Mapping {
             return;
         }
         if (ForgeVersion.MC_1_21_0.d()) {
-            this.f.c(object, n, n2);
+            this.f.invokeVoid(object, n, n2);
             return;
         }
-        this.f.c(object, n, n2, bl);
+        this.f.invokeVoid(object, n, n2, bl);
     }
 
     public static int L(MFramebuffer mFramebuffer, Object object) {
@@ -97,7 +97,7 @@ extends Mapping {
                 String string = "<init>";
                 Class clazz2 = MappedClasses.zA;
                 MFramebuffer mFramebuffer = this;
-                this.S = mFramebuffer.W(clazz2, string, bl, clazz, classArray);
+                this.S = mFramebuffer.registerInstanceMethodForOwner(clazz2, string, bl, clazz, classArray);
             } else {
                 Class[] classArray = new Class[]{Integer.TYPE, Integer.TYPE, Boolean.TYPE, Boolean.TYPE};
                 Class<Void> clazz = Void.TYPE;
@@ -112,7 +112,7 @@ extends Mapping {
             String string = "createBindFramebuffers";
             Class clazz3 = MappedClasses.Fo;
             MFramebuffer mFramebuffer = this;
-            this.V = mFramebuffer.W(clazz3, string, bl, clazz, classArray);
+            this.V = mFramebuffer.registerInstanceMethodForOwner(clazz3, string, bl, clazz, classArray);
             Class[] classArray2 = new Class[]{Integer.TYPE, Integer.TYPE, Boolean.TYPE};
             Class<Void> clazz4 = Void.TYPE;
             boolean bl2 = true;
@@ -212,7 +212,7 @@ extends Mapping {
         if (this.f == null) {
             return;
         }
-        this.f.c(object, n, n2);
+        this.f.invokeVoid(object, n, n2);
     }
 
     public static Object create(MFramebuffer mFramebuffer, int n, int n2, boolean bl) {
@@ -223,7 +223,7 @@ extends Mapping {
         if (this.W == null) {
             return;
         }
-        this.W.F(object);
+        this.W.invokeVoidNoArgs(object);
     }
 
     private Object create(int n, int n2, boolean bl) {
@@ -231,12 +231,12 @@ extends Mapping {
             return null;
         }
         if (ForgeVersion.MC_1_17.d()) {
-            return this.S.O(n, n2);
+            return this.S.newInstance(n, n2);
         }
         if (ForgeVersion.MC_1_16_5.d()) {
-            return this.S.O(n, n2, bl, false);
+            return this.S.newInstance(n, n2, bl, false);
         }
-        return this.S.O(n, n2, bl);
+        return this.S.newInstance(n, n2, bl);
     }
 
     private int r(Object object) {
@@ -247,14 +247,14 @@ extends Mapping {
         if (this.F == null) {
             return;
         }
-        this.F.F(object);
+        this.F.invokeVoidNoArgs(object);
     }
 
     private void f(Object object, int n, int n2) {
         if (this.V == null) {
             return;
         }
-        this.V.c(object, n, n2);
+        this.V.invokeVoid(object, n, n2);
     }
 
     public static void w(MFramebuffer mFramebuffer, Object object, int n, int n2, boolean bl) {
@@ -269,7 +269,7 @@ extends Mapping {
         if (this.H == null) {
             return;
         }
-        this.H.F(object);
+        this.H.invokeVoidNoArgs(object);
     }
 
     public static void f(MFramebuffer mFramebuffer, Object object, int n, int n2) {

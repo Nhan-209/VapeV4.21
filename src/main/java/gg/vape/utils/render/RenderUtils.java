@@ -42,7 +42,7 @@ public final class RenderUtils {
     static IntBuffer g;
 
     public static void C() {
-        double d = 2.0 * Vape.INSTANCE.getClientSettings().s();
+        double d = 2.0 * Vape.INSTANCE.getClientSettings().getGuiScaleFactor();
         int n = Minecraft.h() - MouseInput.getInvertedMouseY();
         w = new MousePosition((int)((double)MouseInput.getMouseX() / d), (int)((double)n / d));
     }
@@ -114,7 +114,7 @@ public final class RenderUtils {
         gg.vape.wrapper.impl.GL11.X(2978, intBuffer);
         k.push(new GlScissorRect(intBuffer.get(0), intBuffer.get(1), intBuffer.get(2), intBuffer.get(3)));
         int n = Minecraft.h();
-        double d5 = 2.0 * Vape.INSTANCE.getClientSettings().s();
+        double d5 = 2.0 * Vape.INSTANCE.getClientSettings().getGuiScaleFactor();
         int n2 = (int)(d3 * d5);
         int n3 = (int)(d4 * d5);
         double d6 = d * d5;
@@ -308,7 +308,7 @@ public final class RenderUtils {
         }
         int n5 = Minecraft.h();
         int n6 = Minecraft.J();
-        double d5 = 2.0 * Vape.INSTANCE.getClientSettings().s();
+        double d5 = 2.0 * Vape.INSTANCE.getClientSettings().getGuiScaleFactor();
         int n7 = (int)(d3 * d5);
         int n8 = (int)(d4 * d5);
         double d6 = d * d5;

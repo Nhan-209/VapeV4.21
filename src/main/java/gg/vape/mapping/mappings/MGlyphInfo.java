@@ -147,8 +147,8 @@ extends Mapping {
     }
 
     public Object H(Object object) {
-        if (this.Z != null && !this.Z.h()) {
-            return this.Z.L(object, new Object[0]);
+        if (this.Z != null && !this.Z.hasResolutionFailed()) {
+            return this.Z.invokeObject(object, new Object[0]);
         }
         if (this.k == null) {
             return null;

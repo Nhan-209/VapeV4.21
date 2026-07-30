@@ -21,47 +21,47 @@ implements INamed {
     private final String name;
     private final boolean multiValue;
 
-    public boolean matchesAny(String string, List<String> list) {
-        for (String string2 : list) {
-            if (!this.matches(string, string2)) continue;
+    public boolean matchesAny(String value, List<String> candidates) {
+        for (String candidate : candidates) {
+            if (!this.matches(value, candidate)) continue;
             return true;
         }
         return false;
     }
 
-    public boolean matches(String string, String string2) {
-        string = string.toLowerCase();
-        string2 = string2.toLowerCase();
+    public boolean matches(String value, String candidate) {
+        value = value.toLowerCase();
+        candidate = candidate.toLowerCase();
         switch (this) {
             case EQUALS: {
-                return string.equals(string2);
+                return value.equals(candidate);
             }
             case DOES_NOT_EQUAL: {
-                return !string.equals(string2);
+                return !value.equals(candidate);
             }
             case MATCH_REGEX: {
-                return string.matches(string2);
+                return value.matches(candidate);
             }
             case DOES_NOT_MATCH_REGEX: {
-                return !string.matches(string2);
+                return !value.matches(candidate);
             }
             case CONTAINS: 
             case IS_IN: {
-                return string.contains(string2);
+                return value.contains(candidate);
             }
             case DOES_NOT_CONTAIN: 
             case IS_NOT_IN: {
-                return !string.contains(string2);
+                return !value.contains(candidate);
             }
         }
         return false;
     }
 
     @Nullable
-    public static TextMatchMode findByName(String string) {
-        for (TextMatchMode textMatchMode : VALUES) {
-            if (!textMatchMode.getName().equalsIgnoreCase(string)) continue;
-            return textMatchMode;
+    public static TextMatchMode findByName(String name) {
+        for (TextMatchMode mode : VALUES) {
+            if (!mode.getName().equalsIgnoreCase(name)) continue;
+            return mode;
         }
         return null;
     }
@@ -80,22 +80,22 @@ implements INamed {
         return this.multiValue;
     }
 
-    private TextMatchMode(String string2, boolean bl) {
-        this.name = string2;
-        this.multiValue = bl;
+    private TextMatchMode(String name, boolean multiValue) {
+        this.name = name;
+        this.multiValue = multiValue;
     }
 
-    private TextMatchMode(String string2) {
-        this(string2, false);
+    private TextMatchMode(String name) {
+        this(name, false);
     }
 
-    public static TextMatchMode fromName(String string) {
-        return TextMatchMode.fromNameOrDefault(string, EQUALS);
+    public static TextMatchMode fromName(String name) {
+        return TextMatchMode.fromNameOrDefault(name, EQUALS);
     }
 
-    public static TextMatchMode fromNameOrDefault(String string, TextMatchMode textMatchMode) {
-        TextMatchMode textMatchMode2 = TextMatchMode.findByName(string);
-        return textMatchMode2 == null ? textMatchMode : textMatchMode2;
+    public static TextMatchMode fromNameOrDefault(String name, TextMatchMode fallback) {
+        TextMatchMode mode = TextMatchMode.findByName(name);
+        return mode == null ? fallback : mode;
     }
 }
 

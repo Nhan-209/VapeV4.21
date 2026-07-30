@@ -19,146 +19,145 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nullable;
 
 public class PublicProfileReview {
-    private final PublicProfileUser C;
+    private final PublicProfileUser commenter;
     @Nullable
-    private Boolean w;
-    static final boolean T = !PublicProfileReview.class.desiredAssertionStatus();
-    private final String l;
-    private final long R;
-    private final Date t;
-    private final boolean F;
-    private final Date g;
-    private final boolean n;
-    private final long m;
+    private Boolean read;
+    static final boolean ASSERTIONS_DISABLED = !PublicProfileReview.class.desiredAssertionStatus();
+    private final String message;
+    private final long commentId;
+    private final Date updatedDate;
+    private final boolean latest;
+    private final Date createdDate;
+    private final boolean liked;
+    private final long version;
     @Nullable
-    private PublicProfileReviewResponse v;
-    private final long e;
+    private PublicProfileReviewResponse response;
+    private final long profileId;
 
-    public boolean g() {
-        return this.F;
+    public boolean isLatest() {
+        return this.latest;
     }
 
-    public String I() {
-        return this.l;
+    public String getMessage() {
+        return this.message;
     }
 
-    public void o(boolean bl) {
-        this.w = bl;
+    public void setRead(boolean read) {
+        this.read = read;
     }
 
     @Nullable
     @Contract(value="!null -> !null; null -> null")
-    public static PublicProfileReview a(@Nullable JsonElement jsonElement) {
-        if (jsonElement == null || jsonElement.isJsonNull()) {
+    public static PublicProfileReview fromJson(@Nullable JsonElement element) {
+        if (element == null || element.isJsonNull()) {
             return null;
         }
-        JsonObject jsonObject = jsonElement.getAsJsonObject();
+        JsonObject object = element.getAsJsonObject();
         try {
-            return new PublicProfileReview(jsonObject.get("commentId").getAsLong(), jsonObject.get("profileId").getAsLong(), ApiHttpClient.U(jsonObject.get("createdDate").getAsString()), ApiHttpClient.U(jsonObject.get("updatedDate").getAsString()), PublicProfileUser.K(jsonObject.get("commenter")), jsonObject.get("message").getAsString(), jsonObject.get("liked").getAsBoolean(), jsonObject.get("version").getAsLong(), jsonObject.get("latest").getAsBoolean(), ConfigJsonUtils.t(jsonObject, "read"), PublicProfileReviewResponse.p(jsonObject.get("response")));
+            return new PublicProfileReview(object.get("commentId").getAsLong(), object.get("profileId").getAsLong(), ApiHttpClient.parseApiDate(object.get("createdDate").getAsString()), ApiHttpClient.parseApiDate(object.get("updatedDate").getAsString()), PublicProfileUser.fromJson(object.get("commenter")), object.get("message").getAsString(), object.get("liked").getAsBoolean(), object.get("version").getAsLong(), object.get("latest").getAsBoolean(), ConfigJsonUtils.getBoolean(object, "read"), PublicProfileReviewResponse.fromJson(object.get("response")));
         }
         catch (ParseException parseException) {
             throw new RuntimeException(parseException);
         }
     }
 
-    public boolean I$src$Z$148jdrc() {
-        return this.w != null && this.w == false;
+    public boolean isUnread() {
+        return this.read != null && this.read == false;
     }
 
     @Nullable
-    public PublicProfileReviewResponse H() {
-        return this.v;
+    public PublicProfileReviewResponse getResponse() {
+        return this.response;
     }
 
-    public void U(@Nullable PublicProfileReviewResponse publicProfileReviewResponse) {
-        this.v = publicProfileReviewResponse;
+    public void setResponse(@Nullable PublicProfileReviewResponse response) {
+        this.response = response;
     }
 
-    public boolean X() {
-        return this.n;
+    public boolean isLiked() {
+        return this.liked;
     }
 
-    public Date a() {
-        return this.t;
+    public Date getUpdatedDate() {
+        return this.updatedDate;
     }
 
     public String toString() {
-        return "PublicProfileReview{commentId=" + this.R + ", profileId=" + this.e + ", date=" + this.g + ", commenter=" + this.C + ", message='" + this.l + '\'' + ", liked=" + this.n + ", version=" + this.m + ", latest=" + this.F + ", response=" + this.v + '}';
+        return "PublicProfileReview{commentId=" + this.commentId + ", profileId=" + this.profileId + ", date=" + this.createdDate + ", commenter=" + this.commenter + ", message='" + this.message + '\'' + ", liked=" + this.liked + ", version=" + this.version + ", latest=" + this.latest + ", response=" + this.response + '}';
     }
 
-    public boolean L() {
-        return this.w != null && this.w != false;
+    public boolean isRead() {
+        return this.read != null && this.read != false;
     }
 
-    public long R() {
-        return this.m;
+    public long getVersion() {
+        return this.version;
     }
 
-    private static Exception a(Exception exception) {
-        return exception;
+    private static Exception preserveException(Exception error) {
+        return error;
     }
 
-    public long M() {
-        return this.R;
+    public long getCommentId() {
+        return this.commentId;
     }
 
     @Nullable
-    public Boolean A() {
-        return this.w;
+    public Boolean getRead() {
+        return this.read;
     }
 
-    PublicProfileReview(long l, long l2, Date date, Date date2, PublicProfileUser publicProfileUser, String string, boolean bl, long l3, boolean bl2, @Nullable Boolean bl3, @Nullable PublicProfileReviewResponse publicProfileReviewResponse) {
-        this.R = l;
-        this.e = l2;
-        this.g = date;
-        this.t = date2;
-        this.C = publicProfileUser;
-        this.l = string;
-        this.n = bl;
-        this.m = l3;
-        this.F = bl2;
-        this.w = bl3;
-        this.v = publicProfileReviewResponse;
+    PublicProfileReview(long commentId, long profileId, Date createdDate, Date updatedDate, PublicProfileUser commenter, String message, boolean liked, long version, boolean latest, @Nullable Boolean read, @Nullable PublicProfileReviewResponse response) {
+        this.commentId = commentId;
+        this.profileId = profileId;
+        this.createdDate = createdDate;
+        this.updatedDate = updatedDate;
+        this.commenter = commenter;
+        this.message = message;
+        this.liked = liked;
+        this.version = version;
+        this.latest = latest;
+        this.read = read;
+        this.response = response;
     }
 
-    public long j() {
-        return this.e;
+    public long getProfileId() {
+        return this.profileId;
     }
 
-    public void B(PublicProfile publicProfile, Runnable runnable) {
-        ApiServices.d().R().P(this).whenCompleteAsync((arg_0, arg_1) -> this.lambda$deleteReview$0(publicProfile, runnable, arg_0, arg_1), (Executor)ClientSettings.UI_EXECUTOR);
+    public void delete(PublicProfile publicProfile, Runnable completionCallback) {
+        ApiServices.getInstance().getPublicProfileApi().deleteReview(this).whenCompleteAsync((apiResponse, error) -> this.handleDeleteResponse(publicProfile, completionCallback, apiResponse, error), (Executor)ClientSettings.UI_EXECUTOR);
     }
 
-    public PublicProfileUser F() {
-        return this.C;
+    public PublicProfileUser getCommenter() {
+        return this.commenter;
     }
 
-    private void lambda$deleteReview$0(PublicProfile publicProfile, Runnable runnable, ApiResponse apiResponse, Throwable throwable) {
-        if (throwable != null) {
-            Vape.logThrowable(throwable);
+    private void handleDeleteResponse(PublicProfile publicProfile, Runnable completionCallback, ApiResponse apiResponse, Throwable error) {
+        if (error != null) {
+            Vape.logThrowable(error);
             return;
         }
-        if (!apiResponse.t()) {
-            Vape.debugLog("Failed to delete review: " + apiResponse.N());
-            PublicProfileManager.b("Failed to delete review: " + apiResponse.N());
+        if (!apiResponse.isSuccessful()) {
+            Vape.debugLog("Failed to delete review: " + apiResponse.getError());
+            PublicProfileManager.showWarning("Failed to delete review: " + apiResponse.getError());
             return;
         }
-        if (!T && apiResponse.T() == null) {
+        if (!ASSERTIONS_DISABLED && apiResponse.getData() == null) {
             throw new AssertionError();
         }
-        publicProfile.B(null);
-        if (this.n) {
-            publicProfile.E(publicProfile.J() - 1L);
+        publicProfile.setViewerReview(null);
+        if (this.liked) {
+            publicProfile.setLikes(publicProfile.getLikes() - 1L);
         } else {
-            publicProfile.b(publicProfile.W() - 1L);
+            publicProfile.setDislikes(publicProfile.getDislikes() - 1L);
         }
-        if (runnable != null) {
-            runnable.run();
+        if (completionCallback != null) {
+            completionCallback.run();
         }
     }
 
-    public Date P() {
-        return this.g;
+    public Date getCreatedDate() {
+        return this.createdDate;
     }
 }
-

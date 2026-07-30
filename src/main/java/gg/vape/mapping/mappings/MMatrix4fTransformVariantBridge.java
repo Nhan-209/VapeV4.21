@@ -14,7 +14,7 @@ extends Mapping {
     private MappingMethod Q;
 
     private Object M(Object object) {
-        return this.V.L(object, new Object[0]);
+        return this.V.invokeObject(object, new Object[0]);
     }
 
     public static Object B(MMatrix4fTransformVariantBridge mMatrix4fTransformVariantBridge, Object object) {
@@ -30,7 +30,7 @@ extends Mapping {
     }
 
     private Object T(Object object, float f, float f2, float f3) {
-        return this.c.L(object, Float.valueOf(f), Float.valueOf(f2), Float.valueOf(f3));
+        return this.c.invokeObject(object, Float.valueOf(f), Float.valueOf(f2), Float.valueOf(f3));
     }
 
     public static Object D(MMatrix4fTransformVariantBridge mMatrix4fTransformVariantBridge, Object object) {
@@ -38,7 +38,7 @@ extends Mapping {
     }
 
     private Object J(Object object) {
-        return this.i.L(object, new Object[0]);
+        return this.i.invokeObject(object, new Object[0]);
     }
 
     public static Object L(MMatrix4fTransformVariantBridge mMatrix4fTransformVariantBridge, Object object, float f, float f2, float f3) {
@@ -46,7 +46,7 @@ extends Mapping {
     }
 
     private Object j(Object object, float f, float f2, float f3) {
-        return this.k.L(object, Float.valueOf(f), Float.valueOf(f2), Float.valueOf(f3));
+        return this.k.invokeObject(object, Float.valueOf(f), Float.valueOf(f2), Float.valueOf(f3));
     }
 
     public MMatrix4fTransformVariantBridge() {
@@ -69,25 +69,25 @@ extends Mapping {
         String string3 = "translate";
         Class clazz4 = MappedClasses.qr;
         MMatrix4fTransformVariantBridge mMatrix4fTransformVariantBridge3 = this;
-        this.c = this.W(clazz4, string3, bl3, clazz3, classArray3);
+        this.c = this.registerInstanceMethodForOwner(clazz4, string3, bl3, clazz3, classArray3);
         Class[] classArray4 = new Class[]{Float.TYPE, Float.TYPE, Float.TYPE};
         Class clazz5 = MappedClasses.qr;
         boolean bl4 = false;
         String string4 = "scale";
         Class clazz6 = MappedClasses.qr;
         MMatrix4fTransformVariantBridge mMatrix4fTransformVariantBridge4 = this;
-        this.k = this.W(clazz6, string4, bl4, clazz5, classArray4);
+        this.k = this.registerInstanceMethodForOwner(clazz6, string4, bl4, clazz5, classArray4);
         Class[] classArray5 = new Class[]{};
         Class clazz7 = MappedClasses.qr;
         boolean bl5 = false;
         String string5 = "identity";
         Class clazz8 = MappedClasses.qr;
         MMatrix4fTransformVariantBridge mMatrix4fTransformVariantBridge5 = this;
-        this.i = this.W(clazz8, string5, bl5, clazz7, classArray5);
+        this.i = this.registerInstanceMethodForOwner(clazz8, string5, bl5, clazz7, classArray5);
     }
 
     private Object k(Object object) {
-        return this.Q.L(object, new Object[0]);
+        return this.Q.invokeObject(object, new Object[0]);
     }
 }
 

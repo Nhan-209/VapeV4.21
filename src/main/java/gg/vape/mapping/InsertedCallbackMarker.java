@@ -1,23 +1,22 @@
 package gg.vape.mapping;
 
 public class InsertedCallbackMarker {
-    private static String[] k;
+    private static String[] obfuscationTable;
 
-    public static void T() {
+    public static void initializeMarker() {
     }
 
-    public static void X(String[] stringArray) {
-        k = stringArray;
+    public static void setObfuscationTable(String[] table) {
+        obfuscationTable = table;
     }
 
-    public static String[] b() {
-        return k;
+    public static String[] getObfuscationTable() {
+        return obfuscationTable;
     }
 
     static {
-        if (InsertedCallbackMarker.b() != null) {
-            InsertedCallbackMarker.X(new String[3]);
+        if (InsertedCallbackMarker.getObfuscationTable() != null) {
+            InsertedCallbackMarker.setObfuscationTable(new String[3]);
         }
     }
 }
-

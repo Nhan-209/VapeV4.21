@@ -49,11 +49,11 @@ extends SimpleTextLabelComponent {
             contentHeight += fontRenderer.d(line) + 1.0;
         }
         double tooltipX = this.G$src$D$1b2f02a() + 8.0;
-        if (tooltipX + contentWidth + 8.0 > (double)Minecraft.J() / Vape.INSTANCE.getClientSettings().s() / 2.0) {
+        if (tooltipX + contentWidth + 8.0 > (double)Minecraft.J() / Vape.INSTANCE.getClientSettings().getGuiScaleFactor() / 2.0) {
             tooltipX = tooltipX - contentWidth - 6.0 - 12.0;
         }
         double tooltipY = this.n();
-        if (tooltipY + contentHeight + 2.5 + 2.0 > (double)Minecraft.h() / Vape.INSTANCE.getClientSettings().s() / 2.0) {
+        if (tooltipY + contentHeight + 2.5 + 2.0 > (double)Minecraft.h() / Vape.INSTANCE.getClientSettings().getGuiScaleFactor() / 2.0) {
             tooltipY = tooltipY - contentHeight - 2.5;
         }
         GuiRenderPrimitives.I(tooltipX, tooltipY, contentWidth + 6.0, contentHeight + 2.5, ToolTips.J.r, true, 2.0f, 1.0f, 6.0f, ToolTips.J.i);

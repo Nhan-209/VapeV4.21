@@ -75,24 +75,24 @@ public class PingTargetData {
     }
 
     public PingTargetData(ZeusPacketBuffer zeusPacketBuffer) {
-        this.r = zeusPacketBuffer.Y(PingTargetKind.class);
+        this.r = zeusPacketBuffer.readEnum(PingTargetKind.class);
         if (this.r == PingTargetKind.POSITION) {
-            this.P = zeusPacketBuffer.S();
-            this.A = zeusPacketBuffer.S();
-            this.M = zeusPacketBuffer.S();
+            this.P = zeusPacketBuffer.readDouble();
+            this.A = zeusPacketBuffer.readDouble();
+            this.M = zeusPacketBuffer.readDouble();
         } else if (this.r == PingTargetKind.BLOCK) {
-            this.o = zeusPacketBuffer.k();
-            this.z = zeusPacketBuffer.k();
-            this.f = zeusPacketBuffer.k();
+            this.o = zeusPacketBuffer.readInt();
+            this.z = zeusPacketBuffer.readInt();
+            this.f = zeusPacketBuffer.readInt();
         } else if (this.r == PingTargetKind.ENTITY) {
-            this.Z = zeusPacketBuffer.k();
-            this.w = zeusPacketBuffer.long_a();
+            this.Z = zeusPacketBuffer.readInt();
+            this.w = zeusPacketBuffer.readLong();
             if (this.w == -1L) {
                 this.w = null;
             }
-            this.P = zeusPacketBuffer.S();
-            this.A = zeusPacketBuffer.S();
-            this.M = zeusPacketBuffer.S();
+            this.P = zeusPacketBuffer.readDouble();
+            this.A = zeusPacketBuffer.readDouble();
+            this.M = zeusPacketBuffer.readDouble();
         }
     }
 
@@ -107,32 +107,32 @@ public class PingTargetData {
     }
 
     public void n(ZeusPacketBuffer zeusPacketBuffer) {
-        zeusPacketBuffer.U(this.r);
+        zeusPacketBuffer.writeEnum(this.r);
         if (this.r == PingTargetKind.POSITION) {
             if (!(b || this.P != null && this.A != null && this.M != null)) {
                 throw new AssertionError();
             }
-            zeusPacketBuffer.x(this.P);
-            zeusPacketBuffer.x(this.A);
-            zeusPacketBuffer.x(this.M);
+            zeusPacketBuffer.writeDouble(this.P);
+            zeusPacketBuffer.writeDouble(this.A);
+            zeusPacketBuffer.writeDouble(this.M);
         } else if (this.r == PingTargetKind.BLOCK) {
             if (!(b || this.o != null && this.z != null && this.f != null)) {
                 throw new AssertionError();
             }
-            zeusPacketBuffer.K(this.o);
-            zeusPacketBuffer.K(this.z);
-            zeusPacketBuffer.K(this.f);
+            zeusPacketBuffer.writeInt(this.o);
+            zeusPacketBuffer.writeInt(this.z);
+            zeusPacketBuffer.writeInt(this.f);
         } else if (this.r == PingTargetKind.ENTITY) {
             if (!(b || this.Z != null && this.P != null && this.A != null && this.M != null)) {
                 throw new AssertionError();
             }
-            zeusPacketBuffer.K(this.Z);
+            zeusPacketBuffer.writeInt(this.Z);
             ZeusPacketBuffer zeusPacketBuffer2 = zeusPacketBuffer;
             long l = this.w != null ? this.w : -1L;
-            zeusPacketBuffer2.v(l);
-            zeusPacketBuffer.x(this.P);
-            zeusPacketBuffer.x(this.A);
-            zeusPacketBuffer.x(this.M);
+            zeusPacketBuffer2.writeLong(l);
+            zeusPacketBuffer.writeDouble(this.P);
+            zeusPacketBuffer.writeDouble(this.A);
+            zeusPacketBuffer.writeDouble(this.M);
         }
     }
 

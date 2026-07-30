@@ -68,7 +68,7 @@ extends ClickGuiPageBase {
         this.searchResultsPanel.removeMarkedChildren();
         ClickGuiFriendsFriendActionComponent clickGuiFriendsFriendActionComponent = new ClickGuiFriendsFriendActionComponent("\"" + searchQuery + "\"", "Search Result");
         clickGuiFriendsFriendActionComponent.o(this.contentPanel.A());
-        boolean alreadyFriend = Vape.INSTANCE.getFriendManager().E(searchQuery);
+        boolean alreadyFriend = Vape.INSTANCE.getFriendManager().isFriend(searchQuery);
         clickGuiFriendsFriendActionComponent.setRemoveMode(alreadyFriend);
         clickGuiFriendsFriendActionComponent.setAddPrimaryClickListener(() -> this.addFriendByName(searchQuery));
         clickGuiFriendsFriendActionComponent.setRemovePrimaryClickListener(() -> this.removeFriendByName(searchQuery));
@@ -84,7 +84,7 @@ extends ClickGuiPageBase {
                 arrayList.add(nearbyPlayerName);
                 ClickGuiFriendsFriendActionComponent nearbyPlayerComponent = new ClickGuiFriendsFriendActionComponent(nearbyPlayerName, "Nearby", entityPlayer);
                 nearbyPlayerComponent.o(this.contentPanel.A());
-                boolean nearbyPlayerIsFriend = Vape.INSTANCE.getFriendManager().E(nearbyPlayerName);
+                boolean nearbyPlayerIsFriend = Vape.INSTANCE.getFriendManager().isFriend(nearbyPlayerName);
                 nearbyPlayerComponent.setRemoveMode(nearbyPlayerIsFriend);
                 nearbyPlayerComponent.setAddPrimaryClickListener(() -> this.addFriendByName(nearbyPlayerName));
                 nearbyPlayerComponent.setRemovePrimaryClickListener(() -> this.removeFriendByName(nearbyPlayerName));
@@ -99,7 +99,7 @@ extends ClickGuiPageBase {
                 arrayList.add(onlinePlayerName);
                 ClickGuiFriendsFriendActionComponent clickGuiFriendsFriendActionComponent2 = new ClickGuiFriendsFriendActionComponent(onlinePlayerName, "Online Player", null, playerInfo);
                 clickGuiFriendsFriendActionComponent2.o(this.contentPanel.A());
-                boolean bl3 = Vape.INSTANCE.getFriendManager().E(onlinePlayerName);
+                boolean bl3 = Vape.INSTANCE.getFriendManager().isFriend(onlinePlayerName);
                 clickGuiFriendsFriendActionComponent2.setRemoveMode(bl3);
                 clickGuiFriendsFriendActionComponent2.setAddPrimaryClickListener(() -> this.addFriendByName(onlinePlayerName));
                 clickGuiFriendsFriendActionComponent2.setRemovePrimaryClickListener(() -> this.removeFriendByName(onlinePlayerName));
@@ -140,15 +140,15 @@ extends ClickGuiPageBase {
         friendModuleInteractiveComponent2.addClickListener(this::selectOnlineSource);
         this.getSidebarContent().h((GuiComponent)new PaddedComponent(0.0, 3.0, 0.0, 0.0, (GuiComponent)friendModuleInteractiveComponent), new Object[]{"wrap"});
         this.getSidebarContent().h((GuiComponent)new PaddedComponent(0.0, 3.0, 0.0, 0.0, (GuiComponent)friendModuleInteractiveComponent2), new Object[]{"wrap"});
-        PartyManager partyManager = Vape.INSTANCE.getOnlineManager().y();
-        boolean bl = partyManager.j() != null;
-        LocalOnlineFriend localOnlineFriend = Vape.INSTANCE.getOnlineManager().r();
-        OnlineStatus onlineStatus = localOnlineFriend != null ? localOnlineFriend.F() : null;
-        String string = this.firstNonBlank(localOnlineFriend != null ? localOnlineFriend.C() : null, "You");
-        String string2 = onlineStatus != null ? onlineStatus.f() : "Offline";
+        PartyManager partyManager = Vape.INSTANCE.getOnlineManager().getPartyManager();
+        boolean bl = partyManager.getCurrentParty() != null;
+        LocalOnlineFriend localOnlineFriend = Vape.INSTANCE.getOnlineManager().getLocalFriend();
+        OnlineStatus onlineStatus = localOnlineFriend != null ? localOnlineFriend.getStatus() : null;
+        String string = this.firstNonBlank(localOnlineFriend != null ? localOnlineFriend.getDisplayName() : null, "You");
+        String string2 = onlineStatus != null ? onlineStatus.getDisplayName() : "Offline";
         ClickGuiFriendsFriendStatusComponent clickGuiFriendsFriendStatusComponent = new ClickGuiFriendsFriendStatusComponent(string, string2, bl);
         clickGuiFriendsFriendStatusComponent.setHorizontalInset(0.0);
-        clickGuiFriendsFriendStatusComponent.setStatusColor(onlineStatus != null ? onlineStatus.P() : null);
+        clickGuiFriendsFriendStatusComponent.setStatusColor(onlineStatus != null ? onlineStatus.getColor() : null);
         clickGuiFriendsFriendStatusComponent.setStatusText(string2);
         clickGuiFriendsFriendStatusComponent.setPartyVisible(bl);
         clickGuiFriendsFriendStatusComponent.setClickListener(this::openOnlineSettings);
@@ -202,17 +202,17 @@ extends ClickGuiPageBase {
     }
 
     private void openFriendSettings(FriendEntry friendEntry) {
-        this.mainFrame.showOverlay(ClickGuiOverlaySpec.builder().title(friendEntry.s()).sidecarIcon("newsettings").placement(ClickGuiOverlayPlacement.DOCKED).initializeContent(panel -> this.populateFriendSettings(friendEntry, (PanelComponent)panel)).build());
+        this.mainFrame.showOverlay(ClickGuiOverlaySpec.builder().title(friendEntry.getName()).sidecarIcon("newsettings").placement(ClickGuiOverlayPlacement.DOCKED).initializeContent(panel -> this.populateFriendSettings(friendEntry, (PanelComponent)panel)).build());
     }
 
     private static int getOnlineStatusOrder(OnlineFriend onlineFriend) {
-        OnlineStatus onlineStatus = onlineFriend.F();
+        OnlineStatus onlineStatus = onlineFriend.getStatus();
         return onlineStatus != null ? onlineStatus.ordinal() : Integer.MAX_VALUE;
     }
 
     private void removeFriend(FriendEntry friendEntry) {
-        Vape.INSTANCE.getFriendManager().E(friendEntry);
-        Vape.INSTANCE.getNotificationManager().showInfo("\u00a7cRemoved\u00a7r " + friendEntry.s() + " from friends", "", 2000L);
+        Vape.INSTANCE.getFriendManager().removeFriend(friendEntry);
+        Vape.INSTANCE.getNotificationManager().showInfo("\u00a7cRemoved\u00a7r " + friendEntry.getName() + " from friends", "", 2000L);
         this.refreshSearchResults();
     }
 
@@ -297,9 +297,9 @@ extends ClickGuiPageBase {
     }
 
     private void removeFriendByName(String string) {
-        FriendEntry friendEntry = Vape.INSTANCE.getFriendManager().O(string);
+        FriendEntry friendEntry = Vape.INSTANCE.getFriendManager().findTargetedFriend(string);
         if (friendEntry != null) {
-            Vape.INSTANCE.getFriendManager().E(friendEntry);
+            Vape.INSTANCE.getFriendManager().removeFriend(friendEntry);
             Vape.INSTANCE.getNotificationManager().showInfo("\u00a7cRemoved\u00a7r " + string + " from friends", "", 2000L);
             this.refreshSearchResults();
         }
@@ -310,8 +310,8 @@ extends ClickGuiPageBase {
         boolean bl2 = bl;
         if (bl) {
             for (FriendEntry friendEntry : Vape.INSTANCE.getFriendManager().getFriends()) {
-                String friendName = friendEntry.s();
-                String string2 = friendEntry.o();
+                String friendName = friendEntry.getName();
+                String string2 = friendEntry.getDisplayName();
                 boolean bl4 = friendName != null && friendName.toLowerCase().contains(string);
                 boolean bl3 = string2 != null && string2.toLowerCase().contains(string);
                 boolean bl5 = bl3;
@@ -342,7 +342,7 @@ extends ClickGuiPageBase {
     }
 
     private void addFriendByName(String string) {
-        Vape.INSTANCE.getFriendManager().u((FriendEntry)new Friend(string, string));
+        Vape.INSTANCE.getFriendManager().addFriend((FriendEntry)new Friend(string, string));
         Vape.INSTANCE.getNotificationManager().showInfo("\u00a7aAdded\u00a7r " + string + " to friends", "", 2000L);
         this.refreshSearchResults();
     }
@@ -406,13 +406,13 @@ extends ClickGuiPageBase {
         Object object;
         int onlineFriend = 0;
         this.getMainContent().removeMarkedChildren();
-        PartyManager partyManager = Vape.INSTANCE.getOnlineManager().y();
-        Collection<PartyInvite> collection = partyManager.n();
-        boolean bl = partyManager.j() != null;
+        PartyManager partyManager = Vape.INSTANCE.getOnlineManager().getPartyManager();
+        Collection<PartyInvite> collection = partyManager.getInvites();
+        boolean bl = partyManager.getCurrentParty() != null;
         this.getMainContent().h((GuiComponent)new PaddedComponent(0.0, 3.0, 0.0, 0.0, (GuiComponent)this.createSectionLabel("Party")), new Object[]{"wrap"});
         boolean bl2 = false;
         if (bl) {
-            PartyMemberEntryComponent partyMemberEntryComponent = new PartyMemberEntryComponent(() -> ((PartyManager)partyManager).j());
+            PartyMemberEntryComponent partyMemberEntryComponent = new PartyMemberEntryComponent(() -> ((PartyManager)partyManager).getCurrentParty());
             partyMemberEntryComponent.o(this.getMainContent().A());
             this.getMainContent().h((GuiComponent)new PaddedComponent(0.0, 3.0, 0.0, 0.0, (GuiComponent)partyMemberEntryComponent), new Object[0]);
             bl2 = true;
@@ -428,7 +428,7 @@ extends ClickGuiPageBase {
         } else {
             this.getMainContent().h((GuiComponent)new SpacerComponent(0.0, 6.0), new Object[0]);
         }
-        ArrayList<OnlineFriend> arrayList = new ArrayList<OnlineFriend>(Vape.INSTANCE.getOnlineFriendManager().g());
+        ArrayList<OnlineFriend> arrayList = new ArrayList<OnlineFriend>(Vape.INSTANCE.getOnlineFriendManager().getFriends());
         arrayList.sort(Comparator.comparingInt(ClickGuiFriendsPage::getOnlineStatusOrder).thenComparing(ClickGuiFriendsPage::getOnlineFriendName, String.CASE_INSENSITIVE_ORDER));
         int n = arrayList.size();
         object = n > 0 ? "VAPE Friends (" + n + ")" : "VAPE Friends";
@@ -449,7 +449,7 @@ extends ClickGuiPageBase {
         }
         ArrayList<OnlineFriend> uncategorizedFriends = new ArrayList<OnlineFriend>();
         for (OnlineFriend onlineFriend2 : arrayList) {
-            iterator = onlineFriend2.F();
+            iterator = onlineFriend2.getStatus();
             if (iterator == null) {
                 uncategorizedFriends.add(onlineFriend2);
                 continue;
@@ -463,7 +463,7 @@ extends ClickGuiPageBase {
             if (bl32) {
                 this.getMainContent().h((GuiComponent)new SpacerComponent(0.0, 4.0), new Object[0]);
             }
-            SimpleTextLabelComponent simpleTextLabelComponent = this.createWrappedInfoLabel(onlineStatus.f());
+            SimpleTextLabelComponent simpleTextLabelComponent = this.createWrappedInfoLabel(onlineStatus.getDisplayName());
             this.getMainContent().h((GuiComponent)new PaddedComponent(0.0, 3.0, 0.0, 0.0, (GuiComponent)simpleTextLabelComponent), new Object[]{"wrap"});
             for (OnlineFriend onlineFriend2 : list) {
                 ClickGuiFriendsFriendListComponent clickGuiFriendsFriendListComponent = new ClickGuiFriendsFriendListComponent(onlineFriend2);
@@ -501,7 +501,7 @@ extends ClickGuiPageBase {
         simpleTextLabelComponent.setOffsetX(0.0f);
         simpleTextLabelComponent.setExtraHeight(2);
         panelComponent.h((GuiComponent)new PaddedComponent(8.0, 0.0, 8.0, 8.0, (GuiComponent)simpleTextLabelComponent), new Object[0]);
-        String[] stringArray = new String[]{friendEntry.E() != null && !friendEntry.E().equals(friendEntry.s()) ? friendEntry.E() : ""};
+        String[] stringArray = new String[]{friendEntry.getAlias() != null && !friendEntry.getAlias().equals(friendEntry.getName()) ? friendEntry.getAlias() : ""};
         TextButton textButton = new TextButton("Y", 0.7, ClickGuiFriendsPage.J.B, ClickGuiFriendsPage.J.O, null, 2.0f, 1.0f, 12.0, 13.0);
         textButton.setUppercase(true);
         textButton.setUseAlternateFont(true);
@@ -701,12 +701,12 @@ extends ClickGuiPageBase {
             String string2 = string == null ? "" : string.trim();
             String string3 = string2;
             if (string2.isEmpty()) {
-                string2 = friend.s();
+                string2 = friend.getName();
             }
-            friend.T(string2);
+            friend.setAlias(string2);
         }
-        Vape.INSTANCE.getFriendManager().m();
-        OnlineFriendUiHelper.U();
+        Vape.INSTANCE.getFriendManager().refreshPlayerNames();
+        OnlineFriendUiHelper.refreshMinecraftFriends();
     }
 
     public static String setSearchQuery(ClickGuiFriendsPage page, String string) {
@@ -733,7 +733,7 @@ extends ClickGuiPageBase {
     }
 
     private static String getOnlineFriendName(OnlineFriend onlineFriend) {
-        String string = onlineFriend.C();
+        String string = onlineFriend.getDisplayName();
         return string == null ? "" : string;
     }
 

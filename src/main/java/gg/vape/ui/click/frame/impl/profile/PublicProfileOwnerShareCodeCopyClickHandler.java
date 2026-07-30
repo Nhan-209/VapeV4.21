@@ -19,6 +19,6 @@ implements GuiMouseListener {
     @Override
     public void g(Point point, MouseClickButton mouseClickButton) {
         NativeBridge.cpy(this.ownerDetailsPanel.getShareCode());
-        PublicProfileManager.M(SUCCESS_MESSAGE);
+        PublicProfileManager.showInfo(SUCCESS_MESSAGE);
     }
 }

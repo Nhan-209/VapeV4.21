@@ -9,7 +9,7 @@ extends Wrapper {
     }
 
     public static ChestType e() {
-        return new ChestType(ChestType.c.getMappingsMapperCompat().qa.u());
+        return new ChestType(ChestType.vapeInstance.getMappingsMapperCompat().qa.u());
     }
 }
 

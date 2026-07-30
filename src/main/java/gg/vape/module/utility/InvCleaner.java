@@ -145,7 +145,7 @@ implements InventoryActionModule {
     }
 
     private boolean shouldSkipProcessing() {
-        if (Vape.INSTANCE.getModManager().N(InvCleaner.class) || Vape.INSTANCE.getClientSettings().J$src$Z$c57s1l()) {
+        if (Vape.INSTANCE.getModManager().isOtherInventoryActionActive(InvCleaner.class) || Vape.INSTANCE.getClientSettings().isLobbyCheckActive()) {
             this.clickQueue.clear();
             this.clickTimer.reset();
             this.touchedSlots.clear();
@@ -500,7 +500,7 @@ implements InventoryActionModule {
     @Override
     public String getDetailedSuffix() {
         if (this.combatCheckValue.getEffectiveValue().booleanValue() && this.combatGuard.isBlocked()) {
-            return ClientSettings.F + "c[In Combat]";
+            return ClientSettings.FORMAT_CODE + "c[In Combat]";
         }
         return super.getDetailedSuffix();
     }
@@ -529,19 +529,19 @@ implements InventoryActionModule {
     private int getArmorSlotForItem(ItemStack itemStack) {
         ItemMappingEntry itemMappingEntry = Vape.INSTANCE.getItemStackResolver().resolve(itemStack);
         for (String string : this.bootsKeywords) {
-            if (!itemMappingEntry.M().toLowerCase().contains(string)) continue;
+            if (!itemMappingEntry.getResourceKey().toLowerCase().contains(string)) continue;
             return 8;
         }
         for (String string : this.leggingsKeywords) {
-            if (!itemMappingEntry.M().toLowerCase().contains(string)) continue;
+            if (!itemMappingEntry.getResourceKey().toLowerCase().contains(string)) continue;
             return 7;
         }
         for (String string : this.chestplateKeywords) {
-            if (!itemMappingEntry.M().toLowerCase().contains(string)) continue;
+            if (!itemMappingEntry.getResourceKey().toLowerCase().contains(string)) continue;
             return 6;
         }
         for (String string : this.helmetKeywords) {
-            if (!itemMappingEntry.M().toLowerCase().contains(string)) continue;
+            if (!itemMappingEntry.getResourceKey().toLowerCase().contains(string)) continue;
             return 5;
         }
         return -1;
@@ -574,7 +574,7 @@ implements InventoryActionModule {
         Container container = Minecraft.thePlayer().F$src$Lgg_vape_wrapper_impl_Container_$152y6lm();
         for (SlotInventoryFilterRule slotInventoryFilterRule : this.buildSlotRules()) {
             Slot targetSlot;
-            if (HiddenInventoryItemMatchers.R.equals(slotInventoryFilterRule.getItemSelection().getMatcher())) {
+            if (HiddenInventoryItemMatchers.ANY_ITEM.equals(slotInventoryFilterRule.getItemSelection().getMatcher())) {
                 this.touchedSlots.add(slotInventoryFilterRule.getContainerSlot());
             }
             targetSlot = container.getSlot(slotInventoryFilterRule.getContainerSlot());

@@ -33,7 +33,7 @@ extends OnlineEvent {
     }
 
     public FriendVisibilityUpdateEvent(ZeusClient zeusClient, FriendModel friendModel) {
-        this(zeusClient, friendModel.M(), friendModel.B());
+        this(zeusClient, friendModel.getUserId(), friendModel.isVisible());
     }
 
     static {
@@ -42,4 +42,3 @@ extends OnlineEvent {
         }
     }
 }
-

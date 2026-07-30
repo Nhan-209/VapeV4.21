@@ -14,11 +14,11 @@ extends Mapping {
     private final MappingMethod c;
 
     public Object A(Object object) {
-        return this.c.L(object, new Object[0]);
+        return this.c.invokeObject(object, new Object[0]);
     }
 
     public boolean V(Object object) {
-        return this.Z.e(object, new Object[0]);
+        return this.Z.invokeBoolean(object, new Object[0]);
     }
 
     public MIWorldNameable() {
@@ -84,11 +84,11 @@ extends Mapping {
     }
 
     public String L(Object object) {
-        return this.C.L(object, new Object[0]).toString();
+        return this.C.invokeObject(object, new Object[0]).toString();
     }
 
     public Object s(Object object) {
-        return this.C.L(object, new Object[0]);
+        return this.C.invokeObject(object, new Object[0]);
     }
 
 }

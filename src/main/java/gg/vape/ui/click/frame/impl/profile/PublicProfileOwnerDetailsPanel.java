@@ -82,7 +82,7 @@ implements EventListener {
         this.tabs = new String[]{"Settings", "Reviews", "Stats"};
         this.selectedTab = this.tabs[0];
         this.publicProfile = publicProfile;
-        this.shareInfo = publicProfile != null ? publicProfile.c() : null;
+        this.shareInfo = publicProfile != null ? publicProfile.getShareInfo() : null;
         this.snapshot = profileSnapshot;
         this.gZ = false;
         this.setDetailsCallback(this::showDetailsTabs);
@@ -110,19 +110,19 @@ implements EventListener {
 
     private void handleShareCodeRegenerated(ApiResponse<PublicProfileShareInfo> apiResponse, Throwable throwable) {
         if (throwable != null) {
-            PublicProfileManager.b("Failed to regenerate share code.");
+            PublicProfileManager.showWarning("Failed to regenerate share code.");
             Vape.logThrowable(throwable);
             return;
         }
-        if (!apiResponse.t()) {
-            PublicProfileManager.b("Failed to regenerate share code: " + apiResponse.N());
+        if (!apiResponse.isSuccessful()) {
+            PublicProfileManager.showWarning("Failed to regenerate share code: " + apiResponse.getError());
             return;
         }
-        assert apiResponse.T() != null;
-        this.publicProfile.M(((PublicProfileShareInfo)apiResponse.T()).a());
-        this.shareInfo.d(((PublicProfileShareInfo)apiResponse.T()).a());
+        assert apiResponse.getData() != null;
+        this.publicProfile.setShareCode(((PublicProfileShareInfo)apiResponse.getData()).getUppercaseShareCode());
+        this.shareInfo.setShareCode(((PublicProfileShareInfo)apiResponse.getData()).getUppercaseShareCode());
         this.e();
-        PublicProfileManager.M("Successfully updated share code!");
+        PublicProfileManager.showInfo("Successfully updated share code!");
     }
 
     private void handleProfileUpdated(ApiResponse<PublicProfile> apiResponse, Throwable throwable) {
@@ -130,14 +130,14 @@ implements EventListener {
             Vape.logThrowable(throwable);
             return;
         }
-        if (!apiResponse.t()) {
-            PublicProfileManager.b("Failed to update profile: " + apiResponse.N());
+        if (!apiResponse.isSuccessful()) {
+            PublicProfileManager.showWarning("Failed to update profile: " + apiResponse.getError());
             return;
         }
-        assert apiResponse.T() != null;
-        this.shareInfo = ((PublicProfile)apiResponse.T()).c();
-        PublicProfileManager.M("Successfully updated profile " + this.publicProfile.v() + "!");
-        Vape.INSTANCE.getPublicProfileManager().m(this.publicProfile, (PublicProfile)apiResponse.T());
+        assert apiResponse.getData() != null;
+        this.shareInfo = ((PublicProfile)apiResponse.getData()).getShareInfo();
+        PublicProfileManager.showInfo("Successfully updated profile " + this.publicProfile.getName() + "!");
+        Vape.INSTANCE.getPublicProfileManager().replaceProfile(this.publicProfile, (PublicProfile)apiResponse.getData());
         this.e();
     }
 
@@ -161,7 +161,7 @@ implements EventListener {
     }
 
     private CompletableFuture updateModulesOnly() {
-        return this.updatePublicProfile(this.publicProfile.c().v(), null, null, null, null, null, true);
+        return this.updatePublicProfile(this.publicProfile.getShareInfo().getDerivedFrom(), null, null, null, null, null, true);
     }
 
     private CompletableFuture confirmDeleteProfile() {
@@ -173,20 +173,20 @@ implements EventListener {
     }
 
     private void changeSourceProfile(Profile profile) {
-        this.shareInfo.m(profile.P$src$Ljava_util_UUID_$kdhg08());
+        this.shareInfo.setDerivedFrom(profile.getOnlineId());
         this.snapshot = ProfileSnapshot.createEditableCopy(this.publicProfile, profile);
         this.e();
     }
 
     private void queueUnreadReview(PublicProfileReview publicProfileReview) {
-        if (publicProfileReview.L()) {
+        if (publicProfileReview.isRead()) {
             return;
         }
-        this.pendingViewedReviewIds.add(publicProfileReview.M());
+        this.pendingViewedReviewIds.add(publicProfileReview.getCommentId());
     }
 
     private void deleteProfile() {
-        ApiServices.d().R().i(this.publicProfile.w()).whenCompleteAsync(this::handleProfileDeleted, ClientSettings.UI_EXECUTOR).exceptionally(PublicProfileOwnerDetailsPanel::ignoreDeleteFailure);
+        ApiServices.getInstance().getPublicProfileApi().deleteProfile(this.publicProfile.getProfileId()).whenCompleteAsync(this::handleProfileDeleted, ClientSettings.UI_EXECUTOR).exceptionally(PublicProfileOwnerDetailsPanel::ignoreDeleteFailure);
     }
 
     private CompletableFuture<RemoteProfileDataMap> updatePublicProfile(@Nullable UUID sourceProfileId, @Nullable String description, @Nullable List<String> tags, @Nullable Boolean shareCodeOnly, @Nullable Boolean anonymous, @Nullable Boolean friendsOnly, boolean includeProfileData) {
@@ -195,11 +195,11 @@ implements EventListener {
             this.snapshot.applyToProfile();
         }
         if (tags != null && tags.size() < 5) {
-            String normalizedTag = LegacyPublicProfile.S(this.tagSelector.getInput().getText().trim());
+            String normalizedTag = LegacyPublicProfile.normalizeTag(this.tagSelector.getInput().getText().trim());
             if (normalizedTag != null) {
-                String string3 = LegacyPublicProfile.e(normalizedTag);
+                String string3 = LegacyPublicProfile.validateTag(normalizedTag);
                 if (string3 != null) {
-                    PublicProfileManager.b(string3);
+                    PublicProfileManager.showWarning(string3);
                     return null;
                 }
                 tags.add(normalizedTag);
@@ -208,10 +208,10 @@ implements EventListener {
             }
         }
         JsonObject profileData = null;
-        if (includeProfileData && this.snapshot.getProfile() != null && (profileData = this.snapshot.getProfile().J$src$Lcom_google_gson_JsonObject_$16ar19y()) == null) {
-            Vape.INSTANCE.getProfilesManager().M(this.snapshot.getProfile());
+        if (includeProfileData && this.snapshot.getProfile() != null && (profileData = this.snapshot.getProfile().getData()) == null) {
+            Vape.INSTANCE.getProfilesManager().captureProfileState(this.snapshot.getProfile());
         }
-        return ApiServices.d().R().O(PublicProfilePartialJsonPayloadBuilder.c(this.publicProfile.w(), sourceProfileId, this.publicProfile.v(), description, tags, shareCodeOnly != null ? Boolean.valueOf(shareCodeOnly == false) : null, anonymous, friendsOnly, profileData))
+        return ApiServices.getInstance().getPublicProfileApi().editProfile(PublicProfilePartialJsonPayloadBuilder.build(this.publicProfile.getProfileId(), sourceProfileId, this.publicProfile.getName(), description, tags, shareCodeOnly != null ? Boolean.valueOf(shareCodeOnly == false) : null, anonymous, friendsOnly, profileData))
                 .whenCompleteAsync(this::handleProfileUpdated, ClientSettings.UI_EXECUTOR)
                 .thenComposeAsync(this::syncUpdatedProfile)
                 .thenApplyAsync(PublicProfileOwnerDetailsPanel::extractRemoteProfileData, ClientSettings.UI_EXECUTOR);
@@ -223,14 +223,14 @@ implements EventListener {
     }
 
     private CompletionStage<ApiResponse<RemoteProfileDataMap>> syncUpdatedProfile(ApiResponse<PublicProfile> apiResponse) {
-        if (apiResponse == null || !apiResponse.t()) {
+        if (apiResponse == null || !apiResponse.isSuccessful()) {
             return CompletableFuture.completedFuture(null);
         }
         Profile profile = this.snapshot.getProfile();
         if (profile == null) {
             return CompletableFuture.completedFuture(null);
         }
-        return ApiServices.d().c().F(ProfilesSyncPayloadBuilder.T(Collections.singletonList(profile), null));
+        return ApiServices.getInstance().getUserDataApi().saveProfileData(ProfilesSyncPayloadBuilder.build(Collections.singletonList(profile), null));
     }
 
 
@@ -239,25 +239,25 @@ implements EventListener {
             Vape.logThrowable(throwable);
             return;
         }
-        if (!apiResponse.t()) {
-            PublicProfileManager.b("Failed to mark reviews as read: " + apiResponse.N());
+        if (!apiResponse.isSuccessful()) {
+            PublicProfileManager.showWarning("Failed to mark reviews as read: " + apiResponse.getError());
             return;
         }
-        for (PublicProfileReview publicProfileReview : this.publicProfile.m().E()) {
-            if (!reviewIds.contains(publicProfileReview.M())) continue;
-            publicProfileReview.o(true);
-            this.updateUnreadReviewCount(this.shareInfo.o() - 1L);
+        for (PublicProfileReview publicProfileReview : this.publicProfile.getReviews().getContent()) {
+            if (!reviewIds.contains(publicProfileReview.getCommentId())) continue;
+            publicProfileReview.setRead(true);
+            this.updateUnreadReviewCount(this.shareInfo.getUnreadNotifications() - 1L);
         }
     }
 
     private List<GuiComponent> mapReviewsPage(PagedResultListComponent pagedResultListComponent, Function<PublicProfileReview, PublicProfileReviewComponent> reviewFactory, ApiResponse<PagedResult<PublicProfileReview>> apiResponse) {
-        if (!apiResponse.t()) {
+        if (!apiResponse.isSuccessful()) {
             return null;
         }
-        assert apiResponse.T() != null;
-        pagedResultListComponent.setPageMetadata(apiResponse.T());
+        assert apiResponse.getData() != null;
+        pagedResultListComponent.setPageMetadata(apiResponse.getData());
         ArrayList<GuiComponent> arrayList = new ArrayList<GuiComponent>();
-        for (PublicProfileReview publicProfileReview : apiResponse.T().E()) {
+        for (PublicProfileReview publicProfileReview : apiResponse.getData().getContent()) {
             arrayList.add(reviewFactory.apply(publicProfileReview).setDisplayedCallback(() -> this.queueUnreadReview(publicProfileReview)).setLayoutChangedCallback(PublicProfileOwnerDetailsPanel::noOp));
         }
         return arrayList;
@@ -265,11 +265,11 @@ implements EventListener {
 
     private void updateUnreadReviewCount(long unreadCount) {
         assert this.shareInfo != null;
-        this.shareInfo.O(unreadCount);
-        PublicProfile publicProfile = Vape.INSTANCE.getPublicProfileManager().A().get(this.publicProfile.w());
+        this.shareInfo.setUnreadNotifications(unreadCount);
+        PublicProfile publicProfile = Vape.INSTANCE.getPublicProfileManager().getProfilesById().get(this.publicProfile.getProfileId());
         if (publicProfile != null) {
-            assert publicProfile.c() != null;
-            publicProfile.c().O(unreadCount);
+            assert publicProfile.getShareInfo() != null;
+            publicProfile.getShareInfo().setUnreadNotifications(unreadCount);
         }
     }
 
@@ -300,7 +300,7 @@ implements EventListener {
         publicProfileOwnerFixedWidthNoSubmitInputComponent.setHorizontalInset(0.0);
         publicProfileOwnerFixedWidthNoSubmitInputComponent.setLeftInset(0.0f);
         publicProfileOwnerFixedWidthNoSubmitInputComponent.setRightInset(1.0f);
-        publicProfileOwnerFixedWidthNoSubmitInputComponent.setText(this.publicProfile.h());
+        publicProfileOwnerFixedWidthNoSubmitInputComponent.setText(this.publicProfile.getDescription());
         publicProfileOwnerFixedWidthNoSubmitInputComponent.setTextColor(PublicProfileOwnerDetailsPanel.J.A);
         publicProfileOwnerFixedWidthNoSubmitInputComponent.setPlaceholderColor(PublicProfileOwnerDetailsPanel.J.Z);
         publicProfileOwnerFixedWidthNoSubmitInputComponent.getActionButton().setVisible(false);
@@ -318,7 +318,7 @@ implements EventListener {
         simpleTextLabelComponent3.o(d3 + (double)(5.0f * 2.0f));
         flowLayoutComponent.h(simpleTextLabelComponent3, "alignright, wrap");
         this.tagSelector = new CompactPublicProfileFilterTokenSelectorComponent("+   Add Tags (optional)", this.tabContent.A(), 20.0);
-        for (String object2 : this.publicProfile.X()) {
+        for (String object2 : this.publicProfile.getTags()) {
             this.tagSelector.addToken(new PublicProfileFilterTokenComponent(object2));
         }
         flowLayoutComponent.h(this.tagSelector, "wrap");
@@ -331,20 +331,20 @@ implements EventListener {
         booleanToggleComponent.setHorizontalInset(0.0);
         booleanToggleComponent.setExplicitWidth(d2);
         booleanToggleComponent.setShowDisabledOverlay(false);
-        booleanToggleComponent.setValue(!this.shareInfo.q());
+        booleanToggleComponent.setValue(!this.shareInfo.isListedPublicly());
         flowLayoutComponent.h(booleanToggleComponent, new Object[0]);
         BooleanToggleComponent booleanToggleComponent2 = new BooleanToggleComponent("Friends only discovery", 0.8);
         booleanToggleComponent2.setHorizontalInset(0.0);
         booleanToggleComponent2.setExplicitWidth(d2);
         booleanToggleComponent2.setShowDisabledOverlay(false);
-        booleanToggleComponent2.setValue(this.shareInfo.b());
-        booleanToggleComponent2.setVisible(!this.shareInfo.q());
+        booleanToggleComponent2.setValue(this.shareInfo.isShareCodeFriendsOnly());
+        booleanToggleComponent2.setVisible(!this.shareInfo.isListedPublicly());
         flowLayoutComponent.h(booleanToggleComponent2, new Object[0]);
         booleanToggleComponent.addMouseListener(new PublicProfileOwnerBooleanToggleClickHandler(booleanToggleComponent2));
         PanelComponent panelComponent3 = new PanelComponent(d2, 16.0);
         panelComponent3.setShowDisabledOverlay(true);
         panelComponent3.setDisabledOverlayColor(PublicProfileOwnerDetailsPanel.J.R);
-        WrappingTextLabelComponent wrappingTextLabelComponent = new WrappingTextLabelComponent("Share Code: " + this.shareInfo.a(), 0.8, PublicProfileOwnerDetailsPanel.J.B);
+        WrappingTextLabelComponent wrappingTextLabelComponent = new WrappingTextLabelComponent("Share Code: " + this.shareInfo.getUppercaseShareCode(), 0.8, PublicProfileOwnerDetailsPanel.J.B);
         wrappingTextLabelComponent.o(panelComponent3.A());
         wrappingTextLabelComponent.Y(panelComponent3.L());
         wrappingTextLabelComponent.w("Click to copy to clipboard");
@@ -361,7 +361,7 @@ implements EventListener {
         booleanToggleComponent3.setHorizontalInset(0.0);
         booleanToggleComponent3.setExplicitWidth(d2);
         booleanToggleComponent3.setShowDisabledOverlay(false);
-        booleanToggleComponent3.setValue(this.shareInfo.f());
+        booleanToggleComponent3.setValue(this.shareInfo.isUploadAnonymously());
         flowLayoutComponent.h(booleanToggleComponent3, new Object[0]);
         TextLabel textLabel = new TextLabel("Remove", 0.7, true);
         textLabel.setTextColor(PublicProfileOwnerDetailsPanel.J.d);
@@ -397,7 +397,7 @@ implements EventListener {
     private void showStats() {
         this.clearTabContent();
         String[] stringArray = new String[]{"Positive reviews", "Negative reviews", "Downloads", "Created", "Updated", "Reviews"};
-        String[] stringArray2 = new String[]{String.valueOf(this.publicProfile.J()), String.valueOf(this.publicProfile.W()), String.valueOf(this.publicProfile.K()), PublicProfileDateFormatUtil.i(this.publicProfile.s$src$Ljava_util_Date_$tehmu9()), PublicProfileDateFormatUtil.i(this.publicProfile.C()), String.valueOf(this.publicProfile.m().L())};
+        String[] stringArray2 = new String[]{String.valueOf(this.publicProfile.getLikes()), String.valueOf(this.publicProfile.getDislikes()), String.valueOf(this.publicProfile.getDownloads()), PublicProfileDateFormatUtil.i(this.publicProfile.getCreationDate()), PublicProfileDateFormatUtil.i(this.publicProfile.getLatestDate()), String.valueOf(this.publicProfile.getReviews().getTotalElements())};
         this.tabContent.h(new SpacerComponent(0.0, 5.0), "wrap");
         for (int i = 0; i < stringArray.length; ++i) {
             String string = stringArray[i];
@@ -425,12 +425,12 @@ implements EventListener {
             Vape.logThrowable(throwable);
             return;
         }
-        if (!apiResponse.t()) {
-            PublicProfileManager.b("Failed to delete profile: " + apiResponse.N());
+        if (!apiResponse.isSuccessful()) {
+            PublicProfileManager.showWarning("Failed to delete profile: " + apiResponse.getError());
             return;
         }
-        PublicProfileManager.M("Successfully deleted profile " + this.publicProfile.v() + "!");
-        Vape.INSTANCE.getPublicProfileManager().Q(this.publicProfile);
+        PublicProfileManager.showInfo("Successfully deleted profile " + this.publicProfile.getName() + "!");
+        Vape.INSTANCE.getPublicProfileManager().removeProfile(this.publicProfile);
         this.profilesFrame.O(null);
     }
 
@@ -448,7 +448,7 @@ implements EventListener {
         panelComponent.t(panelComponent.L());
         panelComponent.setShowDisabledOverlay(false);
         this.tabContent.h(panelComponent, new Object[0]);
-        panelComponent.h(new DualTextLabelRowComponent("Reviews", String.valueOf(this.publicProfile.e()), 12.0, 0.9), new Object[0]);
+        panelComponent.h(new DualTextLabelRowComponent("Reviews", String.valueOf(this.publicProfile.getReviewCount()), 12.0, 0.9), new Object[0]);
         TextLabel textLabel = new TextLabel("mark all as read", 0.8, false, 50.0, 10.0);
         textLabel.setTextColor(null);
         textLabel.setSingleFutureClickListener(this::markAllReviewsRead);
@@ -480,25 +480,25 @@ implements EventListener {
             Vape.logThrowable(throwable);
             return;
         }
-        if (!apiResponse.t()) {
-            PublicProfileManager.b("Failed to mark all as read: " + apiResponse.N());
+        if (!apiResponse.isSuccessful()) {
+            PublicProfileManager.showWarning("Failed to mark all as read: " + apiResponse.getError());
             return;
         }
-        PublicProfileManager.M("Successfully marked all reviews as read!");
-        for (PublicProfileReview publicProfileReview : this.publicProfile.m().E()) {
-            if (publicProfileReview.A() == null) continue;
-            publicProfileReview.o(true);
+        PublicProfileManager.showInfo("Successfully marked all reviews as read!");
+        for (PublicProfileReview publicProfileReview : this.publicProfile.getReviews().getContent()) {
+            if (publicProfileReview.getRead() == null) continue;
+            publicProfileReview.setRead(true);
         }
         this.updateUnreadReviewCount(0L);
         this.showReviews();
     }
 
     private void regenerateShareCode() {
-        ApiServices.d().R().H(this.publicProfile.w()).whenCompleteAsync(this::handleShareCodeRegenerated, ClientSettings.UI_EXECUTOR).exceptionally(PublicProfileOwnerDetailsPanel::ignoreRegenerateFailure);
+        ApiServices.getInstance().getPublicProfileApi().regenerateShareCode(this.publicProfile.getProfileId()).whenCompleteAsync(this::handleShareCodeRegenerated, ClientSettings.UI_EXECUTOR).exceptionally(PublicProfileOwnerDetailsPanel::ignoreRegenerateFailure);
     }
 
     private CompletableFuture markAllReviewsRead() {
-        return ApiServices.d().R().b(this.publicProfile).whenCompleteAsync(this::handleAllReviewsMarkedRead, ClientSettings.UI_EXECUTOR).exceptionally(PublicProfileOwnerDetailsPanel::ignoreMarkAllFailure);
+        return ApiServices.getInstance().getPublicProfileApi().markAllReviewsRead(this.publicProfile).whenCompleteAsync(this::handleAllReviewsMarkedRead, ClientSettings.UI_EXECUTOR).exceptionally(PublicProfileOwnerDetailsPanel::ignoreMarkAllFailure);
     }
 
     private void closePanel() {
@@ -506,14 +506,14 @@ implements EventListener {
     }
 
     private CompletableFuture<List<GuiComponent>> loadReviewsPage(PagedResultListComponent pagedResultListComponent, Function<PublicProfileReview, PublicProfileReviewComponent> reviewFactory) {
-        return ApiServices.d().R().U(this.publicProfile.w(), pagedResultListComponent.getNextPageIndex()).thenApplyAsync(response -> this.mapReviewsPage(pagedResultListComponent, reviewFactory, response), (Executor)ClientSettings.UI_EXECUTOR);
+        return ApiServices.getInstance().getPublicProfileApi().getReviewPage(this.publicProfile.getProfileId(), pagedResultListComponent.getNextPageIndex()).thenApplyAsync(response -> this.mapReviewsPage(pagedResultListComponent, reviewFactory, response), (Executor)ClientSettings.UI_EXECUTOR);
     }
 
     private static RemoteProfileDataMap extractRemoteProfileData(ApiResponse<RemoteProfileDataMap> apiResponse) {
-        if (!apiResponse.t()) {
+        if (!apiResponse.isSuccessful()) {
             return null;
         }
-        return apiResponse.T();
+        return apiResponse.getData();
     }
 
     @Override
@@ -529,9 +529,9 @@ implements EventListener {
         if (this.publicProfile == null || this.shareInfo == null) {
             return;
         }
-        Profile profile = this.shareInfo.v() != null ? Vape.INSTANCE.getProfilesManager().H(this.shareInfo.v()) : null;
-        List<Profile> list = Vape.INSTANCE.getPublicProfileManager().T();
-        ArrayList<Profile> arrayList = new ArrayList<Profile>(Vape.INSTANCE.getProfilesManager().b());
+        Profile profile = this.shareInfo.getDerivedFrom() != null ? Vape.INSTANCE.getProfilesManager().getProfileByOnlineId(this.shareInfo.getDerivedFrom()) : null;
+        List<Profile> list = Vape.INSTANCE.getPublicProfileManager().getDerivedProfiles();
+        ArrayList<Profile> arrayList = new ArrayList<Profile>(Vape.INSTANCE.getProfilesManager().getProfiles());
         arrayList.removeIf(list::contains);
         ProfileSelectionPopupComponent profileSelectionPopupComponent = new ProfileSelectionPopupComponent("Derived From", profile, arrayList.toArray(new Profile[0]));
         profileSelectionPopupComponent.Y(6.0);
@@ -542,7 +542,7 @@ implements EventListener {
     }
 
     private CompletableFuture updateProfileAndDetails(TextInputComponentBase descriptionInput, BooleanToggleComponent shareCodeOnlyToggle, BooleanToggleComponent anonymousToggle, BooleanToggleComponent friendsOnlyToggle) {
-        return this.updatePublicProfile(this.publicProfile.c().v(), descriptionInput.getText(), this.tagSelector.getTokenValues(), shareCodeOnlyToggle.isOn(), anonymousToggle.isOn(), friendsOnlyToggle.isOn(), true);
+        return this.updatePublicProfile(this.publicProfile.getShareInfo().getDerivedFrom(), descriptionInput.getText(), this.tagSelector.getTokenValues(), shareCodeOnlyToggle.isOn(), anonymousToggle.isOn(), friendsOnlyToggle.isOn(), true);
     }
 
     private void flushViewedReviews() {
@@ -550,7 +550,7 @@ implements EventListener {
         ArrayList<Long> arrayList = new ArrayList<Long>(this.pendingViewedReviewIds);
         this.pendingViewedReviewIds.clear();
         if (!arrayList.isEmpty()) {
-            ApiServices.d().R().j(this.publicProfile, arrayList).whenCompleteAsync((response, error) -> this.handleReviewsMarkedViewed(arrayList, response, error), ClientSettings.UI_EXECUTOR).exceptionally(PublicProfileOwnerDetailsPanel::ignoreMarkViewedFailure);
+            ApiServices.getInstance().getPublicProfileApi().markReviewsRead(this.publicProfile, arrayList).whenCompleteAsync((response, error) -> this.handleReviewsMarkedViewed(arrayList, response, error), ClientSettings.UI_EXECUTOR).exceptionally(PublicProfileOwnerDetailsPanel::ignoreMarkViewedFailure);
         }
     }
 
@@ -579,15 +579,15 @@ implements EventListener {
             textLabel.Y(12.0);
             panelComponent.h(textLabel, new Object[0]);
             textLabel.addClickListener(() -> this.selectTab(string, panelComponent));
-            if (string.equalsIgnoreCase("reviews") && this.shareInfo.o() > 0L) {
-                PublicProfileIdBadgeComponent publicProfileIdBadgeComponent = new PublicProfileIdBadgeComponent(this.shareInfo.o());
+            if (string.equalsIgnoreCase("reviews") && this.shareInfo.getUnreadNotifications() > 0L) {
+                PublicProfileIdBadgeComponent publicProfileIdBadgeComponent = new PublicProfileIdBadgeComponent(this.shareInfo.getUnreadNotifications());
                 panelComponent.h(publicProfileIdBadgeComponent, "offsetY 3");
                 textLabel.o(textLabel.getTextWidth());
             } else {
                 textLabel.o(textLabel.getTextWidth());
             }
             panelComponent.h(new SpacerComponent(8.0, this.L()), new Object[0]);
-            if (!string.equalsIgnoreCase("reviews") || this.shareInfo.o() <= 0L) continue;
+            if (!string.equalsIgnoreCase("reviews") || this.shareInfo.getUnreadNotifications() <= 0L) continue;
             this.getClass();
             panelComponent.h(new SpacerComponent(5.0, this.L()), new Object[0]);
         }
@@ -630,6 +630,6 @@ implements EventListener {
     }
 
     String getShareCode() {
-        return this.shareInfo.a();
+        return this.shareInfo.getUppercaseShareCode();
     }
 }

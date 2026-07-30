@@ -18,20 +18,20 @@ public enum ZeusProtocolState {
     UNAUTHENTICATED(ZeusUnauthenticatedProtocolState::register),
     AUTHENTICATED(ZeusAuthenticatedProtocolState::register);
 
-    private final Map<ZeusPacketDirection, List<Class<? extends ZeusSerializablePacket>>> K = new HashMap<ZeusPacketDirection, List<Class<? extends ZeusSerializablePacket>>>();
+    private final Map<ZeusPacketDirection, List<Class<? extends ZeusSerializablePacket>>> packetClassesByDirection = new HashMap<ZeusPacketDirection, List<Class<? extends ZeusSerializablePacket>>>();
 
     ZeusProtocolState(Consumer<ZeusProtocolState> registerStatePackets) {
         for (ZeusPacketDirection zeusPacketDirection : ZeusPacketDirection.values()) {
-            this.K.put(zeusPacketDirection, new ArrayList<Class<? extends ZeusSerializablePacket>>());
+            this.packetClassesByDirection.put(zeusPacketDirection, new ArrayList<Class<? extends ZeusSerializablePacket>>());
         }
-        this.p(ZeusPacketDirection.CLIENT, HeartbeatResponsePacket.class);
-        this.p(ZeusPacketDirection.SERVER, HeartbeatPacket.class);
-        this.p(ZeusPacketDirection.CLIENT, ServerDisconnectPacket.class);
+        this.registerPacket(ZeusPacketDirection.CLIENT, HeartbeatResponsePacket.class);
+        this.registerPacket(ZeusPacketDirection.SERVER, HeartbeatPacket.class);
+        this.registerPacket(ZeusPacketDirection.CLIENT, ServerDisconnectPacket.class);
         registerStatePackets.accept(this);
     }
 
-    protected void p(ZeusPacketDirection zeusPacketDirection, Class<? extends ZeusSerializablePacket> clazz) {
-        List<Class<? extends ZeusSerializablePacket>> list = this.K.get((Object)zeusPacketDirection);
+    protected void registerPacket(ZeusPacketDirection zeusPacketDirection, Class<? extends ZeusSerializablePacket> clazz) {
+        List<Class<? extends ZeusSerializablePacket>> list = this.packetClassesByDirection.get((Object)zeusPacketDirection);
         list.add(clazz);
     }
 
@@ -39,13 +39,13 @@ public enum ZeusProtocolState {
         return instantiationException;
     }
 
-    public int Z(ZeusPacketDirection zeusPacketDirection, ZeusSerializablePacket zeusSerializablePacket) {
-        List<Class<? extends ZeusSerializablePacket>> list = this.K.get((Object)zeusPacketDirection);
+    public int getPacketId(ZeusPacketDirection zeusPacketDirection, ZeusSerializablePacket zeusSerializablePacket) {
+        List<Class<? extends ZeusSerializablePacket>> list = this.packetClassesByDirection.get((Object)zeusPacketDirection);
         return list.indexOf(zeusSerializablePacket.getClass());
     }
 
-    public ZeusSerializablePacket V(ZeusPacketDirection zeusPacketDirection, int n) throws InstantiationException, IllegalAccessException, NoSuchMethodException, InvocationTargetException {
-        List<Class<? extends ZeusSerializablePacket>> list = this.K.get((Object)zeusPacketDirection);
+    public ZeusSerializablePacket createPacket(ZeusPacketDirection zeusPacketDirection, int n) throws InstantiationException, IllegalAccessException, NoSuchMethodException, InvocationTargetException {
+        List<Class<? extends ZeusSerializablePacket>> list = this.packetClassesByDirection.get((Object)zeusPacketDirection);
         if (n < 0 || n >= list.size()) {
             throw new RuntimeException("Attempted to get packet by id " + n + " in direction " + (Object)((Object)zeusPacketDirection) + " but it's out of bounds.");
         }

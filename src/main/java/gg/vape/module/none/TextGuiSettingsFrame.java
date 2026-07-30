@@ -163,14 +163,14 @@ extends HudSettingsFrameBase {
             return;
         }
         double centerX = this.G$src$D$1b2f02a() + this.A() / 2.0;
-        this.rightAnchored = centerX >= (threshold = (double)Minecraft.J() / 4.0 / Vape.INSTANCE.getClientSettings().s());
+        this.rightAnchored = centerX >= (threshold = (double)Minecraft.J() / 4.0 / Vape.INSTANCE.getClientSettings().getGuiScaleFactor());
         this.targetX = this.rightAnchored ? this.G$src$D$1b2f02a() + this.A() : Double.NaN;
     }
 
     private boolean isPastMidpoint() {
         double threshold;
         double centerX = this.G$src$D$1b2f02a() + this.A() / 2.0;
-        return centerX >= (threshold = (double)Minecraft.J() / 4.0 / Vape.INSTANCE.getClientSettings().s());
+        return centerX >= (threshold = (double)Minecraft.J() / 4.0 / Vape.INSTANCE.getClientSettings().getGuiScaleFactor());
     }
 
     @Override

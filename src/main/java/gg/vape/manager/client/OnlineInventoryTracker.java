@@ -13,131 +13,128 @@ import java.util.Map;
 import org.jetbrains.annotations.Nullable;
 
 public class OnlineInventoryTracker {
-    private final ActivityItemStack[] y = new ActivityItemStack[4];
-    private int E;
-    private int d;
-    private boolean c;
-    private static boolean Z;
-    private final ActivityItemStack[] u = new ActivityItemStack[36];
+    private final ActivityItemStack[] armor = new ActivityItemStack[4];
+    private int selectedHotbarSlot;
+    private int unchangedTickCount;
+    private boolean initialized;
+    private static boolean obfuscationState;
+    private final ActivityItemStack[] inventory = new ActivityItemStack[36];
 
-    public ActivityItemStack[] M() {
-        return this.u;
+    public ActivityItemStack[] getInventory() {
+        return this.inventory;
     }
 
-    public Map<Integer, @Nullable ActivityItemStack> r(EntityPlayer entityPlayer, boolean bl) {
-        int n;
-        int n2;
-        if (!this.c) {
-            this.c = true;
+    public Map<Integer, @Nullable ActivityItemStack> collectChanges(EntityPlayer player, boolean scanFullInventory) {
+        if (!this.initialized) {
+            this.initialized = true;
         }
-        HashMap<Integer, @Nullable ActivityItemStack> hashMap = new HashMap<Integer, ActivityItemStack>();
-        Object[] objectArray2 = entityPlayer.V$src$Lgg_vape_wrapper_impl_InventoryPlayer_$erqak6().i();
-        for (n2 = 0; n2 < objectArray2.length; ++n2) {
-            ActivityItemStack activityItemStack = this.y[n2];
-            ActivityItemStack updatedStack = OnlineFriendActivityState.o(new ItemStack(objectArray2[n2]));
-            if (activityItemStack == null && updatedStack == null || updatedStack != null && updatedStack.equals(activityItemStack)) continue;
-            this.y[n2] = updatedStack;
-            hashMap.put(36 + n2, updatedStack);
+        HashMap<Integer, @Nullable ActivityItemStack> changes = new HashMap<Integer, ActivityItemStack>();
+        Object[] armorContents = player.V$src$Lgg_vape_wrapper_impl_InventoryPlayer_$erqak6().i();
+        for (int armorSlot = 0; armorSlot < armorContents.length; ++armorSlot) {
+            ActivityItemStack previousStack = this.armor[armorSlot];
+            ActivityItemStack updatedStack = OnlineFriendActivityState.fromItemStack(new ItemStack(armorContents[armorSlot]));
+            if (previousStack == null && updatedStack == null || updatedStack != null && updatedStack.equals(previousStack)) continue;
+            this.armor[armorSlot] = updatedStack;
+            changes.put(36 + armorSlot, updatedStack);
         }
-        n2 = OnlineConnectionManager.T.S().l().getEffectiveValue() == false ? 1 : 0;
-        this.E = n = entityPlayer.V$src$Lgg_vape_wrapper_impl_InventoryPlayer_$erqak6().v();
-        if (bl && n2 == 0) {
-            Object[] inventoryContents = entityPlayer.V$src$Lgg_vape_wrapper_impl_InventoryPlayer_$erqak6().M();
-            for (int i = 0; i < inventoryContents.length; ++i) {
-                ActivityItemStack activityItemStack = this.u[i];
-                ActivityItemStack activityItemStack2 = OnlineFriendActivityState.o(new ItemStack(inventoryContents[i]));
-                if (activityItemStack == null && activityItemStack2 == null || activityItemStack2 != null && activityItemStack2.equals(activityItemStack)) continue;
-                hashMap.put(i, activityItemStack2);
-                this.u[i] = activityItemStack2;
+        boolean limitToHeldItem = !OnlineConnectionManager.INSTANCE.getSettings().getShareInventory().getEffectiveValue();
+        int currentHotbarSlot = player.V$src$Lgg_vape_wrapper_impl_InventoryPlayer_$erqak6().v();
+        this.selectedHotbarSlot = currentHotbarSlot;
+        if (scanFullInventory && !limitToHeldItem) {
+            Object[] inventoryContents = player.V$src$Lgg_vape_wrapper_impl_InventoryPlayer_$erqak6().M();
+            for (int inventorySlot = 0; inventorySlot < inventoryContents.length; ++inventorySlot) {
+                ActivityItemStack previousStack = this.inventory[inventorySlot];
+                ActivityItemStack updatedStack = OnlineFriendActivityState.fromItemStack(new ItemStack(inventoryContents[inventorySlot]));
+                if (previousStack == null && updatedStack == null || updatedStack != null && updatedStack.equals(previousStack)) continue;
+                changes.put(inventorySlot, updatedStack);
+                this.inventory[inventorySlot] = updatedStack;
             }
         } else {
-            ActivityItemStack activityItemStack;
-            if (n2 != 0) {
-                for (int i = 0; i < this.u.length; ++i) {
-                    if (i == n || (activityItemStack = this.u[i]) == null) continue;
-                    this.u[i] = null;
-                    hashMap.put(i, null);
+            if (limitToHeldItem) {
+                for (int inventorySlot = 0; inventorySlot < this.inventory.length; ++inventorySlot) {
+                    ActivityItemStack previousStack = this.inventory[inventorySlot];
+                    if (inventorySlot == currentHotbarSlot || previousStack == null) continue;
+                    this.inventory[inventorySlot] = null;
+                    changes.put(inventorySlot, null);
                 }
             }
-            ActivityItemStack activityItemStack3 = this.u[n];
-            activityItemStack = OnlineFriendActivityState.o(entityPlayer.B$src$Lgg_vape_wrapper_impl_ItemStack_$impdvt());
-            if (!(activityItemStack3 == null && activityItemStack == null || activityItemStack != null && activityItemStack.equals(activityItemStack3))) {
-                hashMap.put(n, activityItemStack);
-                this.u[n] = activityItemStack;
+            ActivityItemStack previousHeldStack = this.inventory[currentHotbarSlot];
+            ActivityItemStack updatedHeldStack = OnlineFriendActivityState.fromItemStack(player.B$src$Lgg_vape_wrapper_impl_ItemStack_$impdvt());
+            if (!(previousHeldStack == null && updatedHeldStack == null || updatedHeldStack != null && updatedHeldStack.equals(previousHeldStack))) {
+                changes.put(currentHotbarSlot, updatedHeldStack);
+                this.inventory[currentHotbarSlot] = updatedHeldStack;
             }
         }
-        return hashMap;
+        return changes;
     }
 
-    public void p(Map<Integer, ActivityItemStack> map) {
-        HashMap<Integer, ActivityItemStackPayload> hashMap = new HashMap<Integer, ActivityItemStackPayload>();
-        for (Map.Entry<Integer, ActivityItemStack> entry : map.entrySet()) {
-            hashMap.put(entry.getKey(), entry.getValue() != null ? entry.getValue().W() : null);
+    public void sendChanges(Map<Integer, ActivityItemStack> changes) {
+        HashMap<Integer, ActivityItemStackPayload> payloads = new HashMap<Integer, ActivityItemStackPayload>();
+        for (Map.Entry<Integer, ActivityItemStack> entry : changes.entrySet()) {
+            payloads.put(entry.getKey(), entry.getValue() != null ? entry.getValue().toPayload() : null);
         }
-        ZeusConnectionManager.T().u().P(hashMap);
+        ZeusConnectionManager.T().u().P(payloads);
     }
 
-    public static void n(boolean bl) {
-        Z = bl;
+    public static void setObfuscationState(boolean state) {
+        obfuscationState = state;
     }
 
 
-    public void A() {
-        this.c = false;
-        this.d = 0;
-        Arrays.fill(this.y, null);
-        Arrays.fill(this.u, null);
+    public void reset() {
+        this.initialized = false;
+        this.unchangedTickCount = 0;
+        Arrays.fill(this.armor, null);
+        Arrays.fill(this.inventory, null);
     }
 
-    public static boolean R() {
-        boolean bl = OnlineInventoryTracker.Q();
-        return !bl;
+    public static boolean isObfuscationStateUnset() {
+        boolean state = OnlineInventoryTracker.getObfuscationState();
+        return !state;
     }
 
-    public boolean F() {
-        return this.c;
+    public boolean isInitialized() {
+        return this.initialized;
     }
 
     static {
-        if (OnlineInventoryTracker.R()) {
-            OnlineInventoryTracker.n(true);
+        if (OnlineInventoryTracker.isObfuscationStateUnset()) {
+            OnlineInventoryTracker.setObfuscationState(true);
         }
     }
 
-    public void A(int n) {
-        this.d = n;
+    public void setUnchangedTickCount(int unchangedTickCount) {
+        this.unchangedTickCount = unchangedTickCount;
     }
 
-    public ActivityItemStack[] e() {
-        return this.y;
+    public ActivityItemStack[] getArmor() {
+        return this.armor;
     }
 
-    public static boolean Q() {
-        return Z;
+    public static boolean getObfuscationState() {
+        return obfuscationState;
     }
 
-    public void X() {
-        ActivityItemStack activityItemStack;
-        int n;
-        HashMap<Integer, @Nullable ActivityItemStackPayload> hashMap = new HashMap<Integer, ActivityItemStackPayload>();
-        for (n = 0; n < this.y.length; ++n) {
-            activityItemStack = this.y[n];
-            if (activityItemStack == null) continue;
-            hashMap.put(36 + n, activityItemStack.W());
+    public void sendSnapshot() {
+        HashMap<Integer, @Nullable ActivityItemStackPayload> payloads = new HashMap<Integer, ActivityItemStackPayload>();
+        for (int armorSlot = 0; armorSlot < this.armor.length; ++armorSlot) {
+            ActivityItemStack stack = this.armor[armorSlot];
+            if (stack == null) continue;
+            payloads.put(36 + armorSlot, stack.toPayload());
         }
-        for (n = 0; n < this.u.length; ++n) {
-            activityItemStack = this.u[n];
-            if (activityItemStack == null) continue;
-            hashMap.put(n, activityItemStack.W());
+        for (int inventorySlot = 0; inventorySlot < this.inventory.length; ++inventorySlot) {
+            ActivityItemStack stack = this.inventory[inventorySlot];
+            if (stack == null) continue;
+            payloads.put(inventorySlot, stack.toPayload());
         }
-        ZeusConnectionManager.T().u().N(this.E, hashMap);
+        ZeusConnectionManager.T().u().N(this.selectedHotbarSlot, payloads);
     }
 
-    public int g() {
-        return this.d;
+    public int getUnchangedTickCount() {
+        return this.unchangedTickCount;
     }
 
-    public int U() {
-        return this.E;
+    public int getSelectedHotbarSlot() {
+        return this.selectedHotbarSlot;
     }
 }

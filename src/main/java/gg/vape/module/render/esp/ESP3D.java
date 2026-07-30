@@ -44,7 +44,7 @@ extends SubModule<ESP> {
         for (Object entityHandle : event.getWorld().z()) {
             Entity entity = new Entity(entityHandle);
             MutableColor color = this.parentEsp.resolveEntityColor(event.getThePlayer(), entityHandle);
-            if (Vape.INSTANCE.getClientSettings().J(entity) && this.parentEsp.hideBots.getEffectiveValue().booleanValue() || color == null) {
+            if (Vape.INSTANCE.getClientSettings().isBot(entity) && this.parentEsp.hideBots.getEffectiveValue().booleanValue() || color == null) {
                 continue;
             }
             double previousX = entity.M();
@@ -80,4 +80,3 @@ extends SubModule<ESP> {
     }
 
 }
-

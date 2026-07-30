@@ -22,7 +22,7 @@ extends AbstractNotification {
 
     private double getRenderX() {
         return this.getCurrentX() + 3.0
-                + (double)Minecraft.J() / Vape.INSTANCE.getClientSettings().s() / 2.0;
+                + (double)Minecraft.J() / Vape.INSTANCE.getClientSettings().getGuiScaleFactor() / 2.0;
     }
 
     public long getExpiresAt() {
@@ -51,7 +51,7 @@ extends AbstractNotification {
 
     private double getRenderY() {
         return this.getCurrentY()
-                + (double)Minecraft.h() / Vape.INSTANCE.getClientSettings().s() / 2.0;
+                + (double)Minecraft.h() / Vape.INSTANCE.getClientSettings().getGuiScaleFactor() / 2.0;
     }
 
     public double getRemainingProgress() {
@@ -86,7 +86,7 @@ extends AbstractNotification {
             this.started = true;
             this.setDuration(this.durationMillis);
         }
-        float inverseScale = (float)(1.0 / Vape.INSTANCE.getClientSettings().s());
+        float inverseScale = (float)(1.0 / Vape.INSTANCE.getClientSettings().getGuiScaleFactor());
         boolean blendingEnabled = GL11.glIsEnabled((int)3042);
         float scale = 1.0f / inverseScale;
         if (GuiRenderPrimitives.d()) {

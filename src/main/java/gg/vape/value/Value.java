@@ -64,7 +64,7 @@ implements INamed {
     }
 
     public boolean matchesJsonId(JsonObject jsonObject) {
-        String string = ConfigJsonUtils.P(jsonObject, "id");
+        String string = ConfigJsonUtils.getString(jsonObject, "id");
         for (String string2 : this.aliases) {
             if (!string2.equalsIgnoreCase(string)) continue;
             return true;
@@ -278,7 +278,7 @@ implements INamed {
     public boolean loadJson(JsonObject jsonObject) {
         if (this.matchesJsonId(jsonObject)) {
             String string = "";
-            String string2 = ConfigJsonUtils.P(jsonObject, "value");
+            String string2 = ConfigJsonUtils.getString(jsonObject, "value");
             if (string2 != null) {
                 string = string2;
             }

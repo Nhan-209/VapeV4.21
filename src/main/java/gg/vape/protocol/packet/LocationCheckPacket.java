@@ -15,16 +15,16 @@ implements ZeusSerializablePacket {
 
     @Override
     public void S(ZeusPacketBuffer gx_12) {
-        this.H = gx_12.k();
-        this.j = gx_12.k();
-        this.a = gx_12.k();
+        this.H = gx_12.readInt();
+        this.j = gx_12.readInt();
+        this.a = gx_12.readInt();
     }
 
     @Override
     public void o(ZeusPacketBuffer gx_12) {
-        gx_12.K(this.H);
-        gx_12.K(this.j);
-        gx_12.K(this.a);
+        gx_12.writeInt(this.H);
+        gx_12.writeInt(this.j);
+        gx_12.writeInt(this.a);
     }
 
     public int f() {

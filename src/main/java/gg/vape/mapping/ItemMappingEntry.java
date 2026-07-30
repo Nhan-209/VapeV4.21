@@ -6,50 +6,50 @@ import gg.vape.wrapper.impl.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
 public class ItemMappingEntry {
-    private final String p;
+    private final String modernId;
     @Nullable
-    private final Integer o;
-    private static String[] A;
+    private final Integer legacyId;
+    private static String[] obfuscationTable;
     @Nullable
-    private final String F;
-    private final String a;
+    private final String legacyIdString;
+    private final String resourceKey;
     @Nullable
-    private final Integer v;
+    private final Integer metadata;
 
-    public static void d(String[] stringArray) {
-        A = stringArray;
+    public static void setObfuscationTable(String[] table) {
+        obfuscationTable = table;
     }
 
 
-    public static ItemMappingEntry w(String string) {
-        String string2;
-        String[] stringArray = string.split(",", -1);
-        String string3 = stringArray[0];
-        String string4 = stringArray[1];
-        String string5 = string2 = stringArray.length > 2 ? stringArray[2] : null;
-        if (string2 == null || string2.isEmpty() || string2.equals("null")) {
-            string2 = null;
+    public static ItemMappingEntry parse(String mappingLine) {
+        String legacyIdToken;
+        String[] columns = mappingLine.split(",", -1);
+        String resourceKey = columns[0];
+        String modernId = columns[1];
+        legacyIdToken = columns.length > 2 ? columns[2] : null;
+        if (legacyIdToken == null || legacyIdToken.isEmpty() || legacyIdToken.equals("null")) {
+            legacyIdToken = null;
         }
-        return new ItemMappingEntry(string3, string4, string2);
+        return new ItemMappingEntry(resourceKey, modernId, legacyIdToken);
     }
 
     static {
-        ItemMappingEntry.d(null);
+        ItemMappingEntry.setObfuscationTable(null);
     }
 
     @Nullable
-    public String A() {
-        return this.F;
+    public String getLegacyIdString() {
+        return this.legacyIdString;
     }
 
-    public boolean P() {
-        return this.p != null;
+    public boolean hasModernId() {
+        return this.modernId != null;
     }
 
     @Nullable
-    public ItemStack Q() {
+    public ItemStack resolveItemStack() {
         ItemStack itemStack;
-        Item item = this.j();
+        Item item = this.resolveItem();
         if (item == null || item.isNull()) {
             return null;
         }
@@ -59,62 +59,62 @@ public class ItemMappingEntry {
             itemStack = ItemStack.S(item);
         } else {
             itemStack = ItemStack.S(item);
-            if (this.v != null) {
-                itemStack.s(this.v);
+            if (this.metadata != null) {
+                itemStack.s(this.metadata);
             }
         }
         return itemStack;
     }
 
     @Nullable
-    public Item j() {
+    public Item resolveItem() {
         if (ForgeVersion.MC_1_16_5.d()) {
-            return Item.L(this.p);
+            return Item.L(this.modernId);
         }
-        if (this.o == null) {
+        if (this.legacyId == null) {
             return null;
         }
-        return Item.T(this.o);
+        return Item.T(this.legacyId);
     }
 
-    public String M() {
-        return this.a;
+    public String getResourceKey() {
+        return this.resourceKey;
     }
 
-    public String q() {
-        return this.p;
+    public String getModernId() {
+        return this.modernId;
     }
 
-    public ItemMappingEntry(String string, String string2, @Nullable String string3) {
-        this.a = string;
-        this.F = string3;
-        this.p = string2;
-        if (string3 != null) {
-            String[] stringArray = string3.split(":");
-            this.o = Integer.parseInt(stringArray[0]);
-            this.v = stringArray.length > 1 ? Integer.parseInt(stringArray[1]) : 0;
+    public ItemMappingEntry(String resourceKey, String modernId, @Nullable String legacyIdString) {
+        this.resourceKey = resourceKey;
+        this.legacyIdString = legacyIdString;
+        this.modernId = modernId;
+        if (legacyIdString != null) {
+            String[] legacyParts = legacyIdString.split(":");
+            this.legacyId = Integer.parseInt(legacyParts[0]);
+            this.metadata = legacyParts.length > 1 ? Integer.parseInt(legacyParts[1]) : 0;
         } else {
-            this.o = null;
-            this.v = null;
+            this.legacyId = null;
+            this.metadata = null;
         }
     }
 
     @Nullable
-    public Integer s() {
-        return this.o;
+    public Integer getLegacyId() {
+        return this.legacyId;
     }
 
     public String toString() {
-        return "UniversalItem{resourceKey='" + this.a + '\'' + ", legacyId='" + this.F + '\'' + ", modernId='" + this.p + '\'' + '}';
+        return "UniversalItem{resourceKey='" + this.resourceKey + '\'' + ", legacyId='" + this.legacyIdString + '\'' + ", modernId='" + this.modernId + '\'' + '}';
     }
 
     @Nullable
-    public Integer f() {
-        return this.v;
+    public Integer getMetadata() {
+        return this.metadata;
     }
 
-    public static String[] r() {
-        return A;
+    public static String[] getObfuscationTable() {
+        return obfuscationTable;
     }
 }
 

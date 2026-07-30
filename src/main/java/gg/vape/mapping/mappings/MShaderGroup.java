@@ -90,7 +90,7 @@ extends Mapping {
     }
 
     public void G(Object object, int n, int n2) {
-        this.r.c(object, n, n2);
+        this.r.invokeVoid(object, n, n2);
     }
 
     public static String[] V() {
@@ -101,7 +101,7 @@ extends Mapping {
         if (this.K == null) {
             return null;
         }
-        return this.K.O(object, object2, object3, object4);
+        return this.K.newInstance(object, object2, object3, object4);
     }
 
     public static void H(String[] stringArray) {

@@ -9,16 +9,16 @@ import java.awt.Color;
 
 public class OnlineCombatStatsTargetLabelComponent
 extends GuiComponent {
-    private OnlineCombatStatsSettingsFrame I;
+    private final OnlineCombatStatsSettingsFrame statsFrame;
 
-    private void R() {
-        SmoothFontRenderer smoothFontRenderer = this.getFontRenderer(0.9);
-        double d = smoothFontRenderer.d("Aim");
-        double d2 = this.n() + this.L() / 2.0 - d / 2.0;
-        double d3 = this.n() + this.L() / 2.0 - 3.0;
-        Color color = this.I.isManagedByClickGui() ? this.I.applyDefaultEditorAlpha(OnlineCombatStatsTargetLabelComponent.J.Z) : OnlineCombatStatsTargetLabelComponent.J.Z;
-        ImageRenderer.drawImage(color, (float)this.G$src$D$1b2f02a() + 5.0f, (float)d3, "newaim", 6.0f, 6.0f, false);
-        smoothFontRenderer.d(this.I.b$src$Ljava_lang_String_$tewuww(), this.G$src$D$1b2f02a() + 8.0 + 10.0, d2, color);
+    private void renderTargetLabel() {
+        SmoothFontRenderer fontRenderer = this.getFontRenderer(0.9);
+        double textHeight = fontRenderer.d("Aim");
+        double textY = this.n() + this.L() / 2.0 - textHeight / 2.0;
+        double iconY = this.n() + this.L() / 2.0 - 3.0;
+        Color color = this.statsFrame.isManagedByClickGui() ? this.statsFrame.applyDefaultEditorAlpha(OnlineCombatStatsTargetLabelComponent.J.Z) : OnlineCombatStatsTargetLabelComponent.J.Z;
+        ImageRenderer.drawImage(color, (float)this.G$src$D$1b2f02a() + 5.0f, (float)iconY, "newaim", 6.0f, 6.0f, false);
+        fontRenderer.d(this.statsFrame.getTargetLabel(), this.G$src$D$1b2f02a() + 8.0 + 10.0, textY, color);
     }
 
     @Override
@@ -27,17 +27,17 @@ extends GuiComponent {
 
     @Override
     public void I() {
-        this.R();
+        this.renderTargetLabel();
     }
 
 
     public OnlineCombatStatsTargetLabelComponent(OnlineCombatStatsSettingsFrame onlineCombatStatsSettingsFrame) {
-        this.I = onlineCombatStatsSettingsFrame;
+        this.statsFrame = onlineCombatStatsSettingsFrame;
     }
 
     @Override
     public void H() {
-        this.R();
+        this.renderTargetLabel();
     }
 
     @Override

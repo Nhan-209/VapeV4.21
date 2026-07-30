@@ -15,7 +15,7 @@ extends JavassistMappingTask {
     }
 
     @Override
-    public void c() {
+    public void transform() {
         if (ForgeVersion.MC_1_21_4.d()) {
             try {
                 MappingMethod mappingMethod = null;
@@ -33,4 +33,3 @@ extends JavassistMappingTask {
         }
     }
 }
-

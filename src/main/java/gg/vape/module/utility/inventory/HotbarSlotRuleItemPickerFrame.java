@@ -31,11 +31,11 @@ extends Frame {
     private String searchText = "";
     private HotbarSlotRuleItemListFrame itemListFrame = new HotbarSlotRuleItemListFrame(this);
 
-    public int X$src$I$7rbe5s() {
+    public int getSelectedSlot() {
         return this.selectedSlot;
     }
 
-    public HotbarSlotRuleItemListFrame D$src$Lgg_vape_module_utility_inventory_HotbarSlotRule$dqviyt() {
+    public HotbarSlotRuleItemListFrame getItemListFrame() {
         return this.itemListFrame;
     }
 
@@ -61,9 +61,9 @@ extends Frame {
         this.g(true);
     }
 
-    public void s(String string) {
-        this.searchText = string;
-        this.itemListFrame.p();
+    public void setSearchText(String searchText) {
+        this.searchText = searchText;
+        this.itemListFrame.rebuildItems();
     }
 
     @Override
@@ -91,15 +91,15 @@ extends Frame {
         GuiRenderPrimitives.C(this.G$src$D$1b2f02a(), this.j$src$Lgg_vape_ui_click_frame_FrameHeaderComponent_$175vsfc().n() + this.j$src$Lgg_vape_ui_click_frame_FrameHeaderComponent_$175vsfc().L(), this.A(), 0.5, HotbarSlotRuleItemPickerFrame.J.l);
     }
 
-    public void O(@Nullable FrameStackManager frameStackManager) {
+    public void setParentStackManager(@Nullable FrameStackManager frameStackManager) {
         this.parentStackManager = frameStackManager;
     }
 
-    public HotbarSlotRuleGroupComponent N$src$Lgg_vape_module_utility_inventory_HotbarSlotRule$xa58f() {
+    public HotbarSlotRuleGroupComponent getGroupComponent() {
         return this.groupComponent;
     }
 
-    public void Z$src$V$7seznp() {
+    public void commitSelection() {
     }
 
     @Override
@@ -107,14 +107,14 @@ extends Frame {
         return 215.0;
     }
 
-    public void t(int n) {
-        this.selectedSlot = n;
+    public void setSelectedSlot(int selectedSlot) {
+        this.selectedSlot = selectedSlot;
     }
 
 
-    public void y(HotbarSlotRuleGroupComponent hotbarSlotRuleGroupComponent) {
-        this.groupComponent = hotbarSlotRuleGroupComponent;
-        this.rules = new ArrayList<HotbarSlotRule>(hotbarSlotRuleGroupComponent.u$src$Ljava_util_List_$1u5n2i3());
+    public void setGroupComponent(HotbarSlotRuleGroupComponent groupComponent) {
+        this.groupComponent = groupComponent;
+        this.rules = new ArrayList<HotbarSlotRule>(groupComponent.getRules());
     }
 
     @Override
@@ -124,15 +124,15 @@ extends Frame {
     }
 
     @Nullable
-    public FrameStackManager E() {
+    public FrameStackManager getParentStackManager() {
         return this.parentStackManager;
     }
 
-    public String E$src$Ljava_lang_String_$ous8w6() {
+    public String getSearchText() {
         return this.searchText;
     }
 
-    public void N$src$V$7ltgjd() {
+    public void closePicker() {
         FrameStackManager frameStackManager = this.parentStackManager;
         if (frameStackManager != null) {
             if (frameStackManager instanceof ClickGuiFrameManager) {

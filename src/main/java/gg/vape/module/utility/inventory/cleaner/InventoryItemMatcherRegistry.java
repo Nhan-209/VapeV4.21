@@ -29,7 +29,7 @@ public class InventoryItemMatcherRegistry {
         return matchersByName.values();
     }
 
-    private static List createGroupList(InventoryItemMatcherGroup inventoryItemMatcherGroup) {
+    private static List createGroupList(InventoryItemMatcherGroup group) {
         return new ArrayList();
     }
 
@@ -50,26 +50,25 @@ public class InventoryItemMatcherRegistry {
     @Nullable
     public static InventoryItemMatcher findBestMatch(ItemStack itemStack) {
         if (itemStack.isNull()) {
-            return EmptySlotInventoryItemMatcher.a;
+            return EmptySlotInventoryItemMatcher.EMPTY_SLOT;
         }
         Item item = itemStack.getItem();
         if (item.isNull()) {
-            return EmptySlotInventoryItemMatcher.a;
+            return EmptySlotInventoryItemMatcher.EMPTY_SLOT;
         }
-        ArrayList<InventoryItemMatcher> arrayList = new ArrayList<InventoryItemMatcher>();
-        for (InventoryItemMatcher inventoryItemMatcher : matchersByName.values()) {
-            if (!inventoryItemMatcher.matches(itemStack, itemStack.getItem())) continue;
-            arrayList.add(inventoryItemMatcher);
+        ArrayList<InventoryItemMatcher> matchingMatchers = new ArrayList<InventoryItemMatcher>();
+        for (InventoryItemMatcher matcher : matchersByName.values()) {
+            if (!matcher.matches(itemStack, itemStack.getItem())) continue;
+            matchingMatchers.add(matcher);
         }
-        arrayList.sort(InventoryItemMatcherRegistry::compareByPriority);
-        Collections.reverse(arrayList);
-        InventoryItemMatcher inventoryItemMatcher = arrayList.isEmpty() ? null : (InventoryItemMatcher)arrayList.get(0);
-        return inventoryItemMatcher;
+        matchingMatchers.sort(InventoryItemMatcherRegistry::compareByPriority);
+        Collections.reverse(matchingMatchers);
+        return matchingMatchers.isEmpty() ? null : matchingMatchers.get(0);
     }
 
-    private static int compareByPriority(InventoryItemMatcher inventoryItemMatcher, InventoryItemMatcher inventoryItemMatcher2) {
-        boolean hasPriorityFirst = inventoryItemMatcher.getComparator() != null;
-        boolean hasPrioritySecond = inventoryItemMatcher2.getComparator() != null;
+    private static int compareByPriority(InventoryItemMatcher firstMatcher, InventoryItemMatcher secondMatcher) {
+        boolean hasPriorityFirst = firstMatcher.getComparator() != null;
+        boolean hasPrioritySecond = secondMatcher.getComparator() != null;
         return Boolean.compare(hasPriorityFirst, hasPrioritySecond);
     }
 
@@ -77,10 +76,10 @@ public class InventoryItemMatcherRegistry {
     static {
         HiddenInventoryItemMatchers.initialize();
         WeaponInventoryItemMatchers.initialize();
-        ToolInventoryItemMatchers.r();
+        ToolInventoryItemMatchers.initialize();
         FoodInventoryItemMatchers.initialize();
         BlockInventoryItemMatchers.initialize();
-        ArmorInventoryItemMatchers.v();
+        ArmorInventoryItemMatchers.initialize();
         InventoryItemCategoryRegistry.initialize();
     }
 }

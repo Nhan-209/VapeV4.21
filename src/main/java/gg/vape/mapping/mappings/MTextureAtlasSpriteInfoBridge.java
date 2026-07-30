@@ -10,7 +10,7 @@ extends Mapping {
     private MappingMethod L;
 
     private Object Q(Object object) {
-        return this.L.L(object, new Object[0]);
+        return this.L.invokeObject(object, new Object[0]);
     }
 
     public static Object C(MTextureAtlasSpriteInfoBridge mTextureAtlasSpriteInfoBridge, Object object) {

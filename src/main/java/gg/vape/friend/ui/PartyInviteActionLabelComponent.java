@@ -6,7 +6,7 @@ import java.awt.Color;
 
 public class PartyInviteActionLabelComponent
 extends AnimatedCenteredTextLabelComponent {
-    final PartyInviteFriendRowComponent WA;
+    private final PartyInviteFriendRowComponent row;
 
     @Override
     public double C() {
@@ -20,6 +20,6 @@ extends AnimatedCenteredTextLabelComponent {
 
     public PartyInviteActionLabelComponent(PartyInviteFriendRowComponent partyInviteFriendRowComponent, String string, Color color) {
         super(string, color);
-        this.WA = partyInviteFriendRowComponent;
+        this.row = partyInviteFriendRowComponent;
     }
 }

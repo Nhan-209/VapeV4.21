@@ -11,25 +11,25 @@ import java.awt.Point;
 
 public class PartyOverviewGroupOptionSyncMouseListener
 implements GuiMouseListener {
-    final GroupOption z;
-    private boolean G;
-    final PartyDetailsPanel c;
-    final BooleanValue P;
-    final Value N;
+    private final GroupOption option;
+    private boolean previousValue;
+    private final PartyDetailsPanel detailsPanel;
+    private final BooleanValue booleanValue;
+    private final Value value;
 
     public PartyOverviewGroupOptionSyncMouseListener(PartyDetailsPanel partyDetailsPanel, BooleanValue booleanValue, GroupOption groupOption, Value value) {
-        this.c = partyDetailsPanel;
-        this.P = booleanValue;
-        this.z = groupOption;
-        this.N = value;
-        this.G = this.P.getEffectiveValue();
+        this.detailsPanel = partyDetailsPanel;
+        this.booleanValue = booleanValue;
+        this.option = groupOption;
+        this.value = value;
+        this.previousValue = this.booleanValue.getEffectiveValue();
     }
 
     @Override
     public void g(Point point, MouseClickButton mouseClickButton) {
-        if (this.G != this.P.getEffectiveValue()) {
-            this.G = this.P.getEffectiveValue();
-            ZeusConnectionManager.T().u().Y(this.z, this.N.getValue());
+        if (this.previousValue != this.booleanValue.getEffectiveValue()) {
+            this.previousValue = this.booleanValue.getEffectiveValue();
+            ZeusConnectionManager.T().u().Y(this.option, this.value.getValue());
         }
     }
 

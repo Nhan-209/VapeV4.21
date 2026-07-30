@@ -19,7 +19,7 @@ extends Mapping {
         boolean bl = true;
         String string = b;
         MRenderItemContext mRenderItemContext = this;
-        this.F = this.u(string, bl, clazz);
+        this.F = this.registerStaticField(string, bl, clazz);
     }
 
     private Object r() {

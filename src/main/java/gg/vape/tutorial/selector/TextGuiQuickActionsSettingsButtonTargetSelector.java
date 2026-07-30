@@ -9,31 +9,31 @@ import java.util.Arrays;
 
 public class TextGuiQuickActionsSettingsButtonTargetSelector
 extends TutorialTargetSelector<ClickGuiQuickActionsComponent> {
-    final TextGuiTutorialPage C;
-    ClickGuiQuickActionsComponent V;
+    private final TextGuiTutorialPage tutorialPage;
+    private ClickGuiQuickActionsComponent selectedQuickActions;
 
-    public boolean D(ClickGuiQuickActionsComponent clickGuiQuickActionsComponent) {
-        this.V = clickGuiQuickActionsComponent;
+    private boolean matchesQuickActions(ClickGuiQuickActionsComponent clickGuiQuickActionsComponent) {
+        this.selectedQuickActions = clickGuiQuickActionsComponent;
         return true;
     }
 
     @Override
-    public boolean X(ClickGuiQuickActionsComponent clickGuiQuickActionsComponent) {
-        return this.D(clickGuiQuickActionsComponent);
+    public boolean matches(ClickGuiQuickActionsComponent clickGuiQuickActionsComponent) {
+        return this.matchesQuickActions(clickGuiQuickActionsComponent);
     }
 
     public TextGuiQuickActionsSettingsButtonTargetSelector(TextGuiTutorialPage textGuiTutorialPage, Class clazz) {
         super(clazz);
-        this.C = textGuiTutorialPage;
-        this.V = null;
+        this.tutorialPage = textGuiTutorialPage;
+        this.selectedQuickActions = null;
     }
 
     @Override
-    public ArrayList<GuiComponent> v(GuiComponent guiComponent) {
-        if (this.o().isInstance(guiComponent)) {
-            ArrayList<GuiComponent> arrayList = super.v(guiComponent);
-            if (arrayList != null && this.V != null && this.V.equals(guiComponent)) {
-                return new ArrayList<GuiComponent>(Arrays.asList(this.V.b$src$Lgg_vape_ui_click_component_IconButtonComponent_$1sg98rj()));
+    public ArrayList<GuiComponent> findTargets(GuiComponent guiComponent) {
+        if (this.getTargetType().isInstance(guiComponent)) {
+            ArrayList<GuiComponent> arrayList = super.findTargets(guiComponent);
+            if (arrayList != null && this.selectedQuickActions != null && this.selectedQuickActions.equals(guiComponent)) {
+                return new ArrayList<GuiComponent>(Arrays.asList(this.selectedQuickActions.b$src$Lgg_vape_ui_click_component_IconButtonComponent_$1sg98rj()));
             }
             return arrayList;
         }

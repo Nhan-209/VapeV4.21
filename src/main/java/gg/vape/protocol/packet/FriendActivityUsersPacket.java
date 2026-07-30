@@ -33,10 +33,10 @@ implements ZeusSerializablePacket {
 
     @Override
     public void o(ZeusPacketBuffer zeusPacketBuffer) {
-        zeusPacketBuffer.U(this.B);
-        zeusPacketBuffer.i(this.e.length);
+        zeusPacketBuffer.writeEnum(this.B);
+        zeusPacketBuffer.writeVarInt(this.e.length);
         for (long l : this.e) {
-            zeusPacketBuffer.v(l);
+            zeusPacketBuffer.writeLong(l);
         }
     }
 
@@ -47,11 +47,11 @@ implements ZeusSerializablePacket {
 
     @Override
     public void S(ZeusPacketBuffer zeusPacketBuffer) {
-        this.B = zeusPacketBuffer.Y(FriendActivityUsersAction.class);
-        int n = zeusPacketBuffer.Y();
+        this.B = zeusPacketBuffer.readEnum(FriendActivityUsersAction.class);
+        int n = zeusPacketBuffer.readVarInt();
         this.e = new long[n];
         for (int i = 0; i < n; ++i) {
-            this.e[i] = zeusPacketBuffer.long_a();
+            this.e[i] = zeusPacketBuffer.readLong();
         }
     }
 

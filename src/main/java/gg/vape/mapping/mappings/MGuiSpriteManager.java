@@ -10,7 +10,7 @@ extends Mapping {
     private MappingMethod Z;
 
     private Object K(Object object, Object object2) {
-        return this.Z.L(object, object2);
+        return this.Z.invokeObject(object, object2);
     }
 
     public MGuiSpriteManager() {

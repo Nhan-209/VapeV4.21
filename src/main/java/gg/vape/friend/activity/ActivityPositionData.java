@@ -3,38 +3,38 @@ package gg.vape.friend.activity;
 import gg.vape.protocol.ZeusPacketBuffer;
 
 public class ActivityPositionData {
-    private final double K;
-    private final double B;
-    private final double U;
+    private final double x;
+    private final double y;
+    private final double z;
 
-    ActivityPositionData(ZeusPacketBuffer gx_12) {
-        this.K = gx_12.S();
-        this.B = gx_12.S();
-        this.U = gx_12.S();
+    ActivityPositionData(ZeusPacketBuffer buffer) {
+        this.x = buffer.readDouble();
+        this.y = buffer.readDouble();
+        this.z = buffer.readDouble();
     }
 
-    public void m(ZeusPacketBuffer gx_12) {
-        gx_12.x(this.K);
-        gx_12.x(this.B);
-        gx_12.x(this.U);
+    public void writeTo(ZeusPacketBuffer buffer) {
+        buffer.writeDouble(this.x);
+        buffer.writeDouble(this.y);
+        buffer.writeDouble(this.z);
     }
 
-    public double h() {
-        return this.U;
+    public double getZ() {
+        return this.z;
     }
 
-    public double Q() {
-        return this.B;
+    public double getY() {
+        return this.y;
     }
 
-    public double d() {
-        return this.K;
+    public double getX() {
+        return this.x;
     }
 
-    public ActivityPositionData(double d, double d2, double d3) {
-        this.K = d;
-        this.B = d2;
-        this.U = d3;
+    public ActivityPositionData(double x, double y, double z) {
+        this.x = x;
+        this.y = y;
+        this.z = z;
     }
 }
 

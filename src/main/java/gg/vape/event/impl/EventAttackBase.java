@@ -6,21 +6,21 @@ import gg.vape.wrapper.impl.Entity;
 
 public class EventAttackBase
 extends Event {
-    private static final EventListeners t = new EventListeners();
-    private static boolean U;
-    private final Entity l;
+    private static final EventListeners EVENT_LISTENERS = new EventListeners();
+    private static boolean obfuscationState;
+    private final Entity target;
 
     public Entity getTarget() {
-        return this.l;
+        return this.target;
     }
 
-    public static boolean j() {
-        return U;
+    public static boolean getAttackObfuscationState() {
+        return obfuscationState;
     }
 
     @Override
     public EventListeners getListeners() {
-        return t;
+        return EVENT_LISTENERS;
     }
 
     @Override
@@ -29,25 +29,25 @@ extends Event {
     }
 
 
-    public static boolean u() {
-        boolean bl = EventAttackBase.j();
+    public static boolean getObfuscationConstant() {
+        boolean state = EventAttackBase.getAttackObfuscationState();
         return true;
     }
 
-    EventAttackBase(Object object) {
-        this.l = new Entity(object);
+    EventAttackBase(Object targetHandle) {
+        this.target = new Entity(targetHandle);
     }
 
     public static EventListeners getEventListeners() {
-        return t;
+        return EVENT_LISTENERS;
     }
 
-    public static void r(boolean bl) {
-        U = bl;
+    public static void setAttackObfuscationState(boolean state) {
+        obfuscationState = state;
     }
 
     static {
-        EventAttackBase.r(false);
+        EventAttackBase.setAttackObfuscationState(false);
     }
 }
 

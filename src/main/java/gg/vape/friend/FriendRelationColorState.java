@@ -9,27 +9,26 @@ public enum FriendRelationColorState {
     SYNCED(GuiComponentContract.J.T),
     ENEMY(GuiComponentContract.J.d);
 
-    Color s;
-    private static final /* synthetic */ FriendRelationColorState[] M;
+    Color color;
+    private static final /* synthetic */ FriendRelationColorState[] VALUES;
 
     private FriendRelationColorState(Color color) {
-        this.s = color;
+        this.color = color;
     }
 
     static {
-        String[] stringArray = new String[]{"ENEMY", "FRIEND", "SYNCED"};
+        String[] relationNames = new String[]{"ENEMY", "FRIEND", "SYNCED"};
 
 
 
-        M = new FriendRelationColorState[]{FRIEND, SYNCED, ENEMY};
+        VALUES = new FriendRelationColorState[]{FRIEND, SYNCED, ENEMY};
     }
 
-    public Color G() {
-        return this.s;
+    public Color getColor() {
+        return this.color;
     }
 
-    public void y(Color color) {
-        this.s = color;
+    public void setColor(Color color) {
+        this.color = color;
     }
 }
-

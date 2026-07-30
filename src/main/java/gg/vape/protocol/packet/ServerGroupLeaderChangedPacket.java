@@ -6,27 +6,26 @@ import gg.vape.protocol.packet.ZeusSerializablePacket;
 
 public class ServerGroupLeaderChangedPacket
 implements ZeusSerializablePacket {
-    private UserModel y;
+    private UserModel newLeader;
 
     @Override
     public void o(ZeusPacketBuffer zeusPacketBuffer) {
-        this.y.a(zeusPacketBuffer);
+        this.newLeader.writeTo(zeusPacketBuffer);
     }
 
-    public ServerGroupLeaderChangedPacket(UserModel userModel) {
-        this.y = userModel;
+    public ServerGroupLeaderChangedPacket(UserModel newLeader) {
+        this.newLeader = newLeader;
     }
 
     @Override
     public void S(ZeusPacketBuffer zeusPacketBuffer) {
-        this.y = new UserModel(zeusPacketBuffer);
+        this.newLeader = new UserModel(zeusPacketBuffer);
     }
 
-    public UserModel O() {
-        return this.y;
+    public UserModel getNewLeader() {
+        return this.newLeader;
     }
 
     public ServerGroupLeaderChangedPacket() {
     }
 }
-

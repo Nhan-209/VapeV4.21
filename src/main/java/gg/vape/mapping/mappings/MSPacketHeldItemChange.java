@@ -20,7 +20,7 @@ extends Mapping {
     }
 
     public Object h(int n) {
-        return this.p.O(n);
+        return this.p.newInstance(n);
     }
 }
 

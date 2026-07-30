@@ -1,20 +1,18 @@
 package gg.vape.wrapper.impl;
 
 import gg.vape.mapping.mappings.MRenderLivingBase;
-import gg.vape.wrapper.impl.EntityLivingBase;
-import gg.vape.wrapper.impl.ModelBipedSkeletonBridge;
-import gg.vape.wrapper.impl.Render;
+
 import java.nio.FloatBuffer;
 import java.util.List;
 
 public class RenderLivingBase<T extends EntityLivingBase>
 extends Render<T> {
     public ModelBipedSkeletonBridge getMainModel() {
-        return new ModelBipedSkeletonBridge(MRenderLivingBase.x(RenderLivingBase.c.getMappingsMapperCompat().CP, this.I));
+        return new ModelBipedSkeletonBridge(MRenderLivingBase.x(RenderLivingBase.vapeInstance.getMappingsMapperCompat().CP, this.I));
     }
 
     public List<Object> getLayerRenderers() {
-        return (List)MRenderLivingBase.i(RenderLivingBase.c.getMappingsMapperCompat().CP, this.I);
+        return (List)MRenderLivingBase.i(RenderLivingBase.vapeInstance.getMappingsMapperCompat().CP, this.I);
     }
 
     public RenderLivingBase(Object object) {
@@ -22,11 +20,11 @@ extends Render<T> {
     }
 
     public void setLayerRenderers(List list) {
-        MRenderLivingBase.O(RenderLivingBase.c.getMappingsMapperCompat().CP, this.I, list);
+        MRenderLivingBase.O(RenderLivingBase.vapeInstance.getMappingsMapperCompat().CP, this.I, list);
     }
 
     public FloatBuffer P() {
-        return MRenderLivingBase.y(RenderLivingBase.c.getMappingsMapperCompat().CP, this.I);
+        return MRenderLivingBase.y(RenderLivingBase.vapeInstance.getMappingsMapperCompat().CP, this.I);
     }
 }
 

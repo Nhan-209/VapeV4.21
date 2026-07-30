@@ -59,7 +59,7 @@ extends Mod {
                 if (!MappedClasses.uO.isInstance(e) || !this.spawnerWhitelist.matches(string = (tileEntityMobSpawner = new TileEntityMobSpawner(e)).j().Q(), true)) continue;
                 String string2 = "";
                 if (this.showDistance.getEffectiveValue().booleanValue()) {
-                    String string3 = ClientSettings.F + "a[" + ClientSettings.F + "f" + (int)entityPlayerSP.i((double)tileEntityMobSpawner.getX(), (double)tileEntityMobSpawner.getY(), (double)tileEntityMobSpawner.getZ()) + ClientSettings.F + "a]" + ClientSettings.F + "r";
+                    String string3 = ClientSettings.FORMAT_CODE + "a[" + ClientSettings.FORMAT_CODE + "f" + (int)entityPlayerSP.i((double)tileEntityMobSpawner.getX(), (double)tileEntityMobSpawner.getY(), (double)tileEntityMobSpawner.getZ()) + ClientSettings.FORMAT_CODE + "a]" + ClientSettings.FORMAT_CODE + "r";
                     string2 = string2 + string3 + " ";
                 }
                 string2 = string2 + string + " spawner";
@@ -92,7 +92,7 @@ extends Mod {
             if (!MappedClasses.uO.isInstance(e) || !this.spawnerWhitelist.matches(string = (tileEntityMobSpawner = new TileEntityMobSpawner(e)).j().Q(), true)) continue;
             String string4 = "";
             if (this.showDistance.getEffectiveValue().booleanValue()) {
-                String string5 = ClientSettings.F + "a[" + ClientSettings.F + "f" + (int)entityPlayerSP.i((double)tileEntityMobSpawner.getX(), (double)tileEntityMobSpawner.getY(), (double)tileEntityMobSpawner.getZ()) + ClientSettings.F + "a]" + ClientSettings.F + "r";
+                String string5 = ClientSettings.FORMAT_CODE + "a[" + ClientSettings.FORMAT_CODE + "f" + (int)entityPlayerSP.i((double)tileEntityMobSpawner.getX(), (double)tileEntityMobSpawner.getY(), (double)tileEntityMobSpawner.getZ()) + ClientSettings.FORMAT_CODE + "a]" + ClientSettings.FORMAT_CODE + "r";
                 string4 = string4 + string5 + " ";
             }
             string4 = string4 + string + " spawner";

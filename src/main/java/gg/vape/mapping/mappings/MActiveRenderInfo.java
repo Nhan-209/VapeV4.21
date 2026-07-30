@@ -47,7 +47,7 @@ extends Mapping {
     }
 
     private void W(Object object, Object object2) {
-        this.g.c(object, object2);
+        this.g.invokeVoid(object, object2);
     }
 
     public static float A(MActiveRenderInfo mActiveRenderInfo, Object object) {
@@ -124,21 +124,21 @@ extends Mapping {
             boolean bl = true;
             String string = "getBlockAtEntityViewpoint";
             MActiveRenderInfo mActiveRenderInfo = this;
-            this.A = mActiveRenderInfo.x(string, bl, clazz, classArray);
+            this.A = mActiveRenderInfo.registerStaticMethod(string, bl, clazz, classArray);
         } else if (ForgeVersion.MC_1_8_9.L()) {
             Class[] classArray = new Class[]{MappedClasses.YU, MappedClasses.zc, Float.TYPE};
             Class clazz = MappedClasses.Zk;
             boolean bl = true;
             String string = "getBlockAtEntityViewpoint";
             MActiveRenderInfo mActiveRenderInfo = this;
-            this.A = mActiveRenderInfo.x(string, bl, clazz, classArray);
+            this.A = mActiveRenderInfo.registerStaticMethod(string, bl, clazz, classArray);
         } else if (ForgeVersion.MC_1_12_2.L()) {
             Class[] classArray = new Class[]{MappedClasses.YU, MappedClasses.zc, Float.TYPE};
             Class clazz = MappedClasses.Vv;
             boolean bl = true;
             String string = "getBlockStateAtEntityViewpoint";
             MActiveRenderInfo mActiveRenderInfo = this;
-            this.A = mActiveRenderInfo.x(string, bl, clazz, classArray); 
+            this.A = mActiveRenderInfo.registerStaticMethod(string, bl, clazz, classArray);
         }
     }
 

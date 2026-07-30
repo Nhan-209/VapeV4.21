@@ -12,7 +12,7 @@ extends Mapping {
     private final MappingMethod U;
 
     private void k(Object object, Object object2) {
-        this.L.c(object, object2);
+        this.L.invokeVoid(object, object2);
     }
 
     public static int W() {
@@ -69,7 +69,7 @@ extends Mapping {
     }
 
     private Object C(Object object, Object object2) {
-        return this.U.L(object, object2);
+        return this.U.invokeObject(object, object2);
     }
 
     public static void T(int n) {

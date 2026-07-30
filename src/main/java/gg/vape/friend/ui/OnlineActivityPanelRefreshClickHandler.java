@@ -7,10 +7,10 @@ import java.awt.Point;
 
 public class OnlineActivityPanelRefreshClickHandler
 implements GuiMouseListener {
-    final OnlineActivitySettingsFrame Y;
+    private final OnlineActivitySettingsFrame settingsFrame;
 
     public OnlineActivityPanelRefreshClickHandler(OnlineActivitySettingsFrame onlineActivitySettingsFrame) {
-        this.Y = onlineActivitySettingsFrame;
+        this.settingsFrame = onlineActivitySettingsFrame;
     }
 
     @Override
@@ -18,7 +18,7 @@ implements GuiMouseListener {
         if (mouseClickButton != MouseClickButton.LEFT_CLICK) {
             return;
         }
-        OnlineActivitySettingsFrame.b(this.Y).Z$src$V$1pkcfcd();
+        OnlineActivitySettingsFrame.getActivityListPanel(this.settingsFrame).requestRefresh();
     }
 
 }

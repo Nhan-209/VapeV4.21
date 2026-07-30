@@ -17,105 +17,105 @@ import gg.vape.ui.notification.NotificationType;
 
 public class PartyInviteFriendRowComponent
 extends PartyFriendRowComponent {
-    boolean Ff;
-    private final AnimatedCenteredTextLabelComponent Fs;
+    private boolean invitePending;
+    private final AnimatedCenteredTextLabelComponent inviteAction;
 
     @Override
-    protected void b() {
+    protected void renderRoleIndicator() {
     }
 
     @Override
     public void c() {
-        this.Fs.setVisible(this.w$src$Z$e457mb());
+        this.inviteAction.setVisible(this.w$src$Z$e457mb());
         super.c();
     }
 
     public PartyInviteFriendRowComponent(OnlineFriend onlineFriend) {
         super(onlineFriend, false, false);
-        this.Fs = new PartyInviteActionLabelComponent(this, "INVITE", PartyInviteFriendRowComponent.J.l);
-        this.Ff = false;
-        this.Fs.addClickListener(this::a$src$V$18kn00v);
-        this.Xq.removeMarkedChildren();
-        this.Xq.h(this.Xj, new Object[0]);
-        this.Fs.setFontScale((double)0.65f);
-        this.Fs.setBorderAlpha(1.0f);
-        this.Xq.h(this.Fs, new Object[0]);
+        this.inviteAction = new PartyInviteActionLabelComponent(this, "INVITE", PartyInviteFriendRowComponent.J.l);
+        this.invitePending = false;
+        this.inviteAction.addClickListener(this::sendPartyInvite);
+        this.actionPanel.removeMarkedChildren();
+        this.actionPanel.h(this.usernameLabel, new Object[0]);
+        this.inviteAction.setFontScale((double)0.65f);
+        this.inviteAction.setBorderAlpha(1.0f);
+        this.actionPanel.h(this.inviteAction, new Object[0]);
     }
 
-    private void lambda$null$3() {
-        this.Ff = false;
+    private void handleNewPartyInviteFailure() {
+        this.invitePending = false;
     }
 
 
-    private void a$src$V$18kn00v() {
-        if (this.Ff) {
+    private void sendPartyInvite() {
+        if (this.invitePending) {
             return;
         }
-        if (this.Xl.F() == OnlineStatus.OFFLINE) {
+        if (this.friend.getStatus() == OnlineStatus.OFFLINE) {
             return;
         }
-        this.Ff = true;
-        PartyState partyState = Vape.INSTANCE.getOnlineManager().y().j();
+        this.invitePending = true;
+        PartyState partyState = Vape.INSTANCE.getOnlineManager().getPartyManager().getCurrentParty();
         if (partyState != null) {
-            if (!partyState.t()) {
-                this.Ff = false;
+            if (!partyState.canInvite()) {
+                this.invitePending = false;
                 return;
             }
-            if (partyState.c().contains(this.Xl)) {
-                this.Ff = false;
-                OnlineFriendUiHelper.P(new NotificationMessage(NotificationType.ERROR, "Cannot send party invite to a party member"));
+            if (partyState.getMembers().contains(this.friend)) {
+                this.invitePending = false;
+                OnlineFriendUiHelper.showNotification(new NotificationMessage(NotificationType.ERROR, "Cannot send party invite to a party member"));
                 return;
             }
-            if (partyState.S().contains(this.Xl)) {
-                this.Ff = false;
-                OnlineFriendUiHelper.P(new NotificationMessage(NotificationType.ERROR, "Cannot send party invite to an already invited person"));
+            if (partyState.getInvitedUsers().contains(this.friend)) {
+                this.invitePending = false;
+                OnlineFriendUiHelper.showNotification(new NotificationMessage(NotificationType.ERROR, "Cannot send party invite to an already invited person"));
                 return;
             }
-            ZeusConnectionManager.T().u().J(this.Xl.S(), this::lambda$onInvite$0, this::lambda$onInvite$1);
+            ZeusConnectionManager.T().u().J(this.friend.getUser(), this::handleExistingPartyInviteResponse, this::handleExistingPartyInviteFailure);
             return;
         }
-        ZeusConnectionManager.T().u().w(this::lambda$onInvite$4, this::lambda$onInvite$5);
+        ZeusConnectionManager.T().u().w(this::handlePartyCreationResponse, this::handlePartyCreationFailure);
     }
 
-    private void lambda$onInvite$4(GroupCreateResponsePacket groupCreateResponsePacket) {
-        if (groupCreateResponsePacket.q$src$Lgg_vape_protocol_packet_GroupCreateStatus_$1c0kqtl() == GroupCreateStatus.SUCCESS) {
-            this.Ff = true;
-            ZeusConnectionManager.T().u().J(this.Xl.S(), this::lambda$null$2, this::lambda$null$3);
+    private void handlePartyCreationResponse(GroupCreateResponsePacket response) {
+        if (response.getStatus() == GroupCreateStatus.SUCCESS) {
+            this.invitePending = true;
+            ZeusConnectionManager.T().u().J(this.friend.getUser(), this::handleNewPartyInviteResponse, this::handleNewPartyInviteFailure);
         }
     }
 
-    private void e(OnlineFriend onlineFriend, GroupInviteResponsePacket groupInviteResponsePacket) {
-        switch (groupInviteResponsePacket.a()) {
+    private void showInviteResult(OnlineFriend friend, GroupInviteResponsePacket response) {
+        switch (response.getStatus()) {
             case SUCCESS: {
-                OnlineFriendUiHelper.P(new NotificationMessage(NotificationType.SUCCESS, "Invited " + onlineFriend.C() + " to party"));
+                OnlineFriendUiHelper.showNotification(new NotificationMessage(NotificationType.SUCCESS, "Invited " + friend.getDisplayName() + " to party"));
                 break;
             }
             case TOO_MANY_INVITES: {
-                OnlineFriendUiHelper.P(new NotificationMessage(NotificationType.ERROR, "Sent too many invites"));
+                OnlineFriendUiHelper.showNotification(new NotificationMessage(NotificationType.ERROR, "Sent too many invites"));
                 break;
             }
             case NOT_ONLINE: 
             case ALREADY_INVITED: 
             case FAILED: {
-                OnlineFriendUiHelper.P(new NotificationMessage(NotificationType.ERROR, "Error inviting " + onlineFriend.C() + " to party"));
+                OnlineFriendUiHelper.showNotification(new NotificationMessage(NotificationType.ERROR, "Error inviting " + friend.getDisplayName() + " to party"));
             }
         }
     }
 
-    private void lambda$onInvite$0(GroupInviteResponsePacket groupInviteResponsePacket) {
-        this.e(this.Xl, groupInviteResponsePacket);
+    private void handleExistingPartyInviteResponse(GroupInviteResponsePacket response) {
+        this.showInviteResult(this.friend, response);
     }
 
-    private void lambda$onInvite$5() {
-        this.Ff = false;
+    private void handlePartyCreationFailure() {
+        this.invitePending = false;
     }
 
-    private void lambda$onInvite$1() {
-        this.Ff = false;
+    private void handleExistingPartyInviteFailure() {
+        this.invitePending = false;
     }
 
-    private void lambda$null$2(GroupInviteResponsePacket groupInviteResponsePacket) {
-        this.e(this.Xl, groupInviteResponsePacket);
+    private void handleNewPartyInviteResponse(GroupInviteResponsePacket response) {
+        this.showInviteResult(this.friend, response);
     }
 }
 

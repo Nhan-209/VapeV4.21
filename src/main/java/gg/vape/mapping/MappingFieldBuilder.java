@@ -5,23 +5,23 @@ import gg.vape.mapping.MappingMemberBuilder;
 
 public class MappingFieldBuilder
 extends MappingMemberBuilder<MappingFieldBuilder, MappingField> {
-    private int r = 0;
+    private int arrayDimensions = 0;
 
-    public MappingField z() {
-        return MappingField.E(this);
+    public MappingField buildField() {
+        return MappingField.fromBuilder(this);
     }
 
     @Override
-    public MappingField F() {
-        return this.z();
+    public MappingField build() {
+        return this.buildField();
     }
 
-    public int i() {
-        return this.r;
+    public int getArrayDimensions() {
+        return this.arrayDimensions;
     }
 
-    public MappingFieldBuilder J(int n) {
-        this.r = n;
+    public MappingFieldBuilder setArrayDimensions(int arrayDimensions) {
+        this.arrayDimensions = arrayDimensions;
         return this;
     }
 }

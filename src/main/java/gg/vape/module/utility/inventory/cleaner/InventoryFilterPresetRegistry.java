@@ -23,14 +23,14 @@ public class InventoryFilterPresetRegistry {
 
 
     public void loadJson(JsonObject jsonObject) {
-        JsonArray jsonArray = ConfigJsonUtils.q(jsonObject, "slotRules");
+        JsonArray jsonArray = ConfigJsonUtils.getJsonArray(jsonObject, "slotRules");
         if (jsonArray != null) {
             for (JsonElement element : jsonArray) {
                 if (!element.isJsonObject()) continue;
                 this.slotRulePresets.add(new SharedInventoryFilterPreset(element.getAsJsonObject()));
             }
         }
-        JsonArray inventoryFilterRules = ConfigJsonUtils.q(jsonObject, "inventoryFilterRules");
+        JsonArray inventoryFilterRules = ConfigJsonUtils.getJsonArray(jsonObject, "inventoryFilterRules");
         if (inventoryFilterRules != null) {
             for (JsonElement jsonElement : inventoryFilterRules) {
                 if (!jsonElement.isJsonObject()) continue;

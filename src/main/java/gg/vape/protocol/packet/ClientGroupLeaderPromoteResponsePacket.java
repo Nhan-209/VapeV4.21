@@ -11,12 +11,12 @@ extends ZeusTrackedPacket<ClientGroupLeaderPromotePacket> {
 
     @Override
     public void T(ZeusPacketBuffer gx_12) {
-        gx_12.U(this.H);
+        gx_12.writeEnum(this.H);
     }
 
     @Override
     public void x(ZeusPacketBuffer gx_12) {
-        this.H = gx_12.Y(ClientGroupLeaderPromoteStatus.class);
+        this.H = gx_12.readEnum(ClientGroupLeaderPromoteStatus.class);
     }
 
     public ClientGroupLeaderPromoteStatus M() {

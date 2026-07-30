@@ -50,7 +50,7 @@ extends InteractiveComponent {
             if (this.settingsButton.V$src$Z$1xhop3l() && this.settingsButton.i(guiMouseEvent.getX(), guiMouseEvent.getY())) {
                 return;
             }
-            this.friendEntry.k(!this.friendEntry.c());
+            this.friendEntry.setTargeted(!this.friendEntry.isTargeted());
             this.getClickCooldown().setActive(true);
             return;
         }
@@ -107,10 +107,10 @@ extends InteractiveComponent {
     private boolean hasAlias() {
         if (this.friendEntry instanceof Friend) {
             Friend friend = (Friend)this.friendEntry;
-            return !ClickGuiFriendsFriendRequestComponent.firstNonEmpty(friend.E(), "").equalsIgnoreCase(friend.s());
+            return !ClickGuiFriendsFriendRequestComponent.firstNonEmpty(friend.getAlias(), "").equalsIgnoreCase(friend.getName());
         }
-        String string = ClickGuiFriendsFriendRequestComponent.firstNonEmpty(this.friendEntry.o(), "");
-        String string2 = ClickGuiFriendsFriendRequestComponent.firstNonEmpty(this.friendEntry.s(), "");
+        String string = ClickGuiFriendsFriendRequestComponent.firstNonEmpty(this.friendEntry.getDisplayName(), "");
+        String string2 = ClickGuiFriendsFriendRequestComponent.firstNonEmpty(this.friendEntry.getName(), "");
         return !string.isEmpty() && !string.equalsIgnoreCase(string2);
     }
 
@@ -138,32 +138,32 @@ extends InteractiveComponent {
         if (bl) {
             return "";
         }
-        if (this.friendEntry instanceof ExternalFriend && (object = ((ExternalFriend)(friendEntry = (ExternalFriend)this.friendEntry)).d()) != null) {
+        if (this.friendEntry instanceof ExternalFriend && (object = ((ExternalFriend)(friendEntry = (ExternalFriend)this.friendEntry)).getOnlineFriend()) != null) {
             OnlineStatus onlineStatus;
             String string;
             StringBuilder stringBuilder = new StringBuilder();
-            String string2 = ((OnlineFriend)object).C();
+            String string2 = ((OnlineFriend)object).getDisplayName();
             if (string2 != null && !string2.isEmpty()) {
                 stringBuilder.append(string2);
             }
-            if ((string = ((OnlineFriend)object).I()) != null && !string.isEmpty() && !string.equals(string2)) {
+            if ((string = ((OnlineFriend)object).getMinecraftUsername()) != null && !string.isEmpty() && !string.equals(string2)) {
                 if (stringBuilder.length() > 0) {
                     stringBuilder.append('\n');
                 }
                 stringBuilder.append(string);
             }
-            if ((onlineStatus = ((OnlineFriend)object).F()) != null) {
+            if ((onlineStatus = ((OnlineFriend)object).getStatus()) != null) {
                 if (stringBuilder.length() > 0) {
                     stringBuilder.append('\n');
                 }
-                stringBuilder.append(onlineStatus.f());
+                stringBuilder.append(onlineStatus.getDisplayName());
             }
             return stringBuilder.toString();
         }
         if (this.friendEntry instanceof Friend) {
             friendEntry = (Friend)this.friendEntry;
-            object = ((Friend)friendEntry).E();
-            String string = ((Friend)friendEntry).s();
+            object = ((Friend)friendEntry).getAlias();
+            String string = ((Friend)friendEntry).getName();
             if (object != null && !((String)object).equals(string)) {
                 return "*" + (String)object + "\n" + string;
             }
@@ -204,7 +204,7 @@ extends InteractiveComponent {
     }
 
     public boolean isBlatantMod() {
-        return this.friendEntry.c();
+        return this.friendEntry.isTargeted();
     }
 
     private static String firstNonEmpty(@Nullable String string, @Nullable String string2) {
@@ -217,7 +217,7 @@ extends InteractiveComponent {
     private String getDisplayName(boolean bl) {
         Object object;
         Object object2;
-        String string = this.friendEntry.s();
+        String string = this.friendEntry.getName();
         boolean bl2 = this.hasAlias();
         if (bl2) {
             Object object3;
@@ -225,31 +225,31 @@ extends InteractiveComponent {
             if (bl) {
                 return string;
             }
-            if (this.friendEntry instanceof ExternalFriend && (object4 = ((ExternalFriend)(object3 = (ExternalFriend)this.friendEntry)).d()) != null) {
-                String string2 = ClickGuiFriendsFriendRequestComponent.firstNonEmpty(((OnlineFriend)object4).C(), ((ExternalFriend)object3).s());
+            if (this.friendEntry instanceof ExternalFriend && (object4 = ((ExternalFriend)(object3 = (ExternalFriend)this.friendEntry)).getOnlineFriend()) != null) {
+                String string2 = ClickGuiFriendsFriendRequestComponent.firstNonEmpty(((OnlineFriend)object4).getDisplayName(), ((ExternalFriend)object3).getName());
                 return "*" + string2;
             }
             if (this.friendEntry instanceof Friend) {
                 object3 = (Friend)this.friendEntry;
-                object4 = ClickGuiFriendsFriendRequestComponent.firstNonEmpty(((Friend)object3).E(), ((Friend)object3).s());
+                object4 = ClickGuiFriendsFriendRequestComponent.firstNonEmpty(((Friend)object3).getAlias(), ((Friend)object3).getName());
                 return "*" + (String)object4;
             }
-            object3 = ClickGuiFriendsFriendRequestComponent.firstNonEmpty(this.friendEntry.o(), string);
+            object3 = ClickGuiFriendsFriendRequestComponent.firstNonEmpty(this.friendEntry.getDisplayName(), string);
             return "*" + (String)object3;
         }
         if (bl) {
             return string;
         }
-        if (this.friendEntry instanceof ExternalFriend && (object2 = ((ExternalFriend)(object = (ExternalFriend)this.friendEntry)).d()) != null) {
-            String string3 = ClickGuiFriendsFriendRequestComponent.firstNonEmpty(((OnlineFriend)object2).C(), ((ExternalFriend)object).s());
+        if (this.friendEntry instanceof ExternalFriend && (object2 = ((ExternalFriend)(object = (ExternalFriend)this.friendEntry)).getOnlineFriend()) != null) {
+            String string3 = ClickGuiFriendsFriendRequestComponent.firstNonEmpty(((OnlineFriend)object2).getDisplayName(), ((ExternalFriend)object).getName());
             return string3;
         }
         if (this.friendEntry instanceof Friend) {
             object = (Friend)this.friendEntry;
-            object2 = ClickGuiFriendsFriendRequestComponent.firstNonEmpty(((Friend)object).E(), ((Friend)object).s());
+            object2 = ClickGuiFriendsFriendRequestComponent.firstNonEmpty(((Friend)object).getAlias(), ((Friend)object).getName());
             return (String)object2;
         }
-        object = ClickGuiFriendsFriendRequestComponent.firstNonEmpty(this.friendEntry.o(), string);
+        object = ClickGuiFriendsFriendRequestComponent.firstNonEmpty(this.friendEntry.getDisplayName(), string);
         return (String)object;
     }
 

@@ -2,8 +2,6 @@ package gg.vape.wrapper.impl;
 
 import gg.vape.mapping.mappings.MGuiScreen;
 import gg.vape.module.none.ClientSettings;
-import gg.vape.wrapper.impl.ITextComponent;
-import gg.vape.wrapper.impl.Screen;
 
 public class GuiScreen
 extends Screen {
@@ -14,7 +12,7 @@ extends Screen {
     }
 
     public int g() {
-        return MGuiScreen.U(GuiScreen.c.getMappings().h1, this.I);
+        return MGuiScreen.U(GuiScreen.vapeInstance.getMappings().h1, this.I);
     }
 
     public static boolean p$src$Z$8062rc() {
@@ -22,7 +20,7 @@ extends Screen {
     }
 
     public int k() {
-        return MGuiScreen.D(GuiScreen.c.getMappings().h1, this.I);
+        return MGuiScreen.D(GuiScreen.vapeInstance.getMappings().h1, this.I);
     }
 
     public static boolean Z() {
@@ -44,7 +42,7 @@ extends Screen {
     }
 
     public ITextComponent F() {
-        return new ITextComponent(GuiScreen.c.getMappings().h1.S(this.I));
+        return new ITextComponent(GuiScreen.vapeInstance.getMappings().h1.S(this.I));
     }
 
     static {

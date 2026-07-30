@@ -11,7 +11,7 @@ extends Wrapper {
         if (!Vape.renderReady) {
             return 1.0f;
         }
-        return MRenderWorldLastEvent.o(RenderWorldLastEvent.c.getMappingsMapperCompat().Cf);
+        return MRenderWorldLastEvent.o(RenderWorldLastEvent.vapeInstance.getMappingsMapperCompat().Cf);
     }
 
     public RenderWorldLastEvent(Object object) {

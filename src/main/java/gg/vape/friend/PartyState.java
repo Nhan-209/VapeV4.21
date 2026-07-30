@@ -19,179 +19,179 @@ import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnmodifiableView;
 
 public class PartyState {
-    private Map<GroupOption, Value<?, ?>> T;
-    private PartyPanel H;
-    private OnlineFriend M;
-    private final List<OnlineFriend> b = new ArrayList<OnlineFriend>();
-    private final List<OnlineFriend> W = new ArrayList<OnlineFriend>();
-    private final List<PartyMemberRow> R = new ArrayList<PartyMemberRow>();
-    private final BooleanValue u = BooleanValue.create(null, "Open Party", false);
+    private Map<GroupOption, Value<?, ?>> options;
+    private PartyPanel partyPanel;
+    private OnlineFriend leader;
+    private final List<OnlineFriend> members = new ArrayList<OnlineFriend>();
+    private final List<OnlineFriend> invitedUsers = new ArrayList<OnlineFriend>();
+    private final List<PartyMemberRow> chatRows = new ArrayList<PartyMemberRow>();
+    private final BooleanValue openInvites = BooleanValue.create(null, "Open Party", false);
 
     private static OnlineFriend lambda$handle$0(GroupUserModel groupUserModel) {
         return new OnlineFriend(groupUserModel);
     }
 
-    public Map<GroupOption, Value<?, ?>> L() {
-        if (this.T == null) {
-            this.T = new LinkedHashMap();
-            this.T.put(GroupOption.OPEN_INVITES, this.u);
-            for (Map.Entry<GroupOption, Value<?, ?>> entry : this.T.entrySet()) {
-                ((Value)entry.getValue()).setValue(entry.getKey().z());
+    public Map<GroupOption, Value<?, ?>> getOptions() {
+        if (this.options == null) {
+            this.options = new LinkedHashMap();
+            this.options.put(GroupOption.OPEN_INVITES, this.openInvites);
+            for (Map.Entry<GroupOption, Value<?, ?>> entry : this.options.entrySet()) {
+                ((Value)entry.getValue()).setValue(entry.getKey().getDefaultValue());
             }
         }
-        return this.T;
+        return this.options;
     }
 
     /*
      * WARNING - Removed try catching itself - possible behaviour change.
      */
-    public void Q(OnlineFriend onlineFriend) {
-        List<OnlineFriend> list = this.b;
+    public void addMember(OnlineFriend onlineFriend) {
+        List<OnlineFriend> list = this.members;
         synchronized (list) {
-            this.b.add(onlineFriend);
-            if (this.H != null) {
-                this.H.w$src$V$1sfdd5j();
+            this.members.add(onlineFriend);
+            if (this.partyPanel != null) {
+                this.partyPanel.refreshMembers();
             }
         }
     }
 
     public PartyState(OnlineFriend onlineFriend) {
-        this.M = onlineFriend;
-        this.M.K(0);
-        this.b.add(onlineFriend);
+        this.leader = onlineFriend;
+        this.leader.setGroupRole(0);
+        this.members.add(onlineFriend);
     }
 
-    public @UnmodifiableView List<PartyMemberRow> d() {
-        return this.R;
+    public @UnmodifiableView List<PartyMemberRow> getChatRows() {
+        return this.chatRows;
     }
 
     /*
      * WARNING - Removed try catching itself - possible behaviour change.
      */
-    public void q(OnlineFriend onlineFriend) {
-        List<OnlineFriend> list = this.W;
+    public void removeInvitedUser(OnlineFriend onlineFriend) {
+        List<OnlineFriend> list = this.invitedUsers;
         synchronized (list) {
-            this.W.remove(onlineFriend);
-            if (this.H != null) {
-                this.H.w$src$V$1sfdd5j();
+            this.invitedUsers.remove(onlineFriend);
+            if (this.partyPanel != null) {
+                this.partyPanel.refreshMembers();
             }
         }
     }
 
     @Nullable
-    public OnlineFriend z(long l) {
-        for (OnlineFriend onlineFriend : this.b) {
-            if (onlineFriend.S().g() != l) continue;
+    public OnlineFriend findMemberById(long userId) {
+        for (OnlineFriend onlineFriend : this.members) {
+            if (onlineFriend.getUser().getId() != userId) continue;
             return onlineFriend;
         }
         return null;
     }
 
-    public void H(OnlineFriend onlineFriend) {
-        this.M = onlineFriend;
-        this.b.remove(onlineFriend);
-        OnlineFriend onlineFriend2 = this.b.set(0, onlineFriend);
+    public void setLeader(OnlineFriend onlineFriend) {
+        this.leader = onlineFriend;
+        this.members.remove(onlineFriend);
+        OnlineFriend onlineFriend2 = this.members.set(0, onlineFriend);
         if (onlineFriend2 != null) {
-            this.b.add(onlineFriend2);
+            this.members.add(onlineFriend2);
         }
-        if (this.H != null) {
-            this.H.w$src$V$1sfdd5j();
-        }
-    }
-
-    /*
-     * WARNING - Removed try catching itself - possible behaviour change.
-     */
-    public void g(OnlineFriend onlineFriend) {
-        List<OnlineFriend> list = this.W;
-        synchronized (list) {
-            this.W.remove(onlineFriend);
+        if (this.partyPanel != null) {
+            this.partyPanel.refreshMembers();
         }
     }
 
     /*
      * WARNING - Removed try catching itself - possible behaviour change.
      */
-    public void n(PartyMemberRow partyMemberRow) {
-        List<PartyMemberRow> list = this.R;
+    public void removeInvitedUserSilently(OnlineFriend onlineFriend) {
+        List<OnlineFriend> list = this.invitedUsers;
         synchronized (list) {
-            this.R.add(partyMemberRow);
+            this.invitedUsers.remove(onlineFriend);
         }
-        OnlineFriendUiHelper.y(partyMemberRow);
+    }
+
+    /*
+     * WARNING - Removed try catching itself - possible behaviour change.
+     */
+    public void addChatRow(PartyMemberRow partyMemberRow) {
+        List<PartyMemberRow> list = this.chatRows;
+        synchronized (list) {
+            this.chatRows.add(partyMemberRow);
+        }
+        OnlineFriendUiHelper.addPartyChatMessage(partyMemberRow);
     }
 
 
     public PartyState(PartyStateModel partyStateModel) {
-        this.M = this.l(partyStateModel.g());
-        for (GroupUserModel groupUserModel : partyStateModel.h()) {
-            this.b.add(this.l(groupUserModel));
+        this.leader = this.resolveGroupUser(partyStateModel.getLeader());
+        for (GroupUserModel groupUserModel : partyStateModel.getMembers()) {
+            this.members.add(this.resolveGroupUser(groupUserModel));
         }
-        for (GroupUserModel groupUserModel : partyStateModel.V()) {
-            this.W.add(this.l(groupUserModel));
+        for (GroupUserModel groupUserModel : partyStateModel.getInvitedUsers()) {
+            this.invitedUsers.add(this.resolveGroupUser(groupUserModel));
         }
     }
 
-    public BooleanValue h() {
-        return this.u;
+    public BooleanValue getOpenInvites() {
+        return this.openInvites;
     }
 
     /*
      * WARNING - Removed try catching itself - possible behaviour change.
      */
-    public void o(OnlineFriend onlineFriend) {
-        List<OnlineFriend> list = this.W;
+    public void addInvitedUser(OnlineFriend onlineFriend) {
+        List<OnlineFriend> list = this.invitedUsers;
         synchronized (list) {
-            this.W.add(onlineFriend);
-            if (this.H != null) {
-                this.H.w$src$V$1sfdd5j();
+            this.invitedUsers.add(onlineFriend);
+            if (this.partyPanel != null) {
+                this.partyPanel.refreshMembers();
             }
         }
     }
 
     @Nullable
-    public OnlineFriend X(UserModel userModel) {
-        return this.z(userModel.g());
+    public OnlineFriend findMember(UserModel userModel) {
+        return this.findMemberById(userModel.getId());
     }
 
-    public @UnmodifiableView List<OnlineFriend> S() {
-        return this.W;
+    public @UnmodifiableView List<OnlineFriend> getInvitedUsers() {
+        return this.invitedUsers;
     }
 
-    public boolean t() {
-        if (this.u.getEffectiveValue().booleanValue()) {
+    public boolean canInvite() {
+        if (this.openInvites.getEffectiveValue().booleanValue()) {
             return true;
         }
-        return this.r().equals(Vape.INSTANCE.getOnlineManager().r());
+        return this.getLeader().equals(Vape.INSTANCE.getOnlineManager().getLocalFriend());
     }
 
-    private OnlineFriend l(GroupUserModel groupUserModel) {
-        OnlineFriend onlineFriend = Vape.INSTANCE.getOnlineManager().u().Q(groupUserModel.V(), () -> PartyState.lambda$handle$0(groupUserModel));
-        onlineFriend.K(groupUserModel.e());
+    private OnlineFriend resolveGroupUser(GroupUserModel groupUserModel) {
+        OnlineFriend onlineFriend = Vape.INSTANCE.getOnlineManager().getFriendCache().getOrCreateFriend(groupUserModel.getUserId(), () -> PartyState.lambda$handle$0(groupUserModel));
+        onlineFriend.setGroupRole(groupUserModel.getGroupRole());
         return onlineFriend;
     }
 
-    public void u(PartyPanel partyPanel) {
-        this.H = partyPanel;
+    public void setPartyPanel(PartyPanel partyPanel) {
+        this.partyPanel = partyPanel;
     }
 
     /*
      * WARNING - Removed try catching itself - possible behaviour change.
      */
-    public void Y(OnlineFriend onlineFriend) {
-        List<OnlineFriend> list = this.b;
+    public void removeMember(OnlineFriend onlineFriend) {
+        List<OnlineFriend> list = this.members;
         synchronized (list) {
-            this.b.remove(onlineFriend);
-            if (this.H != null) {
-                this.H.w$src$V$1sfdd5j();
+            this.members.remove(onlineFriend);
+            if (this.partyPanel != null) {
+                this.partyPanel.refreshMembers();
             }
         }
     }
 
-    public OnlineFriend r() {
-        return this.M;
+    public OnlineFriend getLeader() {
+        return this.leader;
     }
 
-    public @UnmodifiableView List<OnlineFriend> c() {
-        return this.b;
+    public @UnmodifiableView List<OnlineFriend> getMembers() {
+        return this.members;
     }
 }

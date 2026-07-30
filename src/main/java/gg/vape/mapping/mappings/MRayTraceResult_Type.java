@@ -14,20 +14,20 @@ extends Mapping {
     public MRayTraceResult_Type() {
         super(MappedClasses.lk);
         Class clazz = MappedClasses.lk;
-        boolean bl = Wrapper.G;
+        boolean bl = Wrapper.isNativeAvailable;
         String string = "MISS";
         MRayTraceResult_Type mRayTraceResult_Type = this;
-        this.a = this.u(string, bl, clazz);
+        this.a = this.registerStaticField(string, bl, clazz);
         Class clazz2 = MappedClasses.lk;
-        boolean bl2 = Wrapper.G;
+        boolean bl2 = Wrapper.isNativeAvailable;
         String string2 = "BLOCK";
         MRayTraceResult_Type mRayTraceResult_Type2 = this;
-        this.j = this.u(string2, bl2, clazz2);
+        this.j = this.registerStaticField(string2, bl2, clazz2);
         Class clazz3 = MappedClasses.lk;
-        boolean bl3 = Wrapper.G;
+        boolean bl3 = Wrapper.isNativeAvailable;
         String string3 = "ENTITY";
         MRayTraceResult_Type mRayTraceResult_Type3 = this;
-        this.e = this.u(string3, bl3, clazz3);
+        this.e = this.registerStaticField(string3, bl3, clazz3);
     }
 
     public static Object b(MRayTraceResult_Type mRayTraceResult_Type) {

@@ -16,7 +16,7 @@ public class ClassBytecodeCache {
 
     public static int setClassBytecode(Class<?> targetClass, byte[] bytecode) {
         int result = NativeBridge.scb(targetClass, bytecode);
-        GuiComponent[] controlFlowMarker = EventInjectionSpec.F$src$ALgg_vape_ui_click_component_GuiComponent_$1y0d4sz();
+        GuiComponent[] controlFlowMarker = EventInjectionSpec.getObfuscationComponents();
         if (controlFlowMarker == null && result == 0) {
             classBytecode.put(targetClass, bytecode);
         }
@@ -113,7 +113,7 @@ public class ClassBytecodeCache {
 
     static int readUnsignedShort(byte[] bytecode, ClassByteCursor cursor) {
         ByteBuffer buffer = ByteBuffer.allocate(4);
-        GuiComponent[] controlFlowMarker = EventInjectionSpec.F$src$ALgg_vape_ui_click_component_GuiComponent_$1y0d4sz();
+        GuiComponent[] controlFlowMarker = EventInjectionSpec.getObfuscationComponents();
         for (int bufferIndex = 2; bufferIndex < 4; ++bufferIndex) {
             buffer.put(bufferIndex, bytecode[cursor.offset++]);
             if (controlFlowMarker != null) {
@@ -150,7 +150,7 @@ public class ClassBytecodeCache {
         ClassByteCursor cursor = new ClassByteCursor();
         cursor.offset = offset;
         byte[] versionBytes = buffer.array();
-        GuiComponent[] controlFlowMarker = EventInjectionSpec.F$src$ALgg_vape_ui_click_component_GuiComponent_$1y0d4sz();
+        GuiComponent[] controlFlowMarker = EventInjectionSpec.getObfuscationComponents();
         for (int bufferIndex = 2; bufferIndex < 4; ++bufferIndex) {
             writeByte(versionBytes[bufferIndex], bytecode, cursor);
             if (controlFlowMarker != null) {
@@ -161,7 +161,7 @@ public class ClassBytecodeCache {
             }
         }
         if (!updateGuiMarker && GuiComponent.getLegacyComponentState() == null) {
-            EventInjectionSpec.o(new GuiComponent[1]);
+            EventInjectionSpec.setObfuscationComponents(new GuiComponent[1]);
         }
     }
 
@@ -173,7 +173,7 @@ public class ClassBytecodeCache {
 
     static int readInt(byte[] bytecode, ClassByteCursor cursor) {
         ByteBuffer buffer = ByteBuffer.allocate(4);
-        GuiComponent[] controlFlowMarker = EventInjectionSpec.F$src$ALgg_vape_ui_click_component_GuiComponent_$1y0d4sz();
+        GuiComponent[] controlFlowMarker = EventInjectionSpec.getObfuscationComponents();
         for (int bufferIndex = 0; bufferIndex < 4; ++bufferIndex) {
             buffer.put(bufferIndex, bytecode[cursor.offset++]);
             if (controlFlowMarker != null) {
@@ -184,7 +184,7 @@ public class ClassBytecodeCache {
     }
 
     static void writeByte(Byte value, byte[] bytecode, ClassByteCursor cursor) {
-        if (EventInjectionSpec.F$src$ALgg_vape_ui_click_component_GuiComponent_$1y0d4sz() != null) {
+        if (EventInjectionSpec.getObfuscationComponents() != null) {
             int ignoredOffset = cursor.offset;
             return;
         }

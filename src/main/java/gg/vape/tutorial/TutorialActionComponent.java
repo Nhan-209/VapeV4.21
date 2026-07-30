@@ -11,10 +11,10 @@ import java.awt.Color;
 
 public class TutorialActionComponent
 extends FrameComponent {
-    private final TextButton _J;
-    private final SimpleTextLabelComponent _W;
-    private final SimpleTextLabelComponent _v;
-    private final UnderlinedTextLabel _i;
+    private final TextButton actionButton;
+    private final SimpleTextLabelComponent descriptionLabel;
+    private final SimpleTextLabelComponent titleLabel;
+    private final UnderlinedTextLabel skipLabel;
 
     @Override
     public void g(GuiMouseEvent guiMouseEvent) {
@@ -25,43 +25,43 @@ extends FrameComponent {
         return 120.0;
     }
 
-    public void H(String string) {
-        this._v.setText(string);
+    public void setTitleText(String title) {
+        this.titleLabel.setText(title);
     }
 
     @Override
     public void v() {
     }
 
-    public void e(String string) {
-        this._W.setText(string);
+    public void setDescriptionText(String description) {
+        this.descriptionLabel.setText(description);
     }
 
-    public UnderlinedTextLabel c$src$Lgg_vape_ui_click_component_gui_UnderlinedTextLa$npxkh1() {
-        return this._i;
+    public UnderlinedTextLabel getSkipLabel() {
+        return this.skipLabel;
     }
 
 
     @Override
     public void Y() {
-        this._v.S(this.n() + 3.0);
-        this._W.S(this._v.n() + this._v.L() + 2.0);
-        this._i.Y(12.0);
-        this._i.o(40.0);
-        this._i.setFontScale(0.7);
-        this._i.setTextColor(new Color(90, 90, 90, 255));
-        this._i.S(this.n() + this.L() - this._i.L());
-        this._J.Y(12.0);
-        this._J.o(32.0);
-        this._J.K(this.G$src$D$1b2f02a() + this.A() - this._J.A() - 6.0);
-        this._J.S(this.n() + this.L() - this._J.L() - 2.0);
-        if (!this._J.getDisabledOverlayColor().equals(ClientSettings.INSTANCE.getAccentColor())) {
-            this._J.setBackgroundAnimationColors(ClientSettings.INSTANCE.getAccentColor(), ClientSettings.INSTANCE.getAccentColor().brighter());
+        this.titleLabel.S(this.n() + 3.0);
+        this.descriptionLabel.S(this.titleLabel.n() + this.titleLabel.L() + 2.0);
+        this.skipLabel.Y(12.0);
+        this.skipLabel.o(40.0);
+        this.skipLabel.setFontScale(0.7);
+        this.skipLabel.setTextColor(new Color(90, 90, 90, 255));
+        this.skipLabel.S(this.n() + this.L() - this.skipLabel.L());
+        this.actionButton.Y(12.0);
+        this.actionButton.o(32.0);
+        this.actionButton.K(this.G$src$D$1b2f02a() + this.A() - this.actionButton.A() - 6.0);
+        this.actionButton.S(this.n() + this.L() - this.actionButton.L() - 2.0);
+        if (!this.actionButton.getDisabledOverlayColor().equals(ClientSettings.INSTANCE.getAccentColor())) {
+            this.actionButton.setBackgroundAnimationColors(ClientSettings.INSTANCE.getAccentColor(), ClientSettings.INSTANCE.getAccentColor().brighter());
         }
     }
 
-    public TextButton G$src$Lgg_vape_ui_click_component_gui_TextButton_$82emrx() {
-        return this._J;
+    public TextButton getActionButton() {
+        return this.actionButton;
     }
 
     @Override
@@ -71,34 +71,34 @@ extends FrameComponent {
     @Override
     public double C() {
         double d = 16.0;
-        if (this._W.getText().equals("")) {
+        if (this.descriptionLabel.getText().equals("")) {
             d = 12.0;
         }
-        return this._v.L() + this._W.C() + d;
+        return this.titleLabel.L() + this.descriptionLabel.C() + d;
     }
 
     public TutorialActionComponent(String string, String string2) {
         this.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M("wrap");
         this.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M(false);
-        this._v = new WrappedTextComponent(string, 1.0, new Color(209, 209, 209), true, 6.0);
-        this._W = new WrappedTextComponent(string2, 0.9, new Color(140, 140, 140, 255), false, 6.0);
-        this._i = new UnderlinedTextLabel("Skip tutorial");
-        this._J = new TextButton("Ok", Color.BLACK);
-        this._i.o(20.0);
-        this._i.Y(20.0);
-        this._i.setShowDisabledOverlay(true);
-        this._i.setDisabledOverlayColor(Color.RED);
-        this._J.o(20.0);
-        this._J.Y(20.0);
-        this._J.setShowDisabledOverlay(true);
-        this._J.setDisabledOverlayColor(Color.RED);
+        this.titleLabel = new WrappedTextComponent(string, 1.0, new Color(209, 209, 209), true, 6.0);
+        this.descriptionLabel = new WrappedTextComponent(string2, 0.9, new Color(140, 140, 140, 255), false, 6.0);
+        this.skipLabel = new UnderlinedTextLabel("Skip tutorial");
+        this.actionButton = new TextButton("Ok", Color.BLACK);
+        this.skipLabel.o(20.0);
+        this.skipLabel.Y(20.0);
+        this.skipLabel.setShowDisabledOverlay(true);
+        this.skipLabel.setDisabledOverlayColor(Color.RED);
+        this.actionButton.o(20.0);
+        this.actionButton.Y(20.0);
+        this.actionButton.setShowDisabledOverlay(true);
+        this.actionButton.setDisabledOverlayColor(Color.RED);
         this.o(120.0);
-        this._v.setUseExplicitWidth(true);
-        this._v.o(120.0);
-        this._W.setUseExplicitWidth(true);
-        this._W.o(120.0);
-        this._W.Y(0.0);
-        this.addChildren(this._v, this._W, this._i, this._J);
+        this.titleLabel.setUseExplicitWidth(true);
+        this.titleLabel.o(120.0);
+        this.descriptionLabel.setUseExplicitWidth(true);
+        this.descriptionLabel.o(120.0);
+        this.descriptionLabel.Y(0.0);
+        this.addChildren(this.titleLabel, this.descriptionLabel, this.skipLabel, this.actionButton);
         this.l$src$V$1mibm4x();
     }
 }

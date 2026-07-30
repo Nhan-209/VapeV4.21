@@ -21,9 +21,9 @@ implements Cloneable {
     protected UUID id;
     private final List<InventoryFilterConditionGroup> conditionGroups = new ArrayList<InventoryFilterConditionGroup>();
 
-    public InventoryFilterPreset(boolean bl) {
+    public InventoryFilterPreset(boolean inventoryRule) {
         this(null, "");
-        this.assignDefaultName(bl);
+        this.assignDefaultName(inventoryRule);
     }
 
     public UUID getId() {
@@ -58,23 +58,23 @@ implements Cloneable {
     }
 
     public InventoryFilterPreset(JsonObject jsonObject) {
-        this(ConfigJsonUtils.u(jsonObject, "uuid"), jsonObject.get("name").getAsString());
+        this(ConfigJsonUtils.getUuid(jsonObject, "uuid"), jsonObject.get("name").getAsString());
         JsonArray jsonArray = jsonObject.getAsJsonArray("conditions");
         for (JsonElement jsonElement : jsonArray) {
             this.addConditionGroup(new InventoryFilterConditionGroup(jsonElement.getAsJsonObject()));
         }
     }
 
-    public SharedInventoryFilterPreset shareForRule(InventoryFilterRule inventoryFilterRule) {
-        SharedInventoryFilterPreset sharedInventoryFilterPreset = new SharedInventoryFilterPreset(this);
-        boolean bl = inventoryFilterRule instanceof SlotInventoryFilterRule;
-        inventoryFilterRule.setPreset(sharedInventoryFilterPreset);
-        if (bl) {
-            Vape.INSTANCE.getInventoryFilterPresetRegistry().getSlotRulePresets().replace(null, sharedInventoryFilterPreset);
+    public SharedInventoryFilterPreset shareForRule(InventoryFilterRule rule) {
+        SharedInventoryFilterPreset sharedPreset = new SharedInventoryFilterPreset(this);
+        boolean slotRule = rule instanceof SlotInventoryFilterRule;
+        rule.setPreset(sharedPreset);
+        if (slotRule) {
+            Vape.INSTANCE.getInventoryFilterPresetRegistry().getSlotRulePresets().replace(null, sharedPreset);
         } else {
-            Vape.INSTANCE.getInventoryFilterPresetRegistry().getItemRulePresets().replace(null, sharedInventoryFilterPreset);
+            Vape.INSTANCE.getInventoryFilterPresetRegistry().getItemRulePresets().replace(null, sharedPreset);
         }
-        return sharedInventoryFilterPreset;
+        return sharedPreset;
     }
 
     public void addConditionGroup(InventoryFilterConditionGroup conditionGroup) {

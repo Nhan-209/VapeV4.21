@@ -1,9 +1,7 @@
 package gg.vape.wrapper.impl;
 
 import gg.vape.mapping.mappings.MPacketVelocityBridge;
-import gg.vape.wrapper.impl.ForgeVersion;
-import gg.vape.wrapper.impl.Packet;
-import gg.vape.wrapper.impl.Vec3;
+
 import java.util.Optional;
 
 public class PacketVelocityBridge
@@ -21,14 +19,14 @@ extends Packet {
             this.q(f);
             return;
         }
-        MPacketVelocityBridge.u(PacketVelocityBridge.c.getMappingsMapperCompat().qO, this.I, f);
+        MPacketVelocityBridge.u(PacketVelocityBridge.vapeInstance.getMappingsMapperCompat().qO, this.I, f);
     }
 
     public float getMotionZ() {
         if (ForgeVersion.MC_1_21_0.d()) {
             return this.g();
         }
-        return MPacketVelocityBridge.Y(PacketVelocityBridge.c.getMappingsMapperCompat().qO, this.I);
+        return MPacketVelocityBridge.Y(PacketVelocityBridge.vapeInstance.getMappingsMapperCompat().qO, this.I);
     }
 
     private float g() {
@@ -45,14 +43,14 @@ extends Packet {
             this.U(f);
             return;
         }
-        MPacketVelocityBridge.P(PacketVelocityBridge.c.getMappingsMapperCompat().qO, this.I, f);
+        MPacketVelocityBridge.P(PacketVelocityBridge.vapeInstance.getMappingsMapperCompat().qO, this.I, f);
     }
 
     public float getMotionY() {
         if (ForgeVersion.MC_1_21_0.d()) {
             return this.K();
         }
-        return MPacketVelocityBridge.A(PacketVelocityBridge.c.getMappingsMapperCompat().qO, this.I);
+        return MPacketVelocityBridge.A(PacketVelocityBridge.vapeInstance.getMappingsMapperCompat().qO, this.I);
     }
 
     public PacketVelocityBridge(Object object) {
@@ -72,7 +70,7 @@ extends Packet {
             this.P(f);
             return;
         }
-        MPacketVelocityBridge.i(PacketVelocityBridge.c.getMappingsMapperCompat().qO, this.I, f);
+        MPacketVelocityBridge.i(PacketVelocityBridge.vapeInstance.getMappingsMapperCompat().qO, this.I, f);
     }
 
     private float T() {
@@ -105,11 +103,11 @@ extends Packet {
         if (ForgeVersion.MC_1_21_0.d()) {
             return this.T();
         }
-        return MPacketVelocityBridge.z(PacketVelocityBridge.c.getMappingsMapperCompat().qO, this.I);
+        return MPacketVelocityBridge.z(PacketVelocityBridge.vapeInstance.getMappingsMapperCompat().qO, this.I);
     }
 
     public Optional<Object> P() {
-        return PacketVelocityBridge.c.getMappingsMapperCompat().qO.M(this.I);
+        return PacketVelocityBridge.vapeInstance.getMappingsMapperCompat().qO.M(this.I);
     }
 
 }

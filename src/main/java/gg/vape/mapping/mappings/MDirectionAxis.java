@@ -24,12 +24,12 @@ extends Mapping {
         boolean bl2 = true;
         String string2 = "X";
         MDirectionAxis mDirectionAxis2 = this;
-        this.v = this.u(string2, bl2, clazz2);
+        this.v = this.registerStaticField(string2, bl2, clazz2);
         Class clazz3 = MappedClasses.u9;
         boolean bl3 = true;
         String string3 = "Y";
         MDirectionAxis mDirectionAxis3 = this;
-        this.i = this.u(string3, bl3, clazz3);
+        this.i = this.registerStaticField(string3, bl3, clazz3);
     }
 
     private Object C() {
@@ -49,7 +49,7 @@ extends Mapping {
     }
 
     public double T(Object object, double d, double d2, double d3) {
-        return this.Q.F(object, d, d2, d3);
+        return this.Q.invokeDouble(object, d, d2, d3);
     }
 }
 

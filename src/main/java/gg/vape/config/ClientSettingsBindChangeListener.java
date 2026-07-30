@@ -14,6 +14,6 @@ implements BindChangeListener {
 
     @Override
     public void onBindChanged() {
-        Vape.INSTANCE.getFriendManager().r();
+        Vape.INSTANCE.getFriendManager().toggleCrosshairTarget();
     }
 }

@@ -11,30 +11,30 @@ import gg.vape.utils.render.RenderUtils;
 
 public class ClientSettingsEventForwarder
 implements EventListener {
-    private ClientSettings n;
+    private ClientSettings clientSettings;
 
 
     @EventHandler
-    public void H(EventPreRenderTick eventPreRenderTick) {
-        ClientSettings clientSettings = this.B();
+    public void onPreRenderTick(EventPreRenderTick eventPreRenderTick) {
+        ClientSettings clientSettings = this.getClientSettings();
         if (clientSettings == null) {
             return;
         }
-        OnlinePlayerPreviewComponent.b.S(eventPreRenderTick);
+        OnlinePlayerPreviewComponent.instance.onPreRenderTick(eventPreRenderTick);
         RenderUtils.C();
         clientSettings.updateGuiScale();
     }
 
-    private ClientSettings B() {
-        if (this.n == null) {
-            this.n = Vape.INSTANCE.getModManager().getMod(ClientSettings.class);
+    private ClientSettings getClientSettings() {
+        if (this.clientSettings == null) {
+            this.clientSettings = Vape.INSTANCE.getModManager().getMod(ClientSettings.class);
         }
-        return this.n;
+        return this.clientSettings;
     }
 
     @EventHandler
     public void onTick(EventPreTick eventPreTick) {
-        ClientSettings clientSettings = this.B();
+        ClientSettings clientSettings = this.getClientSettings();
         if (clientSettings == null) {
             return;
         }

@@ -5,20 +5,20 @@ import gg.vape.value.StringValue;
 
 public class PublicProfileSecondaryDirtyStringValue
 extends StringValue {
-    final PublicProfileSettings G;
-    boolean g;
+    final PublicProfileSettings settings;
+    boolean dirty;
 
-    public PublicProfileSecondaryDirtyStringValue(PublicProfileSettings publicProfileSettings, Object object, String string, String string2) {
-        super(object, string, string2);
-        this.G = publicProfileSettings;
+    public PublicProfileSecondaryDirtyStringValue(PublicProfileSettings settings, Object owner, String name, String defaultValue) {
+        super(owner, name, defaultValue);
+        this.settings = settings;
     }
 
 
     @Override
     public void notifyChangeListeners() {
-        if (this.g) {
+        if (this.dirty) {
             return;
         }
-        this.g = true;
+        this.dirty = true;
     }
 }

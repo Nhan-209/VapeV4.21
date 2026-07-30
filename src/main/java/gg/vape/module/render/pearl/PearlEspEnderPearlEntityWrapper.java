@@ -9,6 +9,6 @@ extends Entity {
     }
 
     public int getAgeTicks() {
-        return PearlEspEnderPearlEntityWrapper.c.getMappings().Dl.k(this.I);
+        return PearlEspEnderPearlEntityWrapper.vapeInstance.getMappings().Dl.k(this.I);
     }
 }

@@ -4,7 +4,6 @@ import gg.vape.mapping.MappedClasses;
 import gg.vape.mapping.Mapping;
 import gg.vape.mapping.MappingField;
 import gg.vape.mapping.MappingMethod;
-import gg.vape.mapping.mappings.MSPacketEntityVelocity;
 import gg.vape.wrapper.Wrapper;
 import gg.vape.wrapper.impl.ForgeVersion;
 
@@ -14,7 +13,7 @@ extends Mapping {
     private final MappingField a;
 
     public Object V(Object object) {
-        return this.n.L(object, new Object[0]);
+        return this.n.invokeObject(object, new Object[0]);
     }
 
     public MClientChatReceivedEvent() {
@@ -24,7 +23,7 @@ extends Mapping {
     private MClientChatReceivedEvent(int[] nArray) {
         super(MappedClasses.Zu);
         int[] nArray2 = nArray;
-        if (Wrapper.c.isVanillaMinecraftPresent() || ForgeVersion.MC_1_8_9.Y()) {
+        if (Wrapper.vapeInstance.isVanillaMinecraftPresent() || ForgeVersion.MC_1_8_9.Y()) {
             if (ForgeVersion.MC_1_7_10.L()) {
                 Class[] classArray = new Class[]{};
                 Class clazz = MappedClasses.Yr;
@@ -48,12 +47,12 @@ extends Mapping {
         } else {
             Class[] classArray = new Class[]{};
             Class clazz = MappedClasses.Yr;
-            boolean bl = Wrapper.G;
+            boolean bl = Wrapper.isNativeAvailable;
             String string = "func_148915_c";
             MClientChatReceivedEvent mClientChatReceivedEvent = this;
             this.n = mClientChatReceivedEvent.Y(string, bl, clazz, classArray); 
             Class clazz2 = MappedClasses.Yr;
-            boolean bl2 = Wrapper.G;
+            boolean bl2 = Wrapper.isNativeAvailable;
             String string2 = "field_148919_a";
             MClientChatReceivedEvent mClientChatReceivedEvent2 = this;
             this.a = this.J(string2, bl2, clazz2);

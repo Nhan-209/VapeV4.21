@@ -18,33 +18,33 @@ public class InventoryItemMatcherPresetRegistry {
 
 
     @Nullable
-    public static InventoryItemMatcherPreset getByName(String string) {
-        return presetsByName.get(string);
+    public static InventoryItemMatcherPreset getByName(String name) {
+        return presetsByName.get(name);
     }
 
-    public static List<InventoryFilterPresetData> findMatchingPresets(InventoryFilterRule inventoryFilterRule) {
-        ArrayList<InventoryFilterPresetData> arrayList = new ArrayList<InventoryFilterPresetData>();
-        InventoryItemMatcher inventoryItemMatcher = inventoryFilterRule.getItemSelection().getMatcher();
-        ItemStack itemStack = inventoryFilterRule.getItemSelection().getItemStack();
-        for (InventoryItemMatcherPreset inventoryItemMatcherPreset : presetsByName.values()) {
-            if (!inventoryItemMatcherPreset.getMatchers().isEmpty() && (inventoryItemMatcher != null && !inventoryItemMatcherPreset.getMatchers().contains(inventoryItemMatcher) || itemStack != null && inventoryItemMatcherPreset.getMatchers().stream().noneMatch(arg_0 -> InventoryItemMatcherPresetRegistry.matcherAcceptsStack(itemStack, arg_0)))) continue;
-            arrayList.add(inventoryItemMatcherPreset);
+    public static List<InventoryFilterPresetData> findMatchingPresets(InventoryFilterRule rule) {
+        ArrayList<InventoryFilterPresetData> matchingPresets = new ArrayList<InventoryFilterPresetData>();
+        InventoryItemMatcher selectedMatcher = rule.getItemSelection().getMatcher();
+        ItemStack selectedStack = rule.getItemSelection().getItemStack();
+        for (InventoryItemMatcherPreset preset : presetsByName.values()) {
+            if (!preset.getMatchers().isEmpty() && (selectedMatcher != null && !preset.getMatchers().contains(selectedMatcher) || selectedStack != null && preset.getMatchers().stream().noneMatch(matcher -> InventoryItemMatcherPresetRegistry.matcherAcceptsStack(selectedStack, matcher)))) continue;
+            matchingPresets.add(preset);
         }
-        return arrayList;
+        return matchingPresets;
     }
 
-    private static void register(InventoryItemMatcherPreset inventoryItemMatcherPreset) {
-        presetsByName.put(inventoryItemMatcherPreset.getName(), inventoryItemMatcherPreset);
+    private static void register(InventoryItemMatcherPreset preset) {
+        presetsByName.put(preset.getName(), preset);
     }
 
-    private static boolean matcherAcceptsStack(ItemStack itemStack, InventoryItemMatcher inventoryItemMatcher) {
-        return inventoryItemMatcher.matches(itemStack, itemStack.getItem());
+    private static boolean matcherAcceptsStack(ItemStack itemStack, InventoryItemMatcher matcher) {
+        return matcher.matches(itemStack, itemStack.getItem());
     }
 
     static {
-        String string = "No rule";
+        String noRuleName = "No rule";
         presetsByName = new LinkedHashMap<String, InventoryItemMatcherPreset>();
-        NO_RULE = InventoryItemMatcherPreset.builder().name(string).build();
+        NO_RULE = InventoryItemMatcherPreset.builder().name(noRuleName).build();
         InventoryItemMatcherPresetRegistry.register(NO_RULE);
     }
 }

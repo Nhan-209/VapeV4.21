@@ -17,47 +17,47 @@ import java.util.Map;
 import org.jetbrains.annotations.Nullable;
 
 public class PotionEntry {
-    private final String W;
-    private final ForgeVersion L;
+    private final String name;
+    private final ForgeVersion supportedVersion;
     @Nullable
-    private Potion X;
-    private static final long b;
-    private final Map<ForgeVersion, Integer> T;
-    private final short M;
+    private Potion legacyPotion;
+    private static final long CONTROL_FLOW_SEED;
+    private final Map<ForgeVersion, Integer> idsByVersion;
+    private final short legacyId;
     @Nullable
-    private StatusEffect o;
+    private StatusEffect statusEffect;
 
     @Nullable
-    public Potion j() {
-        return this.X;
+    public Potion getLegacyPotion() {
+        return this.legacyPotion;
     }
 
-    public boolean q(Potion potion) {
-        return this.X.equals(potion);
+    public boolean matchesLegacyPotion(Potion potion) {
+        return this.legacyPotion.equals(potion);
     }
 
     static {
-        b = 3010331125236105215L;
+        CONTROL_FLOW_SEED = 3010331125236105215L;
     }
 
-    public boolean H() {
-        return ForgeVersion.c() >= this.L.i();
+    public boolean isSupported() {
+        return ForgeVersion.c() >= this.supportedVersion.i();
     }
 
-    private static Exception a(Exception exception) {
+    private static Exception propagateException(Exception exception) {
         return exception;
     }
 
-    public static PotionEntryBuilder o() {
+    public static PotionEntryBuilder builder() {
         return new PotionEntryBuilder();
     }
 
-    void S() throws PotionEntryResolveException {
-        if (!this.H()) {
+    void resolve() throws PotionEntryResolveException {
+        if (!this.isSupported()) {
             return;
         }
         Integer n = null;
-        for (Map.Entry<ForgeVersion, Integer> entry : this.T.entrySet()) {
+        for (Map.Entry<ForgeVersion, Integer> entry : this.idsByVersion.entrySet()) {
             ForgeVersion forgeVersion = entry.getKey();
             int n2 = entry.getValue();
             if (!forgeVersion.d()) continue;
@@ -68,16 +68,16 @@ public class PotionEntry {
                 if (ForgeVersion.MC_1_21_4.d()) {
                     n = n - 1;
                 }
-                this.o = StatusEffect.E(n);
+                this.statusEffect = StatusEffect.E(n);
             } else {
-                this.X = Potion.getPotionById(n);
+                this.legacyPotion = Potion.getPotionById(n);
             }
-            if (this.o != null && this.o.isNotNull() || this.X != null && this.X.isNotNull()) {
+            if (this.statusEffect != null && this.statusEffect.isNotNull() || this.legacyPotion != null && this.legacyPotion.isNotNull()) {
                 return;
             }
         }
         int n3 = 0;
-        int n4 = (int)b;
+        int n4 = (int)CONTROL_FLOW_SEED;
         int n5 = -1;
         while (true) {
             String string;
@@ -99,7 +99,7 @@ public class PotionEntry {
                 }
                 string = I18n.f(((Potion)wrapper).y$src$Ljava_lang_String_$yl6pfj(), new Object[0]);
             }
-            int n6 = StringUtils.Q(this.W, string);
+            int n6 = StringUtils.Q(this.name, string);
             if (n6 < n4) {
                 n5 = n3;
                 n4 = n6;
@@ -107,11 +107,11 @@ public class PotionEntry {
             ++n3;
         }
         if (ForgeVersion.MC_1_16_5.d()) {
-            this.o = StatusEffect.E(n5);
+            this.statusEffect = StatusEffect.E(n5);
         } else {
-            this.X = Potion.getPotionById(n5);
+            this.legacyPotion = Potion.getPotionById(n5);
         }
-        if (this.X == null && this.o == null) {
+        if (this.legacyPotion == null && this.statusEffect == null) {
             throw new PotionEntryResolveException(this);
         }
     }
@@ -119,64 +119,63 @@ public class PotionEntry {
     public void t(EntityLivingBase entityLivingBase, Object object, int n) {
         EntityLiving entityLiving;
         Map map;
-        if (ForgeVersion.MC_1_16_5.d() && entityLivingBase.isInstance(MappedClasses.zQ) && (map = (entityLiving = new EntityLiving(entityLivingBase.getObject())).T$src$Ljava_util_Map_$f5d6t2()).containsKey(this.o.getObject())) {
-            map.remove(this.o.getObject());
+        if (ForgeVersion.MC_1_16_5.d() && entityLivingBase.isInstance(MappedClasses.zQ) && (map = (entityLiving = new EntityLiving(entityLivingBase.getObject())).T$src$Ljava_util_Map_$f5d6t2()).containsKey(this.statusEffect.getObject())) {
+            map.remove(this.statusEffect.getObject());
             entityLiving.C(true);
         }
-        Vape.INSTANCE.getMappings().qU.b(this.l(), entityLivingBase.getObject(), object, n);
+        Vape.INSTANCE.getMappings().qU.b(this.getResolvedObject(), entityLivingBase.getObject(), object, n);
     }
 
     @Nullable
-    public StatusEffect K() {
-        return this.o;
+    public StatusEffect getStatusEffect() {
+        return this.statusEffect;
     }
 
-    public short T() {
-        return this.M;
+    public short getLegacyId() {
+        return this.legacyId;
     }
 
-    public int D() {
+    public int getResolvedId() {
         if (ForgeVersion.MC_1_16_5.d()) {
-            if (this.o == null) {
+            if (this.statusEffect == null) {
                 return -1;
             }
-            return StatusEffect.v(this.o);
+            return StatusEffect.v(this.statusEffect);
         }
-        if (this.X == null) {
+        if (this.legacyPotion == null) {
             return -1;
         }
-        return this.X.getId();
+        return this.legacyPotion.getId();
     }
 
     public PotionEntry(PotionEntryBuilder potionEntryBuilder) {
-        this.W = PotionEntryBuilder.y(potionEntryBuilder);
-        this.M = PotionEntryBuilder.g(potionEntryBuilder);
-        this.T = new LinkedHashMap<ForgeVersion, Integer>(PotionEntryBuilder.X(potionEntryBuilder));
-        this.L = PotionEntryBuilder.l(potionEntryBuilder);
+        this.name = PotionEntryBuilder.getName(potionEntryBuilder);
+        this.legacyId = PotionEntryBuilder.getLegacyId(potionEntryBuilder);
+        this.idsByVersion = new LinkedHashMap<ForgeVersion, Integer>(PotionEntryBuilder.getIdsByVersion(potionEntryBuilder));
+        this.supportedVersion = PotionEntryBuilder.getSupportedVersion(potionEntryBuilder);
     }
 
-    public boolean L() {
+    public boolean isResolved() {
         if (ForgeVersion.MC_1_16_5.d()) {
-            return !this.o.p();
+            return !this.statusEffect.p();
         }
-        return this.X.n();
+        return this.legacyPotion.n();
     }
 
-    public Object l() {
+    public Object getResolvedObject() {
         if (ForgeVersion.MC_1_16_5.d()) {
-            if (this.o == null) {
+            if (this.statusEffect == null) {
                 return null;
             }
-            return this.o.getObject();
+            return this.statusEffect.getObject();
         }
-        if (this.X == null) {
+        if (this.legacyPotion == null) {
             return null;
         }
-        return this.X.getObject();
+        return this.legacyPotion.getObject();
     }
 
-    public String G() {
-        return this.W;
+    public String getName() {
+        return this.name;
     }
 }
-

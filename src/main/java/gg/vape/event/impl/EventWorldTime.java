@@ -6,17 +6,17 @@ import gg.vape.wrapper.impl.WorldInfo;
 
 public class EventWorldTime
 extends Event {
-    private long b = 0L;
-    private Object K;
-    private static final EventListeners v = new EventListeners();
+    private long worldTime = 0L;
+    private final Object worldInfoHandle;
+    private static final EventListeners EVENT_LISTENERS = new EventListeners();
 
-    public void setWorldTime(long l) {
-        this.b = l;
+    public void setWorldTime(long worldTime) {
+        this.worldTime = worldTime;
         this.setCancelled(true);
     }
 
-    public EventWorldTime(Object object) {
-        this.K = object;
+    public EventWorldTime(Object worldInfoHandle) {
+        this.worldInfoHandle = worldInfoHandle;
     }
 
     @Override
@@ -24,21 +24,20 @@ extends Event {
         return super.fire();
     }
 
-    public WorldInfo getInstance() {
-        return new WorldInfo(this.K);
+    public WorldInfo getWorldInfo() {
+        return new WorldInfo(this.worldInfoHandle);
     }
 
     @Override
     public EventListeners getListeners() {
-        return v;
+        return EVENT_LISTENERS;
     }
 
     public long getWorldTime() {
-        return this.b;
+        return this.worldTime;
     }
 
     public static EventListeners getEventListeners() {
-        return v;
+        return EVENT_LISTENERS;
     }
 }
-

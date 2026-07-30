@@ -47,7 +47,7 @@ extends GuiComponent {
             if (this.ownedByCurrentUser) {
                 double d4 = this.G$src$D$1b2f02a() + 40.0;
                 GuiRenderPrimitives.B(d4, d3, 30.0, d, new MutableColor(PublicProfileListingResultCardComponent.J.q).withAlpha(80), (float)(d / 2.0) - 0.5f);
-                this.getAlternateFontRenderer(0.7).W(this.profileSummary.n(), (int)d4 + 15, (int)d3 + 3, PublicProfileListingResultCardComponent.J.q);
+                this.getAlternateFontRenderer(0.7).W(this.profileSummary.getUppercaseShareCode(), (int)d4 + 15, (int)d3 + 3, PublicProfileListingResultCardComponent.J.q);
             }
             this.likeIcon.K(d2 + 5.0);
             this.likeIcon.S(d3 + 2.0);
@@ -88,7 +88,7 @@ extends GuiComponent {
         this.Y(72.0);
         if (publicProfileSummary != null) {
             this.profileSummary = publicProfileSummary;
-            this.profileTitle = new WrappedTextComponent(publicProfileSummary.h$src$Ljava_lang_String_$1lo47nn(), 0.85);
+            this.profileTitle = new WrappedTextComponent(publicProfileSummary.getName(), 0.85);
             this.profileTitle.setBold(true);
             this.profileTitle.setUseExplicitWidth(true);
             this.profileTitle.o(50.0);
@@ -96,14 +96,14 @@ extends GuiComponent {
             this.profileTitle.Y(10.0);
             this.profileTitle.setTextColor(PublicProfileListingResultCardComponent.J.A);
             this.profileTitle.setBold(true);
-            this.authorLabel = new SimpleTextLabelComponent(publicProfileSummary.l() != null ? publicProfileSummary.l().o() : "Anonymous", 0.75);
+            this.authorLabel = new SimpleTextLabelComponent(publicProfileSummary.getOwner() != null ? publicProfileSummary.getOwner().getUsername() : "Anonymous", 0.75);
             this.authorLabel.setOffsetX(0.0f);
             this.authorLabel.setOffsetY(0.0f);
-            this.likesLabel = new SimpleTextLabelComponent(Long.toString(this.profileSummary.v()), 0.7);
+            this.likesLabel = new SimpleTextLabelComponent(Long.toString(this.profileSummary.getLikes()), 0.7);
             this.likesLabel.setBold(true);
             this.likeIcon = new IconGlyphComponent("like active@2x", 6.0f, 5.0f);
             this.setPropagateMouseEvents(true);
-            if (publicProfileSummary.n() != null && publicProfileSummary.n().equalsIgnoreCase(ClientSettings.getFrame(PublicProfilesFrame.class).o$src$Ljava_lang_String_$ububnq())) {
+            if (publicProfileSummary.getUppercaseShareCode() != null && publicProfileSummary.getUppercaseShareCode().equalsIgnoreCase(ClientSettings.getFrame(PublicProfilesFrame.class).o$src$Ljava_lang_String_$ububnq())) {
                 this.ownedByCurrentUser = true;
             }
             this.addChildren(this.profileTitle, this.authorLabel, this.likeIcon, this.likesLabel);

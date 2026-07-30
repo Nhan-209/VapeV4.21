@@ -17,10 +17,10 @@ extends Mapping {
 
     private Object d(Object object) {
         if (ForgeVersion.MC_1_16_5.d()) {
-            return this.F.L(object, new Object[0]);
+            return this.F.invokeObject(object, new Object[0]);
         }
         if (ForgeVersion.MC_1_12_2.d()) {
-            return this.A.L(object, new Object[0]);
+            return this.A.invokeObject(object, new Object[0]);
         }
         return this.o.getObject(object);
     }
@@ -37,7 +37,7 @@ extends Mapping {
                 Class clazz = MappedClasses.VK;
                 String string2 = "getItem";
                 MEntityPotion mEntityPotion = this;
-                this.F = ((MappingMethodBuilder)((MappingMethodBuilder)mEntityPotion.u(string2, clazz, classArray).y(MappedClasses.ub)).Q(ForgeVersion.MC_1_21_4.n(), MappedClasses.Y4)).s();
+                this.F = ((MappingMethodBuilder)((MappingMethodBuilder)mEntityPotion.methodBuilder(string2, clazz, classArray).setOwnerClass(MappedClasses.ub)).setOwnerClassForVersion(ForgeVersion.MC_1_21_4.n(), MappedClasses.Y4)).buildMethod();
             } else if (ForgeVersion.MC_1_12_2.d()) {
                 Class[] classArray = new Class[]{};
                 Class clazz = MappedClasses.VK;

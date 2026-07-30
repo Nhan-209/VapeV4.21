@@ -13,7 +13,7 @@ extends Mapping {
     private MappingMethod y;
 
     public Object H() {
-        return this.r.O(new Object[0]);
+        return this.r.newInstance(new Object[0]);
     }
 
     public MCPacketAnimation() {
@@ -49,7 +49,7 @@ extends Mapping {
     }
 
     private Object Z(Object object) {
-        return this.y.O(object);
+        return this.y.newInstance(object);
     }
 
     public static Object A(MCPacketAnimation mCPacketAnimation, Object object) {

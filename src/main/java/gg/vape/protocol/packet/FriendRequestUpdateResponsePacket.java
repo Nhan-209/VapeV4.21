@@ -8,8 +8,8 @@ import gg.vape.protocol.packet.ZeusTrackedPacket;
 
 public class FriendRequestUpdateResponsePacket
 extends ZeusTrackedPacket<FriendRequestUpdatePacket> {
-    private FriendModel a;
-    private FriendRequestUpdateStatus z;
+    private FriendModel updatedFriend;
+    private FriendRequestUpdateStatus status;
     private static boolean l;
     private long g;
 
@@ -18,29 +18,29 @@ extends ZeusTrackedPacket<FriendRequestUpdatePacket> {
         return !bl;
     }
 
-    public long q$src$J$b6dfns() {
+    public long getRequestId() {
         return this.g;
     }
 
     public FriendRequestUpdateResponsePacket() {
     }
 
-    public FriendRequestUpdateStatus l() {
-        return this.z;
+    public FriendRequestUpdateStatus getStatus() {
+        return this.status;
     }
 
-    public FriendModel S() {
-        return this.a;
+    public FriendModel getUpdatedFriend() {
+        return this.updatedFriend;
     }
 
     public static boolean v() {
         return l;
     }
 
-    public FriendRequestUpdateResponsePacket(FriendRequestUpdatePacket friendRequestUpdatePacket, long l, FriendRequestUpdateStatus friendRequestUpdateStatus) {
+    public FriendRequestUpdateResponsePacket(FriendRequestUpdatePacket friendRequestUpdatePacket, long requestId, FriendRequestUpdateStatus status) {
         super(friendRequestUpdatePacket);
-        this.g = l;
-        this.z = friendRequestUpdateStatus;
+        this.g = requestId;
+        this.status = status;
     }
 
     static {
@@ -55,26 +55,25 @@ extends ZeusTrackedPacket<FriendRequestUpdatePacket> {
 
     @Override
     public void T(ZeusPacketBuffer zeusPacketBuffer) {
-        zeusPacketBuffer.v(this.g);
-        zeusPacketBuffer.U(this.z);
-        if (this.z == FriendRequestUpdateStatus.ACCEPTED) {
-            this.a.h(zeusPacketBuffer);
+        zeusPacketBuffer.writeLong(this.g);
+        zeusPacketBuffer.writeEnum(this.status);
+        if (this.status == FriendRequestUpdateStatus.ACCEPTED) {
+            this.updatedFriend.writeTo(zeusPacketBuffer);
         }
     }
 
-    public FriendRequestUpdateResponsePacket(FriendRequestUpdatePacket friendRequestUpdatePacket, long l, FriendModel friendModel) {
-        this(friendRequestUpdatePacket, l, FriendRequestUpdateStatus.ACCEPTED);
-        this.a = friendModel;
+    public FriendRequestUpdateResponsePacket(FriendRequestUpdatePacket friendRequestUpdatePacket, long requestId, FriendModel updatedFriend) {
+        this(friendRequestUpdatePacket, requestId, FriendRequestUpdateStatus.ACCEPTED);
+        this.updatedFriend = updatedFriend;
     }
 
 
     @Override
     public void x(ZeusPacketBuffer zeusPacketBuffer) {
-        this.g = zeusPacketBuffer.a();
-        this.z = zeusPacketBuffer.Y(FriendRequestUpdateStatus.class);
-        if (this.z == FriendRequestUpdateStatus.ACCEPTED) {
-            this.a = new FriendModel(zeusPacketBuffer);
+        this.g = zeusPacketBuffer.readLong();
+        this.status = zeusPacketBuffer.readEnum(FriendRequestUpdateStatus.class);
+        if (this.status == FriendRequestUpdateStatus.ACCEPTED) {
+            this.updatedFriend = new FriendModel(zeusPacketBuffer);
         }
     }
 }
-

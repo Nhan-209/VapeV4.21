@@ -12,7 +12,7 @@ extends Mapping {
     private MappingMethod f;
 
     private void z(Object object, String string) {
-        this.f.c(object, string);
+        this.f.invokeVoid(object, string);
     }
 
     public static String X(MKeyboardHandler mKeyboardHandler, Object object) {
@@ -20,7 +20,7 @@ extends Mapping {
     }
 
     private String H(Object object) {
-        return (String)this.a.L(object, new Object[0]);
+        return (String)this.a.invokeObject(object, new Object[0]);
     }
 
     public static void f(MKeyboardHandler mKeyboardHandler, Object object, String string) {

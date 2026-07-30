@@ -15,14 +15,14 @@ extends TextInputComponentBase {
             return;
         }
         String profileName = this.getText();
-        Profile existingProfile = Vape.INSTANCE.getProfilesManager().G(profileName);
+        Profile existingProfile = Vape.INSTANCE.getProfilesManager().getProfileByName(profileName);
         if (existingProfile != null) {
             return;
         }
-        this.profile.h(profileName);
-        this.profile.c(true);
-        Vape.INSTANCE.getProfilesManager().m(this.profile, true);
-        Vape.INSTANCE.getProfilesManager().L(this.profile);
+        this.profile.setName(profileName);
+        this.profile.setDirty(true);
+        Vape.INSTANCE.getProfilesManager().addProfile(this.profile, true);
+        Vape.INSTANCE.getProfilesManager().setActiveProfile(this.profile);
         this.setText("");
     }
 

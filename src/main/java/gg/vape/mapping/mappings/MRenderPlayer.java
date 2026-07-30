@@ -4,7 +4,6 @@ import gg.vape.mapping.MappedClasses;
 import gg.vape.mapping.Mapping;
 import gg.vape.mapping.MappingField;
 import gg.vape.mapping.MappingMethod;
-import gg.vape.mapping.mappings.MRenderManager;
 import gg.vape.wrapper.Wrapper;
 import gg.vape.wrapper.impl.ForgeVersion;
 
@@ -36,7 +35,7 @@ extends Mapping {
                     String string = "render";
                     Class clazz2 = MappedClasses.Fq;
                     MRenderPlayer mRenderPlayer = this;
-                    this.Y = mRenderPlayer.W(clazz2, string, bl, clazz, classArray);
+                    this.Y = mRenderPlayer.registerInstanceMethodForOwner(clazz2, string, bl, clazz, classArray);
                 } else {
                     Class[] classArray = new Class[]{MappedClasses.zt, Float.TYPE, Float.TYPE, MappedClasses.DQ, MappedClasses.ZK, Integer.TYPE};
                     Class<Void> clazz = Void.TYPE;
@@ -50,7 +49,7 @@ extends Mapping {
                 String string = "entityModel";
                 Class clazz3 = MappedClasses.Fq;
                 MRenderPlayer mRenderPlayer = this;
-                this.z = mRenderPlayer.X(clazz3, string, bl, clazz);
+                this.z = mRenderPlayer.registerInstanceFieldForOwner(clazz3, string, bl, clazz);
             } else {
                 Class[] classArray = new Class[]{MappedClasses.zt, Double.TYPE, Double.TYPE, Double.TYPE, Float.TYPE, Float.TYPE};
                 Class<Void> clazz = Void.TYPE;
@@ -77,7 +76,7 @@ extends Mapping {
             String string3 = "modelBipedMain";
             MRenderPlayer mRenderPlayer3 = this;
             this.N = this.J(string3, bl3, clazz5);
-            if (Wrapper.G) {
+            if (Wrapper.isNativeAvailable) {
                 Class[] classArray3 = new Class[]{MappedClasses.zm, Float.TYPE};
                 Class<Void> clazz6 = Void.TYPE;
                 boolean bl4 = true;
@@ -110,7 +109,7 @@ extends Mapping {
             return this.z.getObject(object);
         }
         if (ForgeVersion.MC_1_7_10.Y()) {
-            return this.O.L(object, new Object[0]);
+            return this.O.invokeObject(object, new Object[0]);
         }
         return this.N.getObject(object);
     }

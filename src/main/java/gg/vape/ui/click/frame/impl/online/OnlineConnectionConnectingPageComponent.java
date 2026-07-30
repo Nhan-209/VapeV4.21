@@ -70,7 +70,7 @@ extends OnlineConnectionSettingsPageComponent {
     }
 
     private static void lambda$new$0() {
-        OnlineConnectionManager.T.a();
+        OnlineConnectionManager.INSTANCE.cancelConnectionAttempt();
     }
 
 }

@@ -2,14 +2,6 @@ package gg.vape.wrapper.impl;
 
 import gg.vape.mapping.MappedClasses;
 import gg.vape.mapping.mappings.MCPacketUseEntityPacket;
-import gg.vape.wrapper.impl.CPacketUseEntity;
-import gg.vape.wrapper.impl.CPacketUseEntityAction;
-import gg.vape.wrapper.impl.CPacketUseEntityActionPacket;
-import gg.vape.wrapper.impl.Entity;
-import gg.vape.wrapper.impl.ForgeVersion;
-import gg.vape.wrapper.impl.Packet;
-import gg.vape.wrapper.impl.Vec3;
-import gg.vape.wrapper.impl.World;
 
 public class UseEntityPacketBridge
 extends Packet {
@@ -30,7 +22,7 @@ extends Packet {
     }
 
     public int w() {
-        return UseEntityPacketBridge.c.getMappings().Co.d(this.I);
+        return UseEntityPacketBridge.vapeInstance.getMappings().Co.d(this.I);
     }
 
     public String A$src$Ljava_lang_String_$jiwkol() {
@@ -51,22 +43,22 @@ extends Packet {
             if (this.J()) {
                 return y;
             }
-            Object object = MCPacketUseEntityPacket.Q(UseEntityPacketBridge.c.getMappings().Co, this.I);
+            Object object = MCPacketUseEntityPacket.Q(UseEntityPacketBridge.vapeInstance.getMappings().Co, this.I);
             return object == null ? y : new Vec3(object);
         }
         if (ForgeVersion.MC_1_20_6.d()) {
-            CPacketUseEntityAction cPacketUseEntityAction = new CPacketUseEntityAction(MCPacketUseEntityPacket.k(UseEntityPacketBridge.c.getMappings().Co, this.I), null);
+            CPacketUseEntityAction cPacketUseEntityAction = new CPacketUseEntityAction(MCPacketUseEntityPacket.k(UseEntityPacketBridge.vapeInstance.getMappings().Co, this.I), null);
             if (cPacketUseEntityAction.w().equals(CPacketUseEntity.o())) {
                 CPacketUseEntityActionPacket cPacketUseEntityActionPacket = new CPacketUseEntityActionPacket(cPacketUseEntityAction.getObject());
                 return cPacketUseEntityActionPacket.C();
             }
             return y;
         }
-        return new Vec3(MCPacketUseEntityPacket.Q(UseEntityPacketBridge.c.getMappings().Co, this.I));
+        return new Vec3(MCPacketUseEntityPacket.Q(UseEntityPacketBridge.vapeInstance.getMappings().Co, this.I));
     }
 
     public void A(int n) {
-        UseEntityPacketBridge.c.getMappings().Co.O(this.I, n);
+        UseEntityPacketBridge.vapeInstance.getMappings().Co.O(this.I, n);
     }
 
     public UseEntityPacketBridge(Object object) {
@@ -82,10 +74,10 @@ extends Packet {
             throw new IllegalStateException("Use helper methods for 26.1 packet actions");
         }
         if (ForgeVersion.MC_1_17.d()) {
-            CPacketUseEntityAction cPacketUseEntityAction = new CPacketUseEntityAction(MCPacketUseEntityPacket.k(UseEntityPacketBridge.c.getMappings().Co, this.I), null);
+            CPacketUseEntityAction cPacketUseEntityAction = new CPacketUseEntityAction(MCPacketUseEntityPacket.k(UseEntityPacketBridge.vapeInstance.getMappings().Co, this.I), null);
             return cPacketUseEntityAction.w();
         }
-        return new CPacketUseEntity(MCPacketUseEntityPacket.k(UseEntityPacketBridge.c.getMappings().Co, this.I), null);
+        return new CPacketUseEntity(MCPacketUseEntityPacket.k(UseEntityPacketBridge.vapeInstance.getMappings().Co, this.I), null);
     }
 
     public static boolean h(Packet packet) {
@@ -97,7 +89,7 @@ extends Packet {
             if (this.J()) {
                 return false;
             }
-            Object object = MCPacketUseEntityPacket.Q(UseEntityPacketBridge.c.getMappings().Co, this.I);
+            Object object = MCPacketUseEntityPacket.Q(UseEntityPacketBridge.vapeInstance.getMappings().Co, this.I);
             return object != null;
         }
         return this.U().equals(CPacketUseEntity.o());

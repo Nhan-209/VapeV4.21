@@ -202,7 +202,7 @@ extends Frame {
         double d3 = 0.0;
         for (Frame frame : arrayList) {
             double d4;
-            if (d + frame.A() > (double)Minecraft.G().T()) {
+            if (d + frame.A() > (double)Minecraft.G().getScaledWidth()) {
                 d = 30.0;
                 d2 += d3 + 4.0;
                 d3 = 0.0;

@@ -23,25 +23,16 @@ import org.objectweb.asm.tree.TypeInsnNode;
 import org.objectweb.asm.tree.VarInsnNode;
 
 public class EventBuilder {
-    private int G;
-    private LabelNode V;
-    private ClassNode n;
-    private String d;
-    private List<ITramsformNode> u = new ArrayList<ITramsformNode>();
-    private int S;
-    private ITramsformNode r;
-    private boolean D;
-    private static int J = 1;
-    private InsnList w;
-    private boolean U;
-    private MethodNode Y;
-    private Class c;
-    private String x;
-    private Class z;
-    private boolean y;
+    private int injectionPoint;
+    private LabelNode eventStartLabel;
+    private List<ITramsformNode> transformNodes = new ArrayList<ITramsformNode>();
+    private InsnList injectionInstructions;
+    private MethodNode targetMethod;
+    private Class eventClass;
+    private boolean staticMethod;
 
-    public static int o(String string) {
-        switch (string) {
+    public static int getStoreOpcode(String descriptor) {
+        switch (descriptor) {
             case "D": {
                 return 57;
             }
@@ -61,61 +52,61 @@ public class EventBuilder {
         return 58;
     }
 
-    public EventBuilder W() {
-        if (this.G == 0) {
-            this.Y.instructions.insert(this.w);
+    public EventBuilder inject() {
+        if (this.injectionPoint == 0) {
+            this.targetMethod.instructions.insert(this.injectionInstructions);
             return this;
         }
-        if (this.G == -1) {
-            ListIterator<AbstractInsnNode> listIterator = this.Y.instructions.iterator();
-            while (listIterator.hasNext()) {
-                listIterator.next();
-                if (listIterator.hasNext()) continue;
-                while (listIterator.hasPrevious()) {
-                    AbstractInsnNode abstractInsnNode = listIterator.previous();
-                    if (!(abstractInsnNode instanceof LineNumberNode)) continue;
-                    this.Y.instructions.insert(abstractInsnNode, this.w);
+        if (this.injectionPoint == -1) {
+            ListIterator<AbstractInsnNode> iterator = this.targetMethod.instructions.iterator();
+            while (iterator.hasNext()) {
+                iterator.next();
+                if (iterator.hasNext()) continue;
+                while (iterator.hasPrevious()) {
+                    AbstractInsnNode instruction = iterator.previous();
+                    if (!(instruction instanceof LineNumberNode)) continue;
+                    this.targetMethod.instructions.insert(instruction, this.injectionInstructions);
                     return this;
                 }
             }
         } else {
-            ListIterator<AbstractInsnNode> listIterator = this.Y.instructions.iterator();
-            while (listIterator.hasNext()) {
-                AbstractInsnNode abstractInsnNode = listIterator.next();
-                if (!(abstractInsnNode instanceof LineNumberNode)) continue;
-                LineNumberNode lineNumberNode = (LineNumberNode)abstractInsnNode;
-                if (lineNumberNode.line != this.G) continue;
-                this.Y.instructions.insert(lineNumberNode, this.w);
+            ListIterator<AbstractInsnNode> iterator = this.targetMethod.instructions.iterator();
+            while (iterator.hasNext()) {
+                AbstractInsnNode instruction = iterator.next();
+                if (!(instruction instanceof LineNumberNode)) continue;
+                LineNumberNode lineNumber = (LineNumberNode)instruction;
+                if (lineNumber.line != this.injectionPoint) continue;
+                this.targetMethod.instructions.insert(lineNumber, this.injectionInstructions);
                 return this;
             }
         }
         return this;
     }
 
-    public static List<String> t(String string) {
-        ArrayList<String> arrayList = new ArrayList<String>();
-        char[] cArray = string.toCharArray();
-        for (int i = 0; i < cArray.length; ++i) {
-            char c = cArray[i];
-            if (c == '(') continue;
-            if (c == ')') break;
-            if (c == 'L') {
-                String string2 = "";
-                while ((c = cArray[i++]) != ';') {
-                    string2 = string2 + c;
+    public static List<String> parseArgumentDescriptors(String methodDescriptor) {
+        ArrayList<String> descriptors = new ArrayList<String>();
+        char[] characters = methodDescriptor.toCharArray();
+        for (int index = 0; index < characters.length; ++index) {
+            char descriptorChar = characters[index];
+            if (descriptorChar == '(') continue;
+            if (descriptorChar == ')') break;
+            if (descriptorChar == 'L') {
+                String objectDescriptor = "";
+                while ((descriptorChar = characters[index++]) != ';') {
+                    objectDescriptor = objectDescriptor + descriptorChar;
                 }
-                --i;
-                arrayList.add(string2);
+                --index;
+                descriptors.add(objectDescriptor);
                 continue;
             }
-            arrayList.add(Character.toString(c));
+            descriptors.add(Character.toString(descriptorChar));
         }
-        return arrayList;
+        return descriptors;
     }
 
 
-    public static int j(String string) {
-        switch (string) {
+    public static int getLoadOpcode(String descriptor) {
+        switch (descriptor) {
             case "D": {
                 return 24;
             }
@@ -135,9 +126,9 @@ public class EventBuilder {
         return 25;
     }
 
-    public static int q(String string) {
-        int n = string.indexOf(")") + 1;
-        switch (string = string.substring(n, n + 1)) {
+    public static int getReturnOpcode(String methodDescriptor) {
+        int returnTypeIndex = methodDescriptor.indexOf(")") + 1;
+        switch (methodDescriptor = methodDescriptor.substring(returnTypeIndex, returnTypeIndex + 1)) {
             case "I": 
             case "Z": {
                 return 172;
@@ -158,63 +149,63 @@ public class EventBuilder {
         return 176;
     }
 
-    public static String S(String string) {
-        int n = string.indexOf(")") + 1;
-        string = string.substring(n, n + 1);
-        return string;
+    public static String getReturnDescriptor(String methodDescriptor) {
+        int returnTypeIndex = methodDescriptor.indexOf(")") + 1;
+        return methodDescriptor.substring(returnTypeIndex, returnTypeIndex + 1);
     }
 
-    public void I() {
-        String string = this.c.getName().replace('.', '/');
-        LabelNode labelNode = new LabelNode(new Label());
-        int n = this.Y.maxLocals++;
-        LocalVariableNode localVariableNode = new LocalVariableNode("event", "L" + string + ";", null, this.V, labelNode, n);
-        this.Y.localVariables.add(localVariableNode);
-        InsnList insnList = new InsnList();
-        insnList.add(this.V);
-        if (!this.y) {
-            for (LocalVariableNode object : this.Y.localVariables) {
-                if (object.index != 0) continue;
-                object.start = this.V;
+    public void buildEventDispatchInstructions() {
+        String eventInternalName = this.eventClass.getName().replace('.', '/');
+        LabelNode continueLabel = new LabelNode(new Label());
+        int eventLocalIndex = this.targetMethod.maxLocals++;
+        LocalVariableNode eventLocal = new LocalVariableNode("event", "L" + eventInternalName + ";", null,
+                this.eventStartLabel, continueLabel, eventLocalIndex);
+        this.targetMethod.localVariables.add(eventLocal);
+        InsnList instructions = new InsnList();
+        instructions.add(this.eventStartLabel);
+        if (!this.staticMethod) {
+            for (LocalVariableNode localVariable : this.targetMethod.localVariables) {
+                if (localVariable.index != 0) continue;
+                localVariable.start = this.eventStartLabel;
             }
         }
-        insnList.add(new TypeInsnNode(187, string));
-        insnList.add(new InsnNode(89));
-        StringBuilder stringBuilder = new StringBuilder("(");
-        for (ITramsformNode iTramsformNode : this.u) {
-            insnList.add(iTramsformNode.R());
-            stringBuilder.append(iTramsformNode.p());
+        instructions.add(new TypeInsnNode(187, eventInternalName));
+        instructions.add(new InsnNode(89));
+        StringBuilder constructorDescriptor = new StringBuilder("(");
+        for (ITramsformNode transformNode : this.transformNodes) {
+            instructions.add(transformNode.getLoadInstructions());
+            constructorDescriptor.append(transformNode.getDescriptor());
         }
-        stringBuilder.append(")V");
-        insnList.add(new MethodInsnNode(183, string, "<init>", stringBuilder.toString(), false));
-        insnList.add(new VarInsnNode(58, n));
-        insnList.add(new VarInsnNode(25, n));
-        insnList.add(new MethodInsnNode(182, string, EventBus.getFireMethod(this.c).getName(), "()Z", false));
-        insnList.add(new JumpInsnNode(153, labelNode));
-        insnList.add(new InsnNode(EventBuilder.q(this.Y.desc)));
-        insnList.add(labelNode);
-        this.w = insnList;
+        constructorDescriptor.append(")V");
+        instructions.add(new MethodInsnNode(183, eventInternalName, "<init>", constructorDescriptor.toString(), false));
+        instructions.add(new VarInsnNode(58, eventLocalIndex));
+        instructions.add(new VarInsnNode(25, eventLocalIndex));
+        instructions.add(new MethodInsnNode(182, eventInternalName, EventBus.getFireMethod(this.eventClass).getName(), "()Z", false));
+        instructions.add(new JumpInsnNode(153, continueLabel));
+        instructions.add(new InsnNode(EventBuilder.getReturnOpcode(this.targetMethod.desc)));
+        instructions.add(continueLabel);
+        this.injectionInstructions = instructions;
     }
 
-    public EventBuilder(int n, Class clazz, ClassNode classNode, MethodInfo methodInfo, boolean bl, ITramsformNode ... iTramsformNodeArray) {
-        this.V = new LabelNode(new Label());
+    public EventBuilder(int injectionPoint, Class eventClass, ClassNode classNode, MethodInfo methodInfo,
+                        boolean staticMethod, ITramsformNode ... transformNodes) {
+        this.eventStartLabel = new LabelNode(new Label());
         if (!Vape.INSTANCE.isNativeAvailable()) {
-            LaunchClassLoader.getLaunchClassLoader().cachedClasses().put(clazz.getName(), clazz);
+            LaunchClassLoader.getLaunchClassLoader().cachedClasses().put(eventClass.getName(), eventClass);
         }
-        for (MethodNode methodNode : classNode.methods) {
-            if (!methodInfo.O(methodNode.name, methodNode.desc)) continue;
-            this.Y = methodNode;
+        for (MethodNode candidate : classNode.methods) {
+            if (!methodInfo.matches(candidate.name, candidate.desc)) continue;
+            this.targetMethod = candidate;
         }
-        if (this.Y == null) {
+        if (this.targetMethod == null) {
             Vape.debugLog("Couldnt find method node");
         }
-        this.G = n;
-        this.c = clazz;
-        this.n = classNode;
-        for (ITramsformNode iTramsformNode : iTramsformNodeArray) {
-            iTramsformNode.onTransform(classNode, this.Y);
-            this.u.add(iTramsformNode);
+        this.injectionPoint = injectionPoint;
+        this.eventClass = eventClass;
+        for (ITramsformNode transformNode : transformNodes) {
+            transformNode.prepare(classNode, this.targetMethod);
+            this.transformNodes.add(transformNode);
         }
-        this.y = bl;
+        this.staticMethod = staticMethod;
     }
 }

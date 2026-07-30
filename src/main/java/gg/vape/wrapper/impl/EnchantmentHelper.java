@@ -3,26 +3,7 @@ package gg.vape.wrapper.impl;
 import gg.vape.mapping.mappings.MEnchantmentHelper;
 import gg.vape.utils.EnchantmentUtil;
 import gg.vape.wrapper.Wrapper;
-import gg.vape.wrapper.impl.DamageSource;
-import gg.vape.wrapper.impl.DataComponents;
-import gg.vape.wrapper.impl.Enchantment;
-import gg.vape.wrapper.impl.EnchantmentModifier;
-import gg.vape.wrapper.impl.EnchantmentModifierDamage;
-import gg.vape.wrapper.impl.Enchantments;
-import gg.vape.wrapper.impl.Entity;
-import gg.vape.wrapper.impl.EntityLiving;
-import gg.vape.wrapper.impl.EnumCreatureAttribute;
-import gg.vape.wrapper.impl.ForgeVersion;
-import gg.vape.wrapper.impl.Holder;
-import gg.vape.wrapper.impl.ItemStack;
-import gg.vape.wrapper.impl.Minecraft;
-import gg.vape.wrapper.impl.PotionVersionRange;
-import gg.vape.wrapper.impl.Registry;
-import gg.vape.wrapper.impl.RegistryAccess;
-import gg.vape.wrapper.impl.ResourceKey;
-import gg.vape.wrapper.impl.ResourceKeyEnchantmentBridge;
-import gg.vape.wrapper.impl.VertexFormatElement;
-import gg.vape.wrapper.impl.WorldClient;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Optional;
@@ -34,7 +15,7 @@ extends Wrapper {
             return EnchantmentHelper.d(itemStack, enumCreatureAttribute);
         }
         Object object = enumCreatureAttribute == null ? null : enumCreatureAttribute.getObject();
-        return MEnchantmentHelper.w(EnchantmentHelper.c.getMappings().Rk, itemStack.getObject(), object);
+        return MEnchantmentHelper.w(EnchantmentHelper.vapeInstance.getMappings().Rk, itemStack.getObject(), object);
     }
 
     public EnchantmentHelper(Object object) {
@@ -56,14 +37,14 @@ extends Wrapper {
     }
 
     public static boolean Q(ItemStack itemStack) {
-        return MEnchantmentHelper.z(EnchantmentHelper.c.getMappings().Rk, itemStack.getObject());
+        return MEnchantmentHelper.z(EnchantmentHelper.vapeInstance.getMappings().Rk, itemStack.getObject());
     }
 
     public static EnchantmentModifierDamage M() {
         if (ForgeVersion.MC_1_16_5.d()) {
             return null;
         }
-        return new EnchantmentModifierDamage(MEnchantmentHelper.z(EnchantmentHelper.c.getMappings().Rk));
+        return new EnchantmentModifierDamage(MEnchantmentHelper.z(EnchantmentHelper.vapeInstance.getMappings().Rk));
     }
 
     public static void J(EnchantmentModifier enchantmentModifier, ItemStack[] itemStackArray) {
@@ -72,14 +53,14 @@ extends Wrapper {
             for (ItemStack itemStack : itemStackArray) {
                 arrayList.add(itemStack.getObject());
             }
-            MEnchantmentHelper.T(EnchantmentHelper.c.getMappings().Rk, enchantmentModifier.getObject(), arrayList);
+            MEnchantmentHelper.T(EnchantmentHelper.vapeInstance.getMappings().Rk, enchantmentModifier.getObject(), arrayList);
             return;
         }
         Object[] objectArray = new Object[itemStackArray.length];
         for (int i = 0; i < itemStackArray.length; ++i) {
             objectArray[i] = itemStackArray[i].getObject();
         }
-        MEnchantmentHelper.o(EnchantmentHelper.c.getMappings().Rk, enchantmentModifier.getObject(), objectArray);
+        MEnchantmentHelper.o(EnchantmentHelper.vapeInstance.getMappings().Rk, enchantmentModifier.getObject(), objectArray);
     }
 
     private static float d(ItemStack itemStack, EnumCreatureAttribute enumCreatureAttribute) {
@@ -117,9 +98,9 @@ extends Wrapper {
             if (ForgeVersion.MC_1_21_4.d()) {
                 return EnchantmentHelper.q(enchantment, itemStack);
             }
-            return MEnchantmentHelper.W(EnchantmentHelper.c.getMappings().Rk, enchantment.getObject(), itemStack.getObject());
+            return MEnchantmentHelper.W(EnchantmentHelper.vapeInstance.getMappings().Rk, enchantment.getObject(), itemStack.getObject());
         }
-        return MEnchantmentHelper.h(EnchantmentHelper.c.getMappings().Rk, n, itemStack.getObject());
+        return MEnchantmentHelper.h(EnchantmentHelper.vapeInstance.getMappings().Rk, n, itemStack.getObject());
     }
 
     public static int e(String string, ItemStack itemStack) {
@@ -130,7 +111,7 @@ extends Wrapper {
         if (!optional.isPresent()) {
             return 0;
         }
-        return MEnchantmentHelper.X(EnchantmentHelper.c.getMappings().Rk, optional.get().getObject(), itemStack.getObject());
+        return MEnchantmentHelper.X(EnchantmentHelper.vapeInstance.getMappings().Rk, optional.get().getObject(), itemStack.getObject());
     }
 
     private static void lambda$getEnchantmentLevel$0(ResourceKey resourceKey, int[] nArray, Holder holder, Integer n) {
@@ -148,17 +129,17 @@ extends Wrapper {
             for (ItemStack itemStack : itemStackArray) {
                 arrayList.add(itemStack.getObject());
             }
-            return MEnchantmentHelper.N(EnchantmentHelper.c.getMappings().Rk, arrayList, damageSource.getObject());
+            return MEnchantmentHelper.N(EnchantmentHelper.vapeInstance.getMappings().Rk, arrayList, damageSource.getObject());
         }
         Object[] objectArray = new Object[itemStackArray.length];
         for (int i = 0; i < itemStackArray.length; ++i) {
             objectArray[i] = itemStackArray[i].getObject();
         }
-        return MEnchantmentHelper.p(EnchantmentHelper.c.getMappings().Rk, objectArray, damageSource.getObject());
+        return MEnchantmentHelper.p(EnchantmentHelper.vapeInstance.getMappings().Rk, objectArray, damageSource.getObject());
     }
 
     public static float N(Object object, ItemStack itemStack, Entity entity, DamageSource damageSource, float f) {
-        return MEnchantmentHelper.F(EnchantmentHelper.c.getMappings().Rk, object, itemStack.getObject(), entity.getObject(), damageSource.getObject(), f);
+        return MEnchantmentHelper.F(EnchantmentHelper.vapeInstance.getMappings().Rk, object, itemStack.getObject(), entity.getObject(), damageSource.getObject(), f);
     }
 
 
@@ -171,20 +152,20 @@ extends Wrapper {
             RegistryAccess registryAccess = worldClient.e();
             Registry registry = registryAccess.getFluidState(ResourceKeyEnchantmentBridge.h());
             Holder holder = registry.J(enchantment.getObject());
-            return MEnchantmentHelper.X(EnchantmentHelper.c.getMappings().Rk, holder.getObject(), itemStack.getObject());
+            return MEnchantmentHelper.X(EnchantmentHelper.vapeInstance.getMappings().Rk, holder.getObject(), itemStack.getObject());
         }
-        return MEnchantmentHelper.X(EnchantmentHelper.c.getMappings().Rk, enchantment.getObject(), itemStack.getObject());
+        return MEnchantmentHelper.X(EnchantmentHelper.vapeInstance.getMappings().Rk, enchantment.getObject(), itemStack.getObject());
     }
 
     public static int y(Entity entity) {
         if (ForgeVersion.MC_1_21_0.d()) {
             return EnchantmentHelper.a(Enchantments.O(), new EntityLiving(entity.getObject()));
         }
-        return MEnchantmentHelper.a(EnchantmentHelper.c.getMappings().Rk, entity.getObject());
+        return MEnchantmentHelper.a(EnchantmentHelper.vapeInstance.getMappings().Rk, entity.getObject());
     }
 
     public static PotionVersionRange m(ItemStack itemStack) {
-        return new PotionVersionRange(MEnchantmentHelper.l(EnchantmentHelper.c.getMappings().Rk, itemStack.getObject()));
+        return new PotionVersionRange(MEnchantmentHelper.l(EnchantmentHelper.vapeInstance.getMappings().Rk, itemStack.getObject()));
     }
 
     public static int a(ResourceKey resourceKey, EntityLiving entityLiving) {

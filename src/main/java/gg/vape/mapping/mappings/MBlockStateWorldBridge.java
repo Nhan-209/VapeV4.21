@@ -46,11 +46,11 @@ extends Mapping {
     }
 
     public Object E(Object object) {
-        return this.S.L(object, new Object[0]);
+        return this.S.invokeObject(object, new Object[0]);
     }
 
     public boolean e(Object object) {
-        return this.M.e(object, new Object[0]);
+        return this.M.invokeBoolean(object, new Object[0]);
     }
 
 
@@ -64,11 +64,11 @@ extends Mapping {
     }
 
     public float r(Object object, Object object2, Object object3) {
-        return this.A.s(object, object2, object3);
+        return this.A.invokeFloat(object, object2, object3);
     }
 
     public boolean b(Object object, Object object2) {
-        return this.W.e(object, object2);
+        return this.W.invokeBoolean(object, object2);
     }
 
     static {

@@ -17,7 +17,7 @@ extends Mapping {
         boolean bl = false;
         String string = b;
         MRenderWorldLastEvent mRenderWorldLastEvent = this;
-        this.d = this.u(string, bl, clazz);
+        this.d = this.registerStaticField(string, bl, clazz);
         if (MRenderWorldLastEvent.g()) {
             return;
         }

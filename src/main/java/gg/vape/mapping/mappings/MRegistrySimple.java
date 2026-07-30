@@ -14,11 +14,11 @@ extends Mapping {
     private final MappingMethod c;
 
     private Object f(Object object, Object object2) {
-        return this.e.L(object, object2);
+        return this.e.invokeObject(object, object2);
     }
 
     public Set g(Object object) {
-        return (Set)this.c.L(object, new Object[0]);
+        return (Set)this.c.invokeObject(object, new Object[0]);
     }
 
 
@@ -36,12 +36,12 @@ extends Mapping {
                 String string = "keySet";
                 Class clazz2 = MappedClasses.Fk;
                 MRegistrySimple mRegistrySimple = this;
-                this.c = mRegistrySimple.W(clazz2, string, bl, clazz, classArray);
+                this.c = mRegistrySimple.registerInstanceMethodForOwner(clazz2, string, bl, clazz, classArray);
                 Class[] classArray2 = new Class[]{MappedClasses.zC};
                 Class<Object> clazz3 = Object.class;
                 String string2 = "getOrDefault";
                 MRegistrySimple mRegistrySimple2 = this;
-                this.e = ((MappingMethodBuilder)((MappingMethodBuilder)((MappingMethodBuilder)this.u(string2, clazz3, classArray2).A(ForgeVersion.MC_1_21_4.n(), "getValue")).A(ForgeVersion.MC_1_16_5.n(), "get")).Q(ForgeVersion.MC_1_21_4.n(), MappedClasses.Fk)).s();
+                this.e = ((MappingMethodBuilder)((MappingMethodBuilder)((MappingMethodBuilder)this.methodBuilder(string2, clazz3, classArray2).setNameForVersion(ForgeVersion.MC_1_21_4.n(), "getValue")).setNameForVersion(ForgeVersion.MC_1_16_5.n(), "get")).setOwnerClassForVersion(ForgeVersion.MC_1_21_4.n(), MappedClasses.Fk)).buildMethod();
             } else {
                 Class[] classArray = new Class[]{};
                 Class<Set> clazz = Set.class;

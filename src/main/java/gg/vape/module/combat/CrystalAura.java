@@ -89,10 +89,10 @@ extends Mod {
 
     @Override
     public String getDetailedSuffix() {
-        if (this.autoSubModule.J$src$Z$gcqtyf() && this.autoSubModule.r$src$Z$14eylz9()) {
+        if (this.autoSubModule.isSelectedSubModule() && this.autoSubModule.r$src$Z$14eylz9()) {
             return this.autoSubModule.getDetailedSuffix();
         }
-        if (this.manualSubModule.J$src$Z$gcqtyf() && this.manualSubModule.r$src$Z$14eylz9()) {
+        if (this.manualSubModule.isSelectedSubModule() && this.manualSubModule.r$src$Z$14eylz9()) {
             return this.manualSubModule.getDetailedSuffix();
         }
         return "";
@@ -104,7 +104,7 @@ extends Mod {
         }
         ItemMappingEntry itemMappingEntry = Vape.INSTANCE.getItemStackResolver().resolve(itemStack);
         if (itemMappingEntry != null) {
-            return "minecraft:end_crystal".equals(itemMappingEntry.M()) || "end_crystal".equals(itemMappingEntry.q());
+            return "minecraft:end_crystal".equals(itemMappingEntry.getResourceKey()) || "end_crystal".equals(itemMappingEntry.getModernId());
         }
         return itemStack.f().toLowerCase().contains("end_crystal");
     }
@@ -156,7 +156,7 @@ extends Mod {
 
     @Override
     public ModDisplayInfo J() {
-        if (this.autoSubModule.J$src$Z$gcqtyf() && this.autoSubModule.r$src$Z$14eylz9()) {
+        if (this.autoSubModule.isSelectedSubModule() && this.autoSubModule.r$src$Z$14eylz9()) {
             return this.autoSubModule.J();
         }
         return null;
@@ -211,7 +211,7 @@ extends Mod {
 
     public CrystalAura() {
         super("CrystalAura", -4263937, Category.g, "Automatically places crystals on obsidian and breaks them for you.");
-        this.mode = ModeValue.create((Object)this, "Mode", "Auto - Automatically finds targets and places/breaks crystals\nManual - Hold right-click on obsidian with crystal to place and break crystals", (ModeSelection)this.autoSubModule.r$src$Lgg_vape_value_SubModuleValue_$1rfa4wx(), this.autoSubModule.r$src$Lgg_vape_value_SubModuleValue_$1rfa4wx(), this.manualSubModule.r$src$Lgg_vape_value_SubModuleValue_$1rfa4wx());
+        this.mode = ModeValue.create((Object)this, "Mode", "Auto - Automatically finds targets and places/breaks crystals\nManual - Hold right-click on obsidian with crystal to place and break crystals", (ModeSelection)this.autoSubModule.getSelectionValue(), this.autoSubModule.getSelectionValue(), this.manualSubModule.getSelectionValue());
         this.P(this.mode, new MinecraftVersionConstraint[0]);
         this.rotationClaim.setPriority(this, 6);
     }
@@ -295,7 +295,7 @@ extends Mod {
         }
         ItemMappingEntry itemMappingEntry = Vape.INSTANCE.getItemStackResolver().resolve(itemStack);
         if (itemMappingEntry != null) {
-            return "minecraft:obsidian".equals(itemMappingEntry.M()) || "obsidian".equals(itemMappingEntry.q());
+            return "minecraft:obsidian".equals(itemMappingEntry.getResourceKey()) || "obsidian".equals(itemMappingEntry.getModernId());
         }
         return itemStack.f().toLowerCase().contains("obsidian");
     }

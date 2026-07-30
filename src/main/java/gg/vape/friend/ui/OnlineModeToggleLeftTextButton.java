@@ -6,7 +6,7 @@ import java.awt.Color;
 
 public class OnlineModeToggleLeftTextButton
 extends TextButton {
-    final OnlineModeToggleComponent Jj;
+    private final OnlineModeToggleComponent toggle;
 
     @Override
     public void H() {
@@ -14,6 +14,6 @@ extends TextButton {
 
     public OnlineModeToggleLeftTextButton(OnlineModeToggleComponent onlineModeToggleComponent, String string, double d, Color color, Color color2) {
         super(string, d, color, color2);
-        this.Jj = onlineModeToggleComponent;
+        this.toggle = onlineModeToggleComponent;
     }
 }

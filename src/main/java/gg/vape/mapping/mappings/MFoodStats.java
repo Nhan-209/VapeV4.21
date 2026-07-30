@@ -10,7 +10,7 @@ extends Mapping {
     private final MappingMethod n;
 
     private int K(Object object) {
-        return this.n.Z(object, new Object[0]);
+        return this.n.invokeInt(object, new Object[0]);
     }
 
     public MFoodStats() {

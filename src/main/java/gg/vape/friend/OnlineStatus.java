@@ -10,44 +10,44 @@ public enum OnlineStatus {
     AWAY("Away", PresenceState.AWAY, new Color(180, 120, 50)),
     OFFLINE("Offline", PresenceState.OFFLINE, new Color(89, 88, 89));
 
-    private Color h;
-    private static final OnlineStatus[] y;
-    private static final List<OnlineStatus> o;
-    private final String N;
-    private PresenceState S;
+    private final Color color;
+    private static final OnlineStatus[] VALUES_COPY;
+    private static final List<OnlineStatus> ALL_STATUSES;
+    private final String displayName;
+    private final PresenceState presenceState;
 
-    public Color P() {
-        return this.h;
+    public Color getColor() {
+        return this.color;
     }
 
-    public String f() {
-        return this.N;
+    public String getDisplayName() {
+        return this.displayName;
     }
 
 
-    private OnlineStatus(String string2, PresenceState presenceState, Color color) {
-        this.N = string2;
-        this.S = presenceState;
-        this.h = color;
+    private OnlineStatus(String displayName, PresenceState presenceState, Color color) {
+        this.displayName = displayName;
+        this.presenceState = presenceState;
+        this.color = color;
     }
 
     static {
-        String[] stringArray = new String[]{"AWAY", "Online", "Offline", "Away", "ONLINE", "OFFLINE"};
+        String[] declaredNames = new String[]{"AWAY", "Online", "Offline", "Away", "ONLINE", "OFFLINE"};
 
 
 
-        y = new OnlineStatus[]{ONLINE, AWAY, OFFLINE};
-        o = Arrays.asList(OnlineStatus.values());
+        VALUES_COPY = new OnlineStatus[]{ONLINE, AWAY, OFFLINE};
+        ALL_STATUSES = Arrays.asList(OnlineStatus.values());
     }
 
-    public PresenceState x() {
-        return this.S;
+    public PresenceState getPresenceState() {
+        return this.presenceState;
     }
 
-    public static OnlineStatus f(PresenceState presenceState) {
-        for (OnlineStatus onlineStatus : o) {
-            if (onlineStatus.S != presenceState) continue;
-            return onlineStatus;
+    public static OnlineStatus fromPresenceState(PresenceState presenceState) {
+        for (OnlineStatus status : ALL_STATUSES) {
+            if (status.presenceState != presenceState) continue;
+            return status;
         }
         return null;
     }

@@ -11,49 +11,49 @@ import gg.vape.wrapper.impl.ForgeVersion;
 
 public class EventBlockModelRender
 extends Event {
-    private static final EventListeners a = new EventListeners();
-    private Object B;
-    private boolean v;
-    private Object r;
-    private Object T;
-    private Object j;
-    private boolean n;
-    private Object w;
-    private Object S;
+    private static final EventListeners EVENT_LISTENERS = new EventListeners();
+    private final Object rendererHandle;
+    private final boolean checkSides;
+    private final Object bufferHandle;
+    private final Object blockAccessHandle;
+    private final Object modelHandle;
+    private boolean result;
+    private final Object blockPosHandle;
+    private final Object blockStateHandle;
 
-    public EventBlockModelRender(Object object, Object object2, Object object3, Object object4, Object object5, Object object6, boolean bl) {
-        this.B = object;
-        this.T = object2;
-        this.j = object3;
-        this.S = object4;
-        this.w = object5;
-        this.r = object6;
-        this.v = bl;
+    public EventBlockModelRender(Object rendererHandle, Object blockAccessHandle, Object modelHandle, Object blockStateHandle, Object blockPosHandle, Object bufferHandle, boolean checkSides) {
+        this.rendererHandle = rendererHandle;
+        this.blockAccessHandle = blockAccessHandle;
+        this.modelHandle = modelHandle;
+        this.blockStateHandle = blockStateHandle;
+        this.blockPosHandle = blockPosHandle;
+        this.bufferHandle = bufferHandle;
+        this.checkSides = checkSides;
     }
 
     @Override
     public EventListeners getListeners() {
-        return a;
+        return EVENT_LISTENERS;
     }
 
-    private static Exception a(Exception exception) {
+    private static Exception identityException(Exception exception) {
         return exception;
     }
 
     public boolean getResult() {
-        return this.n;
+        return this.result;
     }
 
     @Override
     public boolean fire() {
-        XRay xRay = Vape.INSTANCE.getModManager().G();
+        XRay xRay = Vape.INSTANCE.getModManager().getXRayModule();
         if (xRay == null || !xRay.r$src$Z$14eylz9()) {
             return false;
         }
         xRay.onBlockModelRender(this);
         try {
-            long l = ForgeVersion.MC_1_12_2.d() ? MathUtil.S(new BlockPos(this.w)) : 0L;
-            this.n = Vape.INSTANCE.getMappings().hE.a(this.B, this.T, this.j, new BlockState(this.S).getBlock().getObject(), this.S, this.w, this.r, this.v, l);
+            long positionSeed = ForgeVersion.MC_1_12_2.d() ? MathUtil.S(new BlockPos(this.blockPosHandle)) : 0L;
+            this.result = Vape.INSTANCE.getMappings().hE.a(this.rendererHandle, this.blockAccessHandle, this.modelHandle, new BlockState(this.blockStateHandle).getBlock().getObject(), this.blockStateHandle, this.blockPosHandle, this.bufferHandle, this.checkSides, positionSeed);
         }
         catch (Exception exception) {
             // empty catch block
@@ -62,7 +62,6 @@ extends Event {
     }
 
     public static EventListeners getEventListeners() {
-        return a;
+        return EVENT_LISTENERS;
     }
 }
-

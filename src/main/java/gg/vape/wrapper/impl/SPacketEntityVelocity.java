@@ -1,14 +1,11 @@
 package gg.vape.wrapper.impl;
 
 import gg.vape.mapping.mappings.MSPacketEntityVelocity;
-import gg.vape.wrapper.impl.ForgeVersion;
-import gg.vape.wrapper.impl.Packet;
-import gg.vape.wrapper.impl.Vec3;
 
 public class SPacketEntityVelocity
 extends Packet {
     private Vec3 E() {
-        return new Vec3(MSPacketEntityVelocity.I(SPacketEntityVelocity.c.getMappings().s, this.I));
+        return new Vec3(MSPacketEntityVelocity.I(SPacketEntityVelocity.vapeInstance.getMappings().s, this.I));
     }
 
     public int getMotionZ() {
@@ -18,7 +15,7 @@ extends Packet {
         if (ForgeVersion.MC_1_21_10.d()) {
             return (int)(this.E().getZ() * 8000.0);
         }
-        return MSPacketEntityVelocity.X(SPacketEntityVelocity.c.getMappings().s, this.I);
+        return MSPacketEntityVelocity.X(SPacketEntityVelocity.vapeInstance.getMappings().s, this.I);
     }
 
     public void setMotionZ(double d) {
@@ -31,10 +28,10 @@ extends Packet {
         if (ForgeVersion.MC_1_21_10.d()) {
             Vec3 vec3 = this.E();
             vec3.Z(d);
-            MSPacketEntityVelocity.E(SPacketEntityVelocity.c.getMappings().s, this.I, vec3.getObject());
+            MSPacketEntityVelocity.E(SPacketEntityVelocity.vapeInstance.getMappings().s, this.I, vec3.getObject());
             return;
         }
-        MSPacketEntityVelocity.k(SPacketEntityVelocity.c.getMappings().s, this.I, (int)d);
+        MSPacketEntityVelocity.k(SPacketEntityVelocity.vapeInstance.getMappings().s, this.I, (int)d);
     }
 
     public int getMotionY() {
@@ -44,7 +41,7 @@ extends Packet {
         if (ForgeVersion.MC_1_21_10.d()) {
             return (int)(this.E().getY() * 8000.0);
         }
-        return MSPacketEntityVelocity.g(SPacketEntityVelocity.c.getMappings().s, this.I);
+        return MSPacketEntityVelocity.g(SPacketEntityVelocity.vapeInstance.getMappings().s, this.I);
     }
 
     public void setMotionX(double d) {
@@ -57,10 +54,10 @@ extends Packet {
         if (ForgeVersion.MC_1_21_10.d()) {
             Vec3 vec3 = this.E();
             vec3.N(d);
-            MSPacketEntityVelocity.E(SPacketEntityVelocity.c.getMappings().s, this.I, vec3.getObject());
+            MSPacketEntityVelocity.E(SPacketEntityVelocity.vapeInstance.getMappings().s, this.I, vec3.getObject());
             return;
         }
-        MSPacketEntityVelocity.q(SPacketEntityVelocity.c.getMappings().s, this.I, (int)d);
+        MSPacketEntityVelocity.q(SPacketEntityVelocity.vapeInstance.getMappings().s, this.I, (int)d);
     }
 
     public int getMotionX() {
@@ -70,7 +67,7 @@ extends Packet {
         if (ForgeVersion.MC_1_21_10.d()) {
             return (int)(this.E().getX() * 8000.0);
         }
-        return MSPacketEntityVelocity.a(SPacketEntityVelocity.c.getMappings().s, this.I);
+        return MSPacketEntityVelocity.a(SPacketEntityVelocity.vapeInstance.getMappings().s, this.I);
     }
 
     public void setMotionY(double d) {
@@ -83,10 +80,10 @@ extends Packet {
         if (ForgeVersion.MC_1_21_10.d()) {
             Vec3 vec3 = this.E();
             vec3.m(d);
-            MSPacketEntityVelocity.E(SPacketEntityVelocity.c.getMappings().s, this.I, vec3.getObject());
+            MSPacketEntityVelocity.E(SPacketEntityVelocity.vapeInstance.getMappings().s, this.I, vec3.getObject());
             return;
         }
-        MSPacketEntityVelocity.Q(SPacketEntityVelocity.c.getMappings().s, this.I, (int)d);
+        MSPacketEntityVelocity.Q(SPacketEntityVelocity.vapeInstance.getMappings().s, this.I, (int)d);
     }
 
     public SPacketEntityVelocity(Object object) {
@@ -97,7 +94,7 @@ extends Packet {
         if (this.I == null) {
             return 0;
         }
-        return MSPacketEntityVelocity.V(SPacketEntityVelocity.c.getMappings().s, this.I);
+        return MSPacketEntityVelocity.V(SPacketEntityVelocity.vapeInstance.getMappings().s, this.I);
     }
 
     private static UnsupportedOperationException a(UnsupportedOperationException unsupportedOperationException) {

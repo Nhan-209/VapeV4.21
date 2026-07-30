@@ -31,12 +31,12 @@ extends Mapping {
             boolean bl = true;
             String string = "GUI";
             MResourceLocationConstantsBridge mResourceLocationConstantsBridge = this;
-            this.G = mResourceLocationConstantsBridge.u(string, bl, clazz);
+            this.G = mResourceLocationConstantsBridge.registerStaticField(string, bl, clazz);
             Class clazz2 = MappedClasses.zC;
             boolean bl2 = true;
             String string2 = "ITEMS";
             MResourceLocationConstantsBridge mResourceLocationConstantsBridge2 = this;
-            this.i = this.u(string2, bl2, clazz2);
+            this.i = this.registerStaticField(string2, bl2, clazz2);
             GuiComponent.setLegacyComponentState(new GuiComponent[5]);
             return;
         }
@@ -44,12 +44,12 @@ extends Mapping {
         boolean bl = true;
         String string = "GUI";
         MResourceLocationConstantsBridge mResourceLocationConstantsBridge = this;
-        this.G = mResourceLocationConstantsBridge.u(string, bl, clazz);
+        this.G = mResourceLocationConstantsBridge.registerStaticField(string, bl, clazz);
         Class clazz3 = MappedClasses.zC;
         boolean bl3 = true;
         String string3 = "ITEMS";
         MResourceLocationConstantsBridge mResourceLocationConstantsBridge3 = this;
-        this.i = this.u(string3, bl3, clazz3);
+        this.i = this.registerStaticField(string3, bl3, clazz3);
     }
 }
 

@@ -42,7 +42,7 @@ extends Mapping {
             boolean bl = true;
             String string = "potionitem";
             MDamageSource mDamageSource = this;
-            this.a = mDamageSource.u(string, bl, clazz);
+            this.a = mDamageSource.registerStaticField(string, bl, clazz);
             if (GuiComponent.getLegacyComponentState() == null) {
                 MDamageSource.f(new int[1]);
             }
@@ -54,39 +54,39 @@ extends Mapping {
             boolean bl = true;
             String string = "WOODEN_SWORD";
             MDamageSource mDamageSource = this;
-            this.A = mDamageSource.u(string, bl, clazz);
+            this.A = mDamageSource.registerStaticField(string, bl, clazz);
             if (ForgeVersion.MC_1_16_5.d()) {
                 Class clazz2 = MappedClasses.lb;
                 boolean bl2 = true;
                 String string2 = "POTION";
                 MDamageSource mDamageSource2 = this;
-                this.a = this.u(string2, bl2, clazz2);
+                this.a = this.registerStaticField(string2, bl2, clazz2);
             } else {
                 Class clazz3 = MappedClasses.Di;
                 boolean bl3 = true;
                 String string3 = "POTIONITEM";
                 MDamageSource mDamageSource3 = this;
-                this.a = this.u(string3, bl3, clazz3);
+                this.a = this.registerStaticField(string3, bl3, clazz3);
             }
             Class clazz4 = MappedClasses.lb;
             String string4 = "END_CRYSTAL";
             MDamageSource mDamageSource4 = this;
-            this.z = ((MappingFieldBuilder)this.T(string4, clazz4).H(true)).z();
+            this.z = ((MappingFieldBuilder)this.fieldBuilder(string4, clazz4).setStaticMember(true)).buildField();
             Class clazz5 = MappedClasses.lb;
             String string5 = "TOTEM_OF_UNDYING";
             MDamageSource mDamageSource5 = this;
-            this.Y = ((MappingFieldBuilder)this.T(string5, clazz5).H(true)).z();
+            this.Y = ((MappingFieldBuilder)this.fieldBuilder(string5, clazz5).setStaticMember(true)).buildField();
         } else {
             Class clazz = MappedClasses.lb;
             boolean bl = true;
             String string = "wooden_sword";
             MDamageSource mDamageSource = this;
-            this.A = mDamageSource.u(string, bl, clazz); 
+            this.A = mDamageSource.registerStaticField(string, bl, clazz);
             Class clazz6 = MappedClasses.Di;
             boolean bl4 = true;
             String string6 = "potionitem";
             MDamageSource mDamageSource6 = this;
-            this.a = this.u(string6, bl4, clazz6);
+            this.a = this.registerStaticField(string6, bl4, clazz6);
         }
         if (GuiComponent.getLegacyComponentState() == null) {
             MDamageSource.f(new int[1]);

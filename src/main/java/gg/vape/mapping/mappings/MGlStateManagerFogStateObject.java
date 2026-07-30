@@ -41,7 +41,7 @@ extends Mapping {
 
 
     public void m(Object object) {
-        this.a.F(object);
+        this.a.invokeVoidNoArgs(object);
     }
 }
 

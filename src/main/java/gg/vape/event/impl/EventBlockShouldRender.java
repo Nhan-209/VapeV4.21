@@ -8,16 +8,16 @@ import gg.vape.wrapper.impl.Block;
 
 public class EventBlockShouldRender
 extends Event {
-    private final Block a;
-    private static final EventListeners p = new EventListeners();
+    private final Block block;
+    private static final EventListeners EVENT_LISTENERS = new EventListeners();
 
-    public EventBlockShouldRender(Object object) {
-        this.a = new Block(object);
+    public EventBlockShouldRender(Object blockHandle) {
+        this.block = new Block(blockHandle);
     }
 
     @Override
     public boolean fire() {
-        XRay xRay = Vape.INSTANCE.getModManager().G();
+        XRay xRay = Vape.INSTANCE.getModManager().getXRayModule();
         if (xRay == null || !xRay.boolean_r()) {
             return false;
         }
@@ -27,16 +27,16 @@ extends Event {
 
     @Override
     public EventListeners getListeners() {
-        return p;
+        return EVENT_LISTENERS;
     }
 
     public Block getBlock() {
-        return this.a;
+        return this.block;
     }
 
 
     public static EventListeners getEventListeners() {
-        return p;
+        return EVENT_LISTENERS;
     }
 }
 

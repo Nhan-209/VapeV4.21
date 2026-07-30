@@ -5,14 +5,14 @@ import gg.vape.ui.click.component.GuiClickListener;
 
 public class OutgoingFriendRequestCancelClickHandler
 implements GuiClickListener {
-    final OutgoingFriendRequestRow G;
+    final OutgoingFriendRequestRow row;
 
-    public OutgoingFriendRequestCancelClickHandler(OutgoingFriendRequestRow mq_12) {
-        this.G = mq_12;
+    public OutgoingFriendRequestCancelClickHandler(OutgoingFriendRequestRow row) {
+        this.row = row;
     }
 
     @Override
     public void onPrimaryClick() {
-        OutgoingFriendRequestRow.X(this.G);
+        OutgoingFriendRequestRow.cancel(this.row);
     }
 }

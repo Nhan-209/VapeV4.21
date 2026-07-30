@@ -23,39 +23,39 @@ import gg.vape.ui.notification.NotificationType;
 
 public class OnlineFriendListEntry
 extends PanelComponent {
-    boolean i1;
-    private PopupFrame ia;
-    private OnlineFriend iI;
-    private static int ii;
-    private OnlineFriendCard iX;
-    private boolean iy;
+    private boolean inviteRequestPending;
+    private PopupFrame cardPopup;
+    private final OnlineFriend friend;
+    private static int obfuscationSeed;
+    private final OnlineFriendCard friendCard;
+    private boolean popupOpen;
 
-    public static int E() {
-        int n = OnlineFriendListEntry.J$src$I$1n1hmp4();
+    public static int getReservedZero() {
+        int reserved = OnlineFriendListEntry.getObfuscationSeed();
         return 0;
     }
 
-    private void Z$src$V$1naaci3() {
-        this.removeChild(this.iX);
-        this.ia = ClientSettings.createPopup(this, this.iX, PopupFrame.class);
-        this.iX.x(true);
+    private void detachCardToPopup() {
+        this.removeChild(this.friendCard);
+        this.cardPopup = ClientSettings.createPopup(this, this.friendCard, PopupFrame.class);
+        this.friendCard.setPopupMode(true);
         this.l$src$V$1mibm4x();
     }
 
-    public static void d(OnlineFriendListEntry onlineFriendListEntry) {
-        onlineFriendListEntry.e$src$V$1ngc312();
+    public static void closePopup(OnlineFriendListEntry entry) {
+        entry.closePopup();
     }
 
-    private void lambda$null$0(OnlineFriend onlineFriend, GroupInviteResponsePacket groupInviteResponsePacket) {
-        this.F(onlineFriend, groupInviteResponsePacket);
+    private void handleExistingPartyInviteResponse(OnlineFriend friend, GroupInviteResponsePacket response) {
+        this.showInviteResult(friend, response);
     }
 
-    private void lambda$null$5() {
-        this.i1 = false;
+    private void handlePartyCreationFailure() {
+        this.inviteRequestPending = false;
     }
 
-    private void lambda$null$3() {
-        this.i1 = false;
+    private void handleNewPartyInviteFailure() {
+        this.inviteRequestPending = false;
     }
 
     @Override
@@ -63,147 +63,147 @@ extends PanelComponent {
         super.z(bl);
     }
 
-    private void W() {
-        Vape.INSTANCE.getOnlineManager().y().C(new PartyInvite(Vape.INSTANCE.getOnlineManager().r()));
+    private void addLocalPartyInvite() {
+        Vape.INSTANCE.getOnlineManager().getPartyManager().addInvite(new PartyInvite(Vape.INSTANCE.getOnlineManager().getLocalFriend()));
     }
 
 
-    private void lambda$null$1() {
-        this.i1 = false;
+    private void handleExistingPartyInviteFailure() {
+        this.inviteRequestPending = false;
     }
 
-    private void F(OnlineFriend onlineFriend, GroupInviteResponsePacket groupInviteResponsePacket) {
-        switch (groupInviteResponsePacket.a()) {
+    private void showInviteResult(OnlineFriend friend, GroupInviteResponsePacket response) {
+        switch (response.getStatus()) {
             case SUCCESS: {
-                OnlineFriendUiHelper.P(new NotificationMessage(NotificationType.SUCCESS, "Invited " + onlineFriend.C() + " to party"));
+                OnlineFriendUiHelper.showNotification(new NotificationMessage(NotificationType.SUCCESS, "Invited " + friend.getDisplayName() + " to party"));
                 break;
             }
             case TOO_MANY_INVITES: {
-                OnlineFriendUiHelper.P(new NotificationMessage(NotificationType.ERROR, "Sent too many invites"));
+                OnlineFriendUiHelper.showNotification(new NotificationMessage(NotificationType.ERROR, "Sent too many invites"));
                 break;
             }
             case NOT_ONLINE: 
             case ALREADY_INVITED: 
             case FAILED: {
-                OnlineFriendUiHelper.P(new NotificationMessage(NotificationType.ERROR, "Error inviting " + onlineFriend.C() + " to party"));
+                OnlineFriendUiHelper.showNotification(new NotificationMessage(NotificationType.ERROR, "Error inviting " + friend.getDisplayName() + " to party"));
             }
         }
     }
 
-    private void s$src$V$1no17c4() {
-        if (!this.iy) {
+    private void updatePopupLayout() {
+        if (!this.popupOpen) {
             return;
         }
         Frame frame = this.L$src$Lgg_vape_ui_click_frame_Frame_$1djx6sa();
-        this.ia.K(this.G$src$D$1b2f02a());
-        this.ia.S(frame.n() + frame.j$src$Lgg_vape_ui_click_frame_FrameHeaderComponent_$175vsfc().L());
-        double d = frame.L() - frame.j$src$Lgg_vape_ui_click_frame_FrameHeaderComponent_$175vsfc().L() - 50.0;
-        this.iX.d$src$Lgg_vape_friend_ui_OnlineFriendDetailsPanel_$1i561zb().o$src$Lgg_vape_friend_ui_OnlineChatPanel_$15yewwy().z().setExplicitHeight(d);
-        this.iX.d$src$Lgg_vape_friend_ui_OnlineFriendDetailsPanel_$1i561zb().o$src$Lgg_vape_friend_ui_OnlineChatPanel_$15yewwy().z().t(d);
-        this.iX.d$src$Lgg_vape_friend_ui_OnlineFriendDetailsPanel_$1i561zb().o$src$Lgg_vape_friend_ui_OnlineChatPanel_$15yewwy().z().l$src$V$1mibm4x();
-        this.ia.l$src$V$1mibm4x();
+        this.cardPopup.K(this.G$src$D$1b2f02a());
+        this.cardPopup.S(frame.n() + frame.j$src$Lgg_vape_ui_click_frame_FrameHeaderComponent_$175vsfc().L());
+        double messageListHeight = frame.L() - frame.j$src$Lgg_vape_ui_click_frame_FrameHeaderComponent_$175vsfc().L() - 50.0;
+        this.friendCard.getDetailsPanel().getChatPanel().getMessageListPanel().setExplicitHeight(messageListHeight);
+        this.friendCard.getDetailsPanel().getChatPanel().getMessageListPanel().t(messageListHeight);
+        this.friendCard.getDetailsPanel().getChatPanel().getMessageListPanel().l$src$V$1mibm4x();
+        this.cardPopup.l$src$V$1mibm4x();
     }
 
-    public static int J$src$I$1n1hmp4() {
-        return ii;
+    public static int getObfuscationSeed() {
+        return obfuscationSeed;
     }
 
-    private void lambda$null$4(OnlineFriend onlineFriend, GroupCreateResponsePacket groupCreateResponsePacket) {
-        if (groupCreateResponsePacket.q$src$Lgg_vape_protocol_packet_GroupCreateStatus_$1c0kqtl() == GroupCreateStatus.SUCCESS) {
-            this.i1 = true;
-            ZeusConnectionManager.T().u().J(onlineFriend.S(), arg_0 -> this.lambda$null$2(onlineFriend, arg_0), this::lambda$null$3);
+    private void handlePartyCreationResponse(OnlineFriend friend, GroupCreateResponsePacket response) {
+        if (response.getStatus() == GroupCreateStatus.SUCCESS) {
+            this.inviteRequestPending = true;
+            ZeusConnectionManager.T().u().J(friend.getUser(), inviteResponse -> this.handleNewPartyInviteResponse(friend, inviteResponse), this::handleNewPartyInviteFailure);
         }
     }
 
-    public static void G(OnlineFriendListEntry onlineFriendListEntry) {
-        onlineFriendListEntry.n$src$V$1nla8db();
+    public static void openPopup(OnlineFriendListEntry entry) {
+        entry.openPopup();
     }
 
     static {
-        OnlineFriendListEntry.T(70);
+        OnlineFriendListEntry.setObfuscationSeed(70);
     }
 
-    private void lambda$null$2(OnlineFriend onlineFriend, GroupInviteResponsePacket groupInviteResponsePacket) {
-        this.F(onlineFriend, groupInviteResponsePacket);
+    private void handleNewPartyInviteResponse(OnlineFriend friend, GroupInviteResponsePacket response) {
+        this.showInviteResult(friend, response);
     }
 
-    private void e$src$V$1ngc312() {
-        ClientSettings.removePopup(this.ia);
-        this.addChildren(this.iX);
-        this.iX.x(false);
-        this.iy = false;
-        this.ia.l$src$V$1mibm4x();
+    private void closePopup() {
+        ClientSettings.removePopup(this.cardPopup);
+        this.addChildren(this.friendCard);
+        this.friendCard.setPopupMode(false);
+        this.popupOpen = false;
+        this.cardPopup.l$src$V$1mibm4x();
         this.l$src$V$1mibm4x();
     }
 
-    public OnlineFriendListEntry(OnlineFriend onlineFriend) {
+    public OnlineFriendListEntry(OnlineFriend friend) {
         super(99.0, 24.0);
-        this.iI = onlineFriend;
-        this.iX = new OnlineFriendCard(onlineFriend);
+        this.friend = friend;
+        this.friendCard = new OnlineFriendCard(friend);
         this.setShowDisabledOverlay(false);
-        this.addChildren(this.iX);
-        this.iX.d$src$Lgg_vape_friend_ui_OnlineFriendDetailsPanel_$1i561zb().j$src$Lgg_vape_friend_ui_OnlineFriendActionPanel_$1bao1mp().b$src$Lgg_vape_ui_click_component_gui_TextActionButton$efmaux().addClickListener(new OnlineFriendListEntryOpenActionsPopupClickHandler(this));
-        this.iX.j$src$Lgg_vape_ui_click_component_IconButtonComponent_$1ooa9pe().addClickListener(new OnlineFriendListEntryOpenPopupClickHandler(this));
-        this.iX.A$src$Lgg_vape_ui_click_component_IconButtonComponent_$10cdcvf().addClickListener(() -> this.lambda$new$6(onlineFriend));
-        this.iX.b$src$Lgg_vape_ui_click_component_IconButtonComponent_$txugmi().addClickListener(new OnlineFriendListEntryClosePopupClickHandler(this));
+        this.addChildren(this.friendCard);
+        this.friendCard.getDetailsPanel().getActionPanel().getChatButton().addClickListener(new OnlineFriendListEntryOpenActionsPopupClickHandler(this));
+        this.friendCard.getChatButton().addClickListener(new OnlineFriendListEntryOpenPopupClickHandler(this));
+        this.friendCard.getInviteButton().addClickListener(() -> this.sendPartyInvite(friend));
+        this.friendCard.getCloseButton().addClickListener(new OnlineFriendListEntryClosePopupClickHandler(this));
     }
 
-    public OnlineFriend g$src$Lgg_vape_friend_OnlineFriend_$1a3nbft() {
-        return this.iX.i$src$Lgg_vape_friend_OnlineFriend_$zehrml();
+    public OnlineFriend getFriend() {
+        return this.friendCard.getFriend();
     }
 
-    private void lambda$new$6(OnlineFriend onlineFriend) {
-        if (this.i1) {
+    private void sendPartyInvite(OnlineFriend friend) {
+        if (this.inviteRequestPending) {
             return;
         }
-        if (onlineFriend.F() == OnlineStatus.OFFLINE) {
+        if (friend.getStatus() == OnlineStatus.OFFLINE) {
             return;
         }
-        this.i1 = true;
-        PartyState partyState = Vape.INSTANCE.getOnlineManager().y().j();
+        this.inviteRequestPending = true;
+        PartyState partyState = Vape.INSTANCE.getOnlineManager().getPartyManager().getCurrentParty();
         if (partyState != null) {
-            if (!partyState.t()) {
-                this.i1 = false;
+            if (!partyState.canInvite()) {
+                this.inviteRequestPending = false;
                 return;
             }
-            if (partyState.c().contains(onlineFriend)) {
-                this.i1 = false;
-                OnlineFriendUiHelper.P(new NotificationMessage(NotificationType.ERROR, "Cannot send party invite to a party member"));
+            if (partyState.getMembers().contains(friend)) {
+                this.inviteRequestPending = false;
+                OnlineFriendUiHelper.showNotification(new NotificationMessage(NotificationType.ERROR, "Cannot send party invite to a party member"));
                 return;
             }
-            if (partyState.S().contains(onlineFriend)) {
-                this.i1 = false;
-                OnlineFriendUiHelper.P(new NotificationMessage(NotificationType.ERROR, "Cannot send party invite to an already invited person"));
+            if (partyState.getInvitedUsers().contains(friend)) {
+                this.inviteRequestPending = false;
+                OnlineFriendUiHelper.showNotification(new NotificationMessage(NotificationType.ERROR, "Cannot send party invite to an already invited person"));
                 return;
             }
-            ZeusConnectionManager.T().u().J(onlineFriend.S(), arg_0 -> this.lambda$null$0(onlineFriend, arg_0), this::lambda$null$1);
+            ZeusConnectionManager.T().u().J(friend.getUser(), response -> this.handleExistingPartyInviteResponse(friend, response), this::handleExistingPartyInviteFailure);
             return;
         }
-        ZeusConnectionManager.T().u().w(arg_0 -> this.lambda$null$4(onlineFriend, arg_0), this::lambda$null$5);
+        ZeusConnectionManager.T().u().w(response -> this.handlePartyCreationResponse(friend, response), this::handlePartyCreationFailure);
     }
 
     @Override
     public void c() {
         super.c();
-        this.s$src$V$1no17c4();
+        this.updatePopupLayout();
     }
 
-    private void n$src$V$1nla8db() {
-        this.Z$src$V$1naaci3();
-        this.iy = true;
+    private void openPopup() {
+        this.detachCardToPopup();
+        this.popupOpen = true;
     }
 
-    public static void T(int n) {
-        ii = n;
+    public static void setObfuscationSeed(int seed) {
+        obfuscationSeed = seed;
     }
 
-    public OnlineFriendCard s$src$Lgg_vape_friend_ui_OnlineFriendCard_$urytiw() {
-        return this.iX;
+    public OnlineFriendCard getFriendCard() {
+        return this.friendCard;
     }
 
     @Override
     public double C() {
-        return this.iy ? super.C() : this.iX.L();
+        return this.popupOpen ? super.C() : this.friendCard.L();
     }
 }
 

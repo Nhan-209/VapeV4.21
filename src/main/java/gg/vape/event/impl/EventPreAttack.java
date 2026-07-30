@@ -9,8 +9,7 @@ extends EventAttackBase {
         return super.fire();
     }
 
-    public EventPreAttack(Object object) {
-        super(object);
+    public EventPreAttack(Object targetHandle) {
+        super(targetHandle);
     }
 }
-

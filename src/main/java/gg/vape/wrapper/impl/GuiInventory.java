@@ -16,7 +16,7 @@ import java.util.function.Supplier;
 public class GuiInventory
 extends Wrapper {
     private static Void lambda$drawEntityOnScreen$0(RenderMatrix4f renderMatrix4f, int n, float f, float f2, EntityLivingBase entityLivingBase) {
-        Vape.INSTANCE.getMappings().Q_.H((int)renderMatrix4f.elements[0], (int)renderMatrix4f.elements[5], (int)((double)n * Vape.INSTANCE.getClientSettings().s()), f, f2, entityLivingBase.getObject());
+        Vape.INSTANCE.getMappings().Q_.H((int)renderMatrix4f.elements[0], (int)renderMatrix4f.elements[5], (int)((double)n * Vape.INSTANCE.getClientSettings().getGuiScaleFactor()), f, f2, entityLivingBase.getObject());
         return null;
     }
 

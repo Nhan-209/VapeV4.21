@@ -5,22 +5,21 @@ import gg.vape.event.EventListeners;
 
 public class EventRenderFirstPersonItemBase
 extends Event {
-    public final float Z;
-    public final float p;
-    private static final EventListeners n = new EventListeners();
+    public final float swingProgress;
+    public final float equipProgress;
+    private static final EventListeners EVENT_LISTENERS = new EventListeners();
 
-    public EventRenderFirstPersonItemBase(float f, float f2) {
-        this.p = f;
-        this.Z = f2;
+    public EventRenderFirstPersonItemBase(float equipProgress, float swingProgress) {
+        this.equipProgress = equipProgress;
+        this.swingProgress = swingProgress;
     }
 
     public static EventListeners getEventListeners() {
-        return n;
+        return EVENT_LISTENERS;
     }
 
     @Override
     public EventListeners getListeners() {
-        return n;
+        return EVENT_LISTENERS;
     }
 }
-

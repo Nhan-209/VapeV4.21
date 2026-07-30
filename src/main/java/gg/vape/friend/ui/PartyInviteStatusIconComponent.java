@@ -8,17 +8,17 @@ import gg.vape.utils.render.ImageRenderer;
 
 final class PartyInviteStatusIconComponent
 extends InteractiveComponent {
-    final PartyMemberEntryComponent I;
-    private final ColorAnimation b;
-    private static final String K = "newclose";
+    private final PartyMemberEntryComponent entry;
+    private final ColorAnimation hoverAnimation;
+    private static final String ICON_RESOURCE = "newclose";
 
     PartyInviteStatusIconComponent(PartyMemberEntryComponent partyMemberEntryComponent, PartyMemberEntryModeSwitchMap partyMemberEntryModeSwitchMap) {
         this(partyMemberEntryComponent);
     }
 
     private PartyInviteStatusIconComponent(PartyMemberEntryComponent partyMemberEntryComponent) {
-        this.I = partyMemberEntryComponent;
-        this.b = new ColorAnimation(0.15, PartyMemberEntryComponent.c$src$Ljava_awt_Color_$ph3aai(), PartyMemberEntryComponent.q$src$Ljava_awt_Color_$1uk170());
+        this.entry = partyMemberEntryComponent;
+        this.hoverAnimation = new ColorAnimation(0.15, PartyMemberEntryComponent.getDeclineIconColor(), PartyMemberEntryComponent.getDeclineIconHoverColor());
         this.o(12.0);
         this.Y(12.0);
         this.setShowDisabledOverlay(false);
@@ -26,10 +26,10 @@ extends InteractiveComponent {
 
     @Override
     public void H() {
-        this.b.u(this.w$src$Z$e457mb());
-        double d = this.G$src$D$1b2f02a() + (this.A() - 6.0) / 2.0;
-        double d2 = this.n() + (this.L() - 6.0) / 2.0;
-        ImageRenderer.drawImage(this.b.getInterpolatedColor(), (float)d, (float)d2, K, 6.0f, 6.0f, false);
+        this.hoverAnimation.u(this.w$src$Z$e457mb());
+        double iconX = this.G$src$D$1b2f02a() + (this.A() - 6.0) / 2.0;
+        double iconY = this.n() + (this.L() - 6.0) / 2.0;
+        ImageRenderer.drawImage(this.hoverAnimation.getInterpolatedColor(), (float)iconX, (float)iconY, ICON_RESOURCE, 6.0f, 6.0f, false);
     }
 
     @Override
@@ -42,4 +42,3 @@ extends InteractiveComponent {
         return 12.0;
     }
 }
-

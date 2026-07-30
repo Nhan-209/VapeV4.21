@@ -12,7 +12,7 @@ extends Mapping {
     public MappingMethod C;
 
     public boolean D(Object object, Object object2) {
-        return this.C.e(object, object2);
+        return this.C.invokeBoolean(object, object2);
     }
 
     public MMutableBoundingBox() {
@@ -56,7 +56,7 @@ extends Mapping {
 
 
     public Object P(int n, int n2, int n3, int n4, int n5, int n6) {
-        return this.B.O(n, n2, n3, n4, n5, n6);
+        return this.B.newInstance(n, n2, n3, n4, n5, n6);
     }
 }
 

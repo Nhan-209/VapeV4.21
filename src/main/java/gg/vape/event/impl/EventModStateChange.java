@@ -6,30 +6,29 @@ import gg.vape.module.Mod;
 
 public class EventModStateChange
 extends Event {
-    private static final EventListeners K = new EventListeners();
-    private final boolean O;
-    private final Mod H;
+    private static final EventListeners EVENT_LISTENERS = new EventListeners();
+    private final boolean enabled;
+    private final Mod module;
 
-    public EventModStateChange(Mod mod, boolean bl) {
-        this.H = mod;
-        this.O = bl;
+    public EventModStateChange(Mod module, boolean enabled) {
+        this.module = module;
+        this.enabled = enabled;
     }
 
     @Override
     public EventListeners getListeners() {
-        return K;
+        return EVENT_LISTENERS;
     }
 
     public boolean isEnabled() {
-        return this.O;
+        return this.enabled;
     }
 
     public static EventListeners getEventListeners() {
-        return K;
+        return EVENT_LISTENERS;
     }
 
     public Mod getModule() {
-        return this.H;
+        return this.module;
     }
 }
-

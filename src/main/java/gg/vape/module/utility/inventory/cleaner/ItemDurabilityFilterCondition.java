@@ -10,8 +10,8 @@ import gg.vape.wrapper.impl.ItemStack;
 public class ItemDurabilityFilterCondition
 implements NumericFilterCondition<ItemDurabilityFilterCondition> {
     @Override
-    public ItemDurabilityFilterCondition parseValue(String string) throws NumberFormatException {
-        return this.parseDamage(string);
+    public ItemDurabilityFilterCondition parseValue(String value) throws NumberFormatException {
+        return this.parseDamage(value);
     }
 
     private int damage;
@@ -54,8 +54,8 @@ implements NumericFilterCondition<ItemDurabilityFilterCondition> {
         return this.valueMode;
     }
 
-    public ItemDurabilityFilterCondition withOperator(ComparisonOperator comparisonOperator) {
-        this.operator = comparisonOperator;
+    public ItemDurabilityFilterCondition withOperator(ComparisonOperator operator) {
+        this.operator = operator;
         return this;
     }
 
@@ -67,8 +67,8 @@ implements NumericFilterCondition<ItemDurabilityFilterCondition> {
         return jsonObject;
     }
 
-    public ItemDurabilityFilterCondition parseDamage(String string) throws NumberFormatException {
-        this.damage = Integer.parseInt(string);
+    public ItemDurabilityFilterCondition parseDamage(String value) throws NumberFormatException {
+        this.damage = Integer.parseInt(value);
         return this;
     }
 
@@ -78,11 +78,11 @@ implements NumericFilterCondition<ItemDurabilityFilterCondition> {
         this.operator = ComparisonOperator.fromName(jsonObject.get("operator").getAsString());
     }
 
-    public ItemDurabilityFilterCondition(int damage, ComparisonOperator comparisonOperator, DurabilityValueMode durabilityValueMode) {
+    public ItemDurabilityFilterCondition(int damage, ComparisonOperator operator, DurabilityValueMode valueMode) {
         this.valueMode = DurabilityValueMode.PERCENTAGE;
         this.damage = damage;
-        this.operator = comparisonOperator;
-        this.valueMode = durabilityValueMode;
+        this.operator = operator;
+        this.valueMode = valueMode;
     }
 
     public ItemDurabilityFilterCondition() {

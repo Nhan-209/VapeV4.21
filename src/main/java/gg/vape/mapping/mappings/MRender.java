@@ -14,7 +14,7 @@ extends Mapping {
     public MappingMethod w;
 
     private Object e(Object object, Object object2) {
-        return this.w.L(object, object2);
+        return this.w.invokeObject(object, object2);
     }
 
     public static Object s(MRender mRender, Object object, Object object2, float f) {
@@ -26,7 +26,7 @@ extends Mapping {
     }
 
     private void S(Object object, Object object2, double d, double d2, double d3, float f, float f2) {
-        this.p.c(object, object2, d, d2, d3, Float.valueOf(f), Float.valueOf(f2));
+        this.p.invokeVoid(object, object2, d, d2, d3, Float.valueOf(f), Float.valueOf(f2));
     }
 
 
@@ -81,7 +81,7 @@ extends Mapping {
             String string = "getTextureLocation";
             Class clazz2 = MappedClasses.Fq;
             MRender mRender = this;
-            this.w = mRender.W(clazz2, string, bl, clazz, classArray);
+            this.w = mRender.registerInstanceMethodForOwner(clazz2, string, bl, clazz, classArray);
         } else {
             Class[] classArray = new Class[]{MappedClasses.zc};
             Class clazz = MappedClasses.zC;
@@ -93,7 +93,7 @@ extends Mapping {
     }
 
     private Object w(Object object, Object object2, float f) {
-        return this.I.L(object, object2, Float.valueOf(f));
+        return this.I.invokeObject(object, object2, Float.valueOf(f));
     }
 }
 

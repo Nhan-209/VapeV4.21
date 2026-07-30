@@ -17,7 +17,7 @@ extends Frame {
     @Override
     public void Y() {
         this.l$src$V$1mibm4x();
-        Vape.INSTANCE.getTutorialManager().P();
+        Vape.INSTANCE.getTutorialManager().refreshCurrentAction();
         ClientSettings.queueFrameOpen(this);
     }
 
@@ -44,4 +44,3 @@ extends Frame {
         return eb;
     }
 }
-

@@ -9,16 +9,7 @@ import gg.vape.utils.render.RenderBatchManager;
 import gg.vape.utils.render.RenderMatrix4f;
 import gg.vape.utils.render.VertexCoordinateMode;
 import gg.vape.wrapper.Wrapper;
-import gg.vape.wrapper.impl.ForgeVersion;
-import gg.vape.wrapper.impl.GlStateManager;
-import gg.vape.wrapper.impl.ITextComponent;
-import gg.vape.wrapper.impl.Matrix4f;
-import gg.vape.wrapper.impl.Matrix4fHandle;
-import gg.vape.wrapper.impl.MatrixStack;
-import gg.vape.wrapper.impl.Minecraft;
-import gg.vape.wrapper.impl.RenderItemFontBridge;
-import gg.vape.wrapper.impl.RenderItemTextBridge;
-import gg.vape.wrapper.impl.SharedMonsterAttributes;
+
 import java.awt.Color;
 import java.lang.invoke.CallSite;
 import java.lang.invoke.MethodHandle;
@@ -76,12 +67,12 @@ extends Wrapper {
     }
 
     public int getFontHeight() {
-        return FontRenderer.c.getMappings().R7.m(this.I);
+        return FontRenderer.vapeInstance.getMappings().R7.m(this.I);
     }
 
     public int H(MatrixStack matrixStack, String string, int n, int n2, int n3, boolean bl) {
         RenderItemTextBridge renderItemTextBridge = RenderItemTextBridge.t(matrixStack);
-        return FontRenderer.c.getMappings().R7.C(renderItemTextBridge.getObject(), this.I, string, n, n2, n3, bl);
+        return FontRenderer.vapeInstance.getMappings().R7.C(renderItemTextBridge.getObject(), this.I, string, n, n2, n3, bl);
     }
 
     public int i(String string, double d, double d2, Color color, MatrixStack matrixStack) {
@@ -93,17 +84,17 @@ extends Wrapper {
             return this.s(string, d, d2, n, true, matrixStack, null);
         }
         if (ForgeVersion.MC_1_16_5.d()) {
-            int n2 = FontRenderer.c.getMappings().R7.M(this.I, matrixStack.getObject(), string, (float)d, (float)d2, n);
+            int n2 = FontRenderer.vapeInstance.getMappings().R7.M(this.I, matrixStack.getObject(), string, (float)d, (float)d2, n);
             return n2;
         }
         if (ForgeVersion.MC_1_7_10.Y()) {
-            return FontRenderer.c.getMappings().R7.drawStringWithShadow(this.I, string, (float)d, (float)d2, n);
+            return FontRenderer.vapeInstance.getMappings().R7.drawStringWithShadow(this.I, string, (float)d, (float)d2, n);
         }
-        return FontRenderer.c.getMappings().R7.d(this.I, string, (int)d, (int)d2, n);
+        return FontRenderer.vapeInstance.getMappings().R7.d(this.I, string, (int)d, (int)d2, n);
     }
 
     public int Z(ITextComponent iTextComponent, float f, float f2, int n, boolean bl, Matrix4f matrix4f, RenderItemFontBridge renderItemFontBridge, boolean bl2, int n2, int n3) {
-        return FontRenderer.c.getMappings().R7.C(this.I, iTextComponent.getObject(), f, f2, n, bl, matrix4f.getObject(), renderItemFontBridge.getObject(), bl2, n2, n3);
+        return FontRenderer.vapeInstance.getMappings().R7.C(this.I, iTextComponent.getObject(), f, f2, n, bl, matrix4f.getObject(), renderItemFontBridge.getObject(), bl2, n2, n3);
     }
 
     public int drawCenteredString(String string, double d, double d2, int n) {
@@ -159,7 +150,7 @@ extends Wrapper {
     }
 
     public int p(String string, float f, float f2, int n, boolean bl, Matrix4f matrix4f, RenderItemFontBridge renderItemFontBridge, SharedMonsterAttributes sharedMonsterAttributes, int n2, int n3) {
-        return MFontRenderer.i(FontRenderer.c.getMappings().R7, this.I, string, f, f2, n, bl, matrix4f.getObject(), renderItemFontBridge.getObject(), sharedMonsterAttributes.getObject(), n2, n3);
+        return MFontRenderer.i(FontRenderer.vapeInstance.getMappings().R7, this.I, string, f, f2, n, bl, matrix4f.getObject(), renderItemFontBridge.getObject(), sharedMonsterAttributes.getObject(), n2, n3);
     }
 
     public int A(String string, float f, float f2, int n, boolean bl, MatrixStack matrixStack, GlScissorRect glScissorRect) {
@@ -169,7 +160,7 @@ extends Wrapper {
         if (ForgeVersion.MC_1_7_10.Y()) {
             this.r();
         }
-        return FontRenderer.c.getMappings().R7.Y(this.I, string, f, f2, n, bl);
+        return FontRenderer.vapeInstance.getMappings().R7.Y(this.I, string, f, f2, n, bl);
     }
 
     public int s(String string, double d, double d2, int n, MatrixStack matrixStack) {
@@ -199,18 +190,18 @@ extends Wrapper {
         }
         if (ForgeVersion.MC_1_16_5.d()) {
             if (bl) {
-                return FontRenderer.c.getMappings().R7.M(this.I, matrixStack.getObject(), string, (float)d, (float)d2, n);
+                return FontRenderer.vapeInstance.getMappings().R7.M(this.I, matrixStack.getObject(), string, (float)d, (float)d2, n);
             }
-            return FontRenderer.c.getMappings().R7.S(this.I, matrixStack.getObject(), string, (float)d, (float)d2, n);
+            return FontRenderer.vapeInstance.getMappings().R7.S(this.I, matrixStack.getObject(), string, (float)d, (float)d2, n);
         }
-        return FontRenderer.c.getMappings().R7.u(this.I, string, (int)d, (int)d2, n);
+        return FontRenderer.vapeInstance.getMappings().R7.u(this.I, string, (int)d, (int)d2, n);
     }
 
     public int getStringWidth(String string) {
         if (this.H.containsKey(string)) {
             return this.H.get(string);
         }
-        int n = FontRenderer.c.getMappings().R7.e(this.I, string);
+        int n = FontRenderer.vapeInstance.getMappings().R7.e(this.I, string);
         this.H.put(string, n);
         return n;
     }
@@ -265,7 +256,7 @@ extends Wrapper {
     }
 
     public void J(MatrixStack matrixStack, ITextComponent iTextComponent, float f, float f2, int n) {
-        MFontRenderer.q(FontRenderer.c.getMappings().R7, this.I, matrixStack.getObject(), iTextComponent.getObject(), f, f2, n);
+        MFontRenderer.q(FontRenderer.vapeInstance.getMappings().R7, this.I, matrixStack.getObject(), iTextComponent.getObject(), f, f2, n);
     }
 
     public int n(String string, double d, double d2, Color color, MatrixStack matrixStack) {
@@ -281,7 +272,7 @@ extends Wrapper {
     }
 
     public void r() {
-        FontRenderer.c.getMappings().R7.J(this.I);
+        FontRenderer.vapeInstance.getMappings().R7.J(this.I);
     }
 
     public int drawCenteredStringWithShadow(String string, double d, double d2, int n) {
@@ -310,7 +301,7 @@ extends Wrapper {
     }
 
     public void U(MatrixStack matrixStack, ITextComponent iTextComponent, float f, float f2, int n) {
-        MFontRenderer.A(FontRenderer.c.getMappings().R7, this.I, matrixStack.getObject(), iTextComponent.getObject(), f, f2, n);
+        MFontRenderer.A(FontRenderer.vapeInstance.getMappings().R7, this.I, matrixStack.getObject(), iTextComponent.getObject(), f, f2, n);
     }
 
     /*

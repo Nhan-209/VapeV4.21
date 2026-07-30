@@ -1,7 +1,6 @@
 package gg.vape.wrapper.impl;
 
 import gg.vape.wrapper.Wrapper;
-import gg.vape.wrapper.impl.BlockPos;
 
 public class TileEntity
 extends Wrapper {
@@ -13,12 +12,12 @@ extends Wrapper {
     }
 
     public BlockPos getBlockPos() {
-        return new BlockPos(TileEntity.c.getMappingsMapperCompat().DP.D(this.I));
+        return new BlockPos(TileEntity.vapeInstance.getMappingsMapperCompat().DP.D(this.I));
     }
 
     public int getX() {
         if (U) {
-            return TileEntity.c.getMappingsMapperCompat().DP.E(this.I);
+            return TileEntity.vapeInstance.getMappingsMapperCompat().DP.E(this.I);
         }
         return this.getBlockPos().P();
     }
@@ -30,14 +29,14 @@ extends Wrapper {
 
     public int getY() {
         if (U) {
-            return TileEntity.c.getMappingsMapperCompat().DP.K(this.I);
+            return TileEntity.vapeInstance.getMappingsMapperCompat().DP.K(this.I);
         }
         return this.getBlockPos().int_o();
     }
 
     public int getZ() {
         if (U) {
-            return TileEntity.c.getMappingsMapperCompat().DP.g(this.I);
+            return TileEntity.vapeInstance.getMappingsMapperCompat().DP.g(this.I);
         }
         return this.getBlockPos().int_d();
     }

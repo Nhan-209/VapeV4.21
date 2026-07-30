@@ -4,7 +4,6 @@ import gg.vape.Vape;
 import gg.vape.mapping.MappedClasses;
 import gg.vape.mapping.Mapping;
 import gg.vape.mapping.MappingField;
-import gg.vape.mapping.mappings.MEntityRenderer;
 import gg.vape.wrapper.Wrapper;
 import gg.vape.wrapper.impl.ForgeVersion;
 
@@ -34,10 +33,10 @@ extends Mapping {
                 Class clazz = MappedClasses.U;
                 String string = "mode";
                 MGlStateManager_BlendState mGlStateManager_BlendState = this;
-                this.a = mGlStateManager_BlendState.T(string, clazz).z();
+                this.a = mGlStateManager_BlendState.fieldBuilder(string, clazz).buildField();
             } else {
                 Class clazz = MappedClasses.U;
-                boolean bl = Wrapper.G;
+                boolean bl = Wrapper.isNativeAvailable;
                 String string = "field_179213_a";
                 MGlStateManager_BlendState mGlStateManager_BlendState = this;
                 this.a = mGlStateManager_BlendState.J(string, bl, clazz);
@@ -48,10 +47,10 @@ extends Mapping {
             Class clazz = MappedClasses.U;
             String string = "mode";
             MGlStateManager_BlendState mGlStateManager_BlendState = this;
-            this.a = mGlStateManager_BlendState.T(string, clazz).z();
+            this.a = mGlStateManager_BlendState.fieldBuilder(string, clazz).buildField();
         }
         Class clazz = MappedClasses.U;
-        boolean bl = Wrapper.G;
+        boolean bl = Wrapper.isNativeAvailable;
         String string = "field_179213_a";
         MGlStateManager_BlendState mGlStateManager_BlendState = this;
         this.a = mGlStateManager_BlendState.J(string, bl, clazz); 

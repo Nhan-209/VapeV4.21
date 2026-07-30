@@ -4,7 +4,6 @@ import gg.vape.Vape;
 import gg.vape.mapping.MappedClasses;
 import gg.vape.mapping.Mapping;
 import gg.vape.mapping.MappingField;
-import gg.vape.mapping.mappings.MSPacketMapChunkBulk;
 import gg.vape.wrapper.Wrapper;
 import gg.vape.wrapper.impl.ForgeVersion;
 
@@ -41,7 +40,7 @@ extends Mapping {
                 MEntityPlayerMacroBridge mEntityPlayerMacroBridge = this;
                 this.q = mEntityPlayerMacroBridge.J(string2, bl, clazz);
                 Class<Boolean> clazz2 = Boolean.TYPE;
-                boolean bl2 = Wrapper.G;
+                boolean bl2 = Wrapper.isNativeAvailable;
                 String string3 = "field_234597_c_";
                 MEntityPlayerMacroBridge mEntityPlayerMacroBridge2 = this;
                 this.z = this.J(string3, bl2, clazz2);
@@ -58,12 +57,12 @@ extends Mapping {
                 this.z = this.J(string5, bl3, clazz3);
             } else {
                 Class clazz = MappedClasses.zc;
-                boolean bl = Wrapper.G;
+                boolean bl = Wrapper.isNativeAvailable;
                 String string6 = "field_146043_c";
                 MEntityPlayerMacroBridge mEntityPlayerMacroBridge = this;
                 this.q = mEntityPlayerMacroBridge.J(string6, bl, clazz);
                 Class<Boolean> clazz4 = Boolean.TYPE;
-                boolean bl4 = Wrapper.G;
+                boolean bl4 = Wrapper.isNativeAvailable;
                 String string7 = "field_146051_au";
                 MEntityPlayerMacroBridge mEntityPlayerMacroBridge4 = this;
                 this.z = this.J(string7, bl4, clazz4);
@@ -90,12 +89,12 @@ extends Mapping {
             mEntityPlayerMacroBridge5.J(string10, bl5, clazz5);
         }
         Class clazz = MappedClasses.zc;
-        boolean bl = Wrapper.G;
+        boolean bl = Wrapper.isNativeAvailable;
         String string11 = "field_146043_c";
         MEntityPlayerMacroBridge mEntityPlayerMacroBridge = this;
         this.q = mEntityPlayerMacroBridge.J(string11, bl, clazz); 
         Class<Boolean> clazz6 = Boolean.TYPE;
-        boolean bl6 = Wrapper.G;
+        boolean bl6 = Wrapper.isNativeAvailable;
         String string12 = "field_146051_au";
         MEntityPlayerMacroBridge mEntityPlayerMacroBridge6 = this;
         this.z = this.J(string12, bl6, clazz6);

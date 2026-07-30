@@ -6,27 +6,26 @@ import gg.vape.protocol.packet.ZeusSerializablePacket;
 
 public class ClientActivitySnapshotPacket
 implements ZeusSerializablePacket {
-    private ActivitySnapshotPayload B;
+    private ActivitySnapshotPayload activitySnapshot;
 
     public ClientActivitySnapshotPacket() {
     }
 
-    public ActivitySnapshotPayload A() {
-        return this.B;
+    public ActivitySnapshotPayload getActivitySnapshot() {
+        return this.activitySnapshot;
     }
 
     @Override
     public void S(ZeusPacketBuffer zeusPacketBuffer) {
-        this.B = new ActivitySnapshotPayload(zeusPacketBuffer);
+        this.activitySnapshot = new ActivitySnapshotPayload(zeusPacketBuffer);
     }
 
-    public ClientActivitySnapshotPacket(ActivitySnapshotPayload activitySnapshotPayload) {
-        this.B = activitySnapshotPayload;
+    public ClientActivitySnapshotPacket(ActivitySnapshotPayload activitySnapshot) {
+        this.activitySnapshot = activitySnapshot;
     }
 
     @Override
     public void o(ZeusPacketBuffer zeusPacketBuffer) {
-        this.B.i(zeusPacketBuffer);
+        this.activitySnapshot.writeTo(zeusPacketBuffer);
     }
 }
-

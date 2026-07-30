@@ -7,7 +7,7 @@ import java.util.Comparator;
 public class ProfileModuleSnapshotOrderComparator
 implements Comparator<ProfileModuleSnapshot> {
     @Override
-    public int compare(ProfileModuleSnapshot profileModuleSnapshot, ProfileModuleSnapshot profileModuleSnapshot2) {
-        return Integer.compare(profileModuleSnapshot2.getSortPriority(), profileModuleSnapshot.getSortPriority());
+    public int compare(ProfileModuleSnapshot left, ProfileModuleSnapshot right) {
+        return Integer.compare(right.getSortPriority(), left.getSortPriority());
     }
 }

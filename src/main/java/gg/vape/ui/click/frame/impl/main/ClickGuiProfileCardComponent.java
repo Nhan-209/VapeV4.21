@@ -66,7 +66,7 @@ extends InteractiveComponent {
                 return;
             }
             if (this.profile != null) {
-                Vape.INSTANCE.getProfilesManager().U(this.profile);
+                Vape.INSTANCE.getProfilesManager().switchProfile(this.profile);
                 this.getClickCooldown().setActive(true);
             }
         }
@@ -160,7 +160,7 @@ extends InteractiveComponent {
         this.badgeVisible = true;
         this.activeBadgeText = "ACTIVE";
         this.profile = profile;
-        this.displayName = profile.n$src$Ljava_lang_String_$xqhelw();
+        this.displayName = profile.getName();
         this.setPropagateMouseEvents(true);
         this.settingsIcon = new IconGlyphComponent("settingdots", 6.0f, 6.0f, ClickGuiProfileCardComponent.J.W);
         this.settingsIcon.setSnapToPixels(true);

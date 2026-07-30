@@ -8,16 +8,16 @@ import org.objectweb.asm.tree.VarInsnNode;
 
 public class TypedIndexedLocal
 extends IndexedLocal {
-    public TypedIndexedLocal(int n, String string) {
-        super(n);
-        this.F = string;
+    public TypedIndexedLocal(int localIndex, String descriptor) {
+        super(localIndex);
+        this.resolvedDescriptor = descriptor;
     }
 
     @Override
-    public void onTransform(ClassNode classNode, MethodNode methodNode) {
-        this.M = new VarInsnNode(EventBuilder.j(this.F), this.a);
-        this.v.add(this.M);
-        this.d = new VarInsnNode(EventBuilder.o(this.F), this.a);
-        this.H.add(this.d);
+    public void prepare(ClassNode classNode, MethodNode methodNode) {
+        this.loadInstruction = new VarInsnNode(EventBuilder.getLoadOpcode(this.resolvedDescriptor), this.localOrdinal);
+        this.loadInstructions.add(this.loadInstruction);
+        this.storeInstruction = new VarInsnNode(EventBuilder.getStoreOpcode(this.resolvedDescriptor), this.localOrdinal);
+        this.storeInstructions.add(this.storeInstruction);
     }
 }

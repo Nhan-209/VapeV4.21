@@ -10,7 +10,7 @@ extends Mapping {
     private final MappingMethod d;
 
     public Object W(boolean bl, boolean bl2) {
-        return this.d.O(bl, bl2);
+        return this.d.newInstance(bl, bl2);
     }
 
     public MC03PacketPlayerBridge() {

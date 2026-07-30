@@ -4,40 +4,7 @@ import gg.vape.Vape;
 import gg.vape.account.MinecraftSessionWrapper;
 import gg.vape.mapping.mappings.MMinecraft;
 import gg.vape.wrapper.Wrapper;
-import gg.vape.wrapper.impl.EffectRenderer;
-import gg.vape.wrapper.impl.Entity;
-import gg.vape.wrapper.impl.EntityLivingBase;
-import gg.vape.wrapper.impl.EntityPlayerSP;
-import gg.vape.wrapper.impl.EntityRenderer;
-import gg.vape.wrapper.impl.FontManager;
-import gg.vape.wrapper.impl.FontRenderer;
-import gg.vape.wrapper.impl.ForgeVersion;
-import gg.vape.wrapper.impl.Framebuffer;
-import gg.vape.wrapper.impl.GameSettings;
-import gg.vape.wrapper.impl.GuiScreen;
-import gg.vape.wrapper.impl.GuiSpriteManager;
-import gg.vape.wrapper.impl.KeyboardHandler;
-import gg.vape.wrapper.impl.ModelManager;
-import gg.vape.wrapper.impl.MouseHandler;
-import gg.vape.wrapper.impl.MouseHelper;
-import gg.vape.wrapper.impl.NetHandlerPlayClientImpl;
-import gg.vape.wrapper.impl.NetworkManager;
-import gg.vape.wrapper.impl.PlayerControllerMP;
-import gg.vape.wrapper.impl.RayTraceResult;
-import gg.vape.wrapper.impl.RenderGlobal;
-import gg.vape.wrapper.impl.RenderItem;
-import gg.vape.wrapper.impl.RenderManager;
-import gg.vape.wrapper.impl.RenderTypeBuffer;
-import gg.vape.wrapper.impl.ResourceManager;
-import gg.vape.wrapper.impl.ScaledResolution;
-import gg.vape.wrapper.impl.ServerData;
-import gg.vape.wrapper.impl.TextureManager;
-import gg.vape.wrapper.impl.TextureManagerBridge;
-import gg.vape.wrapper.impl.TextureManagerHandle;
-import gg.vape.wrapper.impl.Timer;
-import gg.vape.wrapper.impl.TitledScreen;
-import gg.vape.wrapper.impl.VoxelShape;
-import gg.vape.wrapper.impl.WorldClient;
+
 import java.util.Map;
 
 public class Minecraft
@@ -50,7 +17,7 @@ extends Wrapper {
             Minecraft.p().D(bl);
             return;
         }
-        MMinecraft.t(Minecraft.c.getMappings().U, Minecraft.i(), bl);
+        MMinecraft.t(Minecraft.vapeInstance.getMappings().U, Minecraft.i(), bl);
     }
 
     public static NetworkManager x$src$Lgg_vape_wrapper_impl_NetworkManager_$1sglv7v() {
@@ -58,11 +25,11 @@ extends Wrapper {
     }
 
     public static boolean V() {
-        return MMinecraft.I(Minecraft.c.getMappings().U, Minecraft.i());
+        return MMinecraft.I(Minecraft.vapeInstance.getMappings().U, Minecraft.i());
     }
 
     public static int w() {
-        return MMinecraft.y(Minecraft.c.getMappings().U, Minecraft.i());
+        return MMinecraft.y(Minecraft.vapeInstance.getMappings().U, Minecraft.i());
     }
 
     public static void b() {
@@ -70,7 +37,7 @@ extends Wrapper {
             Minecraft.p().Q();
             return;
         }
-        MMinecraft.R(Minecraft.c.getMappings().U, Minecraft.i());
+        MMinecraft.R(Minecraft.vapeInstance.getMappings().U, Minecraft.i());
     }
 
     static {
@@ -80,19 +47,19 @@ extends Wrapper {
     }
 
     public static void r(int n) {
-        MMinecraft.x(Minecraft.c.getMappings().U, Minecraft.i(), n);
+        MMinecraft.x(Minecraft.vapeInstance.getMappings().U, Minecraft.i(), n);
     }
 
     public static Map P() {
-        return Minecraft.c.getMappings().U.h$src$Ljava_util_Map_$8i5rvc(Minecraft.i());
+        return Minecraft.vapeInstance.getMappings().U.h$src$Ljava_util_Map_$8i5rvc(Minecraft.i());
     }
 
     public static RenderManager D() {
-        return ForgeVersion.MC_1_7_10.L() ? RenderManager.getInstance() : new RenderManager(Minecraft.c.getMappings().U.w(Minecraft.i()));
+        return ForgeVersion.MC_1_7_10.L() ? RenderManager.getInstance() : new RenderManager(Minecraft.vapeInstance.getMappings().U.w(Minecraft.i()));
     }
 
     public static GuiSpriteManager T() {
-        return new GuiSpriteManager(MMinecraft.p(Minecraft.c.getMappings().U, Minecraft.i()));
+        return new GuiSpriteManager(MMinecraft.p(Minecraft.vapeInstance.getMappings().U, Minecraft.i()));
     }
 
     public static boolean l$src$Z$b9uwii() {
@@ -104,49 +71,49 @@ extends Wrapper {
         if (ForgeVersion.MC_1_16_5.d()) {
             return Minecraft.p().R();
         }
-        return Minecraft.c.getMappings().U.R(Minecraft.i());
+        return Minecraft.vapeInstance.getMappings().U.R(Minecraft.i());
     }
 
     public static void O(boolean bl) {
-        MMinecraft.u(Minecraft.c.getMappings().U, Minecraft.i(), bl);
+        MMinecraft.u(Minecraft.vapeInstance.getMappings().U, Minecraft.i(), bl);
     }
 
     public static TextureManagerHandle M$src$Lgg_vape_wrapper_impl_TextureManagerHandle_$r0mor() {
         if (!ForgeVersion.MC_1_21_10.d()) {
             return null;
         }
-        return new TextureManagerHandle(Minecraft.c.getMappings().U.V(Minecraft.i()));
+        return new TextureManagerHandle(Minecraft.vapeInstance.getMappings().U.V(Minecraft.i()));
     }
 
     public static boolean a() {
-        return Minecraft.c.getMappings().U.f(Minecraft.i());
+        return Minecraft.vapeInstance.getMappings().U.f(Minecraft.i());
     }
 
     public static EffectRenderer z() {
-        return new EffectRenderer(MMinecraft.v(Minecraft.c.getMappings().U, Minecraft.i()));
+        return new EffectRenderer(MMinecraft.v(Minecraft.vapeInstance.getMappings().U, Minecraft.i()));
     }
 
     public static EntityLivingBase F() {
-        return new EntityLivingBase(Minecraft.c.getMappings().U.h(Minecraft.i()));
+        return new EntityLivingBase(Minecraft.vapeInstance.getMappings().U.h(Minecraft.i()));
     }
 
     public static ModelManager x() {
-        return new ModelManager(MMinecraft.n(Minecraft.c.getMappings().U, Minecraft.i()));
+        return new ModelManager(MMinecraft.n(Minecraft.vapeInstance.getMappings().U, Minecraft.i()));
     }
 
     public static boolean F$src$Z$aoypys() {
         if (ForgeVersion.MC_1_16_5.d()) {
             return Minecraft.p().x();
         }
-        return MMinecraft.f(Minecraft.c.getMappings().U, Minecraft.i());
+        return MMinecraft.f(Minecraft.vapeInstance.getMappings().U, Minecraft.i());
     }
 
     public static VoxelShape H$src$Lgg_vape_wrapper_impl_VoxelShape_$1dlcquv() {
-        return new VoxelShape(MMinecraft.x(Minecraft.c.getMappings().U, Minecraft.i()));
+        return new VoxelShape(MMinecraft.x(Minecraft.vapeInstance.getMappings().U, Minecraft.i()));
     }
 
     public static FontRenderer getFontRenderer() {
-        return new FontRenderer(Minecraft.c.getMappings().U.J(Minecraft.i()));
+        return new FontRenderer(Minecraft.vapeInstance.getMappings().U.J(Minecraft.i()));
     }
 
     public static ScaledResolution G() {
@@ -154,23 +121,23 @@ extends Wrapper {
     }
 
     public static PlayerControllerMP playerController() {
-        return new PlayerControllerMP(Minecraft.c.getMappings().U.r(Minecraft.i()));
+        return new PlayerControllerMP(Minecraft.vapeInstance.getMappings().U.r(Minecraft.i()));
     }
 
     public static int Q() {
-        return MMinecraft.S(Minecraft.c.getMappings().U, Minecraft.i());
+        return MMinecraft.S(Minecraft.vapeInstance.getMappings().U, Minecraft.i());
     }
 
     public static Framebuffer getFrameBuffer() {
-        return new Framebuffer(Minecraft.c.getMappings().U.u(Minecraft.i()));
+        return new Framebuffer(Minecraft.vapeInstance.getMappings().U.u(Minecraft.i()));
     }
 
     public static TextureManagerBridge M() {
-        return new TextureManagerBridge(Minecraft.c.getMappings().U.P(Minecraft.i()));
+        return new TextureManagerBridge(Minecraft.vapeInstance.getMappings().U.P(Minecraft.i()));
     }
 
     public static Entity Y() {
-        return new Entity(Minecraft.c.getMappings().U.F(Minecraft.i()));
+        return new Entity(Minecraft.vapeInstance.getMappings().U.F(Minecraft.i()));
     }
 
     public static void e(boolean bl) {
@@ -181,7 +148,7 @@ extends Wrapper {
         if (!ForgeVersion.MC_1_21_10.d()) {
             return null;
         }
-        Object object = Minecraft.c.getMappings().U.j(Minecraft.i());
+        Object object = Minecraft.vapeInstance.getMappings().U.j(Minecraft.i());
         return object != null ? new FontManager(object) : null;
     }
 
@@ -189,46 +156,46 @@ extends Wrapper {
         if (ForgeVersion.MC_1_16_5.d()) {
             return Minecraft.p().I();
         }
-        return Minecraft.c.getMappings().U.Y(Minecraft.i());
+        return Minecraft.vapeInstance.getMappings().U.Y(Minecraft.i());
     }
 
     public static boolean m$src$Z$baep3v() {
-        return Minecraft.c.getMappings().U.X$src$Z$1ecebix(Minecraft.i());
+        return Minecraft.vapeInstance.getMappings().U.X$src$Z$1ecebix(Minecraft.i());
     }
 
     public static Object u() {
-        return Minecraft.c.getMappings().U.R$src$Ljava_lang_Object_$11ec019(Minecraft.i());
+        return Minecraft.vapeInstance.getMappings().U.R$src$Ljava_lang_Object_$11ec019(Minecraft.i());
     }
 
     public static RenderItem v() {
         if (ForgeVersion.MC_1_7_10.L()) {
             return RenderItem.d();
         }
-        return new RenderItem(MMinecraft.k(Minecraft.c.getMappings().U, Minecraft.i()));
+        return new RenderItem(MMinecraft.k(Minecraft.vapeInstance.getMappings().U, Minecraft.i()));
     }
 
     public static ResourceManager c() {
-        return new ResourceManager(Minecraft.c.getMappings().U.X(Minecraft.i()));
+        return new ResourceManager(Minecraft.vapeInstance.getMappings().U.X(Minecraft.i()));
     }
 
     public static Timer getTimer() {
-        return new Timer(MMinecraft.W(Minecraft.c.getMappings().U, Minecraft.i()));
+        return new Timer(MMinecraft.W(Minecraft.vapeInstance.getMappings().U, Minecraft.i()));
     }
 
     public static KeyboardHandler r() {
-        return new KeyboardHandler(MMinecraft.o(Minecraft.c.getMappings().U, Minecraft.i()));
+        return new KeyboardHandler(MMinecraft.o(Minecraft.vapeInstance.getMappings().U, Minecraft.i()));
     }
 
     public static GameSettings gameSettings() {
-        return new GameSettings(Minecraft.c.getMappings().U.b(Minecraft.i()));
+        return new GameSettings(Minecraft.vapeInstance.getMappings().U.b(Minecraft.i()));
     }
 
     public static MouseHandler s() {
-        return new MouseHandler(MMinecraft.X(Minecraft.c.getMappings().U, Minecraft.i()));
+        return new MouseHandler(MMinecraft.X(Minecraft.vapeInstance.getMappings().U, Minecraft.i()));
     }
 
     public static NetHandlerPlayClientImpl N() {
-        return new NetHandlerPlayClientImpl(Minecraft.c.getMappings().U.a(Minecraft.i()));
+        return new NetHandlerPlayClientImpl(Minecraft.vapeInstance.getMappings().U.a(Minecraft.i()));
     }
 
     public static EntityPlayerSP thePlayer() {
@@ -236,7 +203,7 @@ extends Wrapper {
     }
 
     public static int l() {
-        return Minecraft.c.getMappings().U.L();
+        return Minecraft.vapeInstance.getMappings().U.L();
     }
 
     public static boolean g() {
@@ -244,23 +211,23 @@ extends Wrapper {
     }
 
     public static void B(GuiScreen guiScreen) {
-        Minecraft.c.getMappings().U.r(Minecraft.i(), guiScreen.getObject());
+        Minecraft.vapeInstance.getMappings().U.r(Minecraft.i(), guiScreen.getObject());
     }
 
     public static void E(int n) {
-        MMinecraft.v(Minecraft.c.getMappings().U, Minecraft.i(), n);
+        MMinecraft.v(Minecraft.vapeInstance.getMappings().U, Minecraft.i(), n);
     }
 
     public static void W(Entity entity) {
-        Minecraft.c.getMappings().U.a(Minecraft.i(), entity.getObject());
+        Minecraft.vapeInstance.getMappings().U.a(Minecraft.i(), entity.getObject());
     }
 
     public static TitledScreen k() {
-        return new TitledScreen(Minecraft.c.getMappings().U.A(Minecraft.i()));
+        return new TitledScreen(Minecraft.vapeInstance.getMappings().U.A(Minecraft.i()));
     }
 
     public static RenderTypeBuffer K() {
-        return new RenderTypeBuffer(Minecraft.c.getMappings().U.S(Minecraft.i()));
+        return new RenderTypeBuffer(Minecraft.vapeInstance.getMappings().U.S(Minecraft.i()));
     }
 
     public Minecraft() {
@@ -268,71 +235,71 @@ extends Wrapper {
     }
 
     public static void w(MinecraftSessionWrapper minecraftSessionWrapper) {
-        MMinecraft.p(Minecraft.c.getMappings().U, Minecraft.i(), minecraftSessionWrapper.getObject());
+        MMinecraft.p(Minecraft.vapeInstance.getMappings().U, Minecraft.i(), minecraftSessionWrapper.getObject());
     }
 
     public static MinecraftSessionWrapper Q$src$Lgg_vape_account_MinecraftSessionWrapper_$1ftnn3u() {
-        return new MinecraftSessionWrapper(MMinecraft.G(Minecraft.c.getMappings().U, Minecraft.i()));
+        return new MinecraftSessionWrapper(MMinecraft.G(Minecraft.vapeInstance.getMappings().U, Minecraft.i()));
     }
 
     public static Object i() {
         if (L == null) {
-            L = Minecraft.c.getMappings().U.J();
+            L = Minecraft.vapeInstance.getMappings().U.J();
         }
         return L;
     }
 
     public static void S() {
-        MMinecraft.Y(Minecraft.c.getMappings().U, Minecraft.i());
+        MMinecraft.Y(Minecraft.vapeInstance.getMappings().U, Minecraft.i());
     }
 
     public static TextureManager Z() {
-        return new TextureManager(Minecraft.c.getMappings().U.c(Minecraft.i()));
+        return new TextureManager(Minecraft.vapeInstance.getMappings().U.c(Minecraft.i()));
     }
 
     public static void R() {
-        MMinecraft.b(Minecraft.c.getMappings().U, Minecraft.i());
+        MMinecraft.b(Minecraft.vapeInstance.getMappings().U, Minecraft.i());
     }
 
     public static void r(EntityLivingBase entityLivingBase) {
-        Minecraft.c.getMappings().U.G(Minecraft.i(), entityLivingBase == null ? null : entityLivingBase.getObject());
+        Minecraft.vapeInstance.getMappings().U.G(Minecraft.i(), entityLivingBase == null ? null : entityLivingBase.getObject());
     }
 
 
     public static void currentScreen(Object object) {
-        Minecraft.c.getMappings().U.Y(Minecraft.i(), object);
+        Minecraft.vapeInstance.getMappings().U.Y(Minecraft.i(), object);
     }
 
     public static RayTraceResult p$src$Lgg_vape_wrapper_impl_RayTraceResult_$5rw6n0() {
-        return new RayTraceResult(Minecraft.c.getMappings().U.q(Minecraft.i()));
+        return new RayTraceResult(Minecraft.vapeInstance.getMappings().U.q(Minecraft.i()));
     }
 
     public static MouseHelper p() {
-        return new MouseHelper(MMinecraft.y$src$Ljava_lang_Object_$1igycos(Minecraft.c.getMappings().U, Minecraft.i()));
+        return new MouseHelper(MMinecraft.y$src$Ljava_lang_Object_$1igycos(Minecraft.vapeInstance.getMappings().U, Minecraft.i()));
     }
 
     public static EntityRenderer m$src$Lgg_vape_wrapper_impl_EntityRenderer_$13begmf() {
-        return new EntityRenderer(Minecraft.c.getMappings().U.m(Minecraft.i()));
+        return new EntityRenderer(Minecraft.vapeInstance.getMappings().U.m(Minecraft.i()));
     }
 
     public static void v(Runnable runnable) {
-        MMinecraft.m(Minecraft.c.getMappings().U).c(Minecraft.i(), runnable);
+        MMinecraft.m(Minecraft.vapeInstance.getMappings().U).invokeVoid(Minecraft.i(), runnable);
     }
 
     public static ServerData H() {
-        return new ServerData(Minecraft.c.getMappings().U.l(Minecraft.i()));
+        return new ServerData(Minecraft.vapeInstance.getMappings().U.l(Minecraft.i()));
     }
 
     public static WorldClient theWorld() {
-        return new WorldClient(Minecraft.c.getMappings().U.E(Minecraft.i()));
+        return new WorldClient(Minecraft.vapeInstance.getMappings().U.E(Minecraft.i()));
     }
 
     public static RenderGlobal O() {
-        return new RenderGlobal(MMinecraft.N(Minecraft.c.getMappings().U, Minecraft.i()));
+        return new RenderGlobal(MMinecraft.N(Minecraft.vapeInstance.getMappings().U, Minecraft.i()));
     }
 
     public static void F$src$V$aoypvc() {
-        Minecraft.c.getMappings().U.V$src$V$9672l7(Minecraft.i());
+        Minecraft.vapeInstance.getMappings().U.V$src$V$9672l7(Minecraft.i());
         if (ForgeVersion.MC_1_16_5.d()) {
             Minecraft.s().u();
         }
@@ -343,11 +310,11 @@ extends Wrapper {
             Minecraft.p().a(n);
             return;
         }
-        Minecraft.c.getMappings().U.B(Minecraft.i(), n);
+        Minecraft.vapeInstance.getMappings().U.B(Minecraft.i(), n);
     }
 
     public static void O(RayTraceResult rayTraceResult) {
-        Minecraft.c.getMappings().U.P(Minecraft.i(), rayTraceResult.getObject());
+        Minecraft.vapeInstance.getMappings().U.P(Minecraft.i(), rayTraceResult.getObject());
     }
 
     public static void U(int n) {
@@ -355,11 +322,11 @@ extends Wrapper {
             Minecraft.p().H(n);
             return;
         }
-        Minecraft.c.getMappings().U.R(Minecraft.i(), n);
+        Minecraft.vapeInstance.getMappings().U.R(Minecraft.i(), n);
     }
 
     public static GuiScreen currentScreen() {
-        return new GuiScreen(Minecraft.c.getMappings().U.U(Minecraft.i()));
+        return new GuiScreen(Minecraft.vapeInstance.getMappings().U.U(Minecraft.i()));
     }
 
     public static Timer a_jo_2_T() {

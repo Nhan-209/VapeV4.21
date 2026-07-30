@@ -11,54 +11,53 @@ import gg.vape.module.utility.Clutch;
 
 public class EventEntityRendererRayTrace
 extends Event {
-    private static Clutch M;
-    private static final EventListeners Y;
-    private float G;
-    private static BlockIn a;
-    private Object g;
-    private static MouseDelayFix p;
-    private static Scaffold q;
+    private static Clutch clutch;
+    private static final EventListeners EVENT_LISTENERS;
+    private final float partialTicks;
+    private static BlockIn blockIn;
+    private final Object entityHandle;
+    private static MouseDelayFix mouseDelayFix;
+    private static Scaffold scaffold;
 
-    public EventEntityRendererRayTrace(Object object, float f) {
-        this.g = object;
-        this.G = f;
+    public EventEntityRendererRayTrace(Object entityHandle, float partialTicks) {
+        this.entityHandle = entityHandle;
+        this.partialTicks = partialTicks;
     }
 
     @Override
     public EventListeners getListeners() {
-        return Y;
+        return EVENT_LISTENERS;
     }
 
     public static EventListeners getEventListeners() {
-        return Y;
+        return EVENT_LISTENERS;
     }
 
     @Override
     public boolean fire() {
-        if (p == null) {
-            p = Vape.INSTANCE.getModManager().getMod(MouseDelayFix.class);
-            q = Vape.INSTANCE.getModManager().getMod(Scaffold.class);
-            M = Vape.INSTANCE.getModManager().getMod(Clutch.class);
-            a = Vape.INSTANCE.getModManager().getMod(BlockIn.class);
+        if (mouseDelayFix == null) {
+            mouseDelayFix = Vape.INSTANCE.getModManager().getMod(MouseDelayFix.class);
+            scaffold = Vape.INSTANCE.getModManager().getMod(Scaffold.class);
+            clutch = Vape.INSTANCE.getModManager().getMod(Clutch.class);
+            blockIn = Vape.INSTANCE.getModManager().getMod(BlockIn.class);
         }
-        if (!p.boolean_r() && !q.boolean_r()) {
-            if (!a.boolean_r()) {
-                if (!M.boolean_r()) {
+        if (!mouseDelayFix.boolean_r() && !scaffold.boolean_r()) {
+            if (!blockIn.boolean_r()) {
+                if (!clutch.boolean_r()) {
                     return false;
                 }
             }
         }
-        return MappedClasses.z5.isInstance(this.g);
+        return MappedClasses.z5.isInstance(this.entityHandle);
     }
 
     public Object getVec() {
-        Object object = Vape.INSTANCE.getMappingsMapperCompat().Rr.jL.Y(this.g, Float.valueOf(this.G));
-        return object;
+        return Vape.INSTANCE.getMappingsMapperCompat().Rr.jL.invokeNativeBridge(this.entityHandle, Float.valueOf(this.partialTicks));
     }
 
 
     static {
-        Y = new EventListeners();
+        EVENT_LISTENERS = new EventListeners();
     }
 }
 

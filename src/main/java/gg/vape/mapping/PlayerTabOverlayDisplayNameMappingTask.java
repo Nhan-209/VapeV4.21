@@ -9,15 +9,14 @@ import gg.vape.mapping.MappedClasses;
 public class PlayerTabOverlayDisplayNameMappingTask
 extends JavassistMappingTask {
     @Override
-    public void c() {
+    public void transform() {
         EventInjectionSpec eventInjectionSpec = new EventInjectionSpec(Vape.INSTANCE.getMappings().hP.O, EventPlayerTabOverlayDisplayName.class);
-        eventInjectionSpec.d("$0, $1");
-        eventInjectionSpec.H("$event.getDisplayNameInstance()");
-        this.O(eventInjectionSpec);
+        eventInjectionSpec.setConstructorArguments("$0, $1");
+        eventInjectionSpec.setReturnExpression("$event.getDisplayNameInstance()");
+        this.registerEventInjection(eventInjectionSpec);
     }
 
     public PlayerTabOverlayDisplayNameMappingTask() {
         super(MappedClasses.lF);
     }
 }
-

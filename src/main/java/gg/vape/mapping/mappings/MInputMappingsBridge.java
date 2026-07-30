@@ -10,7 +10,7 @@ extends Mapping {
     private MappingMethod C;
 
     private Object p(int n, int n2) {
-        return this.C.L(null, n, n2);
+        return this.C.invokeObject(null, n, n2);
     }
 
     public static Object e(MInputMappingsBridge mInputMappingsBridge, int n, int n2) {
@@ -28,11 +28,11 @@ extends Mapping {
         boolean bl = true;
         String string = b;
         MInputMappingsBridge mInputMappingsBridge = this;
-        this.C = this.x(string, bl, clazz, classArray);
+        this.C = this.registerStaticMethod(string, bl, clazz, classArray);
     }
 
     private Object e(Object object) {
-        return this.C.L(null, object);
+        return this.C.invokeObject(null, object);
     }
 }
 

@@ -12,27 +12,26 @@ import gg.vape.wrapper.impl.ForgeVersion;
 
 public class Minecraft121BuiltinProfile
 extends BuiltinProfile {
-    private static final String t = "Modern PVP";
+    private static final String PROFILE_NAME = "Modern PVP";
 
     @Override
-    protected void O() {
-        this.B(AutoClicker.class);
-        this.B(AimAssist.class);
-        this.B(HitSwap.class);
-        this.B(Sprint.class);
-        this.B(CrystalAura.class);
-        this.B(AutoTotem.class);
-        this.B(AnchorMacro.class);
-        this.B(WindChargeJump.class);
+    protected void configureModules() {
+        this.selectModule(AutoClicker.class);
+        this.selectModule(AimAssist.class);
+        this.selectModule(HitSwap.class);
+        this.selectModule(Sprint.class);
+        this.selectModule(CrystalAura.class);
+        this.selectModule(AutoTotem.class);
+        this.selectModule(AnchorMacro.class);
+        this.selectModule(WindChargeJump.class);
     }
 
     public Minecraft121BuiltinProfile() {
-        super(t);
+        super(PROFILE_NAME);
     }
 
     @Override
-    public boolean E() {
+    public boolean isApplicable() {
         return ForgeVersion.MC_1_21_0.d();
     }
 }
-

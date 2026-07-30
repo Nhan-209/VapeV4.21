@@ -15,7 +15,7 @@ implements GuiMouseListener {
 
     private void selectItem(ItemMappingEntry itemMappingEntry) {
         InventoryItemPickerPanel.select(this.panel, ItemPickerSelection.ofRight(itemMappingEntry));
-        InventoryItemPickerPanel.getSelectedItemIds(this.panel).remove(itemMappingEntry.M());
+        InventoryItemPickerPanel.getSelectedItemIds(this.panel).remove(itemMappingEntry.getResourceKey());
         this.panel.showSearchView();
     }
 

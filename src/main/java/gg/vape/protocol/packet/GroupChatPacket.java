@@ -6,14 +6,14 @@ import gg.vape.protocol.packet.ZeusTrackedPacket;
 
 public class GroupChatPacket
 extends ZeusTrackedPacket<GroupChatResponsePacket> {
-    private String U;
+    private String message;
 
-    public GroupChatPacket(String string) {
-        this.U = string;
+    public GroupChatPacket(String message) {
+        this.message = message;
     }
 
-    public String J() {
-        return this.U;
+    public String getMessage() {
+        return this.message;
     }
 
     public GroupChatPacket() {
@@ -21,12 +21,11 @@ extends ZeusTrackedPacket<GroupChatResponsePacket> {
 
     @Override
     public void x(ZeusPacketBuffer gx_12) {
-        this.U = gx_12.v(255);
+        this.message = gx_12.readString(255);
     }
 
     @Override
     public void T(ZeusPacketBuffer gx_12) {
-        gx_12.y(this.U);
+        gx_12.writeString(this.message);
     }
 }
-

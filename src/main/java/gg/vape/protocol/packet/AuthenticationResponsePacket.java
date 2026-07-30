@@ -11,7 +11,7 @@ extends ZeusTrackedPacket<AuthenticationPacket> {
 
     @Override
     public void x(ZeusPacketBuffer gx_12) {
-        int n = gx_12.Y();
+        int n = gx_12.readVarInt();
         this.E = new UserModel(gx_12);
     }
 
@@ -24,8 +24,8 @@ extends ZeusTrackedPacket<AuthenticationPacket> {
 
     @Override
     public void T(ZeusPacketBuffer gx_12) {
-        gx_12.i(1);
-        this.E.a(gx_12);
+        gx_12.writeVarInt(1);
+        this.E.writeTo(gx_12);
     }
 
     public AuthenticationResponsePacket(AuthenticationPacket authenticationPacket, UserModel oj_12) {

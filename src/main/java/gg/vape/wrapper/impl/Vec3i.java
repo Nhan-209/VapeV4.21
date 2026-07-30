@@ -9,7 +9,7 @@ extends Wrapper {
     private static GuiComponent[] g;
 
     public static Vec3i b(int n, int n2, int n3) {
-        return new Vec3i(MVec3I.Y(Vec3i.c.getMappings().Dn).O(n, n2, n3));
+        return new Vec3i(MVec3I.Y(Vec3i.vapeInstance.getMappings().Dn).newInstance(n, n2, n3));
     }
 
     public Vec3i(Object object) {
@@ -21,11 +21,11 @@ extends Wrapper {
     }
 
     public int o() {
-        return Vec3i.c.getMappings().Dn.z(this.I);
+        return Vec3i.vapeInstance.getMappings().Dn.z(this.I);
     }
 
     public int d() {
-        return Vec3i.c.getMappings().Dn.O(this.I);
+        return Vec3i.vapeInstance.getMappings().Dn.O(this.I);
     }
 
     public static GuiComponent[] J() {
@@ -33,7 +33,7 @@ extends Wrapper {
     }
 
     public int P() {
-        return Vec3i.c.getMappings().Dn.u(this.I);
+        return Vec3i.vapeInstance.getMappings().Dn.u(this.I);
     }
 
     public int int_o() {
@@ -50,4 +50,3 @@ extends Wrapper {
         }
     }
 }
-

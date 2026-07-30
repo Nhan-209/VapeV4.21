@@ -17,7 +17,7 @@ extends Mapping {
     }
 
     private List M(Object object, Object object2) {
-        return (List)this.G.L(object, object2);
+        return (List)this.G.invokeObject(object, object2);
     }
 
     public MItemPotion() {
@@ -35,7 +35,7 @@ extends Mapping {
                 String string = "getEffectsFromStack";
                 Class clazz2 = MappedClasses.uV;
                 MItemPotion mItemPotion = this;
-                this.G = mItemPotion.K(clazz2, string, bl, clazz, classArray);
+                this.G = mItemPotion.registerStaticMethodForOwner(clazz2, string, bl, clazz, classArray);
             }
         } else {
             Class[] classArray = new Class[]{MappedClasses.VK};
@@ -52,7 +52,7 @@ extends Mapping {
             String string = "getDisplayName";
             Class clazz3 = MappedClasses.lb;
             MItemPotion mItemPotion = this;
-            this.f = mItemPotion.W(clazz3, string, bl, clazz, classArray);
+            this.f = mItemPotion.registerInstanceMethodForOwner(clazz3, string, bl, clazz, classArray);
         } else {
             Class[] classArray = new Class[]{MappedClasses.VK};
             Class<String> clazz = String.class;
@@ -68,7 +68,7 @@ extends Mapping {
     }
 
     private Object V(Object object, Object object2) {
-        return this.f.L(object, object2);
+        return this.f.invokeObject(object, object2);
     }
 
     public static String B(MItemPotion mItemPotion, Object object, Object object2) {
@@ -77,6 +77,6 @@ extends Mapping {
 
 
     private String W(Object object, Object object2) {
-        return (String)this.f.L(object, object2);
+        return (String)this.f.invokeObject(object, object2);
     }
 }

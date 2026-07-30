@@ -1,8 +1,6 @@
 package gg.vape.wrapper.impl;
 
 import gg.vape.mapping.mappings.MCPacketUseEntityOne;
-import gg.vape.wrapper.impl.ModelPlayer;
-import gg.vape.wrapper.impl.Packet;
 
 public class CPacketUseEntityOne
 extends Packet {
@@ -11,7 +9,7 @@ extends Packet {
     }
 
     public static CPacketUseEntityOne g(ModelPlayer modelPlayer) {
-        return new CPacketUseEntityOne(MCPacketUseEntityOne.e(CPacketUseEntityOne.c.getMappingsMapperCompat().RE, modelPlayer.getObject()));
+        return new CPacketUseEntityOne(MCPacketUseEntityOne.e(CPacketUseEntityOne.vapeInstance.getMappingsMapperCompat().RE, modelPlayer.getObject()));
     }
 }
 

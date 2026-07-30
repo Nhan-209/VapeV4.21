@@ -32,7 +32,7 @@ extends ToggleableFrameHeaderComponent {
 
 
     private static boolean isHiddenProfile(Profile profile) {
-        return !profile.U();
+        return !profile.isVisible();
     }
 
     @Override
@@ -70,7 +70,7 @@ extends ToggleableFrameHeaderComponent {
             this.editHiddenProfilesButton.K(this.G$src$D$1b2f02a() + this.A() - 44.0);
             this.editHiddenProfilesButton.S(this.n());
             this.editHiddenProfilesButton.Y(this.L());
-            int hiddenProfileCount = (int)Vape.INSTANCE.getProfilesManager().b().stream().filter(ProfilesSettingsHeaderComponent::isHiddenProfile).count();
+            int hiddenProfileCount = (int)Vape.INSTANCE.getProfilesManager().getProfiles().stream().filter(ProfilesSettingsHeaderComponent::isHiddenProfile).count();
             if (hiddenProfileCount != 0) {
                 String countText = Integer.toString(hiddenProfileCount);
                 font.d(countText, this.G$src$D$1b2f02a() + this.A() - 45.25 - font.N(countText) / 2.0, this.n() + this.L() / 2.0 - font.d(countText) / 2.0, ProfilesSettingsHeaderComponent.J.W);

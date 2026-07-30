@@ -26,7 +26,7 @@ extends Mapping {
 
     private float U(Object object) {
         if (ForgeVersion.MC_1_20_6.d()) {
-            return this.Q.s(object, new Object[0]);
+            return this.Q.invokeFloat(object, new Object[0]);
         }
         return this.d.getFloat(object);
     }
@@ -44,7 +44,7 @@ extends Mapping {
     }
 
     private float r(Object object) {
-        return this.T.s(object, new Object[0]);
+        return this.T.invokeFloat(object, new Object[0]);
     }
 
     private float l(Object object) {
@@ -65,7 +65,7 @@ extends Mapping {
                 String string = "tier";
                 Class clazz2 = MappedClasses.uT;
                 MItemSword mItemSword = this;
-                this.E = mItemSword.X(clazz2, string, bl, clazz);
+                this.E = mItemSword.registerInstanceFieldForOwner(clazz2, string, bl, clazz);
             }
             if (ForgeVersion.MC_1_20_6.d()) {
                 if (ForgeVersion.MC_1_21_4.v()) {
@@ -75,14 +75,14 @@ extends Mapping {
                     String string = "getSpeed";
                     Class clazz3 = MappedClasses.lh;
                     MItemSword mItemSword = this;
-                    this.Q = mItemSword.W(clazz3, string, bl, clazz, classArray);
+                    this.Q = mItemSword.registerInstanceMethodForOwner(clazz3, string, bl, clazz, classArray);
                     Class[] classArray2 = new Class[]{};
                     Class<Float> clazz4 = Float.TYPE;
                     boolean bl2 = true;
                     String string2 = "getAttackDamageBonus";
                     Class clazz5 = MappedClasses.lh;
                     MItemSword mItemSword2 = this;
-                    this.T = this.W(clazz5, string2, bl2, clazz4, classArray2);
+                    this.T = this.registerInstanceMethodForOwner(clazz5, string2, bl2, clazz4, classArray2);
                 }
             } else {
                 Class[] classArray = new Class[]{};

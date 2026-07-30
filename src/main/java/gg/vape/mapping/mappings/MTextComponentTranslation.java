@@ -31,7 +31,7 @@ extends Mapping {
     }
 
     private String R(Object object) {
-        return (String)this.O.L(object, new Object[0]);
+        return (String)this.O.invokeObject(object, new Object[0]);
     }
 
     public static Object B(MTextComponentTranslation mTextComponentTranslation, String string, Object[] objectArray) {
@@ -82,7 +82,7 @@ extends Mapping {
         if (ForgeVersion.MC_1_20_6.d()) {
             Class[] classArray = new Class[]{String.class, String.class, Object[].class};
             MTextComponentTranslation mTextComponentTranslation6 = this;
-            this.T = this.g(classArray);
+            this.T = this.registerConstructor(classArray);
             Class[] classArray3 = new Class[]{};
             Class<String> clazz6 = String.class;
             boolean bl6 = true;
@@ -97,7 +97,7 @@ extends Mapping {
     }
 
     private String k$src$Ljava_lang_String_$1srlxuy(Object object) {
-        return (String)this.p.L(object, new Object[0]);
+        return (String)this.p.invokeObject(object, new Object[0]);
     }
 
     public static Object[] x(MTextComponentTranslation mTextComponentTranslation, Object object) {
@@ -105,7 +105,7 @@ extends Mapping {
     }
 
     private Object J(String string, @Nullable String string2, Object[] objectArray) {
-        return this.T.O(string, string2, objectArray);
+        return this.T.newInstance(string, string2, objectArray);
     }
 
 
@@ -115,9 +115,9 @@ extends Mapping {
 
     private Object g(String string, Object ... objectArray) {
         if (ForgeVersion.MC_1_20_6.d()) {
-            return this.i.O(string, null, objectArray);
+            return this.i.newInstance(string, null, objectArray);
         }
-        return this.i.O(string, objectArray);
+        return this.i.newInstance(string, objectArray);
     }
 }
 

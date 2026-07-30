@@ -8,33 +8,33 @@ import gg.vape.config.SettingsDataType;
 import gg.vape.config.SettingsPayload;
 
 public class SettingsApi {
-    private final String i;
+    private final String baseUrl;
 
-    public <T> T u(SettingsDataType settingsDataType, SettingsPayload settingsPayload) throws Exception {
-        String string = ApiAccessTokenProvider.i();
+    public <T> T saveSettings(SettingsDataType settingsDataType, SettingsPayload settingsPayload) throws Exception {
+        String accessToken = ApiAccessTokenProvider.getAccessToken();
         if (settingsPayload instanceof RefreshableSettingsPayload) {
-            ((RefreshableSettingsPayload)settingsPayload).M();
+            ((RefreshableSettingsPayload)settingsPayload).refreshFromCurrentSettings();
         }
-        return (T)ApiHttpClient.l(this.i + "/api/v1/" + string + "/settings/save/" + settingsDataType.n().g(), settingsDataType.b(), settingsPayload);
+        return (T)ApiHttpClient.post(this.baseUrl + "/api/v1/" + accessToken + "/settings/save/" + settingsDataType.getScope().getRouteName(), settingsDataType.getPayloadClass(), settingsPayload);
     }
 
-    public SettingsApi(String string) {
-        this.i = string;
+    public SettingsApi(String baseUrl) {
+        this.baseUrl = baseUrl;
     }
 
-    private static Exception a(Exception exception) {
-        return exception;
+    private static Exception preserveException(Exception error) {
+        return error;
     }
 
-    public <T> ApiResponse<T> h(SettingsDataType settingsDataType) throws Exception {
-        String string = ApiAccessTokenProvider.i();
-        ApiResponse apiResponse = ApiHttpClient.U(this.i + "/api/v1/" + string + "/settings/load/" + settingsDataType.n().g(), ApiResponse.class);
-        if (apiResponse == null) {
+    public <T> ApiResponse<T> loadSettings(SettingsDataType settingsDataType) throws Exception {
+        String accessToken = ApiAccessTokenProvider.getAccessToken();
+        ApiResponse response = ApiHttpClient.get(this.baseUrl + "/api/v1/" + accessToken + "/settings/load/" + settingsDataType.getScope().getRouteName(), ApiResponse.class);
+        if (response == null) {
             return null;
         }
-        if (!apiResponse.t()) {
-            return ApiResponse.w(apiResponse.N());
+        if (!response.isSuccessful()) {
+            return ApiResponse.failure(response.getError());
         }
-        return ApiResponse.G((T)ApiHttpClient.Z.fromJson(ApiHttpClient.Z.toJson(apiResponse.T()), settingsDataType.b()));
+        return ApiResponse.success((T)ApiHttpClient.GSON.fromJson(ApiHttpClient.GSON.toJson(response.getData()), settingsDataType.getPayloadClass()));
     }
 }

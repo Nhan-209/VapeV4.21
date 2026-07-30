@@ -6,31 +6,30 @@ import com.google.gson.annotations.SerializedName;
 public class LicenseInfo {
     @Expose
     @SerializedName(value="username")
-    private String f;
+    private String username;
     @Expose
     @SerializedName(value="expires")
-    private String L;
+    private String expires;
     @Expose
     @SerializedName(value="licenseType")
-    private String A;
+    private String licenseType;
     @Expose
     @SerializedName(value="hasLicense")
-    private boolean K;
+    private boolean hasLicense;
 
     public final String getLicenseType() {
-        return this.A;
+        return this.licenseType;
     }
 
     public final String getUsername() {
-        return this.f;
+        return this.username;
     }
 
     public final boolean hasLicense() {
-        return this.K;
+        return this.hasLicense;
     }
 
     public final String getExpires() {
-        return this.L;
+        return this.expires;
     }
 }
-

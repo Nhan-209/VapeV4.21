@@ -10,15 +10,15 @@ extends Wrapper {
     }
 
     public void a(Object object) {
-        MGameSettingsValue.S(GameSettingsValue.c.getMappingsMapperCompat().DM, this.I, object);
+        MGameSettingsValue.S(GameSettingsValue.vapeInstance.getMappingsMapperCompat().DM, this.I, object);
     }
 
     public void f(Object object) {
-        GameSettingsValue.c.getMappingsMapperCompat().DM.b(this.I, object);
+        GameSettingsValue.vapeInstance.getMappingsMapperCompat().DM.b(this.I, object);
     }
 
     public Object i() {
-        return MGameSettingsValue.U(GameSettingsValue.c.getMappingsMapperCompat().DM, this.I);
+        return MGameSettingsValue.U(GameSettingsValue.vapeInstance.getMappingsMapperCompat().DM, this.I);
     }
 }
 

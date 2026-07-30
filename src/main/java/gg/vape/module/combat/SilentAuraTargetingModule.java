@@ -92,7 +92,7 @@ extends Mod {
     private double[] getTargetAimPoint(EntityLivingBase target) {
         EntityPlayerSP player = Minecraft.thePlayer();
         Vec3d closestPoint = RotationUtil.T(player, target.R$src$Lgg_vape_wrapper_impl_AxisAlignedBB_$r19dfl(), 0.0, 0.0, 0.0);
-        return new double[]{closestPoint.Y(), closestPoint.t(), closestPoint.o()};
+        return new double[]{closestPoint.getX(), closestPoint.getY(), closestPoint.getZ()};
     }
 
     private boolean isValidTarget(EntityLivingBase target) {
@@ -181,7 +181,7 @@ extends Mod {
         this.rotationController = null;
     }
 
-    @EventHandler(A=EventPriority.HIGH)
+    @EventHandler(priority=EventPriority.HIGH)
     public void onKeyPress(EventKeyPress eventKeyPress) {
         boolean attackKeyEvent = eventKeyPress.isKeybinding(Minecraft.gameSettings().F());
         boolean shouldHandle = attackKeyEvent && (Packet.A() || eventKeyPress.isDown());
@@ -248,7 +248,7 @@ extends Mod {
 
     private void forceForwardKey() {
         KeyBinding forwardKey = Minecraft.gameSettings().r();
-        if (!ClientSettings.B(forwardKey)) {
+        if (!ClientSettings.isPhysicalKeyDown(forwardKey)) {
             forwardKey.setPressed(true);
             this.forwardKeyForced = true;
         } else {
@@ -258,7 +258,7 @@ extends Mod {
 
     private void forceBackKey() {
         KeyBinding backKey = Minecraft.gameSettings().Y();
-        if (!ClientSettings.B(backKey)) {
+        if (!ClientSettings.isPhysicalKeyDown(backKey)) {
             backKey.setPressed(true);
             this.backKeyForced = true;
         } else {
@@ -275,7 +275,7 @@ extends Mod {
         return Math.abs(MathUtil.wrapAngleTo180(RotationManager.INSTANCE.getManagedYaw() - targetYaw));
     }
 
-    @EventHandler(A=EventPriority.HIGH)
+    @EventHandler(priority=EventPriority.HIGH)
     public void onSyntheticAttackRequest(SyntheticAttackRequestEvent syntheticAttackRequestEvent) {
         if (syntheticAttackRequestEvent.getSource() == this) {
             return;
@@ -285,7 +285,7 @@ extends Mod {
         }
     }
 
-    @EventHandler(A=EventPriority.HIGH)
+    @EventHandler(priority=EventPriority.HIGH)
     public void onMouseButton(EventMouseButton eventMouseButton) {
         boolean attackButtonEvent = eventMouseButton.isKeybinding(Minecraft.gameSettings().F());
         boolean shouldHandle = attackButtonEvent && (!Packet.h() || eventMouseButton.isDown());
@@ -333,7 +333,7 @@ extends Mod {
     private void restoreBackKey() {
         if (this.backKeyForced) {
             KeyBinding backKey = Minecraft.gameSettings().Y();
-            backKey.setPressed(ClientSettings.B(backKey));
+            backKey.setPressed(ClientSettings.isPhysicalKeyDown(backKey));
             this.backKeyForced = false;
         }
     }
@@ -462,7 +462,7 @@ extends Mod {
     private void restoreForwardKey() {
         if (this.forwardKeyForced) {
             KeyBinding forwardKey = Minecraft.gameSettings().r();
-            forwardKey.setPressed(ClientSettings.B(forwardKey));
+            forwardKey.setPressed(ClientSettings.isPhysicalKeyDown(forwardKey));
             this.forwardKeyForced = false;
         }
     }
@@ -574,8 +574,8 @@ extends Mod {
         if (!this.strafeInvert.getEffectiveValue().booleanValue()) {
             return flickAngle;
         }
-        boolean leftPressed = ClientSettings.B(Minecraft.gameSettings().x$src$Lgg_vape_wrapper_impl_KeyBinding_$1cf7isg());
-        boolean rightPressed = ClientSettings.B(Minecraft.gameSettings().g$src$Lgg_vape_wrapper_impl_KeyBinding_$qqn5n3());
+        boolean leftPressed = ClientSettings.isPhysicalKeyDown(Minecraft.gameSettings().x$src$Lgg_vape_wrapper_impl_KeyBinding_$1cf7isg());
+        boolean rightPressed = ClientSettings.isPhysicalKeyDown(Minecraft.gameSettings().g$src$Lgg_vape_wrapper_impl_KeyBinding_$qqn5n3());
         if (leftPressed == rightPressed) {
             return flickAngle;
         }
@@ -618,7 +618,7 @@ extends Mod {
                 || this.randomizeOffset.getEffectiveValue() != false && ((Double)this.randomizeOffsetRange.getValue()).floatValue() > 0.001f;
     }
 
-    @EventHandler(A=EventPriority.LOWEREST)
+    @EventHandler(priority=EventPriority.LOWEREST)
     public void onTick(EventPreTick eventPreTick) {
         if (Minecraft.currentScreen().isNotNull() || eventPreTick.getThePlayer().isNull()) {
             this.resetFlickState();
@@ -658,7 +658,7 @@ extends Mod {
         this.updateRotationController();
     }
 
-    @EventHandler(A=EventPriority.HIGH)
+    @EventHandler(priority=EventPriority.HIGH)
     public void onClickMouse(EventClickMouse eventClickMouse) {
         if (this.rotationMode != SilentAuraRotationMode.IDLE) {
             return;

@@ -6,27 +6,26 @@ import com.google.gson.annotations.SerializedName;
 public class YggdrasilAgent {
     @Expose
     @SerializedName(value="name")
-    private final String c;
-    private static final String b = "Minecraft";
+    private final String name;
+    private static final String DEFAULT_NAME = "Minecraft";
     @Expose
     @SerializedName(value="version")
-    private final int A;
+    private final int version;
 
-    public YggdrasilAgent(String string, int n) {
-        this.c = string;
-        this.A = n;
+    public YggdrasilAgent(String name, int version) {
+        this.name = name;
+        this.version = version;
     }
 
-    public int U() {
-        return this.A;
+    public int getVersion() {
+        return this.version;
     }
 
-    public String p() {
-        return this.c;
+    public String getName() {
+        return this.name;
     }
 
     public YggdrasilAgent() {
-        this(b, 1);
+        this(DEFAULT_NAME, 1);
     }
 }
-

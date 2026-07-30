@@ -96,7 +96,7 @@ extends Mod {
     @EventHandler
     public void onTick(EventPrePlayerTick event) {
         if (!event.getPlayer().isInstance(MappedClasses.z5)
-                || Vape.INSTANCE.getClientSettings().J$src$Z$c57s1l()
+                || Vape.INSTANCE.getClientSettings().isLobbyCheckActive()
                 || Minecraft.currentScreen().isNotNull()) {
             return;
         }
@@ -190,14 +190,14 @@ extends Mod {
                     PotionEffect potionEffect = new PotionEffect(effectHandle);
                     boolean belowHealthThreshold = player.w$src$F$15l9epb()
                             <= (Double)this.healthThreshold.getValue();
-                    if (potionEffect.C() == PotionRegistry.z.D() && belowHealthThreshold) {
+                    if (potionEffect.C() == PotionRegistry.z.getResolvedId() && belowHealthThreshold) {
                         return true;
                     }
-                    if (potionEffect.C() == PotionRegistry.U.D() && this.useSpeedPotions.getEffectiveValue()
+                    if (potionEffect.C() == PotionRegistry.U.getResolvedId() && this.useSpeedPotions.getEffectiveValue()
                             && !player.i(PotionRegistry.U)) {
                         return true;
                     }
-                    if (potionEffect.C() == PotionRegistry.i.D()
+                    if (potionEffect.C() == PotionRegistry.i.getResolvedId()
                             && this.useRegenerationPotions.getEffectiveValue() && belowHealthThreshold
                             && !player.i(PotionRegistry.i)) {
                         return true;
@@ -219,7 +219,7 @@ extends Mod {
             Minecraft.thePlayer().V$src$Lgg_vape_wrapper_impl_InventoryPlayer_$erqak6()
                     .g(this.pendingHealSlot);
             boolean releasePhysicalUseKey = Minecraft.thePlayer().l$src$Z$1io4duf()
-                    && ClientSettings.l(keyCode);
+                    && ClientSettings.isInputDown(keyCode);
             if (releasePhysicalUseKey) {
                 KeyBindingHelper.setPressedAndTick(useItemKey, false);
                 Thread.sleep(51L);
@@ -232,7 +232,7 @@ extends Mod {
             Thread.sleep(swapDelay);
             Minecraft.thePlayer().V$src$Lgg_vape_wrapper_impl_InventoryPlayer_$erqak6()
                     .g(this.previousHotbarSlot);
-            if (ClientSettings.l(keyCode)) {
+            if (ClientSettings.isInputDown(keyCode)) {
                 KeyBindingHelper.setPressedAndTick(useItemKey, true);
             }
         }
@@ -428,10 +428,9 @@ extends Mod {
     @EventHandler
     public void onPlayerTick(EventPostPlayerTick event) {
         if (!event.getPlayer().isInstance(MappedClasses.z5)
-                || Vape.INSTANCE.getClientSettings().J$src$Z$c57s1l()) {
+                || Vape.INSTANCE.getClientSettings().isLobbyCheckActive()) {
             return;
         }
         this.manageInventory(event.getThePlayer());
     }
 }
-

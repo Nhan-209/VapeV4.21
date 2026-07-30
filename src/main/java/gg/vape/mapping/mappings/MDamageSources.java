@@ -35,11 +35,11 @@ extends Mapping {
     }
 
     public Object L(Object object) {
-        return this.S.L(object, new Object[0]);
+        return this.S.invokeObject(object, new Object[0]);
     }
 
     public Object J(Object object, Object object2) {
-        return this.L.L(object, object2);
+        return this.L.invokeObject(object, object2);
     }
 
     public static int e() {
@@ -61,7 +61,7 @@ extends Mapping {
     }
 
     public Object B(Object object) {
-        return this.z.L(object, null, null);
+        return this.z.invokeObject(object, null, null);
     }
 }
 

@@ -12,7 +12,7 @@ extends Thread {
         while (!Vape.INSTANCE.isEnabled()) {
             try {
                 Thread.sleep(1L);
-                if (!this.targetingSubModule.r$src$Z$14eylz9() || !this.targetingSubModule.J$src$Z$gcqtyf()) continue;
+                if (!this.targetingSubModule.r$src$Z$14eylz9() || !this.targetingSubModule.isSelectedSubModule()) continue;
                 AimAssistTargetingSubModule.runWorkerTick(this.targetingSubModule);
             }
             catch (Exception ignored) {}

@@ -9,22 +9,22 @@ import gg.vape.wrapper.impl.WorldClient;
 
 public class WorldChangeEventDispatcher
 implements EventListener {
-    private WorldClient f;
+    private WorldClient currentWorld;
 
 
-    @EventHandler(A=EventPriority.LOW)
+    @EventHandler(priority=EventPriority.LOW)
     public void onTick(EventPreTick eventTick) {
-        WorldClient worldClient = eventTick.getWorld();
-        boolean bl = worldClient.isNull();
-        if (this.f == null && !bl) {
-            new EventWorldChange(this.f, worldClient).fire();
-            this.f = worldClient;
-        } else if (this.f != null && !bl && this.f.getObject() != worldClient.getObject()) {
-            new EventWorldChange(this.f, worldClient).fire();
-            this.f = worldClient;
-        } else if (this.f != null && bl) {
-            new EventWorldChange(this.f, null).fire();
-            this.f = null;
+        WorldClient world = eventTick.getWorld();
+        boolean worldUnavailable = world.isNull();
+        if (this.currentWorld == null && !worldUnavailable) {
+            new EventWorldChange(this.currentWorld, world).fire();
+            this.currentWorld = world;
+        } else if (this.currentWorld != null && !worldUnavailable && this.currentWorld.getObject() != world.getObject()) {
+            new EventWorldChange(this.currentWorld, world).fire();
+            this.currentWorld = world;
+        } else if (this.currentWorld != null && worldUnavailable) {
+            new EventWorldChange(this.currentWorld, null).fire();
+            this.currentWorld = null;
         }
     }
 }

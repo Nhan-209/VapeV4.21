@@ -9,29 +9,28 @@ public enum SettingsDataType {
     GLOBAL(SettingsScope.GLOBAL, GlobalSettingsPayload.class),
     ONLINE(SettingsScope.ONLINE, OnlineSettingsPayload.class);
 
-    private final SettingsScope t;
-    private final Class<? extends SettingsPayload> F;
-    private static final /* synthetic */ SettingsDataType[] g;
+    private final SettingsScope scope;
+    private final Class<? extends SettingsPayload> payloadClass;
+    private static final /* synthetic */ SettingsDataType[] ENUM_VALUES;
 
     static {
-        String[] stringArray = new String[]{"ONLINE", "GLOBAL"};
+        String[] serializedNames = new String[]{"ONLINE", "GLOBAL"};
 
 
-        g = new SettingsDataType[]{GLOBAL, ONLINE};
+        ENUM_VALUES = new SettingsDataType[]{GLOBAL, ONLINE};
     }
 
-    public Class<? extends SettingsPayload> b() {
-        return this.F;
+    public Class<? extends SettingsPayload> getPayloadClass() {
+        return this.payloadClass;
     }
 
-    private SettingsDataType(SettingsScope settingsScope, Class<? extends SettingsPayload> clazz) {
-        this.t = settingsScope;
-        this.F = clazz;
+    private SettingsDataType(SettingsScope scope, Class<? extends SettingsPayload> payloadClass) {
+        this.scope = scope;
+        this.payloadClass = payloadClass;
     }
 
-    public SettingsScope n() {
-        return this.t;
+    public SettingsScope getScope() {
+        return this.scope;
     }
 
 }
-

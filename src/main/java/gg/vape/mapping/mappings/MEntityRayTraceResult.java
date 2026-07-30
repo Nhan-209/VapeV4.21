@@ -10,7 +10,7 @@ extends Mapping {
     MappingMethod l;
 
     public Object z(Object object, Object object2) {
-        return this.l.O(object, object2);
+        return this.l.newInstance(object, object2);
     }
 
     public MEntityRayTraceResult() {
@@ -30,7 +30,7 @@ extends Mapping {
     }
 
     public Object w(Object object) {
-        return this.f.L(object, new Object[0]);
+        return this.f.invokeObject(object, new Object[0]);
     }
 }
 

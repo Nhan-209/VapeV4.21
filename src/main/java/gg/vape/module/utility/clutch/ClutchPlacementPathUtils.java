@@ -139,7 +139,7 @@ public class ClutchPlacementPathUtils {
         EnumFacing facing = placementTarget.facing;
         AxisAlignedBB bounds = BlockUtil.F(world, supportBlock);
         if (facing == null) {
-            return RotationUtil.M(eyePosition, bounds, 0.0, 0.0, 0.0).n();
+            return RotationUtil.M(eyePosition, bounds, 0.0, 0.0, 0.0).toVec3();
         }
         bounds = bounds.contract(0.002, 0.002, 0.002);
         Vec3i direction = facing.w$src$Lgg_vape_wrapper_impl_Vec3i_$ixeccr();
@@ -193,7 +193,7 @@ public class ClutchPlacementPathUtils {
         EnumFacing facing = placementTarget.facing;
         AxisAlignedBB bounds = BlockUtil.F(world, supportBlock);
         if (facing == null) {
-            return RotationUtil.M(eyePosition, bounds, 0.0, 0.0, 0.0).n();
+            return RotationUtil.M(eyePosition, bounds, 0.0, 0.0, 0.0).toVec3();
         }
         Vec3i direction = facing.w$src$Lgg_vape_wrapper_impl_Vec3i_$ixeccr();
         bounds = bounds.contract(0.002, 0.002, 0.002);
@@ -276,12 +276,12 @@ public class ClutchPlacementPathUtils {
 
 
     public static float calculateRotationDistance(Vec3d source, Vec3d target, float yaw, float pitch) {
-        double deltaX = source.Y() - target.Y();
-        double deltaZ = source.o() - target.o();
-        double deltaY = source.t() - target.t();
+        double deltaX = source.getX() - target.getX();
+        double deltaZ = source.getZ() - target.getZ();
+        double deltaY = source.getY() - target.getY();
         double horizontalDistance = MathUtil.sqrt(deltaX * deltaX + deltaZ * deltaZ);
-        float yawDelta = (float)RotationUtil.N(source.Y(), source.o(), yaw, target.Y(), target.o());
-        float targetPitch = MathUtil.wrapAngleTo180((float)Math.toDegrees(FastAtanMath.r((float)deltaY, (float)horizontalDistance)));
+        float yawDelta = (float)RotationUtil.N(source.getX(), source.getZ(), yaw, target.getX(), target.getZ());
+        float targetPitch = MathUtil.wrapAngleTo180((float)Math.toDegrees(FastAtanMath.atan2Approximation((float)deltaY, (float)horizontalDistance)));
         float absoluteYawDelta = Math.abs(MathUtil.wrapAngleTo180(yawDelta));
         float absolutePitchDelta = Math.abs(MathUtil.wrapAngleTo180(targetPitch - pitch));
         return (float)Math.sqrt(absoluteYawDelta * absoluteYawDelta + absolutePitchDelta * absolutePitchDelta);
@@ -419,7 +419,7 @@ public class ClutchPlacementPathUtils {
         double legacyEyeOffset = ForgeVersion.MC_1_7_10.Y() ? player.X() : 0.0;
         Vec3 rayStart = Vec3.create(sourceBlock.D() + 0.5, player.A() + legacyEyeOffset, sourceBlock.G() + 0.5);
         if (facing == null) {
-            Vec3 rayEnd = RotationUtil.T(player, targetBounds, 0.0, 0.0, 0.0).n();
+            Vec3 rayEnd = RotationUtil.T(player, targetBounds, 0.0, 0.0, 0.0).toVec3();
             RayTraceResult rayTrace = world.K(rayStart, rayEnd, false, false, ForgeVersion.MC_1_16_5.v(), player);
             return isMissOrTargetBlock(rayTrace, targetBlock);
         }

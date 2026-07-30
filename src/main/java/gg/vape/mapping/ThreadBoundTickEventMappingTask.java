@@ -15,7 +15,7 @@ extends JavassistMappingTask {
     }
 
     @Override
-    public void c() {
+    public void transform() {
         ThreadBoundTickEventMappingTask.p(ThreadBoundEventPreTickCallback.class);
         ThreadBoundTickEventMappingTask.p(ThreadBoundEventPostTickCallback.class);
         MappingMethod mappingMethod = Vape.INSTANCE.getMappings().RV.v;
@@ -24,4 +24,3 @@ extends JavassistMappingTask {
         this.k(mappingMethod, mappingMethod2, ThreadBoundEventPostTickCallback.class.getName() + "#call", false, false, new InjectionParameterSpec[0]);
     }
 }
-

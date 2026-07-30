@@ -50,17 +50,17 @@ extends Value<InventoryCleanerProfile, InventoryCleanerProfileValue> {
     }
 
     @Override
-    public JsonObject toJson(boolean bl) {
+    public JsonObject toJson(boolean embedSharedPresets) {
         JsonObject jsonObject = new JsonObject();
         jsonObject.addProperty("id", this.getId());
-        InventoryCleanerProfile inventoryCleanerProfile = (InventoryCleanerProfile)this.getValue();
-        if (inventoryCleanerProfile != null) {
-            jsonObject.addProperty("selected", inventoryCleanerProfile.getName());
+        InventoryCleanerProfile selectedProfile = (InventoryCleanerProfile)this.getValue();
+        if (selectedProfile != null) {
+            jsonObject.addProperty("selected", selectedProfile.getName());
         }
         if (!this.profiles.isEmpty()) {
             JsonArray jsonArray = new JsonArray();
-            for (InventoryCleanerProfile inventoryCleanerProfile2 : this.profiles) {
-                jsonArray.add((JsonElement)inventoryCleanerProfile2.toJson(bl));
+            for (InventoryCleanerProfile profile : this.profiles) {
+                jsonArray.add((JsonElement)profile.toJson(embedSharedPresets));
             }
             jsonObject.add("inventories", (JsonElement)jsonArray);
         }
@@ -69,15 +69,15 @@ extends Value<InventoryCleanerProfile, InventoryCleanerProfileValue> {
 
     @Override
     public String getDisplayValue() {
-        InventoryCleanerProfile inventoryCleanerProfile = (InventoryCleanerProfile)this.getValue();
-        if (inventoryCleanerProfile == null) {
+        InventoryCleanerProfile selectedProfile = (InventoryCleanerProfile)this.getValue();
+        if (selectedProfile == null) {
             return "";
         }
-        return inventoryCleanerProfile.getName();
+        return selectedProfile.getName();
     }
 
     @Override
-    public void parse(String string) {
+    public void parse(String value) {
     }
 
     @Override
@@ -87,8 +87,8 @@ extends Value<InventoryCleanerProfile, InventoryCleanerProfileValue> {
             if (jsonObject.has("inventories")) {
                 JsonArray jsonArray = jsonObject.getAsJsonArray("inventories");
                 for (JsonElement jsonElement : jsonArray) {
-                    InventoryCleanerProfile inventoryCleanerProfile = new InventoryCleanerProfile(jsonElement.getAsJsonObject());
-                    this.profiles.add(inventoryCleanerProfile);
+                    InventoryCleanerProfile profile = new InventoryCleanerProfile(jsonElement.getAsJsonObject());
+                    this.profiles.add(profile);
                 }
             }
             if (jsonObject.has("selected")) {
@@ -99,8 +99,8 @@ extends Value<InventoryCleanerProfile, InventoryCleanerProfileValue> {
         return false;
     }
 
-    public InventoryCleanerProfileValue(Object object, String string) {
-        super(object, string, null);
+    public InventoryCleanerProfileValue(Object owner, String id) {
+        super(owner, id, null);
     }
 
 

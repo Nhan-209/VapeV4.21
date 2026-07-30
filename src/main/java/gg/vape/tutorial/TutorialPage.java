@@ -10,93 +10,93 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TutorialPage {
-    private List<TutorialAction> A = new ArrayList<TutorialAction>();
-    private TutorialAction y;
-    private String i;
-    private TutorialFrame H;
-    private static final String c;
-    private static GuiComponent[] q;
+    private final List<TutorialAction> actions = new ArrayList<TutorialAction>();
+    private TutorialAction currentAction;
+    private final String title;
+    private TutorialFrame tutorialFrame;
+    private static final String debugPrefix;
+    private static GuiComponent[] obfuscationState;
 
-    public TutorialAction v() {
-        return this.y;
+    public TutorialAction getCurrentAction() {
+        return this.currentAction;
     }
 
-    public void i(TutorialAction tutorialAction) {
-        this.A.add(tutorialAction);
-        tutorialAction.I().G$src$Lgg_vape_ui_click_component_gui_TextButton_$82emrx().setClickListener(new TutorialActionNextClickHandler(this));
-        tutorialAction.I().c$src$Lgg_vape_ui_click_component_gui_UnderlinedTextLa$npxkh1().setClickListener(new TutorialActionFinishClickHandler(this));
-        tutorialAction.G(this);
+    public void addAction(TutorialAction tutorialAction) {
+        this.actions.add(tutorialAction);
+        tutorialAction.getComponent().getActionButton().setClickListener(new TutorialActionNextClickHandler(this));
+        tutorialAction.getComponent().getSkipLabel().setClickListener(new TutorialActionFinishClickHandler(this));
+        tutorialAction.setPage(this);
     }
 
-    public TutorialPage(String string) {
-        this.i = string;
+    public TutorialPage(String title) {
+        this.title = title;
     }
 
-    public void w() {
-        this.y = null;
-        this.r();
+    public void resetAndStart() {
+        this.currentAction = null;
+        this.advanceToNextAction();
     }
 
-    public String Y() {
-        return this.i;
+    public String getTitle() {
+        return this.title;
     }
 
-    public static GuiComponent[] I() {
-        return q;
+    public static GuiComponent[] getObfuscationState() {
+        return obfuscationState;
     }
 
 
     static {
-        TutorialPage.d(new GuiComponent[2]);
-        c = "3 ";
+        TutorialPage.setObfuscationState(new GuiComponent[2]);
+        debugPrefix = "3 ";
     }
 
-    public void c(TutorialAction tutorialAction) {
-        if (this.y != null) {
-            this.y.S();
+    public void activateAction(TutorialAction tutorialAction) {
+        if (this.currentAction != null) {
+            this.currentAction.cleanup();
         }
-        this.y = tutorialAction;
-        this.y.X$src$V$d06mc();
-        if (this.H != null) {
-            this.H.t$src$V$zbu1jn();
-            this.H.h(tutorialAction.I(), new Object[0]);
-            this.H.l$src$V$1mibm4x();
+        this.currentAction = tutorialAction;
+        this.currentAction.start();
+        if (this.tutorialFrame != null) {
+            this.tutorialFrame.t$src$V$zbu1jn();
+            this.tutorialFrame.h(tutorialAction.getComponent(), new Object[0]);
+            this.tutorialFrame.l$src$V$1mibm4x();
         }
     }
 
-    public static void d(GuiComponent[] guiComponentArray) {
-        q = guiComponentArray;
+    public static void setObfuscationState(GuiComponent[] guiComponentArray) {
+        obfuscationState = guiComponentArray;
     }
 
-    public void r() {
+    public void advanceToNextAction() {
         Vape.debugLog("1");
-        if (this.y != null) {
-            if (!this.y.a()) {
+        if (this.currentAction != null) {
+            if (!this.currentAction.canAdvance()) {
                 return;
             }
             boolean bl = false;
             boolean bl2 = false;
             Vape.debugLog("2");
-            for (TutorialAction tutorialAction : this.A) {
+            for (TutorialAction tutorialAction : this.actions) {
                 if (bl) {
-                    this.c(tutorialAction);
+                    this.activateAction(tutorialAction);
                     bl2 = true;
                     break;
                 }
-                if (!tutorialAction.equals(this.y)) continue;
+                if (!tutorialAction.equals(this.currentAction)) continue;
                 bl = true;
             }
-            Vape.debugLog(c + bl + " " + bl2);
+            Vape.debugLog(debugPrefix + bl + " " + bl2);
             if (!bl2) {
-                Vape.INSTANCE.getTutorialManager().o$src$V$e4pt9h();
+                Vape.INSTANCE.getTutorialManager().completeCurrentPage();
             }
         } else {
-            this.c(this.A.get(0));
+            this.activateAction(this.actions.get(0));
         }
     }
 
-    public void a(TutorialFrame tutorialFrame) {
-        this.H = tutorialFrame;
+    public void setFrame(TutorialFrame tutorialFrame) {
+        this.tutorialFrame = tutorialFrame;
     }
 }
 

@@ -8,54 +8,53 @@ import org.objectweb.asm.tree.MethodNode;
 
 public class InstructionSequenceMethodMatcher
 extends MethodNodeMatcher {
-    private static int S;
-    private final InstructionPattern[] e;
+    private static int opaqueState;
+    private final InstructionPattern[] expectedPatterns;
 
-    public static int C() {
-        return S;
+    public static int getOpaqueState() {
+        return opaqueState;
     }
 
     static {
-        if (InstructionSequenceMethodMatcher.J() != 0) {
-            InstructionSequenceMethodMatcher.m(89);
+        if (InstructionSequenceMethodMatcher.opaquePredicate() != 0) {
+            InstructionSequenceMethodMatcher.setOpaqueState(89);
         }
     }
 
-    public static void m(int n) {
-        S = n;
+    public static void setOpaqueState(int state) {
+        opaqueState = state;
     }
 
-    public static int J() {
-        int n = InstructionSequenceMethodMatcher.C();
-        if (n == 0) {
+    public static int opaquePredicate() {
+        int state = InstructionSequenceMethodMatcher.getOpaqueState();
+        if (state == 0) {
             return 77;
         }
         return 0;
     }
 
-    public InstructionSequenceMethodMatcher(Class clazz, InstructionPattern ... instructionPatternArray) {
-        super(clazz);
-        this.e = instructionPatternArray;
+    public InstructionSequenceMethodMatcher(Class targetClass, InstructionPattern ... expectedPatterns) {
+        super(targetClass);
+        this.expectedPatterns = expectedPatterns;
     }
 
 
     @Override
     public boolean matchesMethod(MethodNode methodNode) {
         MethodInstructionIndex methodInstructionIndex = this.getMethodInstructionIndex(methodNode);
-        int n = 0;
-        int n2 = 0;
-        List<InstructionPattern> list = methodInstructionIndex.s();
-        block0: for (InstructionPattern instructionPattern : this.e) {
-            for (int i = n2; i < list.size(); ++i) {
-                n2 = i;
-                InstructionPattern instructionPattern2 = list.get(i);
-                if (!instructionPattern.matches(instructionPattern2)) continue;
-                ++n;
+        int matchedCount = 0;
+        int searchStartIndex = 0;
+        List<InstructionPattern> actualPatterns = methodInstructionIndex.getPatterns();
+        block0: for (InstructionPattern expectedPattern : this.expectedPatterns) {
+            for (int index = searchStartIndex; index < actualPatterns.size(); ++index) {
+                searchStartIndex = index;
+                InstructionPattern actualPattern = actualPatterns.get(index);
+                if (!expectedPattern.matches(actualPattern)) continue;
+                ++matchedCount;
                 continue block0;
             }
         }
-        boolean bl = n == this.e.length;
-        return bl;
+        return matchedCount == this.expectedPatterns.length;
     }
 }
 

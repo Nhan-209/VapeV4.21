@@ -39,7 +39,7 @@ extends FlowLayoutComponent {
         this.h(this.applyBar, new Object[0]);
         this.h(this.moduleList, new Object[0]);
         this.rebuildRows();
-        this.lastProfileRevision = profile.n();
+        this.lastProfileRevision = profile.getUpdatedAt();
     }
 
     private void applyStyleToRows() {
@@ -63,12 +63,12 @@ extends FlowLayoutComponent {
         }
         this.profile = profile;
         this.rebuildRows();
-        this.lastProfileRevision = profile.n();
+        this.lastProfileRevision = profile.getUpdatedAt();
     }
 
     private void rebuildRows() {
         this.moduleList.removeMarkedChildren();
-        ProfileSnapshot profileSnapshot = this.profile.n(false);
+        ProfileSnapshot profileSnapshot = this.profile.createSnapshot(false);
         if (profileSnapshot != null) {
             for (ProfileModuleSnapshot profileModuleSnapshot : profileSnapshot.getSortedModules(false)) {
                 ProfileModuleSnapshotRowComponent moduleRow = new ProfileModuleSnapshotRowComponent(this.A(), profileSnapshot, profileModuleSnapshot);
@@ -88,10 +88,10 @@ extends FlowLayoutComponent {
 
     @Override
     public void u() {
-        if (!this.profile.equals(Vape.INSTANCE.getProfilesManager().M())) {
+        if (!this.profile.equals(Vape.INSTANCE.getProfilesManager().getActiveProfile())) {
             return;
         }
-        long profileRevision = this.profile.n();
+        long profileRevision = this.profile.getUpdatedAt();
         if (profileRevision != this.lastProfileRevision) {
             this.lastProfileRevision = profileRevision;
             this.rebuildRows();

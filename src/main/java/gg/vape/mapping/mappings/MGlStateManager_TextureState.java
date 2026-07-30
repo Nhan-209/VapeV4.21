@@ -15,7 +15,7 @@ extends Mapping {
         Class<Integer> clazz = Integer.TYPE;
         String string = "textureName";
         MGlStateManager_TextureState mGlStateManager_TextureState = this;
-        this.c = ((MappingFieldBuilder)this.T(string, clazz).A(ForgeVersion.MC_1_20_6.n(), "binding")).z();
+        this.c = ((MappingFieldBuilder)this.fieldBuilder(string, clazz).setNameForVersion(ForgeVersion.MC_1_20_6.n(), "binding")).buildField();
     }
 
     public int R(Object object) {

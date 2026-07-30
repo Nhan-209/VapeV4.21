@@ -9,55 +9,54 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nullable;
 
 public class PublicProfileReviewResponse {
-    private final long f;
-    private final Date u;
-    private final String k;
-    private final Date U;
+    private final long id;
+    private final Date updatedDate;
+    private final String response;
+    private final Date createdDate;
 
     @Nullable
     @Contract(value="!null -> !null; null -> null")
-    public static PublicProfileReviewResponse p(@Nullable JsonElement jsonElement) {
-        if (jsonElement == null || jsonElement.isJsonNull()) {
+    public static PublicProfileReviewResponse fromJson(@Nullable JsonElement element) {
+        if (element == null || element.isJsonNull()) {
             return null;
         }
-        JsonObject jsonObject = jsonElement.getAsJsonObject();
+        JsonObject object = element.getAsJsonObject();
         try {
-            return new PublicProfileReviewResponse(jsonObject.get("id").getAsLong(), ApiHttpClient.U(jsonObject.get("createdDate").getAsString()), ApiHttpClient.U(jsonObject.get("updatedDate").getAsString()), jsonObject.get("response").getAsString());
+            return new PublicProfileReviewResponse(object.get("id").getAsLong(), ApiHttpClient.parseApiDate(object.get("createdDate").getAsString()), ApiHttpClient.parseApiDate(object.get("updatedDate").getAsString()), object.get("response").getAsString());
         }
         catch (ParseException parseException) {
             throw new RuntimeException(parseException);
         }
     }
 
-    PublicProfileReviewResponse(long l, Date date, Date date2, String string) {
-        this.f = l;
-        this.U = date;
-        this.u = date2;
-        this.k = string;
+    PublicProfileReviewResponse(long id, Date createdDate, Date updatedDate, String response) {
+        this.id = id;
+        this.createdDate = createdDate;
+        this.updatedDate = updatedDate;
+        this.response = response;
     }
 
-    public String m() {
-        return this.k;
+    public String getResponse() {
+        return this.response;
     }
 
-    public long c() {
-        return this.f;
+    public long getId() {
+        return this.id;
     }
 
     public String toString() {
-        return "PublicProfileReviewResponse{id=" + this.f + ", date=" + this.U + ", response='" + this.k + '\'' + '}';
+        return "PublicProfileReviewResponse{id=" + this.id + ", date=" + this.createdDate + ", response='" + this.response + '\'' + '}';
     }
 
-    private static ParseException a(ParseException parseException) {
-        return parseException;
+    private static ParseException preserveParseException(ParseException error) {
+        return error;
     }
 
-    public Date j() {
-        return this.u;
+    public Date getUpdatedDate() {
+        return this.updatedDate;
     }
 
-    public Date Y() {
-        return this.U;
+    public Date getCreatedDate() {
+        return this.createdDate;
     }
 }
-

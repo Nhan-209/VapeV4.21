@@ -16,60 +16,60 @@ import java.awt.Color;
 
 public class OnlineRegistrationPanel
 extends GuiComponent {
-    private long i;
-    private final TextLabel G;
-    private boolean I;
-    private final TextButton O;
-    private final WrappedTextComponent v;
+    private long retryAvailableAt;
+    private final TextLabel dismissLabel;
+    private boolean retryPending;
+    private final TextButton retryButton;
+    private final WrappedTextComponent statusText;
 
     @Override
     public double x() {
         return 105.0;
     }
 
-    private void C$src$V$1m5h0jt() {
-        if (OnlineConnectionManager.T.j() == OnlineAccountState.CONNECTING) {
+    private void retryRegistration() {
+        if (OnlineConnectionManager.INSTANCE.getAccountState() == OnlineAccountState.CONNECTING) {
             return;
         }
-        if (this.I) {
+        if (this.retryPending) {
             return;
         }
-        if (this.i != -1L) {
-            if (this.i - System.currentTimeMillis() > 0L) {
+        if (this.retryAvailableAt != -1L) {
+            if (this.retryAvailableAt - System.currentTimeMillis() > 0L) {
                 return;
             }
-            this.i = -1L;
+            this.retryAvailableAt = -1L;
         }
-        this.I = true;
+        this.retryPending = true;
         try {
-            OnlineConnectionManager.T.E();
-            if (OnlineConnectionManager.T.j() != OnlineAccountState.REGISTRATION_OFFLINE) {
-                ClientSettings.getFrame(OnlineFriendsFrame.class).Q$src$V$v8j9by();
-                this.i = -1L;
+            OnlineConnectionManager.INSTANCE.initialize();
+            if (OnlineConnectionManager.INSTANCE.getAccountState() != OnlineAccountState.REGISTRATION_OFFLINE) {
+                ClientSettings.getFrame(OnlineFriendsFrame.class).closeRegistrationPopup();
+                this.retryAvailableAt = -1L;
             }
         }
         catch (Exception exception) {
-            this.i = System.currentTimeMillis() + 10000L;
+            this.retryAvailableAt = System.currentTimeMillis() + 10000L;
             Vape.logThrowable(exception);
         }
-        this.I = false;
+        this.retryPending = false;
     }
 
     public OnlineRegistrationPanel() {
-        this.O = new TextButton("Reattempt", 0.8, OnlineRegistrationPanel.J.B, OnlineRegistrationPanel.J.O);
-        this.G = new TextLabel("Maybe later", 0.8, false);
-        this.v = new WrappedTextComponent("", 0.8, OnlineRegistrationPanel.J.Z, false);
-        this.I = false;
-        this.i = -1L;
-        this.addChildren(this.v, this.O, this.G);
-        this.G.o(32.0);
-        this.G.Y(10.0);
-        this.G.addClickListener(this::n$src$V$1mt462c);
-        this.v.setFontScale(0.9);
-        this.v.setWrapWidth(90.0);
-        this.O.setDeriveTextColorFromBackground(false);
-        this.O.setNormalTextColor(OnlineRegistrationPanel.J.A);
-        this.O.addClickListener(this::C$src$V$1m5h0jt);
+        this.retryButton = new TextButton("Reattempt", 0.8, OnlineRegistrationPanel.J.B, OnlineRegistrationPanel.J.O);
+        this.dismissLabel = new TextLabel("Maybe later", 0.8, false);
+        this.statusText = new WrappedTextComponent("", 0.8, OnlineRegistrationPanel.J.Z, false);
+        this.retryPending = false;
+        this.retryAvailableAt = -1L;
+        this.addChildren(this.statusText, this.retryButton, this.dismissLabel);
+        this.dismissLabel.o(32.0);
+        this.dismissLabel.Y(10.0);
+        this.dismissLabel.addClickListener(this::dismissRegistration);
+        this.statusText.setFontScale(0.9);
+        this.statusText.setWrapWidth(90.0);
+        this.retryButton.setDeriveTextColorFromBackground(false);
+        this.retryButton.setNormalTextColor(OnlineRegistrationPanel.J.A);
+        this.retryButton.addClickListener(this::retryRegistration);
     }
 
     @Override
@@ -77,13 +77,13 @@ extends GuiComponent {
         GuiRenderPrimitives.d(this.G$src$D$1b2f02a(), this.n(), this.A(), this.L(), OnlineRegistrationPanel.J.i);
     }
 
-    private void n$src$V$1mt462c() {
+    private void dismissRegistration() {
         OnlineFriendsFrame onlineFriendsFrame = ClientSettings.getFrame(OnlineFriendsFrame.class);
-        onlineFriendsFrame.Q$src$V$v8j9by();
-        onlineFriendsFrame.p$src$Lgg_vape_friend_ui_OnlineModeToggleComponent_$u0bbsl().u(false);
-        for (GuiComponent guiComponent : ClientSettings.getFrame(OnlineFriendsFrame.class).h()) {
-            if (!(guiComponent instanceof SettingsSectionComponent) || !((SettingsSectionComponent)guiComponent).A$src$Ljava_lang_String_$9tmd4u().equals("Online Settings")) continue;
-            guiComponent.setVisible(false);
+        onlineFriendsFrame.closeRegistrationPopup();
+        onlineFriendsFrame.getModeToggle().setLeftSelected(false);
+        for (GuiComponent child : ClientSettings.getFrame(OnlineFriendsFrame.class).h()) {
+            if (!(child instanceof SettingsSectionComponent) || !((SettingsSectionComponent)child).A$src$Ljava_lang_String_$9tmd4u().equals("Online Settings")) continue;
+            child.setVisible(false);
         }
     }
 
@@ -99,7 +99,7 @@ extends GuiComponent {
     public void g(GuiMouseEvent guiMouseEvent) {
     }
 
-    private static Exception a(Exception exception) {
+    private static Exception identityException(Exception exception) {
         return exception;
     }
 
@@ -114,34 +114,34 @@ extends GuiComponent {
 
     @Override
     public void c() {
-        this.O.setNormalTextColor(Color.white);
-        double d = 8.0;
-        this.v.K(this.G$src$D$1b2f02a() + d);
-        this.v.S(this.n() + 30.0);
-        this.O.K(this.G$src$D$1b2f02a() + d * 1.0);
-        this.O.S(this.n() + 45.0);
-        this.O.setExplicitWidth(this.A() - d * 2.0);
-        this.O.o(this.A() - d * 2.0);
-        this.O.Y(14.0);
-        if (OnlineConnectionManager.T.j() == OnlineAccountState.CONNECTING) {
-            this.O.setVisible(false);
-            this.v.setText("Checking Account");
+        this.retryButton.setNormalTextColor(Color.white);
+        double padding = 8.0;
+        this.statusText.K(this.G$src$D$1b2f02a() + padding);
+        this.statusText.S(this.n() + 30.0);
+        this.retryButton.K(this.G$src$D$1b2f02a() + padding);
+        this.retryButton.S(this.n() + 45.0);
+        this.retryButton.setExplicitWidth(this.A() - padding * 2.0);
+        this.retryButton.o(this.A() - padding * 2.0);
+        this.retryButton.Y(14.0);
+        if (OnlineConnectionManager.INSTANCE.getAccountState() == OnlineAccountState.CONNECTING) {
+            this.retryButton.setVisible(false);
+            this.statusText.setText("Checking Account");
         } else {
-            this.O.setVisible(true);
-            this.v.setText("Authentication Error");
-            if (this.i != -1L) {
-                int n = (int)((this.i - System.currentTimeMillis()) / 1000L);
-                if (n >= 0) {
-                    this.O.setLabelText("Reattempt in " + n + " second" + (n == 1 ? "" : "s") + "...");
+            this.retryButton.setVisible(true);
+            this.statusText.setText("Authentication Error");
+            if (this.retryAvailableAt != -1L) {
+                int secondsRemaining = (int)((this.retryAvailableAt - System.currentTimeMillis()) / 1000L);
+                if (secondsRemaining >= 0) {
+                    this.retryButton.setLabelText("Reattempt in " + secondsRemaining + " second" + (secondsRemaining == 1 ? "" : "s") + "...");
                 } else {
-                    this.i = -1L;
-                    this.O.setLabelText("Reattempt");
+                    this.retryAvailableAt = -1L;
+                    this.retryButton.setLabelText("Reattempt");
                 }
             }
         }
-        this.G.K(this.G$src$D$1b2f02a() + this.A() - this.G.A() - d);
-        this.G.S(this.n() + this.L() + 3.0 - this.G.L() - 12.0);
+        this.dismissLabel.K(this.G$src$D$1b2f02a() + this.A() - this.dismissLabel.A() - padding);
+        this.dismissLabel.S(this.n() + this.L() + 3.0 - this.dismissLabel.L() - 12.0);
         super.c();
-        GuiRenderPrimitives.L(this.G$src$D$1b2f02a() + this.A() - this.G.A() - d, this.n() + this.L() - 10.0, this.G.A(), OnlineRegistrationPanel.J.Z);
+        GuiRenderPrimitives.L(this.G$src$D$1b2f02a() + this.A() - this.dismissLabel.A() - padding, this.n() + this.L() - 10.0, this.dismissLabel.A(), OnlineRegistrationPanel.J.Z);
     }
 }

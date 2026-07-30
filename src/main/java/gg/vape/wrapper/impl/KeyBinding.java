@@ -3,8 +3,6 @@ package gg.vape.wrapper.impl;
 import gg.vape.Vape;
 import gg.vape.config.ClientSettings;
 import gg.vape.wrapper.Wrapper;
-import gg.vape.wrapper.impl.ForgeVersion;
-import gg.vape.wrapper.impl.InputMappingsInput;
 
 public class KeyBinding
 extends Wrapper {
@@ -23,7 +21,7 @@ extends Wrapper {
 
     public void Z() {
         boolean bl;
-        boolean bl2 = ClientSettings.B(this);
+        boolean bl2 = ClientSettings.isPhysicalKeyDown(this);
         boolean bl3 = bl = this.isKeyDown() != bl2;
         if (bl) {
             this.setPressed(bl2);
@@ -31,12 +29,12 @@ extends Wrapper {
     }
 
     public boolean u() {
-        return KeyBinding.c.getMappings().hJ.a(this.I);
+        return KeyBinding.vapeInstance.getMappings().hJ.a(this.I);
     }
 
     public void e() {
         if (ForgeVersion.MC_1_16_5.d()) {
-            KeyBinding.c.getMappings().hJ.S(this.I);
+            KeyBinding.vapeInstance.getMappings().hJ.S(this.I);
             return;
         }
         this.onTick(0);
@@ -44,23 +42,23 @@ extends Wrapper {
     }
 
     public boolean isKeyDown() {
-        return KeyBinding.c.getMappings().hJ.S$src$Z$wvm5qt(this.I);
+        return KeyBinding.vapeInstance.getMappings().hJ.S$src$Z$wvm5qt(this.I);
     }
 
     public static void setKeyBindState(KeyBinding keyBinding, boolean bl) {
         if (ForgeVersion.MC_1_16_5.d()) {
-            KeyBinding.c.getMappings().hJ.d(keyBinding.u$src$Lgg_vape_wrapper_impl_InputMappingsInput_$1c10gpv().getObject(), bl);
+            KeyBinding.vapeInstance.getMappings().hJ.d(keyBinding.u$src$Lgg_vape_wrapper_impl_InputMappingsInput_$1c10gpv().getObject(), bl);
             return;
         }
-        KeyBinding.c.getMappings().hJ.g(keyBinding.getKeyCode(), bl);
+        KeyBinding.vapeInstance.getMappings().hJ.g(keyBinding.getKeyCode(), bl);
     }
 
     public boolean isPressed() {
-        return KeyBinding.c.getMappings().hJ.M(this.I);
+        return KeyBinding.vapeInstance.getMappings().hJ.M(this.I);
     }
 
     public void onTick(int n) {
-        KeyBinding.c.getMappings().hJ.q(this.I, n);
+        KeyBinding.vapeInstance.getMappings().hJ.q(this.I, n);
     }
 
     public KeyBinding(Object object) {
@@ -71,23 +69,23 @@ extends Wrapper {
         if (ForgeVersion.MC_1_16_5.d()) {
             return this.u$src$Lgg_vape_wrapper_impl_InputMappingsInput_$1c10gpv().R();
         }
-        return KeyBinding.c.getMappings().hJ.B(this.I);
+        return KeyBinding.vapeInstance.getMappings().hJ.B(this.I);
     }
 
     private InputMappingsInput u$src$Lgg_vape_wrapper_impl_InputMappingsInput_$1c10gpv() {
-        return new InputMappingsInput(KeyBinding.c.getMappings().hJ.l(this.I));
+        return new InputMappingsInput(KeyBinding.vapeInstance.getMappings().hJ.l(this.I));
     }
 
     public static void onTick(KeyBinding keyBinding) {
         if (ForgeVersion.MC_1_16_5.d()) {
-            KeyBinding.c.getMappings().hJ.x(keyBinding.u$src$Lgg_vape_wrapper_impl_InputMappingsInput_$1c10gpv().getObject());
+            KeyBinding.vapeInstance.getMappings().hJ.x(keyBinding.u$src$Lgg_vape_wrapper_impl_InputMappingsInput_$1c10gpv().getObject());
             return;
         }
-        KeyBinding.c.getMappings().hJ.s(keyBinding.getKeyCode());
+        KeyBinding.vapeInstance.getMappings().hJ.s(keyBinding.getKeyCode());
     }
 
     public void setCancelled(boolean bl) {
-        KeyBinding.c.getMappings().hJ.o(this.I, bl);
+        KeyBinding.vapeInstance.getMappings().hJ.o(this.I, bl);
     }
 
     public void I() {
@@ -96,7 +94,7 @@ extends Wrapper {
     }
 
     public int V() {
-        return KeyBinding.c.getMappings().hJ.n(this.I);
+        return KeyBinding.vapeInstance.getMappings().hJ.n(this.I);
     }
 }
 

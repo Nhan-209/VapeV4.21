@@ -7,50 +7,50 @@ import gg.vape.config.SettingsDataType;
 import gg.vape.value.BooleanValue;
 
 public class GlobalSettingsController {
-    private boolean n = false;
-    private GlobalSettingsPayload W;
-    private boolean j = false;
-    private final BooleanValue k = BooleanValue.create(null, "Cache data", false, "Caches data locally to improve load time (%appdata%/.vapeclient)");
+    private boolean firstRun = false;
+    private GlobalSettingsPayload settings;
+    private boolean loadFailed = false;
+    private final BooleanValue cacheData = BooleanValue.create(null, "Cache data", false, "Caches data locally to improve load time (%appdata%/.vapeclient)");
 
-    public boolean A() {
-        return this.n;
+    public boolean isFirstRun() {
+        return this.firstRun;
     }
 
-    public BooleanValue F() {
-        return this.k;
+    public BooleanValue getCacheData() {
+        return this.cacheData;
     }
 
-    public void i() {
-        this.W.J(this.k.getEffectiveValue());
-        this.W.h(false);
+    public void save() {
+        this.settings.setCacheEnabled(this.cacheData.getEffectiveValue());
+        this.settings.setFirstRun(false);
         try {
-            ApiServices.d().v().u(SettingsDataType.GLOBAL, this.W);
+            ApiServices.getInstance().getSettingsApi().saveSettings(SettingsDataType.GLOBAL, this.settings);
         }
         catch (Exception exception) {
             throw new RuntimeException(exception);
         }
     }
 
-    public void K() {
+    public void load() {
         try {
-            ApiResponse apiResponse = ApiServices.d().v().h(SettingsDataType.GLOBAL);
-            this.j = false;
-            if (apiResponse == null || !apiResponse.t()) {
-                this.W = new GlobalSettingsPayload();
-                this.W.H();
+            ApiResponse apiResponse = ApiServices.getInstance().getSettingsApi().loadSettings(SettingsDataType.GLOBAL);
+            this.loadFailed = false;
+            if (apiResponse == null || !apiResponse.isSuccessful()) {
+                this.settings = new GlobalSettingsPayload();
+                this.settings.initializeDefaults();
             } else {
-                this.W = (GlobalSettingsPayload)apiResponse.T();
+                this.settings = (GlobalSettingsPayload)apiResponse.getData();
             }
         }
         catch (Exception exception) {
-            this.W.H();
-            this.j = true;
+            this.settings.initializeDefaults();
+            this.loadFailed = true;
         }
-        this.n = this.W.c();
-        this.k.setValue(this.W.C());
+        this.firstRun = this.settings.isFirstRun();
+        this.cacheData.setValue(this.settings.isCacheEnabled());
     }
 
-    private static Exception a(Exception exception) {
+    private static Exception propagateException(Exception exception) {
         return exception;
     }
 }

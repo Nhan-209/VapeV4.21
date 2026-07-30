@@ -23,7 +23,7 @@ extends Mapping {
             boolean bl = true;
             String string = b;
             MRenderStateBuilder mRenderStateBuilder = this;
-            this.H = mRenderStateBuilder.x(string, bl, clazz, classArray);
+            this.H = mRenderStateBuilder.registerStaticMethod(string, bl, clazz, classArray);
             GuiComponent.setLegacyComponentState(new GuiComponent[1]);
             return;
         }
@@ -32,7 +32,7 @@ extends Mapping {
         boolean bl = true;
         String string = b;
         MRenderStateBuilder mRenderStateBuilder = this;
-        this.H = mRenderStateBuilder.x(string, bl, clazz, classArray);
+        this.H = mRenderStateBuilder.registerStaticMethod(string, bl, clazz, classArray);
     }
 
 
@@ -41,7 +41,7 @@ extends Mapping {
     }
 
     private void Z(Object object) {
-        this.H.c(null, object);
+        this.H.invokeVoid(null, object);
     }
 }
 

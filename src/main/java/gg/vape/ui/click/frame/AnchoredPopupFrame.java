@@ -43,7 +43,7 @@ extends PopupFrame {
         int n4 = (int)(this.n() + (double)n2);
         int n5 = (int)((double)n3 + this.Ti.A());
         int n6 = (int)((double)n4 + this.Ti.L());
-        double d = Vape.INSTANCE.getClientSettings().s();
+        double d = Vape.INSTANCE.getClientSettings().getGuiScaleFactor();
         int n7 = (int)((double)Minecraft.J() / 2.0 / d);
         int n8 = (int)((double)Minecraft.h() / 2.0 / d);
         int n9 = n7 - n5;

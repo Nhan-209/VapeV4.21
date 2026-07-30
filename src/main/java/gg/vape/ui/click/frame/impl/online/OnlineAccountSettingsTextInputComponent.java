@@ -46,7 +46,7 @@ extends DebouncedTextInputComponent {
 
     @Override
     public void handleSubmitReady() {
-        UsernameEditorPanel.o(this.settingsPage.fe, this.getText(), this::lambda$enterEvent$0, OnlineAccountSettingsTextInputComponent::lambda$enterEvent$1);
+        UsernameEditorPanel.submitNameChange(this.settingsPage.fe, this.getText(), this::lambda$enterEvent$0, OnlineAccountSettingsTextInputComponent::lambda$enterEvent$1);
     }
 
     @Override

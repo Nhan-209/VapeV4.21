@@ -46,7 +46,7 @@ extends SubModule<FastUseModule> {
         this.flushing = false;
     }
 
-    @EventHandler(A=EventPriority.HIGHEST)
+    @EventHandler(priority=EventPriority.HIGHEST)
     public void onPacketSend(EventPacketSend eventPacketSend) {
         if (Minecraft.thePlayer().isNull() || Minecraft.theWorld().isNull()) {
             this.flush(false);

@@ -106,7 +106,7 @@ extends Mod {
 
     @Override
     public void onEnable() {
-        Vape.INSTANCE.getClientSettings().k(this);
+        Vape.INSTANCE.getClientSettings().onModuleChanged(this);
         this.moveSpeed = 0.27999999999999997;
         this.wasOnGround = false;
         this.lastHorizontalDistance = 0.0;

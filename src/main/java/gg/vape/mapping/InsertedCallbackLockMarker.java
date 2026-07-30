@@ -4,24 +4,23 @@ import gg.vape.mapping.InsertedCallbackMarker;
 
 public class InsertedCallbackLockMarker
 extends InsertedCallbackMarker {
-    private static int t;
-    private static int r;
-    private static boolean y;
+    private static int reservedStateSeed;
+    private static int reservedCheckValue;
+    private static boolean locked;
 
     public static void unlock() {
-        y = false;
+        locked = false;
     }
 
     public static void lock() {
-        y = true;
+        locked = true;
     }
 
     public static boolean check(int n, int n2) {
-        return y;
+        return locked;
     }
 
     static {
-        y = false;
+        locked = false;
     }
 }
-

@@ -3,7 +3,6 @@ package gg.vape.mapping.mappings;
 import gg.vape.mapping.MappedClasses;
 import gg.vape.mapping.Mapping;
 import gg.vape.mapping.MappingMethod;
-import gg.vape.mapping.mappings.MSlot;
 import gg.vape.wrapper.Wrapper;
 import gg.vape.wrapper.impl.ForgeVersion;
 
@@ -15,7 +14,7 @@ extends Mapping {
     private final MappingMethod k;
 
     private Object a(Object object, int n) {
-        return this.F.L(object, n);
+        return this.F.invokeObject(object, n);
     }
 
 
@@ -45,7 +44,7 @@ extends Mapping {
             Class[] classArray3 = new Class[]{};
             Class<Boolean> clazz3 = Boolean.TYPE;
             boolean bl3 = true;
-            String string3 = Wrapper.c.isVanillaMinecraftPresent() ? "isCustomInventoryName" : "hasCustomInventoryName";
+            String string3 = Wrapper.vapeInstance.isVanillaMinecraftPresent() ? "isCustomInventoryName" : "hasCustomInventoryName";
             MIInventory mIInventory3 = this;
             this.e = this.Y(string3, bl3, clazz3, classArray3);
             return;
@@ -72,7 +71,7 @@ extends Mapping {
             Class[] classArray6 = new Class[]{};
             Class<Boolean> clazz6 = Boolean.TYPE;
             boolean bl6 = true;
-            String string6 = Wrapper.c.isVanillaMinecraftPresent() ? "isCustomInventoryName" : "hasCustomInventoryName";
+            String string6 = Wrapper.vapeInstance.isVanillaMinecraftPresent() ? "isCustomInventoryName" : "hasCustomInventoryName";
             MIInventory mIInventory6 = this;
             this.e = this.Y(string6, bl6, clazz6, classArray6);
         }
@@ -83,11 +82,11 @@ extends Mapping {
     }
 
     private int d(Object object) {
-        return this.k.Z(object, new Object[0]);
+        return this.k.invokeInt(object, new Object[0]);
     }
 
     private boolean G(Object object) {
-        return this.e.e(object, new Object[0]);
+        return this.e.invokeBoolean(object, new Object[0]);
     }
 
     public static String F(MIInventory mIInventory, Object object) {
@@ -95,7 +94,7 @@ extends Mapping {
     }
 
     private String R(Object object) {
-        return this.l.L(object, new Object[0]).toString();
+        return this.l.invokeObject(object, new Object[0]).toString();
     }
 
     public static boolean e(MIInventory mIInventory, Object object) {

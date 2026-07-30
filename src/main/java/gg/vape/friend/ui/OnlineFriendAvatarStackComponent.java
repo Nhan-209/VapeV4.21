@@ -11,7 +11,7 @@ import java.util.List;
 
 public class OnlineFriendAvatarStackComponent
 extends GuiComponent {
-    private final List<OnlineFriend> Q;
+    private final List<OnlineFriend> friends;
 
     @Override
     public void g(GuiMouseEvent guiMouseEvent) {
@@ -23,27 +23,27 @@ extends GuiComponent {
 
     @Override
     public void H() {
-        double d = this.Q.size();
-        double d2 = 8.0;
-        double d3 = d2 + 1.0;
-        double d4 = d * d3;
-        double d5 = this.A() - d4;
-        double d6 = d3;
-        double d7 = d5 / d - d2 / 2.0 / d;
-        if (d5 < 0.0) {
-            d6 += d7;
+        double friendCount = this.friends.size();
+        double avatarSize = 8.0;
+        double defaultSpacing = avatarSize + 1.0;
+        double requiredWidth = friendCount * defaultSpacing;
+        double remainingWidth = this.A() - requiredWidth;
+        double spacing = defaultSpacing;
+        double overlapAdjustment = remainingWidth / friendCount - avatarSize / 2.0 / friendCount;
+        if (remainingWidth < 0.0) {
+            spacing += overlapAdjustment;
         }
-        float f = 0.0f;
-        int n = 0;
-        while ((double)n < d) {
-            OnlineFriend onlineFriend = this.Q.get(n);
-            GlImageTexture glImageTexture = RemoteImageTextureManager.getInstance().getTexture(onlineFriend.I(), 32);
+        float offsetX = 0.0f;
+        int index = 0;
+        while ((double)index < friendCount) {
+            OnlineFriend friend = this.friends.get(index);
+            GlImageTexture glImageTexture = RemoteImageTextureManager.getInstance().getTexture(friend.getMinecraftUsername(), 32);
             if (glImageTexture != null) {
-                GuiRenderPrimitives.V((float)this.G$src$D$1b2f02a() + f - 1.0f, (float)this.n() - 1.0f, (float)d2 + 2.0f, 1.0, OnlineFriendAvatarStackComponent.J.m);
-                GuiRenderPrimitives.u((float)this.G$src$D$1b2f02a() + f, (float)this.n(), (float)d2, 1.0f, Color.WHITE, glImageTexture);
+                GuiRenderPrimitives.V((float)this.G$src$D$1b2f02a() + offsetX - 1.0f, (float)this.n() - 1.0f, (float)avatarSize + 2.0f, 1.0, OnlineFriendAvatarStackComponent.J.m);
+                GuiRenderPrimitives.u((float)this.G$src$D$1b2f02a() + offsetX, (float)this.n(), (float)avatarSize, 1.0f, Color.WHITE, glImageTexture);
             }
-            f = (float)((double)f + d6);
-            ++n;
+            offsetX = (float)((double)offsetX + spacing);
+            ++index;
         }
     }
 
@@ -66,8 +66,8 @@ extends GuiComponent {
     public void F() {
     }
 
-    public OnlineFriendAvatarStackComponent(List<OnlineFriend> list) {
-        this.Q = list;
+    public OnlineFriendAvatarStackComponent(List<OnlineFriend> friends) {
+        this.friends = friends;
     }
 }
 

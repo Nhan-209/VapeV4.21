@@ -11,19 +11,19 @@ extends Wrapper {
     }
 
     public static GameProfile create(UUID uUID, String string) {
-        return new GameProfile(MGameProfile.N(GameProfile.c.getMappingsMapperCompat().d, uUID, string));
+        return new GameProfile(MGameProfile.N(GameProfile.vapeInstance.getMappingsMapperCompat().d, uUID, string));
     }
 
     public String getName() {
-        return MGameProfile.P(GameProfile.c.getMappingsMapperCompat().d, this.I);
+        return MGameProfile.P(GameProfile.vapeInstance.getMappingsMapperCompat().d, this.I);
     }
 
     public void setName(String string) {
-        MGameProfile.z(GameProfile.c.getMappingsMapperCompat().d).setObject(this.I, string);
+        MGameProfile.z(GameProfile.vapeInstance.getMappingsMapperCompat().d).setObject(this.I, string);
     }
 
     public UUID getUUID() {
-        return MGameProfile.h(GameProfile.c.getMappingsMapperCompat().d, this.I);
+        return MGameProfile.h(GameProfile.vapeInstance.getMappingsMapperCompat().d, this.I);
     }
 }
 

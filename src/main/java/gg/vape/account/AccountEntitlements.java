@@ -5,44 +5,44 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nullable;
 
 public class AccountEntitlements {
-    private boolean T;
-    private final boolean e;
-    private final boolean B;
+    private boolean registered;
+    private final boolean licensed;
+    private final boolean banned;
 
-    public boolean q() {
-        return this.e;
+    public boolean isLicensed() {
+        return this.licensed;
     }
 
-    public boolean M() {
-        return this.T;
+    public boolean isRegistered() {
+        return this.registered;
     }
 
-    public void X(boolean bl) {
-        this.T = bl;
+    public void setRegistered(boolean registered) {
+        this.registered = registered;
     }
 
-    public boolean O() {
-        return this.B;
+    public boolean isBanned() {
+        return this.banned;
     }
 
 
-    AccountEntitlements(boolean bl, boolean bl2, boolean bl3) {
-        this.e = bl;
-        this.T = bl2;
-        this.B = bl3;
+    AccountEntitlements(boolean licensed, boolean registered, boolean banned) {
+        this.licensed = licensed;
+        this.registered = registered;
+        this.banned = banned;
     }
 
-    static AccountEntitlements t(AccountInfoResponse ig_02) {
-        return AccountEntitlements.w(ig_02);
+    static AccountEntitlements fromResponse(AccountInfoResponse response) {
+        return AccountEntitlements.fromNullableResponse(response);
     }
 
     @Nullable
     @Contract(value="!null -> !null; null -> null")
-    private static AccountEntitlements w(@Nullable AccountInfoResponse ig_02) {
-        if (ig_02 == null) {
+    private static AccountEntitlements fromNullableResponse(@Nullable AccountInfoResponse response) {
+        if (response == null) {
             return null;
         }
-        return new AccountEntitlements(ig_02.e(), ig_02.Y(), ig_02.f());
+        return new AccountEntitlements(response.isLicensed(), response.isRegistered(), response.isBanned());
     }
 }
 

@@ -28,7 +28,7 @@ extends Bendable {
 
     public Macro loadJson(JsonObject jsonObject) {
         if (jsonObject.has("name")) {
-            this.name = ConfigJsonUtils.c(jsonObject, "name");
+            this.name = ConfigJsonUtils.getDecodedStringOrEmpty(jsonObject, "name");
         }
         if (jsonObject.get("keybinds") != null && jsonObject.get("keybinds").isJsonArray()) {
             try {
@@ -67,7 +67,7 @@ extends Bendable {
 
     @Override
     public String getDisplayText() {
-        return String.format(" %s7[%sr%s%s7]%sr %s", ClientSettings.F, ClientSettings.F, this.getBindText(), ClientSettings.F, ClientSettings.F, this.getName());
+        return String.format(" %s7[%sr%s%s7]%sr %s", ClientSettings.FORMAT_CODE, ClientSettings.FORMAT_CODE, this.getBindText(), ClientSettings.FORMAT_CODE, ClientSettings.FORMAT_CODE, this.getName());
     }
 
     public String getName() {

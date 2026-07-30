@@ -21,7 +21,7 @@ public class RotationDebugRenderer {
     public String toString() {
         String message = String.format("[C02 | %d], Entity: %s (ID: %d), Action: %s", this.packetId, this.entityName, this.entityId, this.action);
         if (this.hitVec != null) {
-            message = message + ", HitVec: [" + this.hitVec.Y() + " " + this.hitVec.t() + " " + this.hitVec.o() + "]";
+            message = message + ", HitVec: [" + this.hitVec.getX() + " " + this.hitVec.getY() + " " + this.hitVec.getZ() + "]";
         }
         return message;
     }

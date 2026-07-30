@@ -23,14 +23,14 @@ DescribedOption {
     @Nullable
     private final String iconName;
 
-    private InventoryItemMatcherGroup(String string2) {
-        this(string2, null, null);
+    private InventoryItemMatcherGroup(String name) {
+        this(name, null, null);
     }
 
-    private InventoryItemMatcherGroup(@Nullable String string2, String string3, String string4) {
-        this.name = string2;
-        this.description = string3;
-        this.iconName = string4;
+    private InventoryItemMatcherGroup(@Nullable String name, String description, String iconName) {
+        this.name = name;
+        this.description = description;
+        this.iconName = iconName;
     }
 
     static {

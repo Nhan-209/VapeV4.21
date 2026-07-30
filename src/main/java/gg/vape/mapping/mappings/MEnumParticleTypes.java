@@ -13,7 +13,7 @@ extends Mapping {
     private MappingMethod p;
 
     private String z(Object object) {
-        return (String)this.p.L(object, new Object[0]);
+        return (String)this.p.invokeObject(object, new Object[0]);
     }
 
     private String q(Object object) {
@@ -35,7 +35,7 @@ extends Mapping {
                     String string = "getParameters";
                     Class clazz2 = MappedClasses.j;
                     MEnumParticleTypes mEnumParticleTypes = this;
-                    this.p = mEnumParticleTypes.W(clazz2, string, bl, clazz, classArray);
+                    this.p = mEnumParticleTypes.registerInstanceMethodForOwner(clazz2, string, bl, clazz, classArray);
                 }
             } else {
                 Class<String> clazz = String.class;
@@ -53,7 +53,7 @@ extends Mapping {
             String string = "getParameters";
             Class clazz3 = MappedClasses.j;
             MEnumParticleTypes mEnumParticleTypes = this;
-            this.p = mEnumParticleTypes.W(clazz3, string, bl, clazz, classArray); 
+            this.p = mEnumParticleTypes.registerInstanceMethodForOwner(clazz3, string, bl, clazz, classArray);
             Class<String> clazz4 = String.class;
             boolean bl2 = true;
             String string2 = "particleName";

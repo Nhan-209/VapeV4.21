@@ -21,7 +21,7 @@ extends Wrapper {
     }
 
     public static PlayerInteractEventAction z() {
-        return new PlayerInteractEventAction(PlayerInteractEventAction.c.getMappings().n.X());
+        return new PlayerInteractEventAction(PlayerInteractEventAction.vapeInstance.getMappings().n.X());
     }
 
     public PlayerInteractEventAction(Object object) {
@@ -29,15 +29,15 @@ extends Wrapper {
     }
 
     public static PlayerInteractEventAction b() {
-        return new PlayerInteractEventAction(PlayerInteractEventAction.c.getMappings().n.y());
+        return new PlayerInteractEventAction(PlayerInteractEventAction.vapeInstance.getMappings().n.y());
     }
 
     public static PlayerInteractEventAction t$src$Lgg_vape_wrapper_impl_PlayerInteractEventAction_$1n8jtc5() {
-        return new PlayerInteractEventAction(PlayerInteractEventAction.c.getMappings().n.H());
+        return new PlayerInteractEventAction(PlayerInteractEventAction.vapeInstance.getMappings().n.H());
     }
 
     public int T() {
-        return PlayerInteractEventAction.c.getMappings().n.r(this.I);
+        return PlayerInteractEventAction.vapeInstance.getMappings().n.r(this.I);
     }
 
     public static int N() {
@@ -45,11 +45,11 @@ extends Wrapper {
     }
 
     public static PlayerInteractEventAction a() {
-        return new PlayerInteractEventAction(PlayerInteractEventAction.c.getMappings().n.l());
+        return new PlayerInteractEventAction(PlayerInteractEventAction.vapeInstance.getMappings().n.l());
     }
 
     public static PlayerInteractEventAction m$src$Lgg_vape_wrapper_impl_PlayerInteractEventAction_$1581zn0() {
-        return new PlayerInteractEventAction(PlayerInteractEventAction.c.getMappings().n.p());
+        return new PlayerInteractEventAction(PlayerInteractEventAction.vapeInstance.getMappings().n.p());
     }
 }
 

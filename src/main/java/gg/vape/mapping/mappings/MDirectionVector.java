@@ -19,7 +19,7 @@ extends Mapping {
         boolean bl = true;
         String string = b;
         MDirectionVector mDirectionVector = this;
-        this.H = this.u(string, bl, clazz);
+        this.H = this.registerStaticField(string, bl, clazz);
     }
 
     private Object W() {

@@ -1,9 +1,6 @@
 package gg.vape.wrapper.impl;
 
 import gg.vape.mapping.mappings.MItemTool;
-import gg.vape.wrapper.impl.ForgeVersion;
-import gg.vape.wrapper.impl.Item;
-import gg.vape.wrapper.impl.ToolMaterial;
 
 public class ItemTool
 extends Item {
@@ -21,7 +18,7 @@ extends Item {
         if (ForgeVersion.MC_1_16_5.d()) {
             return this.u().I();
         }
-        return MItemTool.T(ItemTool.c.getMappings().M, this.I);
+        return MItemTool.T(ItemTool.vapeInstance.getMappings().M, this.I);
     }
 
     public ToolMaterial u() {
@@ -31,7 +28,7 @@ extends Item {
         if (ForgeVersion.MC_1_21_4.d()) {
             return null;
         }
-        return new ToolMaterial(MItemTool.R(ItemTool.c.getMappings().M, this.I));
+        return new ToolMaterial(MItemTool.R(ItemTool.vapeInstance.getMappings().M, this.I));
     }
 
     private static UnsupportedOperationException a(UnsupportedOperationException unsupportedOperationException) {

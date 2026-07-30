@@ -101,9 +101,9 @@ public class ZeusConnectionManager {
     private static void lambda$start$1(Channel channel, Runnable runnable, Thread thread, HandshakeResponsePacket handshakeResponsePacket) {
         if (handshakeResponsePacket.Q() != HandshakeStatus.MATCHING) {
             if (handshakeResponsePacket.Q() == HandshakeStatus.OUTDATED_CLIENT) {
-                OnlineConnectionManager.T.l(OnlineConnectionState.OUTDATED_CLIENT);
+                OnlineConnectionManager.INSTANCE.setConnectionState(OnlineConnectionState.OUTDATED_CLIENT);
             } else if (handshakeResponsePacket.Q() == HandshakeStatus.OUTDATED_SERVER) {
-                OnlineConnectionManager.T.l(OnlineConnectionState.OUTDATED_SERVER);
+                OnlineConnectionManager.INSTANCE.setConnectionState(OnlineConnectionState.OUTDATED_SERVER);
             }
             channel.close().syncUninterruptibly();
             return;

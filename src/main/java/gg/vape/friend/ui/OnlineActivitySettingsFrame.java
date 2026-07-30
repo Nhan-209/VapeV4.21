@@ -21,15 +21,15 @@ import gg.vape.wrapper.impl.Minecraft;
 
 public class OnlineActivitySettingsFrame
 extends HudSettingsFrameBase {
-    private final DropdownSelectComponent<ModeOption> ys = new DropdownSelectComponent(OnlineConnectionManager.T.S().r$src$Lgg_vape_value_ModeValue_$lqfla9());
-    private boolean yQ = false;
-    private final PartyActivityListPanel yD;
-    private static GuiComponent[] yB;
-    private final OnlineActivityPanelOptions yK;
-    private boolean yd = false;
+    private final DropdownSelectComponent<ModeOption> displayModeDropdown = new DropdownSelectComponent(OnlineConnectionManager.INSTANCE.getSettings().getInventorySwitchMode());
+    private boolean inventoryVisible;
+    private final PartyActivityListPanel activityListPanel;
+    private static GuiComponent[] obfuscationComponents;
+    private final OnlineActivityPanelOptions options;
+    private boolean toggleBindingWasPressed;
 
-    public static GuiComponent[] B() {
-        return yB;
+    public static GuiComponent[] getObfuscationComponents() {
+        return obfuscationComponents;
     }
 
     @Override
@@ -50,50 +50,49 @@ extends HudSettingsFrameBase {
     }
 
     static {
-        OnlineActivitySettingsFrame.e(new GuiComponent[3]);
+        OnlineActivitySettingsFrame.setObfuscationComponents(new GuiComponent[3]);
     }
 
 
-    private boolean X(Bendable bendable) {
-        if (bendable.getBoundInputs().isEmpty()) {
+    private boolean areAllBoundInputsPressed(Bendable binding) {
+        if (binding.getBoundInputs().isEmpty()) {
             return false;
         }
-        int n = 0;
-        for (int n2 : bendable.getBoundInputs()) {
-            if (!KeyBoardUtil.m(n2)) continue;
-            ++n;
+        int pressedCount = 0;
+        for (int inputCode : binding.getBoundInputs()) {
+            if (!KeyBoardUtil.m(inputCode)) continue;
+            ++pressedCount;
         }
-        return n == bendable.getBoundInputs().size();
+        return pressedCount == binding.getBoundInputs().size();
     }
 
     @Override
     public void u() {
-        boolean bl;
-        Bendable bendable = OnlineConnectionManager.T.S().k();
-        boolean bl2 = Minecraft.currentScreen().isNotNull() && ClientSettings.INSTANCE.isInputEnabled();
-        boolean bl3 = !bl2 && !(ClientSettings.activeComponent instanceof TextInputComponentBase) && this.X(bendable);
-        boolean bl4 = bl = this.ys.getSelectedValue() == null || this.ys.getSelectedValue().equals(OnlineConnectionManager.T.S().r());
-        if (bl) {
-            this.g$src$Lgg_vape_friend_ui_PartyActivityListPanel_$1w1i13j().L(bl3);
+        Bendable inventoryBinding = OnlineConnectionManager.INSTANCE.getSettings().getInventoryDisplayBind();
+        boolean screenAcceptsInput = Minecraft.currentScreen().isNotNull() && ClientSettings.INSTANCE.isInputEnabled();
+        boolean bindingPressed = !screenAcceptsInput && !(ClientSettings.activeComponent instanceof TextInputComponentBase) && this.areAllBoundInputsPressed(inventoryBinding);
+        boolean holdMode = this.displayModeDropdown.getSelectedValue() == null || this.displayModeDropdown.getSelectedValue().equals(OnlineConnectionManager.INSTANCE.getSettings().getHoldModeOption());
+        if (holdMode) {
+            this.getActivityListPanel().setInventoryVisible(bindingPressed);
         } else {
-            if (bl3 && !this.yd) {
-                this.yQ = !this.yQ;
+            if (bindingPressed && !this.toggleBindingWasPressed) {
+                this.inventoryVisible = !this.inventoryVisible;
             }
-            this.g$src$Lgg_vape_friend_ui_PartyActivityListPanel_$1w1i13j().L(this.yQ);
+            this.getActivityListPanel().setInventoryVisible(this.inventoryVisible);
         }
-        this.yd = bl3;
+        this.toggleBindingWasPressed = bindingPressed;
     }
 
-    public PartyActivityListPanel g$src$Lgg_vape_friend_ui_PartyActivityListPanel_$1w1i13j() {
-        return this.yD;
+    public PartyActivityListPanel getActivityListPanel() {
+        return this.activityListPanel;
     }
 
-    public static PartyActivityListPanel b(OnlineActivitySettingsFrame onlineActivitySettingsFrame) {
-        return onlineActivitySettingsFrame.yD;
+    public static PartyActivityListPanel getActivityListPanel(OnlineActivitySettingsFrame frame) {
+        return frame.activityListPanel;
     }
 
-    public static void e(GuiComponent[] guiComponentArray) {
-        yB = guiComponentArray;
+    public static void setObfuscationComponents(GuiComponent[] components) {
+        obfuscationComponents = components;
     }
 
     public OnlineActivitySettingsFrame() {
@@ -106,25 +105,25 @@ extends HudSettingsFrameBase {
         componentLayout.u(false);
         componentLayout.M("wrap");
         this.setShowDisabledOverlay(false);
-        BindValueRowComponent bindValueRowComponent = new BindValueRowComponent("Show inventory bind", OnlineConnectionManager.T.S().k(), OnlineActivitySettingsFrame.J.Z);
+        BindValueRowComponent bindValueRowComponent = new BindValueRowComponent("Show inventory bind", OnlineConnectionManager.INSTANCE.getSettings().getInventoryDisplayBind(), OnlineActivitySettingsFrame.J.Z);
         bindValueRowComponent.w("Keybind to show inventory of party members");
         bindValueRowComponent.getBindInput().setActiveAlpha(20);
-        this.yK = OnlineActivityPanelOptions.p;
-        BooleanToggleComponent booleanToggleComponent = new BooleanToggleComponent(this.yK.P());
-        BooleanToggleComponent booleanToggleComponent2 = new BooleanToggleComponent(OnlineConnectionManager.T.S().j$src$Lgg_vape_value_BooleanValue_$1co7xi6());
-        booleanToggleComponent2.addMouseListener(new OnlineActivityPanelRefreshClickHandler(this));
-        BooleanToggleComponent booleanToggleComponent3 = new BooleanToggleComponent(this.yK.i());
-        booleanToggleComponent2.o(110.0);
-        booleanToggleComponent.o(110.0);
-        booleanToggleComponent3.o(110.0);
-        this.ys.o(110.0);
+        this.options = OnlineActivityPanelOptions.INSTANCE;
+        BooleanToggleComponent backgroundToggle = new BooleanToggleComponent(this.options.getRenderBackground());
+        BooleanToggleComponent syncActivityToggle = new BooleanToggleComponent(OnlineConnectionManager.INSTANCE.getSettings().getShowSelf());
+        syncActivityToggle.addMouseListener(new OnlineActivityPanelRefreshClickHandler(this));
+        BooleanToggleComponent cpsToggle = new BooleanToggleComponent(this.options.getCpsDisplay());
+        syncActivityToggle.o(110.0);
+        backgroundToggle.o(110.0);
+        cpsToggle.o(110.0);
+        this.displayModeDropdown.o(110.0);
         bindValueRowComponent.o(110.0);
         this.j$src$Lgg_vape_ui_click_frame_FrameHeaderComponent_$175vsfc().o(110.0);
-        this.addSettings(bindValueRowComponent, this.ys, booleanToggleComponent2,
-                booleanToggleComponent, booleanToggleComponent3);
+        this.addSettings(bindValueRowComponent, this.displayModeDropdown, syncActivityToggle,
+                backgroundToggle, cpsToggle);
         this.h(new SpacerComponent(1.0, 4.0), new Object[0]);
-        this.yD = new PartyActivityListPanel();
-        this.addChildren(this.yD);
+        this.activityListPanel = new PartyActivityListPanel();
+        this.addChildren(this.activityListPanel);
     }
 }
 

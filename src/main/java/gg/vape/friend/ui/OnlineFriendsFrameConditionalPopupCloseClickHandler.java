@@ -5,18 +5,18 @@ import gg.vape.ui.click.component.GuiClickListener;
 
 public class OnlineFriendsFrameConditionalPopupCloseClickHandler
 implements GuiClickListener {
-    final OnlineFriendsFrame d;
+    private final OnlineFriendsFrame friendsFrame;
 
     @Override
     public void onPrimaryClick() {
-        if (OnlineFriendsFrame.c(this.d) != null) {
-            OnlineFriendsFrame.c$src$V$11veyie(this.d);
+        if (OnlineFriendsFrame.getFriendRequestsPopup(this.friendsFrame) != null) {
+            OnlineFriendsFrame.toggleFriendRequestsPopup(this.friendsFrame);
         }
     }
 
 
     public OnlineFriendsFrameConditionalPopupCloseClickHandler(OnlineFriendsFrame onlineFriendsFrame) {
-        this.d = onlineFriendsFrame;
+        this.friendsFrame = onlineFriendsFrame;
     }
 }
 

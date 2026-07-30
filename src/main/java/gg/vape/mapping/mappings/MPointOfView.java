@@ -21,7 +21,7 @@ extends Mapping {
         boolean bl = true;
         String string = b;
         MPointOfView mPointOfView = this;
-        this.n = this.x(string, bl, clazz, classArray);
+        this.n = this.registerStaticMethod(string, bl, clazz, classArray);
     }
 }
 

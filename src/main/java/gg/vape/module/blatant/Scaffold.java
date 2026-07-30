@@ -328,7 +328,7 @@ extends Mod {
         this.whitelistToggle = BooleanValue.create(this, "Whitelist", false, "Only activates scaffold when\nwhitelisted blocks are held.");
         this.whitelistLimit = (LimitValue)LimitValue.create(this, "scaffold-allowedblocks", "Block Whitelist", LimitValue.ALLOW_LIST_COLOR, new ItemLimitData("blocks")).setDescription("Scaffold will not function unless you are currently holding an item whitelisted here");
         this.rotationClaim = SharedModuleControlClaims.rotation;
-        this.mode = ForgeVersion.MC_1_16_5.d() || ForgeVersion.MC_1_7_10.L() ? ModeValue.create((Object)this, "Mode", "Legit - Automatically shifts at edge of block when backwards (fastbridge/ninja/eagle)\nGodBridge - Places while walking at full speed diagonally without needing to shift\n", (ModeSelection)this.legitMode.r$src$Lgg_vape_value_SubModuleValue_$1rfa4wx(), this.legitMode.r$src$Lgg_vape_value_SubModuleValue_$1rfa4wx(), this.godBridgeMode.r$src$Lgg_vape_value_SubModuleValue_$1rfa4wx()) : ModeValue.create((Object)this, "Mode", "Legit - Automatically shifts at edge of block when backwards (fastbridge/ninja/eagle)\nGodBridge - Places while walking at full speed diagonally without needing to shift\nTellyBridge - Places blocks behind you while jumping (tellybridging may be prevented on some servers, even if done legitimately)\n", (ModeSelection)this.legitMode.r$src$Lgg_vape_value_SubModuleValue_$1rfa4wx(), this.legitMode.r$src$Lgg_vape_value_SubModuleValue_$1rfa4wx(), this.godBridgeMode.r$src$Lgg_vape_value_SubModuleValue_$1rfa4wx(), this.tellyBridgeMode.r$src$Lgg_vape_value_SubModuleValue_$1rfa4wx());
+        this.mode = ForgeVersion.MC_1_16_5.d() || ForgeVersion.MC_1_7_10.L() ? ModeValue.create((Object)this, "Mode", "Legit - Automatically shifts at edge of block when backwards (fastbridge/ninja/eagle)\nGodBridge - Places while walking at full speed diagonally without needing to shift\n", (ModeSelection)this.legitMode.getSelectionValue(), this.legitMode.getSelectionValue(), this.godBridgeMode.getSelectionValue()) : ModeValue.create((Object)this, "Mode", "Legit - Automatically shifts at edge of block when backwards (fastbridge/ninja/eagle)\nGodBridge - Places while walking at full speed diagonally without needing to shift\nTellyBridge - Places blocks behind you while jumping (tellybridging may be prevented on some servers, even if done legitimately)\n", (ModeSelection)this.legitMode.getSelectionValue(), this.legitMode.getSelectionValue(), this.godBridgeMode.getSelectionValue(), this.tellyBridgeMode.getSelectionValue());
         this.pitchCheckToggle.addDependentValues(this.pitchValue);
         this.blacklistToggle.addDependentValues(this.blacklistLimit);
         this.whitelistToggle.addDependentValues(this.whitelistLimit);
@@ -425,10 +425,8 @@ extends Mod {
     }
 
     public boolean canActivate() {
-        return ((ModeSelection)this.mode.getValue()).equals(this.tellyBridgeMode.r$src$Lgg_vape_value_SubModuleValue_$1rfa4wx()) || ((ModeSelection)this.mode.getValue()).equals(this.godBridgeMode.r$src$Lgg_vape_value_SubModuleValue_$1rfa4wx()) || this.whitelistToggle.getEffectiveValue() == false || this.whitelistLimit.matchesOrEmpty(Minecraft.thePlayer().B$src$Lgg_vape_wrapper_impl_ItemStack_$impdvt());
-    }
-
-
+        return ((ModeSelection)this.mode.getValue()).equals(this.tellyBridgeMode.getSelectionValue()) || ((ModeSelection)this.mode.getValue()).equals(this.godBridgeMode.getSelectionValue()) || this.whitelistToggle.getEffectiveValue() == false || this.whitelistLimit.matchesOrEmpty(Minecraft.thePlayer().B$src$Lgg_vape_wrapper_impl_ItemStack_$impdvt());
+}
     public void cancelMovementTask() {
         if (PlayerMovementTaskManager.INSTANCE.getActiveTask() != null) {
             PlayerMovementTaskManager.INSTANCE.cancel(PlayerMovementTaskManager.INSTANCE.getActiveTask());
@@ -487,9 +485,9 @@ extends Mod {
             return null;
         }
         int inventorySection = 2;
-        if (((ModeSelection)this.mode.getValue()).equals(this.legitMode.r$src$Lgg_vape_value_SubModuleValue_$1rfa4wx())) {
+        if (((ModeSelection)this.mode.getValue()).equals(this.legitMode.getSelectionValue())) {
             inventorySection = 0;
-        } else if (((ModeSelection)this.mode.getValue()).equals(this.godBridgeMode.r$src$Lgg_vape_value_SubModuleValue_$1rfa4wx()) || ((ModeSelection)this.mode.getValue()).equals(this.tellyBridgeMode.r$src$Lgg_vape_value_SubModuleValue_$1rfa4wx())) {
+        } else if (((ModeSelection)this.mode.getValue()).equals(this.godBridgeMode.getSelectionValue()) || ((ModeSelection)this.mode.getValue()).equals(this.tellyBridgeMode.getSelectionValue())) {
             inventorySection = 1;
         }
         int blockCount = this.countBlocks(inventorySection, true);

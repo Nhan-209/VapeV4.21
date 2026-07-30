@@ -136,7 +136,7 @@ extends PanelComponent {
         boolean bl;
         String string = this.tokenSelector.getInput().getText().trim();
         boolean bl2 = bl = !string.isEmpty();
-        List<String> arrayList = !bl ? new ArrayList<String>(Vape.INSTANCE.getPublicProfileManager().f()) : ((listValueSuggestionProvider = this.tokenSelector.getInput().getSuggestionProvider()) != null ? listValueSuggestionProvider.getSuggestions() : new ArrayList<String>());
+        List<String> arrayList = !bl ? new ArrayList<String>(Vape.INSTANCE.getPublicProfileManager().getTags()) : ((listValueSuggestionProvider = this.tokenSelector.getInput().getSuggestionProvider()) != null ? listValueSuggestionProvider.getSuggestions() : new ArrayList<String>());
         this.suggestionsPanel.removeMarkedChildren();
         double d = 0.0;
         for (String string2 : arrayList) {
@@ -184,7 +184,7 @@ extends PanelComponent {
         this.sortButtonsPanel.setShowDisabledOverlay(false);
         this.sortButtonsPanel.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M("widthwrap");
         for (PublicProfileSortMode publicProfileSortMode : PublicProfileSortMode.VALUES) {
-            PublicProfileSortModeButton publicProfileSortModeButton = new PublicProfileSortModeButton(publicProfileSortMode.y().toUpperCase(), 0.7, PublicProfileSearchFilterPanel.J.B, PublicProfileSearchFilterPanel.J.O, publicProfileSortMode);
+            PublicProfileSortModeButton publicProfileSortModeButton = new PublicProfileSortModeButton(publicProfileSortMode.getDisplayName().toUpperCase(), 0.7, PublicProfileSearchFilterPanel.J.B, PublicProfileSearchFilterPanel.J.O, publicProfileSortMode);
             publicProfileSortModeButton.setCornerRadius(7.0f);
             publicProfileSortModeButton.setUseAlternateFont(true);
             publicProfileSortModeButton.setDeriveTextColorFromBackground(false);

@@ -12,9 +12,9 @@ implements EventListener {
     @EventHandler
     public void onPacketReceive(EventPacketReceive eventPacketReceive) {
         PlayerEventNameFormat playerEventNameFormat;
-        String string;
-        if (eventPacketReceive.getPacket().isInstance(MappedClasses.l3) && (string = (playerEventNameFormat = new PlayerEventNameFormat(eventPacketReceive.getPacket())).h()).contains("vapeclient")) {
-            playerEventNameFormat.J(string.replace("vapeclient", "-"));
+        String formattedName;
+        if (eventPacketReceive.getPacket().isInstance(MappedClasses.l3) && (formattedName = (playerEventNameFormat = new PlayerEventNameFormat(eventPacketReceive.getPacket())).h()).contains("vapeclient")) {
+            playerEventNameFormat.J(formattedName.replace("vapeclient", "-"));
         }
     }
 }

@@ -48,8 +48,8 @@ extends GuiComponent {
         float endHeading = heading + 70.0f;
         ImageRenderer.beginBatch();
         double tickSpacing = (this.frame.A() + 4.0) / 1400.0
-                * Vape.INSTANCE.getClientSettings().s();
-        double tickX = this.frame.G$src$D$1b2f02a() * Vape.INSTANCE.getClientSettings().s();
+                * Vape.INSTANCE.getClientSettings().getGuiScaleFactor();
+        double tickX = this.frame.G$src$D$1b2f02a() * Vape.INSTANCE.getClientSettings().getGuiScaleFactor();
         float currentHeading = startHeading;
         while (currentHeading < endHeading) {
             float firstTickHeading = (float)((int)(currentHeading * 10.0f)) / 10.0f;
@@ -92,8 +92,8 @@ extends GuiComponent {
     }
 
     private void drawTick(double x, float heading) {
-        double frameY = this.frame.n() * Vape.INSTANCE.getClientSettings().s();
-        double frameHeight = this.frame.L() * Vape.INSTANCE.getClientSettings().s();
+        double frameY = this.frame.n() * Vape.INSTANCE.getClientSettings().getGuiScaleFactor();
+        double frameHeight = this.frame.L() * Vape.INSTANCE.getClientSettings().getGuiScaleFactor();
         if (heading < 0.0f) {
             heading = 360.0f + heading;
         } else if (heading > 359.0f) {

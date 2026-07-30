@@ -20,7 +20,7 @@ extends TextInputComponentBase {
         String[] stringArray = this.getText().split(" ");
         String string = stringArray[0];
         String string2 = stringArray.length > 1 ? stringArray[1] : stringArray[0];
-        Vape.INSTANCE.getFriendManager().u(new Friend(string, string2));
+        Vape.INSTANCE.getFriendManager().addFriend(new Friend(string, string2));
         this.setText("");
     }
 

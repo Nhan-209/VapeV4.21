@@ -10,12 +10,12 @@ public enum StringMatchOperator {
 
     private final BiPredicate<String, String> predicate;
 
-    private static boolean matchAny(String string, String string2) {
+    private static boolean matchAny(String value, String pattern) {
         return true;
     }
 
-    private StringMatchOperator(BiPredicate<String, String> biPredicate) {
-        this.predicate = biPredicate;
+    private StringMatchOperator(BiPredicate<String, String> predicate) {
+        this.predicate = predicate;
     }
 
     public BiPredicate<String, String> getPredicate() {

@@ -1,9 +1,5 @@
 package gg.vape.wrapper.impl;
 
-import gg.vape.wrapper.impl.ForgeVersion;
-import gg.vape.wrapper.impl.Packet;
-import gg.vape.wrapper.impl.PositionMoveRotation;
-
 public class SPacketEntity
 extends Packet {
     public int B() {
@@ -11,7 +7,7 @@ extends Packet {
             PositionMoveRotation j4_02 = this.r();
             return (int)j4_02.a().getZ();
         }
-        return SPacketEntity.c.getMappingsMapperCompat().qR.m(this.I);
+        return SPacketEntity.vapeInstance.getMappingsMapperCompat().qR.m(this.I);
     }
 
     public SPacketEntity(Object object) {
@@ -23,7 +19,7 @@ extends Packet {
             PositionMoveRotation j4_02 = this.r();
             return (int)j4_02.a().getX();
         }
-        return SPacketEntity.c.getMappingsMapperCompat().qR.g(this.I);
+        return SPacketEntity.vapeInstance.getMappingsMapperCompat().qR.g(this.I);
     }
 
     public byte D() {
@@ -31,7 +27,7 @@ extends Packet {
             PositionMoveRotation j4_02 = this.r();
             return (byte)j4_02.b();
         }
-        return SPacketEntity.c.getMappingsMapperCompat().qR.C(this.I);
+        return SPacketEntity.vapeInstance.getMappingsMapperCompat().qR.C(this.I);
     }
 
     public int M() {
@@ -39,7 +35,7 @@ extends Packet {
             PositionMoveRotation j4_02 = this.r();
             return (int)j4_02.a().getY();
         }
-        return SPacketEntity.c.getMappingsMapperCompat().qR.U(this.I);
+        return SPacketEntity.vapeInstance.getMappingsMapperCompat().qR.U(this.I);
     }
 
     public byte U() {
@@ -47,15 +43,15 @@ extends Packet {
             PositionMoveRotation j4_02 = this.r();
             return (byte)j4_02.t();
         }
-        return SPacketEntity.c.getMappingsMapperCompat().qR.u(this.I);
+        return SPacketEntity.vapeInstance.getMappingsMapperCompat().qR.u(this.I);
     }
 
     public PositionMoveRotation r() {
-        return new PositionMoveRotation(SPacketEntity.c.getMappingsMapperCompat().qR.K(this.I));
+        return new PositionMoveRotation(SPacketEntity.vapeInstance.getMappingsMapperCompat().qR.K(this.I));
     }
 
     public int k() {
-        return SPacketEntity.c.getMappingsMapperCompat().qR.R(this.I);
+        return SPacketEntity.vapeInstance.getMappingsMapperCompat().qR.R(this.I);
     }
 }
 

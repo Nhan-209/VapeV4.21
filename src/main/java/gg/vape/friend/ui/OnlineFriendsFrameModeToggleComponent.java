@@ -5,16 +5,16 @@ import gg.vape.friend.ui.OnlineModeToggleComponent;
 
 public class OnlineFriendsFrameModeToggleComponent
 extends OnlineModeToggleComponent {
-    final OnlineFriendsFrame _7;
+    private final OnlineFriendsFrame friendsFrame;
 
     public OnlineFriendsFrameModeToggleComponent(OnlineFriendsFrame onlineFriendsFrame, String string, String string2, boolean bl) {
         super(string, string2, bl);
-        this._7 = onlineFriendsFrame;
+        this.friendsFrame = onlineFriendsFrame;
     }
 
     @Override
-    public void u(Boolean bl) {
-        super.u(bl);
-        this._7.p(bl);
+    public void setLeftSelected(Boolean selected) {
+        super.setLeftSelected(selected);
+        this.friendsFrame.updateFriendManagementPopup(selected);
     }
 }

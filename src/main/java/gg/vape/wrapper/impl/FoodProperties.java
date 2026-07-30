@@ -9,15 +9,15 @@ extends Wrapper {
     }
 
     public boolean D() {
-        return FoodProperties.c.getMappingsMapperCompat().Dg.p(this.getObject());
+        return FoodProperties.vapeInstance.getMappingsMapperCompat().Dg.p(this.getObject());
     }
 
     public int n() {
-        return FoodProperties.c.getMappingsMapperCompat().Dg.J(this.getObject());
+        return FoodProperties.vapeInstance.getMappingsMapperCompat().Dg.J(this.getObject());
     }
 
     public float M() {
-        return FoodProperties.c.getMappingsMapperCompat().Dg.G(this.getObject());
+        return FoodProperties.vapeInstance.getMappingsMapperCompat().Dg.G(this.getObject());
     }
 }
 

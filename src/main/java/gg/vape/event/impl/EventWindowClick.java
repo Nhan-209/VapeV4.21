@@ -5,9 +5,9 @@ import gg.vape.event.EventListeners;
 
 public class EventWindowClick
 extends Event {
-    private static final EventListeners N = new EventListeners();
+    private static final EventListeners EVENT_LISTENERS = new EventListeners();
 
-    public EventWindowClick(Object object) {
+    public EventWindowClick(Object ignoredWindowHandle) {
     }
 
     @Override
@@ -17,11 +17,10 @@ extends Event {
 
     @Override
     public EventListeners getListeners() {
-        return N;
+        return EVENT_LISTENERS;
     }
 
     public static EventListeners getEventListeners() {
-        return N;
+        return EVENT_LISTENERS;
     }
 }
-

@@ -5,7 +5,6 @@ import gg.vape.mapping.MappedClasses;
 import gg.vape.mapping.Mapping;
 import gg.vape.mapping.MappingField;
 import gg.vape.mapping.MappingMethod;
-import gg.vape.mapping.mappings.MRenderManager;
 import gg.vape.wrapper.Wrapper;
 import gg.vape.wrapper.impl.ForgeVersion;
 import java.nio.FloatBuffer;
@@ -46,7 +45,7 @@ extends Mapping {
         if (ForgeVersion.MC_1_7_10.L()) {
             return this.o.getObject(object);
         }
-        return this.Q.L(object, new Object[0]);
+        return this.Q.invokeObject(object, new Object[0]);
     }
 
 
@@ -79,7 +78,7 @@ extends Mapping {
             String string = "render";
             Class clazz2 = MappedClasses.VQ;
             MRenderLivingBase mRenderLivingBase = this;
-            this.c = mRenderLivingBase.W(clazz2, string, bl, clazz, classArray);
+            this.c = mRenderLivingBase.registerInstanceMethodForOwner(clazz2, string, bl, clazz, classArray);
             Class clazz3 = MappedClasses.V6;
             boolean bl2 = true;
             String string2 = "entityModel";
@@ -106,7 +105,7 @@ extends Mapping {
                 this.G = mRenderLivingBase.J(string, bl, clazz);
             } else {
                 Class<List> clazz = List.class;
-                boolean bl = Wrapper.G;
+                boolean bl = Wrapper.isNativeAvailable;
                 String string = "field_177097_h";
                 MRenderLivingBase mRenderLivingBase = this;
                 this.G = mRenderLivingBase.J(string, bl, clazz);
@@ -144,11 +143,11 @@ extends Mapping {
     }
 
     boolean A(Object object, Object object2, float f, boolean bl) {
-        return this.O.e(object, object2, Float.valueOf(f), bl);
+        return this.O.invokeBoolean(object, object2, Float.valueOf(f), bl);
     }
 
     private void t(Object object) {
-        this.h.F(object);
+        this.h.invokeVoidNoArgs(object);
     }
 
     private FloatBuffer D(Object object) {

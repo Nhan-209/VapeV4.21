@@ -1,7 +1,6 @@
 package gg.vape.wrapper.impl;
 
 import gg.vape.wrapper.Wrapper;
-import gg.vape.wrapper.impl.Entity;
 
 public class SelectionContext
 extends Wrapper {
@@ -10,7 +9,7 @@ extends Wrapper {
     }
 
     public static SelectionContext P(Entity entity) {
-        return new SelectionContext(SelectionContext.c.getMappingsMapperCompat().RR.v(entity.getObject()));
+        return new SelectionContext(SelectionContext.vapeInstance.getMappingsMapperCompat().RR.v(entity.getObject()));
     }
 }
 

@@ -14,7 +14,7 @@ extends Mapping {
     }
 
     private boolean Y(Object object, Object object2) {
-        return this.f.e(object, object2);
+        return this.f.invokeBoolean(object, object2);
     }
 
     public MTeam() {

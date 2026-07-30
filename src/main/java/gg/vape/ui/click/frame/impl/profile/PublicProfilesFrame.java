@@ -144,7 +144,7 @@ implements EventListener {
             this.profileListPanel.T(true);
             this.profileListPanel.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M("wrap");
             panelComponent4.h(this.profileListPanel, new Object[0]);
-            for (PublicProfile publicProfile : Vape.INSTANCE.getPublicProfileManager().A().values()) {
+            for (PublicProfile publicProfile : Vape.INSTANCE.getPublicProfileManager().getProfilesById().values()) {
                 this.e(publicProfile);
             }
         }
@@ -185,32 +185,32 @@ implements EventListener {
             publicProfilesFrame.D(publicProfileOwnerDetailsPanel.E());
             return;
         }
-        if (!apiResponse.t()) {
-            Vape.debugLog("Failed to load public profile data: " + apiResponse.N());
-            PublicProfileManager.b("Failed to view profile: " + apiResponse.N());
+        if (!apiResponse.isSuccessful()) {
+            Vape.debugLog("Failed to load public profile data: " + apiResponse.getError());
+            PublicProfileManager.showWarning("Failed to view profile: " + apiResponse.getError());
             publicProfilesFrame.D(publicProfileOwnerDetailsPanel.E());
             return;
         }
-        if (!ASSERTIONS_DISABLED && apiResponse.T() == null) {
+        if (!ASSERTIONS_DISABLED && apiResponse.getData() == null) {
             throw new AssertionError();
         }
-        publicProfilesFrame.N((PublicProfile)apiResponse.T());
+        publicProfilesFrame.N((PublicProfile)apiResponse.getData());
     }
 
     private List<GuiComponent> lambda$null$7(Function<PublicProfileSummary, PaddedComponent> function, ApiResponse<PagedResult<PublicProfileSummary>> apiResponse) {
-        if (!apiResponse.t()) {
+        if (!apiResponse.isSuccessful()) {
             return null;
         }
-        if (!ASSERTIONS_DISABLED && apiResponse.T() == null) {
+        if (!ASSERTIONS_DISABLED && apiResponse.getData() == null) {
             throw new AssertionError();
         }
-        this.resultsList.setPageMetadata(apiResponse.T());
-        List<PublicProfileSummary> summaries = apiResponse.T().E();
+        this.resultsList.setPageMetadata(apiResponse.getData());
+        List<PublicProfileSummary> summaries = apiResponse.getData().getContent();
         ArrayList<GuiComponent> arrayList = new ArrayList<GuiComponent>();
         for (PublicProfileSummary publicProfileSummary : summaries) {
             PaddedComponent paddedComponent = function.apply(publicProfileSummary);
             arrayList.add(paddedComponent);
-            Vape.INSTANCE.getPublicProfileManager().y(publicProfileSummary);
+            Vape.INSTANCE.getPublicProfileManager().addSummaryTags(publicProfileSummary);
             PublicProfileListingResultCardComponent publicProfileListingResultCardComponent = paddedComponent.t(PublicProfileListingResultCardComponent.class);
             AtomicBoolean atomicBoolean = new AtomicBoolean(true);
             publicProfileListingResultCardComponent.addMouseListener(new PublicProfileListingResultOpenClickHandler(this, atomicBoolean, publicProfileSummary));
@@ -272,7 +272,7 @@ implements EventListener {
     @Nullable
     public static CompletableFuture<?> J(boolean bl, long l) {
         if (bl) {
-            if (!OnlineConnectionManager.T.n().equals((Object)OnlineConnectionState.ONLINE)) {
+            if (!OnlineConnectionManager.INSTANCE.getConnectionState().equals((Object)OnlineConnectionState.ONLINE)) {
                 PublicProfilesFrame.a(PublicProfilesFrame::lambda$openWithEditor$20);
                 return null;
             }
@@ -280,7 +280,7 @@ implements EventListener {
         }
         PublicProfilesFrame publicProfilesFrame = ClientSettings.getFrame(PublicProfilesFrame.class);
         PublicProfileOwnerDetailsPanel publicProfileOwnerDetailsPanel = publicProfilesFrame.N((PublicProfile)null);
-        publicProfileOwnerDetailsPanel.T(ApiServices.d().R().x(l).whenCompleteAsync((arg_0, arg_1) -> PublicProfilesFrame.lambda$openWithEditor$22(publicProfileOwnerDetailsPanel, publicProfilesFrame, arg_0, arg_1), (Executor)ClientSettings.UI_EXECUTOR).exceptionally(PublicProfilesFrame::lambda$openWithEditor$23));
+        publicProfileOwnerDetailsPanel.T(ApiServices.getInstance().getPublicProfileApi().viewProfile(l).whenCompleteAsync((arg_0, arg_1) -> PublicProfilesFrame.lambda$openWithEditor$22(publicProfileOwnerDetailsPanel, publicProfilesFrame, arg_0, arg_1), (Executor)ClientSettings.UI_EXECUTOR).exceptionally(PublicProfilesFrame::lambda$openWithEditor$23));
         return publicProfileOwnerDetailsPanel.R$src$Ljava_util_concurrent_CompletableFuture_$1ccqvok();
     }
 
@@ -317,7 +317,7 @@ implements EventListener {
 
 
     private static void lambda$null$17(ApiResponse apiResponse, PublicProfilesFrame publicProfilesFrame) {
-        publicProfilesFrame.l((PublicProfile)apiResponse.T());
+        publicProfilesFrame.l((PublicProfile)apiResponse.getData());
     }
 
     private static void lambda$new$0() {
@@ -330,7 +330,7 @@ implements EventListener {
     }
 
     private void W() {
-        if (!OnlineConnectionManager.T.n().equals((Object)OnlineConnectionState.ONLINE)) {
+        if (!OnlineConnectionManager.INSTANCE.getConnectionState().equals((Object)OnlineConnectionState.ONLINE)) {
             this.d$src$V$fo8605();
             return;
         }
@@ -426,7 +426,7 @@ implements EventListener {
         for (GuiComponent guiComponent : this.profileListPanel.f()) {
             PaddedComponent paddedComponent;
             PublicProfileListEntryComponent publicProfileListEntryComponent;
-            if (!(guiComponent instanceof PaddedComponent) || (publicProfileListEntryComponent = (paddedComponent = (PaddedComponent)guiComponent).t(PublicProfileListEntryComponent.class)) == null || publicProfileListEntryComponent.getPublicProfile().w() != publicProfileDeletedEvent.getProfile().w()) continue;
+            if (!(guiComponent instanceof PaddedComponent) || (publicProfileListEntryComponent = (paddedComponent = (PaddedComponent)guiComponent).t(PublicProfileListEntryComponent.class)) == null || publicProfileListEntryComponent.getPublicProfile().getProfileId() != publicProfileDeletedEvent.getProfile().getProfileId()) continue;
             arrayList.add(guiComponent);
         }
         if (arrayList.isEmpty()) {
@@ -435,7 +435,7 @@ implements EventListener {
         for (GuiComponent guiComponent : arrayList) {
             this.profileListPanel.removeChild(guiComponent);
         }
-        Vape.INSTANCE.getProfilesManager().T();
+        Vape.INSTANCE.getProfilesManager().updatePublicProfileLinks();
     }
 
     private static PaddedComponent lambda$createRightContainer$5(PublicProfileSummary publicProfileSummary) {
@@ -445,12 +445,12 @@ implements EventListener {
 
     @Nullable
     public static CompletableFuture<?> s(long l) {
-        if (!OnlineConnectionManager.T.n().equals((Object)OnlineConnectionState.ONLINE)) {
+        if (!OnlineConnectionManager.INSTANCE.getConnectionState().equals((Object)OnlineConnectionState.ONLINE)) {
             PublicProfilesFrame.a(PublicProfilesFrame::lambda$openWithPublicListing$15);
             return null;
         }
         PublicProfilesFrame.a(PublicProfilesFrame::lambda$openWithPublicListing$16);
-        return ApiServices.d().R().x(l).whenCompleteAsync(PublicProfilesFrame::lambda$openWithPublicListing$18, (Executor)ClientSettings.UI_EXECUTOR).exceptionally(PublicProfilesFrame::lambda$openWithPublicListing$19);
+        return ApiServices.getInstance().getPublicProfileApi().viewProfile(l).whenCompleteAsync(PublicProfilesFrame::lambda$openWithPublicListing$18, (Executor)ClientSettings.UI_EXECUTOR).exceptionally(PublicProfilesFrame::lambda$openWithPublicListing$19);
     }
 
     private void lambda$addCenteredOverlay$10(AtomicReference atomicReference) {
@@ -469,9 +469,9 @@ implements EventListener {
 
     @Override
     public void u() {
-        if (!OnlineConnectionManager.T.n().equals((Object)OnlineConnectionState.ONLINE) && !this.showingConnectionStatus) {
+        if (!OnlineConnectionManager.INSTANCE.getConnectionState().equals((Object)OnlineConnectionState.ONLINE) && !this.showingConnectionStatus) {
             this.d$src$V$fo8605();
-        } else if (OnlineConnectionManager.T.n().equals((Object)OnlineConnectionState.ONLINE) && this.showingConnectionStatus) {
+        } else if (OnlineConnectionManager.INSTANCE.getConnectionState().equals((Object)OnlineConnectionState.ONLINE) && this.showingConnectionStatus) {
             this.connectionRefreshPending = false;
         }
         PopupFrame popupFrame = this.activePopup;
@@ -555,7 +555,7 @@ implements EventListener {
     private CompletableFuture<List<GuiComponent>> lambda$createRightContainer$8(Function<PublicProfileSummary, PaddedComponent> function) {
         String string;
         this.lastSearchQuery = string = this.searchFilterPanel.getSearchInput().getText().trim();
-        return ApiServices.d().R().r(this.sortMode, this.resultsList.getNextPageIndex(), string, this.searchFilterPanel.getTokenSelector().getTokens().stream().map(PublicProfileFilterTokenComponent::getText).collect(Collectors.toList())).thenApplyAsync(arg_0 -> this.lambda$null$7(function, arg_0), (Executor)ClientSettings.UI_EXECUTOR);
+        return ApiServices.getInstance().getPublicProfileApi().listProfiles(this.sortMode, this.resultsList.getNextPageIndex(), string, this.searchFilterPanel.getTokenSelector().getTokens().stream().map(PublicProfileFilterTokenComponent::getText).collect(Collectors.toList())).thenApplyAsync(arg_0 -> this.lambda$null$7(function, arg_0), (Executor)ClientSettings.UI_EXECUTOR);
     }
 
     private void lambda$setCenteredOverlay$9(AtomicReference atomicReference) {
@@ -582,12 +582,12 @@ implements EventListener {
             Vape.logThrowable(throwable);
             return;
         }
-        if (!apiResponse.t()) {
-            Vape.debugLog("Failed to load public profile data: " + apiResponse.N());
-            PublicProfileManager.b("Failed to view profile: " + apiResponse.N());
+        if (!apiResponse.isSuccessful()) {
+            Vape.debugLog("Failed to load public profile data: " + apiResponse.getError());
+            PublicProfileManager.showWarning("Failed to view profile: " + apiResponse.getError());
             return;
         }
-        if (!ASSERTIONS_DISABLED && apiResponse.T() == null) {
+        if (!ASSERTIONS_DISABLED && apiResponse.getData() == null) {
             throw new AssertionError();
         }
         PublicProfilesFrame.a(arg_0 -> PublicProfilesFrame.lambda$null$17(apiResponse, arg_0));
@@ -604,8 +604,8 @@ implements EventListener {
             publicProfileListingDetailsPanel.S(this.W(null, publicProfileListingDetailsPanel));
             return publicProfileListingDetailsPanel;
         }
-        Object var5_4 = publicProfile.s$src$Ljava_util_Map_$1fhtcsp() != null ? publicProfile.s$src$Ljava_util_Map_$1fhtcsp().getOrDefault("modules", null) : null;
-        ProfileSnapshot profileSnapshot = new ProfileSnapshot(null, (JsonArray)ApiHttpClient.Z.fromJson(var5_4 != null ? ApiHttpClient.Z.toJson(var5_4) : "[]", JsonArray.class));
+        Object serializedModules = publicProfile.getData() != null ? publicProfile.getData().getOrDefault("modules", null) : null;
+        ProfileSnapshot profileSnapshot = new ProfileSnapshot(null, (JsonArray)ApiHttpClient.GSON.fromJson(serializedModules != null ? ApiHttpClient.GSON.toJson(serializedModules) : "[]", JsonArray.class));
         PublicProfileListingDetailsPanel publicProfileListingDetailsPanel = new PublicProfileListingDetailsPanel(this, publicProfile, profileSnapshot);
         publicProfileListingDetailsPanel.S(this.W(null, publicProfileListingDetailsPanel));
         return publicProfileListingDetailsPanel;
@@ -624,7 +624,7 @@ implements EventListener {
     }
 
     private static CompletableFuture lambda$addPublicProfileButton$12(PublicProfile publicProfile) {
-        return PublicProfilesFrame.J(false, publicProfile.w());
+        return PublicProfilesFrame.J(false, publicProfile.getProfileId());
     }
 
     public void h(TextButton textButton) {
@@ -684,6 +684,6 @@ implements EventListener {
 
     private void lambda$onPublicProfileCreate$13(PublicProfileCreatedEvent publicProfileCreatedEvent) {
         this.e(publicProfileCreatedEvent.getProfile());
-        Vape.INSTANCE.getProfilesManager().T();
+        Vape.INSTANCE.getProfilesManager().updatePublicProfileLinks();
     }
 }

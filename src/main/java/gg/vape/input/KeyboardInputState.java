@@ -36,7 +36,7 @@ public class KeyboardInputState {
         event.fire();
         this.canceled = event.isCanceled();
         if (!gg.vape.module.none.ClientSettings.INSTANCE.inputEnabled) {
-            int inventoryKeyCode = ClientSettings.H(Minecraft.gameSettings().y$src$Lgg_vape_wrapper_impl_KeyBinding_$1hvjjoh());
+            int inventoryKeyCode = ClientSettings.getPlatformKeyCode(Minecraft.gameSettings().y$src$Lgg_vape_wrapper_impl_KeyBinding_$1hvjjoh());
             if (keyCode == inventoryKeyCode) {
                 return;
             }

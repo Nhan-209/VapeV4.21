@@ -10,15 +10,15 @@ extends Wrapper {
     }
 
     public static EnumActionResult C() {
-        return new EnumActionResult(MEnumActionResult.N(EnumActionResult.c.getMappingsMapperCompat().RD));
+        return new EnumActionResult(MEnumActionResult.N(EnumActionResult.vapeInstance.getMappingsMapperCompat().RD));
     }
 
     public static EnumActionResult B() {
-        return new EnumActionResult(MEnumActionResult.H(EnumActionResult.c.getMappingsMapperCompat().RD));
+        return new EnumActionResult(MEnumActionResult.H(EnumActionResult.vapeInstance.getMappingsMapperCompat().RD));
     }
 
     public static EnumActionResult A() {
-        return new EnumActionResult(MEnumActionResult.d(EnumActionResult.c.getMappingsMapperCompat().RD));
+        return new EnumActionResult(MEnumActionResult.d(EnumActionResult.vapeInstance.getMappingsMapperCompat().RD));
     }
 }
 

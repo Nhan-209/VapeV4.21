@@ -17,7 +17,7 @@ extends Mapping {
     private final MappingField m;
 
     public float o(Object object, float f) {
-        return this.p.s(object, Float.valueOf(f));
+        return this.p.invokeFloat(object, Float.valueOf(f));
     }
 
     public Object b(Object object) {
@@ -68,18 +68,18 @@ extends Mapping {
             String string = "openness";
             Class clazz4 = MappedClasses.lQ;
             MRenderGameOverlayEvent mRenderGameOverlayEvent = this;
-            this.E = mRenderGameOverlayEvent.X(clazz4, string, bl, clazz);
+            this.E = mRenderGameOverlayEvent.registerInstanceFieldForOwner(clazz4, string, bl, clazz);
             Class<Integer> clazz5 = Integer.TYPE;
             boolean bl4 = true;
             String string4 = "openCount";
             Class clazz6 = MappedClasses.zn;
             MRenderGameOverlayEvent mRenderGameOverlayEvent4 = this;
-            this.m = this.X(clazz6, string4, bl4, clazz5);
+            this.m = this.registerInstanceFieldForOwner(clazz6, string4, bl4, clazz5);
             Class[] classArray = new Class[]{Float.TYPE};
             Class<Float> clazz7 = Float.TYPE;
             String string5 = "getOpenNess";
             MRenderGameOverlayEvent mRenderGameOverlayEvent5 = this;
-            this.p = ((MappingMethodBuilder)this.u(string5, clazz7, classArray).Q(ForgeVersion.MC_1_21_4.n(), MappedClasses.Fs)).s();
+            this.p = ((MappingMethodBuilder)this.methodBuilder(string5, clazz7, classArray).setOwnerClassForVersion(ForgeVersion.MC_1_21_4.n(), MappedClasses.Fs)).buildMethod();
         } else {
             Class<Float> clazz = Float.TYPE;
             boolean bl = true;

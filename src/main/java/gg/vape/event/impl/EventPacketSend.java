@@ -9,68 +9,68 @@ import gg.vape.wrapper.impl.Packet;
 
 public class EventPacketSend
 extends Event {
-    private Packet q;
-    private NetworkManager l;
-    private boolean e = false;
-    private static final EventListeners F = new EventListeners();
+    private Packet packet;
+    private final NetworkManager networkManager;
+    private boolean modified = false;
+    private static final EventListeners EVENT_LISTENERS = new EventListeners();
 
-    public EventPacketSend(Object object, Object object2) {
-        this.l = new NetworkManager(object);
-        this.q = new Packet(object2);
+    public EventPacketSend(Object networkManagerHandle, Object packetHandle) {
+        this.networkManager = new NetworkManager(networkManagerHandle);
+        this.packet = new Packet(packetHandle);
     }
 
     public Object getPacketInstance() {
-        return this.q.getObject();
+        return this.packet.getObject();
     }
 
     public NetworkManager getNetworkManager() {
-        return this.l;
+        return this.networkManager;
     }
 
     public boolean wasModified() {
-        return this.e;
+        return this.modified;
     }
 
 
     @Override
     public boolean fire() {
-        if (PacketDispatchGuard.b.o(this.q)) {
+        if (PacketDispatchGuard.b.o(this.packet)) {
             PacketDispatchGuard.b.onPacketSend(this);
             return this.isCanceled();
         }
-        if (PacketDispatchMarkerRegistry.J(this.q)) {
-            PacketDispatchMarkerRegistry.p(this.q);
+        if (PacketDispatchMarkerRegistry.J(this.packet)) {
+            PacketDispatchMarkerRegistry.p(this.packet);
             return this.isCanceled();
         }
         return super.fire();
     }
 
     public void forceCancel() {
-        PacketDispatchMarkerRegistry.q(this.q);
+        PacketDispatchMarkerRegistry.q(this.packet);
         this.setCancelled(true);
     }
 
     @Override
     public EventListeners getListeners() {
-        return F;
+        return EVENT_LISTENERS;
     }
 
     public void setPacket(Packet packet) {
-        this.q = packet;
-        this.e = true;
+        this.packet = packet;
+        this.modified = true;
     }
 
     public static EventListeners getEventListeners() {
-        return F;
+        return EVENT_LISTENERS;
     }
 
     public Packet getPacket() {
-        return this.q;
+        return this.packet;
     }
 
     @Override
-    public void setCancelled(boolean bl) {
-        super.setCancelled(bl);
+    public void setCancelled(boolean canceled) {
+        super.setCancelled(canceled);
     }
 }
 

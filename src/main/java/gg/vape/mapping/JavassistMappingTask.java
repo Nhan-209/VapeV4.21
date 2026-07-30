@@ -54,9 +54,9 @@ implements MappingTask {
         try {
             CtBehavior ctBehavior = this.F(mappingMethod);
             for (InjectionParameterSpec injectionParameterSpec : injectionParameterSpecArray) {
-                String string = "v_param" + injectionParameterSpec.C;
-                ctBehavior.addLocalVariable(string, this.i(injectionParameterSpec.r));
-                ctBehavior.insertBefore("{ " + string + " = $" + injectionParameterSpec.C + "; }");
+                String string = "v_param" + injectionParameterSpec.parameterIndex;
+                ctBehavior.addLocalVariable(string, this.i(injectionParameterSpec.parameterType));
+                ctBehavior.insertBefore("{ " + string + " = $" + injectionParameterSpec.parameterIndex + "; }");
             }
         }
         catch (Exception exception) {
@@ -74,7 +74,7 @@ implements MappingTask {
         String string5 = "";
         string5 = string5 + clazz.getName() + " " + string + " = new " + clazz.getName() + "(" + string2 + ");\n";
         string5 = string5 + "if(" + string + "." + EventBus.getFireMethod(clazz).getName() + "()) { return " + string3 + "; } " + string4;
-        int n = ClassTransformer.Q$src$I$ouk7m6();
+        int n = ClassTransformer.opaquePredicate();
         if (n != 0) {
             boolean bl3;
             boolean bl4;
@@ -100,7 +100,7 @@ implements MappingTask {
     }
 
     @Override
-    public abstract void c();
+    public abstract void transform();
 
     public static int O$src$I$5vfrz4() {
         return T;
@@ -111,11 +111,11 @@ implements MappingTask {
     }
 
     @Override
-    public void O() {
+    public void rollback() {
         byte[] byArray = this.t;
         Class clazz = this.E;
         int n = ClassBytecodeCache.setClassBytecode(clazz, byArray);
-        int n2 = ClassTransformer.Q$src$I$ouk7m6();
+        int n2 = ClassTransformer.opaquePredicate();
         if (GuiComponent.getLegacyComponentState() == null) {
             ClassTransformer.setTransformerState(++n2);
         }
@@ -131,7 +131,7 @@ implements MappingTask {
     }
 
     public void Y(String string) {
-        int n = ClassTransformer.i();
+        int n = ClassTransformer.getTransformerState();
         try {
             File file = new File(string);
             boolean bl = file.getParentFile().exists();
@@ -163,10 +163,10 @@ implements MappingTask {
 
     public CtBehavior F(MappingMethod mappingMethod) {
         try {
-            if (mappingMethod.v().equals("<init>")) {
-                return this.Y.getConstructor(mappingMethod.j());
+            if (mappingMethod.getResolvedName().equals("<init>")) {
+                return this.Y.getConstructor(mappingMethod.getDescriptor());
             }
-            return this.Y.getMethod(mappingMethod.v(), mappingMethod.j());
+            return this.Y.getMethod(mappingMethod.getResolvedName(), mappingMethod.getDescriptor());
         }
         catch (NotFoundException notFoundException) {
             Vape.logThrowable(notFoundException);
@@ -197,7 +197,7 @@ implements MappingTask {
     }
 
     @Override
-    public Class B() {
+    public Class getTargetClass() {
         return this.E;
     }
 
@@ -212,8 +212,8 @@ implements MappingTask {
         }
     }
 
-    public void O(EventInjectionSpec eventInjectionSpec) {
-        this.J(() -> this.lambda$insertFromEventFactory$1(eventInjectionSpec));
+    public void registerEventInjection(EventInjectionSpec eventInjectionSpec) {
+        this.J(() -> this.insertEventInjectionCode(eventInjectionSpec));
     }
 
     public JavassistMappingTask(Class clazz) {
@@ -255,7 +255,7 @@ implements MappingTask {
     }
 
     protected static boolean c(MethodCall methodCall, MappingMethod mappingMethod) {
-        return methodCall.getMethodName().equals(mappingMethod.v()) && methodCall.getSignature().equals(mappingMethod.j()) && methodCall.getClassName().equals(mappingMethod.O().getName());
+        return methodCall.getMethodName().equals(mappingMethod.getResolvedName()) && methodCall.getSignature().equals(mappingMethod.getDescriptor()) && methodCall.getClassName().equals(mappingMethod.getOwnerClass().getName());
     }
 
     public static int U() {
@@ -292,7 +292,7 @@ implements MappingTask {
     }
 
     @Override
-    public void K() {
+    public void prepare() {
         this.t = ClassBytecodeCache.getClassBytecode(this.E, true);
         V.O(this.E.getClassLoader());
         if (!Vape.INSTANCE.isNativeAvailable()) {
@@ -313,7 +313,7 @@ implements MappingTask {
             }
             stringBuilder.append(string + "(");
             for (int i = 0; i < injectionParameterSpecArray.length; ++i) {
-                string2 = "v_param" + injectionParameterSpecArray[i].C;
+                string2 = "v_param" + injectionParameterSpecArray[i].parameterIndex;
                 if (i < injectionParameterSpecArray.length - 1) {
                     stringBuilder.append(string2 + ", ");
                     continue;
@@ -347,9 +347,9 @@ implements MappingTask {
     }
 
     @Override
-    public int J() {
+    public int commit() {
         JavassistMappingTask javassistMappingTask;
-        int n = ClassTransformer.Q$src$I$ouk7m6();
+        int n = ClassTransformer.opaquePredicate();
         if (n != 0) {
             int n2;
             JavassistMappingTask javassistMappingTask2 = this;
@@ -383,7 +383,7 @@ implements MappingTask {
     }
 
     @Override
-    public void j() {
+    public void serialize() {
         try {
             this.B = this.Y.toBytecode();
         }
@@ -422,7 +422,7 @@ implements MappingTask {
             StringBuilder stringBuilder = new StringBuilder();
             stringBuilder.append(string + "(");
             for (InjectionParameterSpec injectionParameterSpec : injectionParameterSpecArray) {
-                String string2 = "v_param" + injectionParameterSpec.C;
+                String string2 = "v_param" + injectionParameterSpec.parameterIndex;
                 stringBuilder.append(string2 + ", ");
             }
             stringBuilder.delete(stringBuilder.length() - 2, stringBuilder.length());
@@ -458,14 +458,14 @@ implements MappingTask {
         return this.J(() -> this.lambda$makeAndInsertEvent$0(clazz, string3, ctBehavior, string, string2, bl));
     }
 
-    private Object lambda$insertFromEventFactory$1(EventInjectionSpec eventInjectionSpec) throws CannotCompileException, NotFoundException {
-        JavassistMappingTask.p(eventInjectionSpec.v());
-        CtBehavior ctBehavior = this.F(eventInjectionSpec.F());
+    private Object insertEventInjectionCode(EventInjectionSpec eventInjectionSpec) throws CannotCompileException, NotFoundException {
+        JavassistMappingTask.p(eventInjectionSpec.getEventClass());
+        CtBehavior ctBehavior = this.F(eventInjectionSpec.getMappingMethod());
         ctBehavior.getDeclaringClass().defrost();
-        if (eventInjectionSpec.s()) {
-            ctBehavior.insertBefore(eventInjectionSpec.n());
+        if (eventInjectionSpec.isInsertBefore()) {
+            ctBehavior.insertBefore(eventInjectionSpec.buildInjectionCode());
         } else {
-            ctBehavior.insertAfter(eventInjectionSpec.n());
+            ctBehavior.insertAfter(eventInjectionSpec.buildInjectionCode());
         }
         this.Y.defrost();
         return null;
@@ -494,7 +494,7 @@ implements MappingTask {
     }
 
     @Override
-    public boolean Q() {
+    public boolean isApplied() {
         return this.k;
     }
 }

@@ -3,11 +3,6 @@ package gg.vape.wrapper.impl;
 import gg.vape.mapping.MappedClasses;
 import gg.vape.mapping.mappings.MStatusEffect;
 import gg.vape.wrapper.Wrapper;
-import gg.vape.wrapper.impl.BuiltInRegistries;
-import gg.vape.wrapper.impl.ForgeVersion;
-import gg.vape.wrapper.impl.Holder;
-import gg.vape.wrapper.impl.ITextComponent;
-import gg.vape.wrapper.impl.Registry;
 
 public class StatusEffect
 extends Wrapper {
@@ -16,7 +11,7 @@ extends Wrapper {
         if (this.isInstance(MappedClasses.Vo)) {
             object = new Holder(this.I).N();
         }
-        return MStatusEffect.r(StatusEffect.c.getMappingsMapperCompat().Rb, object);
+        return MStatusEffect.r(StatusEffect.vapeInstance.getMappingsMapperCompat().Rb, object);
     }
 
     public StatusEffect(Object object) {
@@ -32,7 +27,7 @@ extends Wrapper {
             }
             return registry.K(statusEffect2.getObject());
         }
-        return MStatusEffect.a(StatusEffect.c.getMappingsMapperCompat().Rb, statusEffect.getObject());
+        return MStatusEffect.a(StatusEffect.vapeInstance.getMappingsMapperCompat().Rb, statusEffect.getObject());
     }
 
     public static StatusEffect V() {
@@ -44,7 +39,7 @@ extends Wrapper {
         if (this.isInstance(MappedClasses.Vo)) {
             object = new Holder(this.I).N();
         }
-        ITextComponent iTextComponent = new ITextComponent(MStatusEffect.g(StatusEffect.c.getMappingsMapperCompat().Rb, object));
+        ITextComponent iTextComponent = new ITextComponent(MStatusEffect.g(StatusEffect.vapeInstance.getMappingsMapperCompat().Rb, object));
         return iTextComponent.getFormattedText();
     }
 
@@ -53,6 +48,6 @@ extends Wrapper {
             Registry registry = BuiltInRegistries.j();
             return new StatusEffect(registry.t(n));
         }
-        return new StatusEffect(StatusEffect.c.getMappingsMapperCompat().Rb.O(n));
+        return new StatusEffect(StatusEffect.vapeInstance.getMappingsMapperCompat().Rb.O(n));
     }
 }

@@ -26,7 +26,7 @@ extends AnimationsMode {
     private boolean useKeyPressed;
 
     private void triggerUseForTarget(EntityPlayerSP player) {
-        if (((Animations)this.getParent()).requiresMouseDown() && !gg.vape.config.ClientSettings.V()) {
+        if (((Animations)this.getParent()).requiresMouseDown() && !gg.vape.config.ClientSettings.isUseItemButtonDown()) {
             return;
         }
         RayTraceResult rayTraceResult = RotationManager.INSTANCE.getExtendedReachRayTrace();
@@ -56,7 +56,7 @@ extends AnimationsMode {
             this.setUseKeyPressed(false);
             return;
         }
-        if (((Animations)this.getParent()).requiresMouseDown() && !gg.vape.config.ClientSettings.V()) {
+        if (((Animations)this.getParent()).requiresMouseDown() && !gg.vape.config.ClientSettings.isUseItemButtonDown()) {
             return;
         }
         int playerHurtTime = event.getThePlayer().c$src$I$15a9iwo();
@@ -84,7 +84,7 @@ extends AnimationsMode {
         super(parent, name);
     }
 
-    @EventHandler(A=EventPriority.LOW)
+    @EventHandler(priority=EventPriority.LOW)
     public void onSyntheticAttack(SyntheticAttackRequestEvent event) {
         if (event.isCanceled() || !((Animations)this.getParent()).isHoldingSword()) {
             return;
@@ -112,7 +112,7 @@ extends AnimationsMode {
         }
         this.releaseTime = System.currentTimeMillis();
         if (event.getEntity().getObject().equals(Minecraft.thePlayer().getObject())) {
-            EventTickBase.S.execute(this::resetUseKey);
+            EventTickBase.PRE_TICK_EXECUTOR.execute(this::resetUseKey);
         }
     }
 
@@ -122,7 +122,7 @@ extends AnimationsMode {
         if (!event.getButtonState() || !((Animations)this.getParent()).isHoldingSword()) {
             return;
         }
-        if (buttonBinding == Minecraft.gameSettings().b$src$Lgg_vape_wrapper_impl_KeyBinding_$1yi3362().getKeyCode() && ((Animations)this.getParent()).requiresMouseDown() && gg.vape.config.ClientSettings.M()) {
+        if (buttonBinding == Minecraft.gameSettings().b$src$Lgg_vape_wrapper_impl_KeyBinding_$1yi3362().getKeyCode() && ((Animations)this.getParent()).requiresMouseDown() && gg.vape.config.ClientSettings.isAttackButtonDown()) {
             event.setCancelled(true);
             return;
         }

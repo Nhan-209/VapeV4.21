@@ -252,7 +252,7 @@ extends SmoothFontRenderer {
 
     private float y() {
         float f = (float)this.D / 16.0f;
-        float f2 = (float)Vape.INSTANCE.getClientSettings().s();
+        float f2 = (float)Vape.INSTANCE.getClientSettings().getGuiScaleFactor();
         if (f2 != 1.0f) {
             f *= 1.0f / f2;
         }

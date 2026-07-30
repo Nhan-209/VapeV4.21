@@ -10,31 +10,36 @@ import java.util.UUID;
 public class MinecraftSessionWrapper
 extends Wrapper {
 
-    public static MinecraftSessionWrapper J(String string, UUID uUID, String string2, Optional<String> optional, Optional<String> optional2, WorldRendererBuilder worldRendererBuilder) {
-        return new MinecraftSessionWrapper(MSession.B(MinecraftSessionWrapper.c.getMappings().hw, string, uUID, string2, optional, optional2, worldRendererBuilder.getObject()));
+    public static MinecraftSessionWrapper createModern(String username, UUID profileId, String accessToken,
+                                                       Optional<String> xuid, Optional<String> clientId,
+                                                       WorldRendererBuilder accountType) {
+        return new MinecraftSessionWrapper(MSession.B(MinecraftSessionWrapper.vapeInstance.getMappings().hw, username,
+                profileId, accessToken, xuid, clientId, accountType.getObject()));
     }
 
-    public MinecraftSessionWrapper(Object object) {
-        super(object);
+    public MinecraftSessionWrapper(Object session) {
+        super(session);
     }
 
-    public String M() {
-        return MinecraftSessionWrapper.c.getMappings().hw.s(this.I);
+    public String getUsername() {
+        return MinecraftSessionWrapper.vapeInstance.getMappings().hw.s(this.I);
     }
 
-    public UUID R() {
+    public UUID getProfileId() {
         if (ForgeVersion.MC_1_20_6.d()) {
-            return (UUID)MinecraftSessionWrapper.c.getMappings().hw.V(this.I);
+            return (UUID)MinecraftSessionWrapper.vapeInstance.getMappings().hw.V(this.I);
         }
-        String string = (String)MinecraftSessionWrapper.c.getMappings().hw.V(this.I);
-        if (string == null || string.isEmpty()) {
+        String rawProfileId = (String)MinecraftSessionWrapper.vapeInstance.getMappings().hw.V(this.I);
+        if (rawProfileId == null || rawProfileId.isEmpty()) {
             return UUID.fromString("00000000-0000-0000-0000-000000000000");
         }
-        return UUID.fromString(string.replaceFirst("(\\w{8})(\\w{4})(\\w{4})(\\w{4})(\\w{12})", "$1-$2-$3-$4-$5"));
+        return UUID.fromString(rawProfileId.replaceFirst("(\\w{8})(\\w{4})(\\w{4})(\\w{4})(\\w{12})", "$1-$2-$3-$4-$5"));
     }
 
-    public static MinecraftSessionWrapper U(String string, String string2, String string3, String string4) {
-        return new MinecraftSessionWrapper(MSession.t(MinecraftSessionWrapper.c.getMappings().hw, string, string2, string3, string4));
+    public static MinecraftSessionWrapper createLegacy(String username, String profileId, String accessToken,
+                                                       String sessionType) {
+        return new MinecraftSessionWrapper(MSession.t(MinecraftSessionWrapper.vapeInstance.getMappings().hw, username,
+                profileId, accessToken, sessionType));
     }
 }
 

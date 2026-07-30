@@ -42,7 +42,7 @@ extends Mod {
         Vape.debugLog("\nSimulation test module enabled, ready to simulate player movement.\n");
     }
 
-    @EventHandler(A=EventPriority.HIGHEST)
+    @EventHandler(priority=EventPriority.HIGHEST)
     public void onPreEntityUpdate(EventPreEntityUpdate eventPreEntityUpdate) {
         GameSettings gameSettings = eventPreEntityUpdate.getGameSettings();
         EntityPlayerSP entityPlayerSP = eventPreEntityUpdate.getThePlayer();
@@ -80,7 +80,7 @@ extends Mod {
         this.planner.simulateTick(false);
     }
 
-    @EventHandler(A=EventPriority.HIGHEST)
+    @EventHandler(priority=EventPriority.HIGHEST)
     public void onPostEntityUpdate(EventPostEntityUpdate eventPostEntityUpdate) {
         EntityPlayerSP entityPlayerSP = eventPostEntityUpdate.getThePlayer();
         if (entityPlayerSP.isNull() || this.planner == null) {

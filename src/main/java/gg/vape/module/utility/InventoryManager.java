@@ -203,7 +203,7 @@ implements InventoryActionModule {
     @EventHandler
     public void onTick(EventPrePlayerTick event) {
         Container container;
-        if (Vape.INSTANCE.getModManager().N(InventoryManager.class) || Vape.INSTANCE.getClientSettings().J$src$Z$c57s1l()) {
+        if (Vape.INSTANCE.getModManager().isOtherInventoryActionActive(InventoryManager.class) || Vape.INSTANCE.getClientSettings().isLobbyCheckActive()) {
             this.clickQueue.clear();
             this.clickTimer.reset();
             this.touchedSlots.clear();

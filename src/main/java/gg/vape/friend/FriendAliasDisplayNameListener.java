@@ -18,72 +18,72 @@ import org.jetbrains.annotations.Nullable;
 
 public class FriendAliasDisplayNameListener
 implements EventListener {
-    private final Map<String, MutablePair<String, TimerUtil>> h = new HashMap<String, MutablePair<String, TimerUtil>>();
-    private Set<FriendEntry> G = new HashSet<FriendEntry>();
+    private final Map<String, MutablePair<String, TimerUtil>> replacementCache = new HashMap<String, MutablePair<String, TimerUtil>>();
+    private Set<FriendEntry> targetedFriends = new HashSet<FriendEntry>();
 
-    private FriendManager g() {
+    private FriendManager getFriendManager() {
         return Vape.INSTANCE.getFriendManager();
     }
 
-    Set<FriendEntry> R() {
-        return this.g().getFriends();
+    Set<FriendEntry> getFriends() {
+        return this.getFriendManager().getFriends();
     }
 
-    public boolean S() {
-        return !this.R().isEmpty();
+    public boolean hasFriends() {
+        return !this.getFriends().isEmpty();
     }
 
-    public boolean u() {
-        return this.g().C.getEffectiveValue();
+    public boolean isAliasSpoofEnabled() {
+        return this.getFriendManager().spoofAlias.getEffectiveValue();
     }
 
-    private Set<FriendEntry> D() {
-        return this.g().getFriends().stream().filter(FriendEntry::c).collect(Collectors.toSet());
+    private Set<FriendEntry> collectTargetedFriends() {
+        return this.getFriendManager().getFriends().stream().filter(FriendEntry::isTargeted).collect(Collectors.toSet());
     }
 
     @EventHandler
     public void onTick(EventPreTick eventPreTick) {
-        this.G = this.D();
+        this.targetedFriends = this.collectTargetedFriends();
     }
 
-    private String P(String string, Iterable<FriendEntry> iterable) {
-        String string2 = string;
-        for (FriendEntry friendEntry : iterable) {
-            String string3;
-            String string4 = friendEntry.s().toLowerCase();
-            if (string4.equalsIgnoreCase(string3 = friendEntry.o()) || !StringUtils.K(string2, string4)) continue;
-            string2 = StringUtils.U(string2, string4, string3);
+    private String replaceAliases(String text, Iterable<FriendEntry> friends) {
+        String replacedText = text;
+        for (FriendEntry friendEntry : friends) {
+            String displayName;
+            String normalizedName = friendEntry.getName().toLowerCase();
+            if (normalizedName.equalsIgnoreCase(displayName = friendEntry.getDisplayName()) || !StringUtils.K(replacedText, normalizedName)) continue;
+            replacedText = StringUtils.U(replacedText, normalizedName, displayName);
         }
-        return string2;
+        return replacedText;
     }
 
     @Nullable
-    public String G(String string, Iterable<FriendEntry> iterable) {
-        return string == null ? null : (String)this.h.compute(string, (arg_0, arg_1) -> this.lambda$getReplacedDisplayName$0(string, iterable, arg_0, arg_1)).O();
+    public String getReplacedDisplayName(String text, Iterable<FriendEntry> friends) {
+        return text == null ? null : (String)this.replacementCache.compute(text, (cachedText, cachedValue) -> this.updateCachedReplacement(text, friends, cachedText, cachedValue)).getFirst();
     }
 
-    public Set<FriendEntry> e() {
-        if (this.G == null) {
-            this.G = this.D();
+    public Set<FriendEntry> getTargetedFriends() {
+        if (this.targetedFriends == null) {
+            this.targetedFriends = this.collectTargetedFriends();
         }
-        return this.G;
+        return this.targetedFriends;
     }
 
 
-    private MutablePair lambda$getReplacedDisplayName$0(String string, Iterable iterable, String string2, MutablePair mutablePair) {
+    private MutablePair updateCachedReplacement(String text, Iterable iterable, String cachedText, MutablePair mutablePair) {
         if (mutablePair == null) {
-            return new MutablePair<String, TimerUtil>(this.P(string, iterable), new TimerUtil());
+            return new MutablePair<String, TimerUtil>(this.replaceAliases(text, iterable), new TimerUtil());
         }
-        TimerUtil timerUtil = (TimerUtil)mutablePair.K();
+        TimerUtil timerUtil = (TimerUtil)mutablePair.getSecond();
         if (timerUtil.hasTimeElapsed(1000L)) {
             timerUtil.reset();
-            return mutablePair.w(this.P(string, iterable));
+            return mutablePair.setFirst(this.replaceAliases(text, iterable));
         }
         return mutablePair;
     }
 
-    public boolean N() {
-        return this.g().J.getEffectiveValue();
+    public boolean isAliasEnabled() {
+        return this.getFriendManager().useAlias.getEffectiveValue();
     }
 }
 

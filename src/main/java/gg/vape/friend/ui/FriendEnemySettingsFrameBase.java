@@ -8,19 +8,19 @@ import gg.vape.ui.click.frame.ToggleableFrameHeaderComponent;
 public abstract class FriendEnemySettingsFrameBase
 extends OutlinedFrameBase
 implements CollapsibleFrame {
-    protected ToggleableFrameHeaderComponent KG;
-    private static final String eb = "wrap";
-    private boolean Kk = false;
+    protected ToggleableFrameHeaderComponent header;
+    private static final String LAYOUT_MODE = "wrap";
+    private boolean collapsed = false;
 
     @Override
     public void w() {
-        this.Kk = !this.Kk;
+        this.collapsed = !this.collapsed;
         for (GuiComponent guiComponent : this.f()) {
             if (!guiComponent.isRemovable()) continue;
-            guiComponent.setVisible(!this.Kk);
+            guiComponent.setVisible(!this.collapsed);
         }
-        if (this.Kk) {
-            this.KG.L(false);
+        if (this.collapsed) {
+            this.header.L(false);
         }
         this.l$src$V$1mibm4x();
     }
@@ -28,7 +28,7 @@ implements CollapsibleFrame {
 
     @Override
     public boolean q() {
-        return this.Kk;
+        return this.collapsed;
     }
 
     public FriendEnemySettingsFrameBase(String string, String string2, double d) {
@@ -37,17 +37,17 @@ implements CollapsibleFrame {
         this.S(100.0);
         this.setVisible(false);
         this.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M(false);
-        this.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M(eb);
-        this.KG = new ToggleableFrameHeaderComponent(this, string, string2, d);
-        this.Y(this.KG);
+        this.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M(LAYOUT_MODE);
+        this.header = new ToggleableFrameHeaderComponent(this, string, string2, d);
+        this.Y(this.header);
     }
 
-    public ToggleableFrameHeaderComponent A$src$Lgg_vape_ui_click_frame_ToggleableFrameHeaderCom$hw06ag() {
-        return this.KG;
+    public ToggleableFrameHeaderComponent getHeader() {
+        return this.header;
     }
 
-    public void U(GuiComponent ... guiComponentArray) {
-        this.KG.q(guiComponentArray);
+    public void addHeaderChildren(GuiComponent ... guiComponentArray) {
+        this.header.q(guiComponentArray);
     }
 
     public FriendEnemySettingsFrameBase(String string, String string2) {

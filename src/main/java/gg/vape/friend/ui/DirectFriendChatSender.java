@@ -9,34 +9,33 @@ import java.util.function.BiConsumer;
 
 public class DirectFriendChatSender
 implements OnlineChatSender {
-    private final OnlineFriend q;
-    private static GuiComponent[] i;
+    private final OnlineFriend friend;
+    private static GuiComponent[] obfuscationComponents;
 
-    private void lambda$sendChatMessage$0(BiConsumer biConsumer, ChatToFriendResponsePacket chatToFriendResponsePacket) {
-        biConsumer.accept(this.q, chatToFriendResponsePacket.X());
+    private void handleChatResponse(BiConsumer<OnlineFriend, String> responseConsumer, ChatToFriendResponsePacket response) {
+        responseConsumer.accept(this.friend, response.X());
     }
 
-    public static void c(GuiComponent[] guiComponentArray) {
-        i = guiComponentArray;
+    public static void setObfuscationComponents(GuiComponent[] components) {
+        obfuscationComponents = components;
     }
 
     @Override
-    public void W(String string, BiConsumer<OnlineFriend, String> biConsumer) {
-        ZeusConnectionManager.T().u().p(this.q.S(), string, chatToFriendResponsePacket -> this.lambda$sendChatMessage$0(biConsumer, (ChatToFriendResponsePacket)chatToFriendResponsePacket));
+    public void sendChatMessage(String message, BiConsumer<OnlineFriend, String> responseConsumer) {
+        ZeusConnectionManager.T().u().p(this.friend.getUser(), message, response -> this.handleChatResponse(responseConsumer, (ChatToFriendResponsePacket)response));
     }
 
-    public static GuiComponent[] U() {
-        return i;
+    public static GuiComponent[] getObfuscationComponents() {
+        return obfuscationComponents;
     }
 
-    public DirectFriendChatSender(OnlineFriend onlineFriend) {
-        this.q = onlineFriend;
+    public DirectFriendChatSender(OnlineFriend friend) {
+        this.friend = friend;
     }
 
     static {
-        if (DirectFriendChatSender.U() != null) {
-            DirectFriendChatSender.c(new GuiComponent[3]);
+        if (DirectFriendChatSender.getObfuscationComponents() != null) {
+            DirectFriendChatSender.setObfuscationComponents(new GuiComponent[3]);
         }
     }
 }
-

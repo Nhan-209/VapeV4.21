@@ -26,12 +26,12 @@ extends Mapping {
         boolean bl = true;
         String string = "PERSPECTIVE";
         MItems mItems = this;
-        this.H = this.u(string, bl, clazz);
+        this.H = this.registerStaticField(string, bl, clazz);
         Class clazz2 = MappedClasses.zq;
         boolean bl2 = true;
         String string2 = "ORTHOGRAPHIC";
         MItems mItems2 = this;
-        this.g = this.u(string2, bl2, clazz2);
+        this.g = this.registerStaticField(string2, bl2, clazz2);
         if (MTickEventPhase.P() != null) {
             GuiComponent.setLegacyComponentState(new GuiComponent[5]);
             return;

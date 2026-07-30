@@ -18,7 +18,7 @@ extends Mapping {
 
     public int F(int n) {
         if (this.S != null) {
-            return this.S.Z(null, (int)e, n);
+            return this.S.invokeInt(null, (int)e, n);
         }
         return 0;
     }
@@ -44,18 +44,18 @@ extends Mapping {
         boolean bl = false;
         String string = "glBindSampler";
         MGlStateManagerTexGenState mGlStateManagerTexGenState = this;
-        this.T = this.x(string, bl, clazz, classArray);
+        this.T = this.registerStaticMethod(string, bl, clazz, classArray);
         Class[] classArray2 = new Class[]{Integer.TYPE, Integer.TYPE};
         Class<Integer> clazz2 = Integer.TYPE;
         boolean bl2 = false;
         String string2 = "glGetIntegeri";
         MGlStateManagerTexGenState mGlStateManagerTexGenState2 = this;
-        this.S = this.x(string2, bl2, clazz2, classArray2);
+        this.S = this.registerStaticMethod(string2, bl2, clazz2, classArray2);
     }
 
     public void K(int n, int n2) {
         if (this.T != null) {
-            this.T.c(null, n, n2);
+            this.T.invokeVoid(null, n, n2);
         }
     }
 }

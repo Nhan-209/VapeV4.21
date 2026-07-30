@@ -46,7 +46,7 @@ public class RotationDebugSample {
             AdaptiveRotationController adaptiveRotationController = (AdaptiveRotationController)RotationManager.INSTANCE.getActiveController();
             this.controllerRotation = new RotationAngles(adaptiveRotationController.getRenderedYaw(), adaptiveRotationController.getRenderedPitch());
             if (this.target != null) {
-                RotationAngles rotationAngles = adaptiveRotationController.calculateRotation(this.target.n().addVector(0.0, entityPlayerSP.X(), 0.0));
+                RotationAngles rotationAngles = adaptiveRotationController.calculateRotation(this.target.toVec3().addVector(0.0, entityPlayerSP.X(), 0.0));
                 double yawDelta = MathUtil.wrapAngleTo180((double)((rotationAngles.getYaw() - this.rotation.getYaw()) % 360.0f));
                 double pitchDelta = MathUtil.wrapAngleTo180((double)((rotationAngles.getPitch() - this.rotation.getPitch()) % 360.0f));
                 this.rotationDelta = this.rotation.add(new RotationAngles(yawDelta, pitchDelta));
@@ -55,13 +55,13 @@ public class RotationDebugSample {
     }
 
     public String toString() {
-        StringBuilder stringBuilder = new StringBuilder(String.format("%d,%f,%f,%f,%f,%f,%b,%b,", this.id, this.position.Y(), this.position.t(), this.position.o(), Float.valueOf(this.rotation.getYaw() % 360.0f), Float.valueOf(this.rotation.getPitch() % 360.0f), this.auxiliaryPacketSent, this.targetAttackSent));
+        StringBuilder stringBuilder = new StringBuilder(String.format("%d,%f,%f,%f,%f,%f,%b,%b,", this.id, this.position.getX(), this.position.getY(), this.position.getZ(), Float.valueOf(this.rotation.getYaw() % 360.0f), Float.valueOf(this.rotation.getPitch() % 360.0f), this.auxiliaryPacketSent, this.targetAttackSent));
         if (this.target != null) {
-            stringBuilder.append(this.target.Y());
+            stringBuilder.append(this.target.getX());
             stringBuilder.append(",");
-            stringBuilder.append(this.target.t());
+            stringBuilder.append(this.target.getY());
             stringBuilder.append(",");
-            stringBuilder.append(this.target.o());
+            stringBuilder.append(this.target.getZ());
             stringBuilder.append(",");
         } else {
             stringBuilder.append(",,,");

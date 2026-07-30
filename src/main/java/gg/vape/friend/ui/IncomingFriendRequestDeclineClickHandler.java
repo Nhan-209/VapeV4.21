@@ -5,14 +5,14 @@ import gg.vape.ui.click.component.GuiClickListener;
 
 public class IncomingFriendRequestDeclineClickHandler
 implements GuiClickListener {
-    final IncomingFriendRequestRow A;
+    final IncomingFriendRequestRow row;
 
-    public IncomingFriendRequestDeclineClickHandler(IncomingFriendRequestRow mo_12) {
-        this.A = mo_12;
+    public IncomingFriendRequestDeclineClickHandler(IncomingFriendRequestRow row) {
+        this.row = row;
     }
 
     @Override
     public void onPrimaryClick() {
-        IncomingFriendRequestRow.v(this.A);
+        IncomingFriendRequestRow.decline(this.row);
     }
 }

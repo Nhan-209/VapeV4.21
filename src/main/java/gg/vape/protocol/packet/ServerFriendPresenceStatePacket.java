@@ -7,31 +7,31 @@ import gg.vape.protocol.packet.ZeusSerializablePacket;
 
 public class ServerFriendPresenceStatePacket
 implements ZeusSerializablePacket {
-    private UserModel e;
-    private PresenceState G;
+    private UserModel user;
+    private PresenceState presenceState;
     private static boolean f;
 
-    public PresenceState C() {
-        return this.G;
+    public PresenceState getPresenceState() {
+        return this.presenceState;
     }
 
     @Override
     public void o(ZeusPacketBuffer zeusPacketBuffer) {
-        this.e.a(zeusPacketBuffer);
-        zeusPacketBuffer.U(this.G);
+        this.user.writeTo(zeusPacketBuffer);
+        zeusPacketBuffer.writeEnum(this.presenceState);
     }
 
-    public ServerFriendPresenceStatePacket(UserModel userModel, PresenceState presenceState) {
-        this.e = userModel;
-        this.G = presenceState;
+    public ServerFriendPresenceStatePacket(UserModel user, PresenceState presenceState) {
+        this.user = user;
+        this.presenceState = presenceState;
     }
 
     public static void r(boolean bl) {
         f = bl;
     }
 
-    public UserModel y() {
-        return this.e;
+    public UserModel getUser() {
+        return this.user;
     }
 
     public static boolean d() {
@@ -41,8 +41,8 @@ implements ZeusSerializablePacket {
 
     @Override
     public void S(ZeusPacketBuffer zeusPacketBuffer) {
-        this.e = new UserModel(zeusPacketBuffer);
-        this.G = zeusPacketBuffer.Y(PresenceState.class);
+        this.user = new UserModel(zeusPacketBuffer);
+        this.presenceState = zeusPacketBuffer.readEnum(PresenceState.class);
     }
 
 
@@ -59,4 +59,3 @@ implements ZeusSerializablePacket {
         }
     }
 }
-

@@ -20,9 +20,9 @@ extends FrameNavigationButtonComponent {
     public void H() {
         double d;
         super.H();
-        Profile profile = Vape.INSTANCE.getProfilesManager().M();
-        String string = profile.n$src$Ljava_lang_String_$xqhelw();
-        boolean bl = profile.z();
+        Profile profile = Vape.INSTANCE.getProfilesManager().getActiveProfile();
+        String string = profile.getName();
+        boolean bl = profile.isPublicProfileFlag();
         if (bl) {
             int n = 8;
             if (string.length() > n) {

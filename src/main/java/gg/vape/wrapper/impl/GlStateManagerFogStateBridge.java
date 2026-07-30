@@ -6,7 +6,7 @@ import java.util.List;
 public class GlStateManagerFogStateBridge
 extends Wrapper {
     public List<String> F() {
-        return (List<String>)GlStateManagerFogStateBridge.c.getMappingsMapperCompat().q2.y(this.I);
+        return (List<String>)GlStateManagerFogStateBridge.vapeInstance.getMappingsMapperCompat().q2.y(this.I);
     }
 
     public GlStateManagerFogStateBridge(Object object) {

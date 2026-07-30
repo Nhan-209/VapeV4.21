@@ -35,11 +35,11 @@ extends Mapping {
         String string2 = "potionSprites";
         Class clazz3 = MappedClasses.uP;
         MStatusEffectSpriteUploader mStatusEffectSpriteUploader2 = this;
-        this.b = this.X(clazz3, string2, bl2, clazz2);
+        this.b = this.registerInstanceFieldForOwner(clazz3, string2, bl2, clazz2);
     }
 
     private Object S(Object object, Object object2) {
-        return this.N.L(object, object2);
+        return this.N.invokeObject(object, object2);
     }
 }
 

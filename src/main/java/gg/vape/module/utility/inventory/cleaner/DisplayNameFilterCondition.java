@@ -19,8 +19,8 @@ extends AbstractTextFilterCondition<DisplayNameFilterCondition> {
         return InventoryFilterConditionType.DISPLAY_NAME;
     }
 
-    public DisplayNameFilterCondition(List<String> list, TextMatchMode textMatchMode) {
-        super(list, textMatchMode);
+    public DisplayNameFilterCondition(List<String> texts, TextMatchMode matchMode) {
+        super(texts, matchMode);
     }
 
     public DisplayNameFilterCondition(JsonObject jsonObject) {
@@ -32,8 +32,8 @@ extends AbstractTextFilterCondition<DisplayNameFilterCondition> {
         if (itemStack.isNull()) {
             return false;
         }
-        String string = itemStack.x();
-        return this.getMatchMode().matchesAny(string, this.getTexts());
+        String displayName = itemStack.x();
+        return this.getMatchMode().matchesAny(displayName, this.getTexts());
     }
 
     public DisplayNameFilterCondition() {

@@ -8,29 +8,28 @@ import org.jetbrains.annotations.Nullable;
 
 public class ActivitySnapshotPayloadBuilder {
     @Nullable
-    private ActivityTargetData O;
+    private ActivityTargetData target;
     @Nullable
-    private ActivityHealthData a;
+    private ActivityHealthData health;
     @Nullable
-    private ActivityPositionData T;
+    private ActivityPositionData position;
 
-    public ActivitySnapshotPayloadBuilder H(@Nullable ActivityPositionData activityPositionData) {
-        this.T = activityPositionData;
+    public ActivitySnapshotPayloadBuilder withPosition(@Nullable ActivityPositionData activityPositionData) {
+        this.position = activityPositionData;
         return this;
     }
 
-    public ActivitySnapshotPayloadBuilder t(@Nullable ActivityTargetData activityTargetData) {
-        this.O = activityTargetData;
+    public ActivitySnapshotPayloadBuilder withTarget(@Nullable ActivityTargetData activityTargetData) {
+        this.target = activityTargetData;
         return this;
     }
 
-    public ActivitySnapshotPayload X() {
-        return new ActivitySnapshotPayload(this.T, this.a, this.O);
+    public ActivitySnapshotPayload build() {
+        return new ActivitySnapshotPayload(this.position, this.health, this.target);
     }
 
-    public ActivitySnapshotPayloadBuilder M(@Nullable ActivityHealthData activityHealthData) {
-        this.a = activityHealthData;
+    public ActivitySnapshotPayloadBuilder withHealth(@Nullable ActivityHealthData activityHealthData) {
+        this.health = activityHealthData;
         return this;
     }
 }
-

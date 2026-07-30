@@ -21,7 +21,7 @@ extends JavassistMappingTask {
     }
 
     @Override
-    public void c() {
+    public void transform() {
         MappingMethod mappingMethod;
         if (ForgeVersion.MC_1_8_9.d()) {
             mappingMethod = Vape.INSTANCE.getMappings().CP.O;
@@ -41,4 +41,3 @@ extends JavassistMappingTask {
         }
     }
 }
-

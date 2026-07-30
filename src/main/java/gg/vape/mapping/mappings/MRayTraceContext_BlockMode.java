@@ -28,17 +28,17 @@ extends Mapping {
         boolean bl = true;
         String string = "COLLIDER";
         MRayTraceContext_BlockMode mRayTraceContext_BlockMode = this;
-        this.Y = this.u(string, bl, clazz);
+        this.Y = this.registerStaticField(string, bl, clazz);
         Class clazz2 = MappedClasses.DS;
         boolean bl2 = true;
         String string2 = "OUTLINE";
         MRayTraceContext_BlockMode mRayTraceContext_BlockMode2 = this;
-        this.A = this.u(string2, bl2, clazz2);
+        this.A = this.registerStaticField(string2, bl2, clazz2);
         Class clazz3 = MappedClasses.DS;
         boolean bl3 = true;
         String string3 = "VISUAL";
         MRayTraceContext_BlockMode mRayTraceContext_BlockMode3 = this;
-        this.w = this.u(string3, bl3, clazz3);
+        this.w = this.registerStaticField(string3, bl3, clazz3);
     }
 
     private Object j() {

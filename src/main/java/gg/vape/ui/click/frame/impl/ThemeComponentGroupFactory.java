@@ -19,7 +19,7 @@ import java.util.LinkedHashMap;
 
 public final class ThemeComponentGroupFactory {
     public static GuiComponent[] k(ThemeColors themeColors) {
-        return new GuiComponent[]{new BooleanToggleComponent(OnlineConnectionManager.T.S().X$src$Lgg_vape_value_BooleanValue_$7rygmo()), new BooleanToggleComponent(OnlineConnectionManager.T.S().z()), new BooleanToggleComponent(OnlineConnectionManager.T.S().O()), new BooleanToggleComponent(OnlineConnectionManager.T.S().l()), new ColorDividerComponent(themeColors.i)};
+        return new GuiComponent[]{new BooleanToggleComponent(OnlineConnectionManager.INSTANCE.getSettings().getAutoLogin()), new BooleanToggleComponent(OnlineConnectionManager.INSTANCE.getSettings().getShareServer()), new BooleanToggleComponent(OnlineConnectionManager.INSTANCE.getSettings().getShareUsername()), new BooleanToggleComponent(OnlineConnectionManager.INSTANCE.getSettings().getShareInventory()), new ColorDividerComponent(themeColors.i)};
     }
 
     private static Throwable a(Throwable throwable) {
@@ -27,7 +27,7 @@ public final class ThemeComponentGroupFactory {
     }
 
     public static GuiComponent[] E(ThemeColors themeColors) {
-        BindValueRowComponent bindValueRowComponent = new BindValueRowComponent("Ping Keybind", OnlineConnectionManager.T.S().p(), themeColors.Z);
+        BindValueRowComponent bindValueRowComponent = new BindValueRowComponent("Ping Keybind", OnlineConnectionManager.INSTANCE.getSettings().getPingBind(), themeColors.Z);
         bindValueRowComponent.getBindInput().setActiveAlpha(20);
         return new GuiComponent[]{bindValueRowComponent};
     }
@@ -35,13 +35,13 @@ public final class ThemeComponentGroupFactory {
     public static LinkedHashMap<ThemeComponentGroupKey, GuiComponent[]> R(ThemeColors themeColors) {
         FriendManager friendManager = Vape.INSTANCE.getFriendManager();
         LinkedHashMap<ThemeComponentGroupKey, GuiComponent[]> linkedHashMap = new LinkedHashMap<ThemeComponentGroupKey, GuiComponent[]>();
-        linkedHashMap.put(new ThemeComponentGroupKey("Friend Settings", "newfriends"), new GuiComponent[]{new BooleanToggleComponent(friendManager.q), new ColorValueEditorComponent(friendManager.R), new BooleanToggleComponent(friendManager.z), new BooleanToggleComponent(friendManager.J), new BooleanToggleComponent(friendManager.C), new BindValueRowComponent(Vape.INSTANCE.getClientSettings().Z), new InsetFilledSpacerComponent(90.0, 2.0, 0.5, 4.0, themeColors.l), new SpacerComponent(1.0, 2.0)});
+        linkedHashMap.put(new ThemeComponentGroupKey("Friend Settings", "newfriends"), new GuiComponent[]{new BooleanToggleComponent(friendManager.recolorVisuals), new ColorValueEditorComponent(friendManager.friendColor), new BooleanToggleComponent(friendManager.useFriends), new BooleanToggleComponent(friendManager.useAlias), new BooleanToggleComponent(friendManager.spoofAlias), new BindValueRowComponent(Vape.INSTANCE.getClientSettings().addFriendBind), new InsetFilledSpacerComponent(90.0, 2.0, 0.5, 4.0, themeColors.l), new SpacerComponent(1.0, 2.0)});
         FriendNotificationSettings friendNotificationSettings = null;
         OnlineSettings onlineSettings = null;
         try {
-            onlineSettings = OnlineConnectionManager.T.S();
+            onlineSettings = OnlineConnectionManager.INSTANCE.getSettings();
             if (onlineSettings != null) {
-                friendNotificationSettings = onlineSettings.m();
+                friendNotificationSettings = onlineSettings.getFriendNotificationSettings();
             }
         }
         catch (Throwable throwable) {
@@ -51,7 +51,7 @@ public final class ThemeComponentGroupFactory {
             linkedHashMap.put(new ThemeComponentGroupKey("Notification Settings", null), new GuiComponent[]{new BooleanToggleComponent(friendNotificationSettings.general), new BooleanToggleComponent(friendNotificationSettings.friendRequests), new BooleanToggleComponent(friendNotificationSettings.chats), new BooleanToggleComponent(friendNotificationSettings.friendOnline), new BooleanToggleComponent(friendNotificationSettings.partyInvites), new BooleanToggleComponent(friendNotificationSettings.partyInviteAccepted)});
         }
         if (onlineSettings != null) {
-            linkedHashMap.put(new ThemeComponentGroupKey("Party Settings", null), new GuiComponent[]{new DropdownSelectComponent(onlineSettings.x()), new BooleanToggleComponent(onlineSettings.y()), new BooleanToggleComponent(onlineSettings.k$src$Lgg_vape_value_BooleanValue_$ffgfgd()), new BooleanToggleComponent(onlineSettings.U())});
+            linkedHashMap.put(new ThemeComponentGroupKey("Party Settings", null), new GuiComponent[]{new DropdownSelectComponent(onlineSettings.getIndicatorColorMode()), new BooleanToggleComponent(onlineSettings.getPartyOverheadIndicator()), new BooleanToggleComponent(onlineSettings.getTargetIndicators()), new BooleanToggleComponent(onlineSettings.getSelfTargetIndicators())});
         }
         return linkedHashMap;
     }

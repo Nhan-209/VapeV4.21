@@ -30,7 +30,7 @@ extends Mapping {
     }
 
     public void setCanceled(Object object, boolean bl) {
-        this.b.c(object, bl);
+        this.b.invokeVoid(object, bl);
     }
 
 }

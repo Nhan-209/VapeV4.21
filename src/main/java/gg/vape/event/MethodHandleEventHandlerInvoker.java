@@ -9,29 +9,28 @@ import java.lang.reflect.Method;
 
 public class MethodHandleEventHandlerInvoker
 implements EventHandlerInvoker {
-    private final EventListener d;
-    private final MethodHandle s;
-    private final Class<? extends IEvent> b;
+    private final EventListener listener;
+    private final MethodHandle methodHandle;
+    private final Class<? extends IEvent> eventType;
 
     @Override
-    public <T extends IEvent> void B(T t) {
+    public <T extends IEvent> void invoke(T event) {
         try {
-            this.s.invoke(this.d, t);
+            this.methodHandle.invoke(this.listener, event);
         }
         catch (Throwable throwable) {
             throw new RuntimeException(throwable);
         }
     }
 
-    public MethodHandleEventHandlerInvoker(EventListener eventListener, Class<? extends IEvent> clazz, Method method) {
-        this.d = eventListener;
-        this.b = clazz;
+    public MethodHandleEventHandlerInvoker(EventListener listener, Class<? extends IEvent> eventType, Method method) {
+        this.listener = listener;
+        this.eventType = eventType;
         try {
-            this.s = MethodHandles.lookup().unreflect(method);
+            this.methodHandle = MethodHandles.lookup().unreflect(method);
         }
         catch (IllegalAccessException illegalAccessException) {
             throw new RuntimeException(illegalAccessException);
         }
     }
 }
-

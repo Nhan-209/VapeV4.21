@@ -2,7 +2,6 @@ package gg.vape.wrapper.impl;
 
 import gg.vape.mapping.mappings.MBlocks;
 import gg.vape.wrapper.Wrapper;
-import gg.vape.wrapper.impl.Block;
 
 public class Blocks
 extends Wrapper {
@@ -17,28 +16,28 @@ extends Wrapper {
 
     public static Block j() {
         if (d == null) {
-            d = new Block(MBlocks.M(Blocks.c.getMappingsMapperCompat().Rd));
+            d = new Block(MBlocks.M(Blocks.vapeInstance.getMappingsMapperCompat().Rd));
         }
         return d;
     }
 
     public static Block t() {
         if (h == null) {
-            h = new Block(MBlocks.J(Blocks.c.getMappingsMapperCompat().Rd));
+            h = new Block(MBlocks.J(Blocks.vapeInstance.getMappingsMapperCompat().Rd));
         }
         return h;
     }
 
     public static Block v() {
         if (W == null) {
-            W = new Block(MBlocks.z(Blocks.c.getMappingsMapperCompat().Rd));
+            W = new Block(MBlocks.z(Blocks.vapeInstance.getMappingsMapperCompat().Rd));
         }
         return W;
     }
 
     public static Block h() {
         if (w == null) {
-            w = new Block(MBlocks.U(Blocks.c.getMappingsMapperCompat().Rd));
+            w = new Block(MBlocks.U(Blocks.vapeInstance.getMappingsMapperCompat().Rd));
         }
         return w;
     }

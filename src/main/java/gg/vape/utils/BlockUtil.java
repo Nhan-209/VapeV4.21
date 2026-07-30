@@ -28,8 +28,8 @@ import java.util.Set;
 import java.util.regex.Pattern;
 
 public class BlockUtil {
-    private static final Pattern E = Pattern.compile("block.minecraft.(.+_bed)");
-    private static int[] g = null;
+    private static final Pattern bedNamePattern = Pattern.compile("block.minecraft.(.+_bed)");
+    private static int[] cachedBedBlockIds = null;
 
     public static boolean b(Block block) {
         if (ForgeVersion.MC_1_20_6.d()) {
@@ -58,7 +58,7 @@ public class BlockUtil {
                 Object v = map.get(k);
                 Block block = new Block(k);
                 Item item = new Item(v);
-                int n = BlockUtil.x(string, item);
+                int n = BlockUtil.resolveItemMetadata(string, item);
                 if (n == -1) continue;
                 nArray[0] = Block.R(block);
                 nArray[1] = n;
@@ -103,7 +103,7 @@ public class BlockUtil {
         return material.equals(Material.k()) || material.u();
     }
 
-    private static int x(String string, Item item) {
+    private static int resolveItemMetadata(String itemName, Item item) {
         if (item.isNull()) {
             return -1;
         }
@@ -121,12 +121,12 @@ public class BlockUtil {
             while (iterator.hasNext()) {
                 Object e = iterator.next();
                 ItemStack itemStack2 = new ItemStack(e);
-                if (!itemStack2.x().equalsIgnoreCase(string)) continue;
+                if (!itemStack2.x().equalsIgnoreCase(itemName)) continue;
                 return itemStack2.L();
             }
         }
-        String itemName = itemStack.x().toLowerCase();
-        if (itemName.equalsIgnoreCase(string)) {
+        String resolvedItemName = itemStack.x().toLowerCase();
+        if (resolvedItemName.equalsIgnoreCase(itemName)) {
             return itemStack.L();
         }
         return -1;
@@ -160,11 +160,11 @@ public class BlockUtil {
         return true;
     }
 
-    private static int[] b() {
-        if (g == null) {
-            g = ForgeVersion.MC_1_20_6.d() ? BlockUtil.Z(" bed") : new int[]{26};
+    private static int[] getBedBlockIds() {
+        if (cachedBedBlockIds == null) {
+            cachedBedBlockIds = ForgeVersion.MC_1_20_6.d() ? BlockUtil.Z(" bed") : new int[]{26};
         }
-        return g;
+        return cachedBedBlockIds;
     }
 
     public static int[] Z(String string) {
@@ -260,7 +260,7 @@ public class BlockUtil {
     public static boolean f(Block block) {
         int n = Block.R(block);
         String string = block.U();
-        return n == 26 || string != null && E.matcher(string).matches();
+        return n == 26 || string != null && bedNamePattern.matcher(string).matches();
     }
 
     private static int E(String string, Item item) {
@@ -295,7 +295,7 @@ public class BlockUtil {
     public static boolean v(Character c) {
         char c2 = c.charValue();
         int n = c2 >> 4;
-        for (int n2 : BlockUtil.b()) {
+        for (int n2 : BlockUtil.getBedBlockIds()) {
             if (n != n2) continue;
             return true;
         }

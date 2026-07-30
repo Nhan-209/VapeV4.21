@@ -11,8 +11,8 @@ implements ZeusSerializablePacket {
 
     @Override
     public void o(ZeusPacketBuffer gx_12) {
-        gx_12.r(this.r);
-        gx_12.y(this.O);
+        gx_12.writeUuid(this.r);
+        gx_12.writeString(this.O);
     }
 
     public ClientMinecraftProfilePacket() {
@@ -29,8 +29,8 @@ implements ZeusSerializablePacket {
 
     @Override
     public void S(ZeusPacketBuffer gx_12) {
-        this.r = gx_12.N();
-        this.O = gx_12.v(16);
+        this.r = gx_12.readUuid();
+        this.O = gx_12.readString(16);
     }
 
     public UUID e() {

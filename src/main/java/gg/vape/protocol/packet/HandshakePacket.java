@@ -22,7 +22,7 @@ extends ZeusTrackedPacket<HandshakeResponsePacket> {
 
     @Override
     public void T(ZeusPacketBuffer zeusPacketBuffer) {
-        zeusPacketBuffer.i(this.t);
+        zeusPacketBuffer.writeVarInt(this.t);
     }
 
     public static void C(int[] nArray) {
@@ -31,7 +31,7 @@ extends ZeusTrackedPacket<HandshakeResponsePacket> {
 
     @Override
     public void x(ZeusPacketBuffer zeusPacketBuffer) {
-        this.t = zeusPacketBuffer.Y();
+        this.t = zeusPacketBuffer.readVarInt();
     }
 
     public int E() {

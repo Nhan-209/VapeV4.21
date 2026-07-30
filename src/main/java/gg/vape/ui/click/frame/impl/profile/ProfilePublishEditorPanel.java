@@ -137,18 +137,18 @@ extends PublicProfileOverlayPanelBase {
     private void handlePublishComplete(ApiResponse apiResponse, Throwable throwable) {
         if (throwable != null) {
             Vape.logThrowable(throwable);
-            PublicProfileManager.b("Failed to publish profile.");
+            PublicProfileManager.showWarning("Failed to publish profile.");
             this.profilesFrame.O(null);
             return;
         }
-        if (!apiResponse.t()) {
-            PublicProfileManager.b("Failed to publish profile: " + apiResponse.N());
+        if (!apiResponse.isSuccessful()) {
+            PublicProfileManager.showWarning("Failed to publish profile: " + apiResponse.getError());
             return;
         }
         this.profilesFrame.O(null);
-        PublicProfile publicProfile = (PublicProfile)apiResponse.T();
+        PublicProfile publicProfile = (PublicProfile)apiResponse.getData();
         assert publicProfile != null;
-        Vape.INSTANCE.getPublicProfileManager().I(publicProfile);
+        Vape.INSTANCE.getPublicProfileManager().addProfile(publicProfile);
         this.profilesFrame.N(publicProfile);
     }
 
@@ -214,9 +214,9 @@ extends PublicProfileOverlayPanelBase {
     }
 
     private void changeSourceProfile(Profile profile) {
-        ProfileSnapshot profileSnapshot = profile.n(true);
+        ProfileSnapshot profileSnapshot = profile.createSnapshot(true);
         if (profileSnapshot == null) {
-            OnlineFriendUiHelper.w(NotificationType.WARNING, "Failed to change derived from.");
+            OnlineFriendUiHelper.showNotification(NotificationType.WARNING, "Failed to change derived from.");
             return;
         }
         this.sourceProfile = profile;
@@ -227,7 +227,7 @@ extends PublicProfileOverlayPanelBase {
     public ProfilePublishEditorPanel(PublicProfilesFrame publicProfilesFrame, Profile profile) {
         super(publicProfilesFrame);
         this.sourceProfile = profile;
-        this.snapshot = this.sourceProfile.n(true);
+        this.snapshot = this.sourceProfile.createSnapshot(true);
         this.e();
     }
 
@@ -245,7 +245,7 @@ extends PublicProfileOverlayPanelBase {
         Object object;
         String string = this.nameInput.getText().trim();
         if (string.length() < 3) {
-            PublicProfileManager.b("Please provide a profile name!");
+            PublicProfileManager.showWarning("Please provide a profile name!");
             this.nameInput.setPlaceholderColor(ProfilePublishEditorPanel.J.d);
             return null;
         }
@@ -254,20 +254,20 @@ extends PublicProfileOverlayPanelBase {
         boolean bl2 = this.friendsOnlyToggle.isOn();
         boolean bl3 = this.anonymousToggle.isOn();
         ArrayList<String> arrayList = new ArrayList<String>(this.tagSelector.getTokenValues());
-        if (arrayList.size() < 5 && (object = LegacyPublicProfile.S(this.tagSelector.getInput().getText().trim())) != null) {
-            String string3 = LegacyPublicProfile.e((String)object);
+        if (arrayList.size() < 5 && (object = LegacyPublicProfile.normalizeTag(this.tagSelector.getInput().getText().trim())) != null) {
+            String string3 = LegacyPublicProfile.validateTag((String)object);
             if (string3 != null) {
-                PublicProfileManager.b(string3);
+                PublicProfileManager.showWarning(string3);
                 return null;
             }
             arrayList.add((String)object);
             this.tagSelector.addToken(new PublicProfileFilterTokenComponent((String)object));
             this.tagSelector.getInput().setText("");
         }
-        if ((object = this.sourceProfile.I()) == null) {
-            Vape.INSTANCE.getProfilesManager().M(this.sourceProfile);
+        if ((object = this.sourceProfile.copyPublishedData()) == null) {
+            Vape.INSTANCE.getProfilesManager().captureProfileState(this.sourceProfile);
         }
-        return ApiServices.d().R().y(PublicProfileJsonPayloadBuilder.b(string, "4.21", string2, arrayList, !bl, bl3, bl2, this.sourceProfile.P$src$Ljava_util_UUID_$kdhg08(), (com.google.gson.JsonObject)object)).whenCompleteAsync(this::handlePublishComplete, (Executor)ClientSettings.UI_EXECUTOR).exceptionally(ProfilePublishEditorPanel::ignoreHandledPublishFailure);
+        return ApiServices.getInstance().getPublicProfileApi().createProfile(PublicProfileJsonPayloadBuilder.build(string, "4.21", string2, arrayList, !bl, bl3, bl2, this.sourceProfile.getOnlineId(), (com.google.gson.JsonObject)object)).whenCompleteAsync(this::handlePublishComplete, (Executor)ClientSettings.UI_EXECUTOR).exceptionally(ProfilePublishEditorPanel::ignoreHandledPublishFailure);
     }
 
     @Override
@@ -309,8 +309,8 @@ extends PublicProfileOverlayPanelBase {
         panelComponent2.h(panelComponent4, new Object[0]);
         this.getClass();
         panelComponent2.h(new SpacerComponent(0.0, 5.0), new Object[0]);
-        List<Profile> list = Vape.INSTANCE.getPublicProfileManager().T();
-        ArrayList<Profile> arrayList = new ArrayList<Profile>(Vape.INSTANCE.getProfilesManager().b());
+        List<Profile> list = Vape.INSTANCE.getPublicProfileManager().getDerivedProfiles();
+        ArrayList<Profile> arrayList = new ArrayList<Profile>(Vape.INSTANCE.getProfilesManager().getProfiles());
         arrayList.removeIf(list::contains);
         ProfileSelectionPopupComponent profileSelectionPopupComponent = new ProfileSelectionPopupComponent("Derived From", this.sourceProfile, arrayList.toArray(new Profile[0]));
         profileSelectionPopupComponent.Y(6.0);

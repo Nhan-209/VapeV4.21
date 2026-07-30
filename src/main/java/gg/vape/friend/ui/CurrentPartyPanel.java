@@ -31,45 +31,45 @@ import org.jetbrains.annotations.Nullable;
 
 public class CurrentPartyPanel
 extends AnimatedPanelComponent {
-    private PartyDetailsAndChatPanel D8;
-    private final TextButton Dq;
-    private String D_;
-    private final ColorAnimation D9;
-    private final SpacerComponent DT;
-    private static GuiComponent[] Dp;
-    private PartyState Dd;
-    private PopupFrame D1;
-    private boolean Ds;
-    private TruncatedTextComponent DU;
-    private final PanelComponent Dg = new PanelComponent(23.0, 14.0);
+    private PartyDetailsAndChatPanel detailsPanel;
+    private final TextButton leaveOrDisbandButton;
+    private String partyName;
+    private final ColorAnimation hoverAnimation;
+    private final SpacerComponent iconSpacer;
+    private static GuiComponent[] obfuscationComponents;
+    private PartyState partyState;
+    private PopupFrame detailsPopup;
+    private boolean actionPending;
+    private final TruncatedTextComponent partyNameLabel;
+    private final PanelComponent actionPanel = new PanelComponent(23.0, 14.0);
 
-    private void lambda$null$1() {
-        this.Ds = false;
+    private void handleDisbandFailure() {
+        this.actionPending = false;
     }
 
-    private void lambda$leaveAction$5() {
-        this.Ds = false;
+    private void handleLeaveFailure() {
+        this.actionPending = false;
     }
 
-    private static void lambda$leaveAction$4(GroupLeaveResponsePacket groupLeaveResponsePacket) {
+    private static void handleLeaveResponse(GroupLeaveResponsePacket response) {
     }
 
-    public static PartyDetailsAndChatPanel U(CurrentPartyPanel currentPartyPanel, PartyDetailsAndChatPanel partyDetailsAndChatPanel) {
-        currentPartyPanel.D8 = partyDetailsAndChatPanel;
-        return currentPartyPanel.D8;
+    public static PartyDetailsAndChatPanel setDetailsPanel(CurrentPartyPanel panel, PartyDetailsAndChatPanel detailsPanel) {
+        panel.detailsPanel = detailsPanel;
+        return panel.detailsPanel;
     }
 
-    public static void W(CurrentPartyPanel currentPartyPanel, Point point, MouseClickButton mouseClickButton) {
-        currentPartyPanel.q(point, mouseClickButton);
+    public static void openDetails(CurrentPartyPanel panel, Point point, MouseClickButton mouseClickButton) {
+        panel.openDetails(point, mouseClickButton);
     }
 
-    public static PopupFrame n(CurrentPartyPanel currentPartyPanel) {
-        return currentPartyPanel.D1;
+    public static PopupFrame getDetailsPopup(CurrentPartyPanel panel) {
+        return panel.detailsPopup;
     }
 
-    private void lambda$leaveAction$2(PopupFrame popupFrame) {
+    private void confirmDisband(PopupFrame popupFrame) {
         ClientSettings.removePopup(popupFrame);
-        ZeusConnectionManager.T().u().l(CurrentPartyPanel::lambda$null$0, this::lambda$null$1);
+        ZeusConnectionManager.T().u().l(CurrentPartyPanel::handleDisbandResponse, this::handleDisbandFailure);
     }
 
     @Override
@@ -77,142 +77,142 @@ extends AnimatedPanelComponent {
         if (Vape.INSTANCE.getOnlineManager() == null) {
             return;
         }
-        this.D9.u(this.w$src$Z$e457mb());
-        this.Dd = Vape.INSTANCE.getOnlineManager().y().j();
-        this.setVisible(this.Dd != null);
-        if (this.Dd != null) {
-            if (this.Dd.r().equals(Vape.INSTANCE.getOnlineManager().r())) {
-                this.Dq.setLabelText("DISBAND");
-                this.Dq.w("Disband party");
-                this.Dq.setExplicitWidth(23.0);
-                this.Dq.o(23.0);
+        this.hoverAnimation.u(this.w$src$Z$e457mb());
+        this.partyState = Vape.INSTANCE.getOnlineManager().getPartyManager().getCurrentParty();
+        this.setVisible(this.partyState != null);
+        if (this.partyState != null) {
+            if (this.partyState.getLeader().equals(Vape.INSTANCE.getOnlineManager().getLocalFriend())) {
+                this.leaveOrDisbandButton.setLabelText("DISBAND");
+                this.leaveOrDisbandButton.w("Disband party");
+                this.leaveOrDisbandButton.setExplicitWidth(23.0);
+                this.leaveOrDisbandButton.o(23.0);
                 this.w("Disband party");
-                this.D_ = "My party";
+                this.partyName = "My party";
             } else {
-                this.Dq.setLabelText("LEAVE");
-                this.Dq.w("Leave party");
+                this.leaveOrDisbandButton.setLabelText("LEAVE");
+                this.leaveOrDisbandButton.w("Leave party");
                 this.w("Leave party");
-                this.Dq.setExplicitWidth(18.0);
-                this.Dq.o(18.0);
-                this.D_ = this.Dd.r().C() + "'s party";
+                this.leaveOrDisbandButton.setExplicitWidth(18.0);
+                this.leaveOrDisbandButton.o(18.0);
+                this.partyName = this.partyState.getLeader().getDisplayName() + "'s party";
             }
-            this.DU.setExplicitWidth(this.A() - 18.0 - this.Dq.A() - 4.0);
-            this.DU.setMaxWidth(this.A() - 18.0 - this.Dq.A() - 6.0);
-            this.DU.setText(this.D_);
+            this.partyNameLabel.setExplicitWidth(this.A() - 18.0 - this.leaveOrDisbandButton.A() - 4.0);
+            this.partyNameLabel.setMaxWidth(this.A() - 18.0 - this.leaveOrDisbandButton.A() - 6.0);
+            this.partyNameLabel.setText(this.partyName);
         } else {
             this.w("Open party");
-            if (this.D1 != null) {
-                ClientSettings.removePopup(this.D1);
-                this.D8 = null;
-                this.D1 = null;
+            if (this.detailsPopup != null) {
+                ClientSettings.removePopup(this.detailsPopup);
+                this.detailsPanel = null;
+                this.detailsPopup = null;
             }
         }
     }
 
 
-    public static PopupFrame f(CurrentPartyPanel currentPartyPanel, PopupFrame popupFrame) {
-        currentPartyPanel.D1 = popupFrame;
-        return currentPartyPanel.D1;
+    public static PopupFrame setDetailsPopup(CurrentPartyPanel panel, PopupFrame popupFrame) {
+        panel.detailsPopup = popupFrame;
+        return panel.detailsPopup;
     }
 
-    public static GuiComponent[] V$src$ALgg_vape_ui_click_component_GuiComponent_$uexm5r() {
-        return Dp;
+    public static GuiComponent[] getObfuscationComponents() {
+        return obfuscationComponents;
     }
 
-    private void q(Point point, MouseClickButton mouseClickButton) {
-        this.D8 = new PartyDetailsAndChatPanel(this.Dd);
-        this.D1 = ClientSettings.createPopup(this, this.D8, PopupFrame.class);
-        this.D8.e$src$Lgg_vape_ui_click_component_IconButtonComponent_$pbqe5z().addClickListener(new PartyDetailsPopupCloseClickHandler(this));
+    private void openDetails(Point point, MouseClickButton mouseClickButton) {
+        this.detailsPanel = new PartyDetailsAndChatPanel(this.partyState);
+        this.detailsPopup = ClientSettings.createPopup(this, this.detailsPanel, PopupFrame.class);
+        this.detailsPanel.getCloseButton().addClickListener(new PartyDetailsPopupCloseClickHandler(this));
     }
 
-    private static void lambda$null$0(GroupDeleteResponsePacket groupDeleteResponsePacket) {
+    private static void handleDisbandResponse(GroupDeleteResponsePacket response) {
     }
 
-    public static void x(GuiComponent[] guiComponentArray) {
-        Dp = guiComponentArray;
+    public static void setObfuscationComponents(GuiComponent[] components) {
+        obfuscationComponents = components;
     }
 
-    private void lambda$leaveAction$3(PopupFrame popupFrame) {
+    private void cancelDisband(PopupFrame popupFrame) {
         ClientSettings.removePopup(popupFrame);
-        this.Ds = false;
+        this.actionPending = false;
     }
 
     public CurrentPartyPanel() {
         super(100.0, 16.0);
-        this.DT = new SpacerComponent(18.0, 16.0);
-        this.Dq = new TextButton("LEAVE", 0.6, CurrentPartyPanel.J.d, CurrentPartyPanel.J.c, 18.0, 8.0);
-        this.D9 = new ColorAnimation(0.15, new Color(150, 150, 150, 0), new Color(150, 150, 150, 20));
-        this.Ds = false;
+        this.iconSpacer = new SpacerComponent(18.0, 16.0);
+        this.leaveOrDisbandButton = new TextButton("LEAVE", 0.6, CurrentPartyPanel.J.d, CurrentPartyPanel.J.c, 18.0, 8.0);
+        this.hoverAnimation = new ColorAnimation(0.15, new Color(150, 150, 150, 0), new Color(150, 150, 150, 20));
+        this.actionPending = false;
         this.setShowDisabledOverlay(false);
-        this.Dg.setShowDisabledOverlay(false);
-        this.Dg.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().Q(true);
-        this.DU = new TruncatedTextComponent("", "...", 48.0, 0.8, CurrentPartyPanel.J.A, true);
-        this.Dq.addClickListener(new CurrentPartyLeaveDeleteClickHandler(this));
-        this.DU.addMouseListener(new CurrentPartyNameOpenDetailsMouseListener(this));
+        this.actionPanel.setShowDisabledOverlay(false);
+        this.actionPanel.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().Q(true);
+        this.partyNameLabel = new TruncatedTextComponent("", "...", 48.0, 0.8, CurrentPartyPanel.J.A, true);
+        this.leaveOrDisbandButton.addClickListener(new CurrentPartyLeaveDeleteClickHandler(this));
+        this.partyNameLabel.addMouseListener(new CurrentPartyNameOpenDetailsMouseListener(this));
         this.addMouseListener(new CurrentPartyPanelOpenDetailsMouseListener(this));
         this.w("Open party");
-        this.Dq.setDeriveTextColorFromBackground(false);
-        this.Dq.setNormalTextColor(Color.WHITE);
-        this.Dg.addChildren(this.Dq);
-        this.addChildren(this.DT, this.DU, this.Dg);
+        this.leaveOrDisbandButton.setDeriveTextColorFromBackground(false);
+        this.leaveOrDisbandButton.setNormalTextColor(Color.WHITE);
+        this.actionPanel.addChildren(this.leaveOrDisbandButton);
+        this.addChildren(this.iconSpacer, this.partyNameLabel, this.actionPanel);
     }
 
     @Override
     public void H() {
-        if (this.D1 != null) {
+        if (this.detailsPopup != null) {
             Frame frame = this.L$src$Lgg_vape_ui_click_frame_Frame_$1djx6sa();
-            this.D1.K(this.G$src$D$1b2f02a());
-            this.D1.S(frame.n() + frame.j$src$Lgg_vape_ui_click_frame_FrameHeaderComponent_$175vsfc().L());
-            double d = frame.L() - frame.j$src$Lgg_vape_ui_click_frame_FrameHeaderComponent_$175vsfc().L() - 45.0;
-            this.D8.e$src$Lgg_vape_friend_ui_OnlineChatPanel_$1fym7va().z().setExplicitHeight(d);
-            this.D8.e$src$Lgg_vape_friend_ui_OnlineChatPanel_$1fym7va().z().t(d);
-            this.D8.e$src$Lgg_vape_friend_ui_OnlineChatPanel_$1fym7va().z().l$src$V$1mibm4x();
-            this.D1.l$src$V$1mibm4x();
+            this.detailsPopup.K(this.G$src$D$1b2f02a());
+            this.detailsPopup.S(frame.n() + frame.j$src$Lgg_vape_ui_click_frame_FrameHeaderComponent_$175vsfc().L());
+            double chatHeight = frame.L() - frame.j$src$Lgg_vape_ui_click_frame_FrameHeaderComponent_$175vsfc().L() - 45.0;
+            this.detailsPanel.getChatPanel().getMessageListPanel().setExplicitHeight(chatHeight);
+            this.detailsPanel.getChatPanel().getMessageListPanel().t(chatHeight);
+            this.detailsPanel.getChatPanel().getMessageListPanel().l$src$V$1mibm4x();
+            this.detailsPopup.l$src$V$1mibm4x();
         }
-        this.DU.S(this.n() + 5.0);
+        this.partyNameLabel.S(this.n() + 5.0);
     }
 
-    public static void M(CurrentPartyPanel currentPartyPanel) {
-        currentPartyPanel.e$src$V$1pzycwa();
+    public static void performLeaveOrDisband(CurrentPartyPanel panel) {
+        panel.performLeaveOrDisband();
     }
 
     @Override
     public void c() {
-        if (this.Dd == null) {
+        if (this.partyState == null) {
             return;
         }
         GuiRenderPrimitives.d(this.G$src$D$1b2f02a(), this.n(), this.A(), this.L() - 2.0, CurrentPartyPanel.J.m.brighter());
-        GuiRenderPrimitives.d(this.G$src$D$1b2f02a(), this.n(), this.A(), this.L() - 2.0, this.D9.getInterpolatedColor());
-        float f = (float)(this.G$src$D$1b2f02a() + 6.0);
-        float f2 = (float)(this.n() + 4.0);
-        ImageRenderer.drawImage(CurrentPartyPanel.J.B, f, f2, "party1@2x", 7.0f, 6.3f, false);
+        GuiRenderPrimitives.d(this.G$src$D$1b2f02a(), this.n(), this.A(), this.L() - 2.0, this.hoverAnimation.getInterpolatedColor());
+        float iconX = (float)(this.G$src$D$1b2f02a() + 6.0);
+        float iconY = (float)(this.n() + 4.0);
+        ImageRenderer.drawImage(CurrentPartyPanel.J.B, iconX, iconY, "party1@2x", 7.0f, 6.3f, false);
         ImageRenderer.drawImage(CurrentPartyPanel.J.B, (float)(this.G$src$D$1b2f02a() + this.A() - 22.0), (float)this.n() - 0.5f, "join party texture@2x", 14.5f, 14.5f, false);
         super.c();
     }
 
     static {
-        CurrentPartyPanel.x(null);
+        CurrentPartyPanel.setObfuscationComponents(null);
     }
 
     @Nullable
-    public PartyDetailsAndChatPanel v$src$Lgg_vape_friend_ui_PartyDetailsAndChatPanel_$1pxu2wh() {
-        return this.D8;
+    public PartyDetailsAndChatPanel getDetailsPanel() {
+        return this.detailsPanel;
     }
 
-    private void e$src$V$1pzycwa() {
-        if (this.Ds) {
+    private void performLeaveOrDisband() {
+        if (this.actionPending) {
             return;
         }
-        this.Ds = true;
-        if (this.Dd != null) {
-            if (this.Dd.r().equals(Vape.INSTANCE.getOnlineManager().r())) {
-                ConfirmationDialogComponent confirmationDialogComponent = new ConfirmationDialogComponent("Are you sure you want to disband the party?", "DISBAND", "disband confirm@2x");
-                DimmedCenteredPopupFrame dimmedCenteredPopupFrame = ClientSettings.createPopup(this.L$src$Lgg_vape_ui_click_frame_Frame_$1djx6sa(), confirmationDialogComponent, DimmedCenteredPopupFrame.class);
-                confirmationDialogComponent.getConfirmButton().addClickListener(() -> this.lambda$leaveAction$2(dimmedCenteredPopupFrame));
-                confirmationDialogComponent.getCloseButton().addClickListener(() -> this.lambda$leaveAction$3(dimmedCenteredPopupFrame));
-                dimmedCenteredPopupFrame.q(this.L$src$Lgg_vape_ui_click_frame_Frame_$1djx6sa(), dimmedCenteredPopupFrame);
+        this.actionPending = true;
+        if (this.partyState != null) {
+            if (this.partyState.getLeader().equals(Vape.INSTANCE.getOnlineManager().getLocalFriend())) {
+                ConfirmationDialogComponent confirmationDialog = new ConfirmationDialogComponent("Are you sure you want to disband the party?", "DISBAND", "disband confirm@2x");
+                DimmedCenteredPopupFrame confirmationPopup = ClientSettings.createPopup(this.L$src$Lgg_vape_ui_click_frame_Frame_$1djx6sa(), confirmationDialog, DimmedCenteredPopupFrame.class);
+                confirmationDialog.getConfirmButton().addClickListener(() -> this.confirmDisband(confirmationPopup));
+                confirmationDialog.getCloseButton().addClickListener(() -> this.cancelDisband(confirmationPopup));
+                confirmationPopup.q(this.L$src$Lgg_vape_ui_click_frame_Frame_$1djx6sa(), confirmationPopup);
             } else {
-                ZeusConnectionManager.T().u().u(CurrentPartyPanel::lambda$leaveAction$4, this::lambda$leaveAction$5);
+                ZeusConnectionManager.T().u().u(CurrentPartyPanel::handleLeaveResponse, this::handleLeaveFailure);
             }
         }
     }

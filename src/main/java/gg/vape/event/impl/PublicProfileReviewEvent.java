@@ -6,24 +6,23 @@ import gg.vape.event.EventListeners;
 
 public class PublicProfileReviewEvent
 extends Event {
-    private static final EventListeners t = new EventListeners();
-    private final PublicProfileReview h;
+    private static final EventListeners EVENT_LISTENERS = new EventListeners();
+    private final PublicProfileReview review;
 
     public static EventListeners getEventListeners() {
-        return t;
+        return EVENT_LISTENERS;
     }
 
     @Override
     public EventListeners getListeners() {
-        return t;
+        return EVENT_LISTENERS;
     }
 
     public PublicProfileReviewEvent(PublicProfileReview publicProfileReview) {
-        this.h = publicProfileReview;
+        this.review = publicProfileReview;
     }
 
     public PublicProfileReview getReview() {
-        return this.h;
+        return this.review;
     }
 }
-

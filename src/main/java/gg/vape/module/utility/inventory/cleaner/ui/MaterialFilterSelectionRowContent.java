@@ -11,7 +11,7 @@ class MaterialFilterSelectionRowContent
 extends GuiComponent {
     private final ColorAnimation backgroundColorAnimation;
     private final ItemFilterSelectionComponent selectionComponent;
-    final MaterialFilterSelectionRow o;
+    final MaterialFilterSelectionRow row;
 
     @Override
     public void c() {
@@ -43,7 +43,7 @@ extends GuiComponent {
     }
 
     MaterialFilterSelectionRowContent(MaterialFilterSelectionRow materialFilterSelectionRow, ItemFilterSelection itemFilterSelection) {
-        this.o = materialFilterSelectionRow;
+        this.row = materialFilterSelectionRow;
         this.backgroundColorAnimation = new ColorAnimation(0.15, MaterialFilterSelectionRowContent.J.z, MaterialFilterSelectionRowContent.J.M);
         this.selectionComponent = new ItemFilterSelectionComponent(itemFilterSelection);
         this.setPropagateMouseEvents(true);

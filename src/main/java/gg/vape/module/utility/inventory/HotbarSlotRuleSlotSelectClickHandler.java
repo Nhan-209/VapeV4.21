@@ -7,24 +7,24 @@ import gg.vape.ui.click.component.GuiClickListener;
 
 class HotbarSlotRuleSlotSelectClickHandler
 implements GuiClickListener {
-    final int d;
-    final HotbarSlotRuleItemPickerFrame F;
-    final HotbarSlotRuleSlotSelectorComponent i;
+    final int slotIndex;
+    final HotbarSlotRuleItemPickerFrame pickerFrame;
+    final HotbarSlotRuleSlotSelectorComponent slotSelector;
 
     HotbarSlotRuleSlotSelectClickHandler(HotbarSlotRuleSlotSelectorComponent hotbarSlotRuleSlotSelectorComponent, HotbarSlotRuleItemPickerFrame hotbarSlotRuleItemPickerFrame, int slotIndex) {
-        this.i = hotbarSlotRuleSlotSelectorComponent;
-        this.F = hotbarSlotRuleItemPickerFrame;
-        this.d = slotIndex;
+        this.slotSelector = hotbarSlotRuleSlotSelectorComponent;
+        this.pickerFrame = hotbarSlotRuleItemPickerFrame;
+        this.slotIndex = slotIndex;
     }
 
     @Override
     public void onSecondaryClick() {
-        this.F.N$src$Lgg_vape_module_utility_inventory_HotbarSlotRule$xa58f().u$src$Ljava_util_List_$1u5n2i3().set(this.d, new HotbarSlotRule(0));
+        this.pickerFrame.getGroupComponent().getRules().set(this.slotIndex, new HotbarSlotRule(0));
     }
 
     @Override
     public void onPrimaryClick() {
-        this.F.t(this.d);
+        this.pickerFrame.setSelectedSlot(this.slotIndex);
     }
 }
 

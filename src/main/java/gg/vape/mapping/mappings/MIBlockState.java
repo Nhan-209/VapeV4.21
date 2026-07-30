@@ -21,7 +21,7 @@ extends Mapping {
     private MappingField B;
 
     private Object t(Object object) {
-        return this.X.L(object, new Object[0]);
+        return this.X.invokeObject(object, new Object[0]);
     }
 
     public static int[] v() {
@@ -50,7 +50,7 @@ extends Mapping {
     }
 
     public boolean W(Object object) {
-        return this.l.e(object, new Object[0]);
+        return this.l.invokeBoolean(object, new Object[0]);
     }
 
     public MIBlockState() {
@@ -73,7 +73,7 @@ extends Mapping {
             String string2 = "getValue";
             Class clazz3 = MappedClasses.FX;
             MIBlockState mIBlockState2 = this;
-            this.u = this.W(clazz3, string2, bl2, clazz2, classArray2);
+            this.u = this.registerInstanceMethodForOwner(clazz3, string2, bl2, clazz2, classArray2);
             Class[] classArray3 = new Class[]{};
             Class<Boolean> clazz4 = Boolean.TYPE;
             boolean bl3 = true;
@@ -101,14 +101,14 @@ extends Mapping {
             String string7 = "properties";
             Class clazz9 = MappedClasses.FX;
             MIBlockState mIBlockState7 = this;
-            this.g = this.X(clazz9, string7, bl7, clazz8);
+            this.g = this.registerInstanceFieldForOwner(clazz9, string7, bl7, clazz8);
             Class[] classArray4 = new Class[]{};
             Class clazz10 = MappedClasses.Dw;
             boolean bl8 = true;
             String string8 = "getFluidState";
             Class clazz11 = MappedClasses.Fj;
             MIBlockState mIBlockState8 = this;
-            this.X = this.W(clazz11, string8, bl8, clazz10, classArray4);
+            this.X = this.registerInstanceMethodForOwner(clazz11, string8, bl8, clazz10, classArray4);
         } else {
             Class[] classArray5 = new Class[]{};
             Class<ImmutableMap> clazz12 = ImmutableMap.class;
@@ -120,14 +120,14 @@ extends Mapping {
     }
 
     public Object v(Object object) {
-        return this.O.L(object, new Object[0]);
+        return this.O.invokeObject(object, new Object[0]);
     }
 
     public ImmutableMap w(Object object) {
         if (ForgeVersion.MC_1_16_5.d()) {
             return (ImmutableMap)this.g.getObject(object);
         }
-        return (ImmutableMap)this.c.L(object, new Object[0]);
+        return (ImmutableMap)this.c.invokeObject(object, new Object[0]);
     }
 
     public static void W(int[] nArray) {
@@ -135,7 +135,7 @@ extends Mapping {
     }
 
     public Object o(Object object, Object object2) {
-        return this.u.L(object, object2);
+        return this.u.invokeObject(object, object2);
     }
 }
 

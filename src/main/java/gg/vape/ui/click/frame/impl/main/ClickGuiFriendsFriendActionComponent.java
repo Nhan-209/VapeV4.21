@@ -149,7 +149,7 @@ extends InteractiveComponent {
         this.playerName = string;
         this.Y(22.0);
         this.setShowDisabledOverlay(false);
-        this.avatar = entityPlayer != null && entityPlayer.isNotNull() ? PlayerAvatarComponent.D(entityPlayer, 14.0, 14.0) : (playerInfo != null ? ((resourceLocation = playerInfo.i()) != null && resourceLocation.isNotNull() ? PlayerAvatarComponent.q(resourceLocation, string, 14.0, 14.0) : new PlayerAvatarComponent(string, 14.0, 14.0)) : new PlayerAvatarComponent(string, 14.0, 14.0));
+        this.avatar = entityPlayer != null && entityPlayer.isNotNull() ? PlayerAvatarComponent.fromEntityPlayer(entityPlayer, 14.0, 14.0) : (playerInfo != null ? ((resourceLocation = playerInfo.i()) != null && resourceLocation.isNotNull() ? PlayerAvatarComponent.fromTexture(resourceLocation, string, 14.0, 14.0) : new PlayerAvatarComponent(string, 14.0, 14.0)) : new PlayerAvatarComponent(string, 14.0, 14.0));
         this.nameLabel = new TruncatedTextComponent(string, "...", 0.0, 0.75, TEXT_COLOR, false);
         this.nameLabel.setShadowEnabled(false);
         this.nameLabel.setAdditionalTooltipText(string);

@@ -5,26 +5,26 @@ import java.util.function.BiConsumer;
 import java.util.function.Function;
 
 public enum GroupOption {
-    OPEN_INVITES(Boolean.class, false, GroupOption::lambda$static$0, ZeusPacketBuffer::a$src$Z$1c50x8d);
+    OPEN_INVITES(Boolean.class, false, GroupOption::lambda$static$0, ZeusPacketBuffer::readBoolean);
 
-    private static final GroupOption[] h;
-    private final Class<?> y;
-    private final BiConsumer<ZeusPacketBuffer, Object> T;
-    private final Function<ZeusPacketBuffer, Object> S;
-    private final Object r;
+    private static final GroupOption[] valuesCache;
+    private final Class<?> valueType;
+    private final BiConsumer<ZeusPacketBuffer, Object> valueWriter;
+    private final Function<ZeusPacketBuffer, Object> valueReader;
+    private final Object defaultValue;
 
     static {
         String string = "OPEN_INVITES";
 
-        h = new GroupOption[]{OPEN_INVITES};
+        valuesCache = new GroupOption[]{OPEN_INVITES};
     }
 
-    public BiConsumer<ZeusPacketBuffer, Object> O() {
-        return this.T;
+    public BiConsumer<ZeusPacketBuffer, Object> getValueWriter() {
+        return this.valueWriter;
     }
 
-    public Class<?> u() {
-        return this.y;
+    public Class<?> getValueType() {
+        return this.valueType;
     }
 
     private static String a(byte[] byArray) {
@@ -56,23 +56,22 @@ public enum GroupOption {
         return new String(cArray, 0, n);
     }
 
-    public Object z() {
-        return this.r;
+    public Object getDefaultValue() {
+        return this.defaultValue;
     }
 
-    private GroupOption(Class<?> clazz, Object object, BiConsumer<ZeusPacketBuffer, Object> biConsumer, Function<ZeusPacketBuffer, Object> function) {
-        this.y = clazz;
-        this.r = object;
-        this.T = biConsumer;
-        this.S = function;
+    private GroupOption(Class<?> valueType, Object defaultValue, BiConsumer<ZeusPacketBuffer, Object> valueWriter, Function<ZeusPacketBuffer, Object> valueReader) {
+        this.valueType = valueType;
+        this.defaultValue = defaultValue;
+        this.valueWriter = valueWriter;
+        this.valueReader = valueReader;
     }
 
-    public Function<ZeusPacketBuffer, Object> p() {
-        return this.S;
+    public Function<ZeusPacketBuffer, Object> getValueReader() {
+        return this.valueReader;
     }
 
     private static void lambda$static$0(ZeusPacketBuffer zeusPacketBuffer, Object object) {
-        zeusPacketBuffer.Y((Boolean)object);
+        zeusPacketBuffer.writeBoolean((Boolean)object);
     }
 }
-

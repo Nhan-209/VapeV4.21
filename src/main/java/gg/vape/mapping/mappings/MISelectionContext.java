@@ -24,7 +24,7 @@ extends Mapping {
     }
 
     public Object v(Object object) {
-        return this.z.O(object);
+        return this.z.newInstance(object);
     }
 
 
@@ -39,7 +39,7 @@ extends Mapping {
         boolean bl2 = true;
         String string = b;
         MISelectionContext mISelectionContext = this;
-        this.z = this.x(string, bl2, clazz, classArray);
+        this.z = this.registerStaticMethod(string, bl2, clazz, classArray);
         boolean bl3 = bl;
     }
 

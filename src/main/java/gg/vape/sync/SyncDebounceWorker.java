@@ -23,7 +23,7 @@ implements Runnable {
     private void processPendingSave() {
         try {
             SleepUtil.sleep(1000L);
-            if (!Vape.INSTANCE.getPublicProfileSettings().o.getEffectiveValue()) {
+            if (!Vape.INSTANCE.getPublicProfileSettings().autoSave.getEffectiveValue()) {
                 return;
             }
             if (!ClientSettings.INSTANCE.isMainGuiStack() && !ClientSettings.INSTANCE.inputEnabled) {

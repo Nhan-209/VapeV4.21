@@ -11,42 +11,41 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 public class LicenseInfoClient {
-    HttpURLConnection l;
-    private final Gson F = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+    HttpURLConnection connection;
+    private final Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
 
-    public LicenseInfo v(String string) {
+    public LicenseInfo fetchLicenseInfo(String licenseKey) {
         try {
-            String string2;
-            URL uRL = new URL("http://api.thealtening.com/v2/license?key=" + string);
-            this.l = (HttpURLConnection)uRL.openConnection();
-            this.l.setRequestMethod("GET");
-            this.l.setUseCaches(false);
-            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(this.l.getInputStream()));
-            StringBuffer stringBuffer = new StringBuffer();
-            while ((string2 = bufferedReader.readLine()) != null) {
-                stringBuffer.append(string2);
-                stringBuffer.append('\r');
+            String responseLine;
+            URL endpoint = new URL("http://api.thealtening.com/v2/license?key=" + licenseKey);
+            this.connection = (HttpURLConnection)endpoint.openConnection();
+            this.connection.setRequestMethod("GET");
+            this.connection.setUseCaches(false);
+            BufferedReader responseReader = new BufferedReader(new InputStreamReader(this.connection.getInputStream()));
+            StringBuffer responseBody = new StringBuffer();
+            while ((responseLine = responseReader.readLine()) != null) {
+                responseBody.append(responseLine);
+                responseBody.append('\r');
             }
-            bufferedReader.close();
-            return (LicenseInfo)this.F.fromJson(stringBuffer.toString(), LicenseInfo.class);
+            responseReader.close();
+            return (LicenseInfo)this.gson.fromJson(responseBody.toString(), LicenseInfo.class);
         }
-        catch (Exception exception) {
-            Vape.logThrowable(exception);
+        catch (Exception error) {
+            Vape.logThrowable(error);
             try {
-                if (this.l.getResponseCode() == 403) {
+                if (this.connection.getResponseCode() == 403) {
                     return null;
                 }
-                System.out.println("Unhandled error code: " + this.l.getResponseCode());
+                System.out.println("Unhandled error code: " + this.connection.getResponseCode());
             }
-            catch (IOException iOException) {
-                Vape.logThrowable(iOException);
+            catch (IOException responseError) {
+                Vape.logThrowable(responseError);
             }
             return null;
         }
     }
 
-    private static Exception a(Exception exception) {
-        return exception;
+    private static Exception preserveException(Exception error) {
+        return error;
     }
 }
-

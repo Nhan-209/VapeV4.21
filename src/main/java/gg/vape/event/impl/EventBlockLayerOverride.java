@@ -9,23 +9,23 @@ import gg.vape.wrapper.impl.EnumWorldBlockLayer;
 
 public class EventBlockLayerOverride
 extends Event {
-    private boolean t;
-    private final Block e;
-    private static int G;
-    private static final EventListeners g;
+    private boolean shouldRender;
+    private final Block block;
+    private static int obfuscationState;
+    private static final EventListeners EVENT_LISTENERS;
 
     public static EventListeners getEventListeners() {
-        return g;
+        return EVENT_LISTENERS;
     }
 
 
     public Block getBlock() {
-        return this.e;
+        return this.block;
     }
 
     @Override
     public boolean fire() {
-        XRay xRay = Vape.INSTANCE.getModManager().G();
+        XRay xRay = Vape.INSTANCE.getModManager().getXRayModule();
         if (xRay == null || !xRay.boolean_r()) {
             return false;
         }
@@ -35,38 +35,37 @@ extends Event {
 
     @Override
     public EventListeners getListeners() {
-        return g;
+        return EVENT_LISTENERS;
     }
 
-    public EventBlockLayerOverride(Object object) {
-        this.e = new Block(object);
+    public EventBlockLayerOverride(Object blockHandle) {
+        this.block = new Block(blockHandle);
     }
 
-    public void setShouldRender(boolean bl) {
-        this.t = bl;
+    public void setShouldRender(boolean shouldRender) {
+        this.shouldRender = shouldRender;
     }
 
-    public static int f() {
-        return G;
+    public static int getBlockLayerObfuscationState() {
+        return obfuscationState;
     }
 
-    public static void O(int n) {
-        G = n;
+    public static void setBlockLayerObfuscationState(int state) {
+        obfuscationState = state;
     }
 
-    public static int I() {
-        int n = EventBlockLayerOverride.f();
+    public static int getObfuscationConstant() {
+        int state = EventBlockLayerOverride.getBlockLayerObfuscationState();
         return 2;
     }
 
     public Object getBlockLayer() {
-        Object object = this.t ? EnumWorldBlockLayer.W().getObject() : EnumWorldBlockLayer.v().getObject();
-        return object;
+        return this.shouldRender ? EnumWorldBlockLayer.W().getObject() : EnumWorldBlockLayer.v().getObject();
     }
 
     static {
-        g = new EventListeners();
-        EventBlockLayerOverride.O(0);
+        EVENT_LISTENERS = new EventListeners();
+        EventBlockLayerOverride.setBlockLayerObfuscationState(0);
     }
 }
 

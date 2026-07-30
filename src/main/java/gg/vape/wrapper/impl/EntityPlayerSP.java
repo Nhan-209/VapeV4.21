@@ -2,11 +2,6 @@ package gg.vape.wrapper.impl;
 
 import gg.vape.mapping.mappings.MEntityPlayerSP;
 import gg.vape.ui.click.component.GuiComponent;
-import gg.vape.wrapper.impl.AbstractClientPlayer;
-import gg.vape.wrapper.impl.EntityClientPlayerMP;
-import gg.vape.wrapper.impl.ForgeVersion;
-import gg.vape.wrapper.impl.MovementInput;
-import gg.vape.wrapper.impl.NetHandlerPlayClientImpl;
 
 public class EntityPlayerSP
 extends AbstractClientPlayer {
@@ -16,13 +11,13 @@ extends AbstractClientPlayer {
         if (ForgeVersion.MC_1_7_10.B()) {
             return new EntityClientPlayerMP(this.getObject()).o();
         }
-        return MEntityPlayerSP.q(EntityPlayerSP.c.getMappings().CC, this.I);
+        return MEntityPlayerSP.q(EntityPlayerSP.vapeInstance.getMappings().CC, this.I);
     }
 
     @Override
     public float F() {
         if (ForgeVersion.MC_1_12_2.d()) {
-            return EntityPlayerSP.c.getMappings().CC.z(this.I);
+            return EntityPlayerSP.vapeInstance.getMappings().CC.z(this.I);
         }
         return super.F();
     }
@@ -31,11 +26,11 @@ extends AbstractClientPlayer {
         if (ForgeVersion.MC_1_7_10.B()) {
             return new EntityClientPlayerMP(this.getObject()).w();
         }
-        return MEntityPlayerSP.g(EntityPlayerSP.c.getMappings().CC, this.I);
+        return MEntityPlayerSP.g(EntityPlayerSP.vapeInstance.getMappings().CC, this.I);
     }
 
     public float O$src$F$1to1sdn() {
-        return MEntityPlayerSP.M(EntityPlayerSP.c.getMappings().CC, this.I);
+        return MEntityPlayerSP.M(EntityPlayerSP.vapeInstance.getMappings().CC, this.I);
     }
 
     public void E(int n) {
@@ -43,7 +38,7 @@ extends AbstractClientPlayer {
             new EntityClientPlayerMP(this.getObject()).setTicksSinceMovePacket(n);
             return;
         }
-        MEntityPlayerSP.y(EntityPlayerSP.c.getMappings().CC, this.I, n);
+        MEntityPlayerSP.y(EntityPlayerSP.vapeInstance.getMappings().CC, this.I, n);
     }
 
     public static GuiComponent[] M$src$ALgg_vape_ui_click_component_GuiComponent_$1jrrwr5() {
@@ -53,7 +48,7 @@ extends AbstractClientPlayer {
     @Override
     public void M(float f) {
         if (ForgeVersion.MC_1_12_2.d()) {
-            EntityPlayerSP.c.getMappings().CC.l(this.I, f);
+            EntityPlayerSP.vapeInstance.getMappings().CC.l(this.I, f);
             return;
         }
         super.M(f);
@@ -63,14 +58,14 @@ extends AbstractClientPlayer {
         if (ForgeVersion.MC_1_7_10.B()) {
             return new EntityClientPlayerMP(this.getObject()).E$src$F$kvfqaa();
         }
-        return MEntityPlayerSP.z(EntityPlayerSP.c.getMappings().CC, this.I);
+        return MEntityPlayerSP.z(EntityPlayerSP.vapeInstance.getMappings().CC, this.I);
     }
 
     public int z$src$I$1uboxyr() {
         if (ForgeVersion.MC_1_20_6.d()) {
             return 0;
         }
-        return EntityPlayerSP.c.getMappings().CC.r(this.I);
+        return EntityPlayerSP.vapeInstance.getMappings().CC.r(this.I);
     }
 
     public void A(float f) {
@@ -78,7 +73,7 @@ extends AbstractClientPlayer {
             new EntityClientPlayerMP(this.getObject()).S(f);
             return;
         }
-        MEntityPlayerSP.B(EntityPlayerSP.c.getMappings().CC, this.I, f);
+        MEntityPlayerSP.B(EntityPlayerSP.vapeInstance.getMappings().CC, this.I, f);
     }
 
     public void Z(float f) {
@@ -86,19 +81,19 @@ extends AbstractClientPlayer {
             new EntityClientPlayerMP(this.getObject()).w(f);
             return;
         }
-        MEntityPlayerSP.Z(EntityPlayerSP.c.getMappings().CC, this.I, f);
+        MEntityPlayerSP.Z(EntityPlayerSP.vapeInstance.getMappings().CC, this.I, f);
     }
 
     public double o$src$D$1u5n7bh() {
         if (ForgeVersion.MC_1_7_10.B()) {
             return new EntityClientPlayerMP(this.getObject()).y$src$D$lo113c();
         }
-        return MEntityPlayerSP.a(EntityPlayerSP.c.getMappings().CC, this.I);
+        return MEntityPlayerSP.a(EntityPlayerSP.vapeInstance.getMappings().CC, this.I);
     }
 
 
     public float k$src$F$1u3g0zr() {
-        return MEntityPlayerSP.a$src$F$12v06yw(EntityPlayerSP.c.getMappings().CC, this.I);
+        return MEntityPlayerSP.a$src$F$12v06yw(EntityPlayerSP.vapeInstance.getMappings().CC, this.I);
     }
 
     public void sendChatMessage(String string) {
@@ -106,7 +101,7 @@ extends AbstractClientPlayer {
             new EntityClientPlayerMP(this.getObject()).sendChatMessage(string);
             return;
         }
-        MEntityPlayerSP.X(EntityPlayerSP.c.getMappings().CC, this.I, string);
+        MEntityPlayerSP.X(EntityPlayerSP.vapeInstance.getMappings().CC, this.I, string);
     }
 
     public EntityPlayerSP(Object object) {
@@ -118,7 +113,7 @@ extends AbstractClientPlayer {
             new EntityClientPlayerMP(this.getObject()).J(d);
             return;
         }
-        MEntityPlayerSP.m(EntityPlayerSP.c.getMappings().CC, this.I, d);
+        MEntityPlayerSP.m(EntityPlayerSP.vapeInstance.getMappings().CC, this.I, d);
     }
 
     public void z(double d) {
@@ -126,27 +121,27 @@ extends AbstractClientPlayer {
             new EntityClientPlayerMP(this.getObject()).a(d);
             return;
         }
-        MEntityPlayerSP.T(EntityPlayerSP.c.getMappings().CC, this.I, d);
+        MEntityPlayerSP.T(EntityPlayerSP.vapeInstance.getMappings().CC, this.I, d);
     }
 
     public float t$src$F$1u8e6c0() {
-        return MEntityPlayerSP.O(EntityPlayerSP.c.getMappings().CC, this.I);
+        return MEntityPlayerSP.O(EntityPlayerSP.vapeInstance.getMappings().CC, this.I);
     }
 
     public void a(float f) {
-        MEntityPlayerSP.d(EntityPlayerSP.c.getMappings().CC, this.I, f);
+        MEntityPlayerSP.d(EntityPlayerSP.vapeInstance.getMappings().CC, this.I, f);
     }
 
     public void E(float f) {
-        MEntityPlayerSP.j(EntityPlayerSP.c.getMappings().CC, this.I, f);
+        MEntityPlayerSP.j(EntityPlayerSP.vapeInstance.getMappings().CC, this.I, f);
     }
 
     public void d(float f) {
-        MEntityPlayerSP.f(EntityPlayerSP.c.getMappings().CC, this.I, f);
+        MEntityPlayerSP.f(EntityPlayerSP.vapeInstance.getMappings().CC, this.I, f);
     }
 
     public int L$src$I$1tmeeo5() {
-        return EntityPlayerSP.c.getMappings().CC.L(this.I);
+        return EntityPlayerSP.vapeInstance.getMappings().CC.L(this.I);
     }
 
     public void Y(double d) {
@@ -154,44 +149,44 @@ extends AbstractClientPlayer {
             new EntityClientPlayerMP(this.getObject()).Q(d);
             return;
         }
-        MEntityPlayerSP.X(EntityPlayerSP.c.getMappings().CC, this.I, d);
+        MEntityPlayerSP.X(EntityPlayerSP.vapeInstance.getMappings().CC, this.I, d);
     }
 
     public int y$src$I$1ub55de() {
         if (ForgeVersion.MC_1_7_10.B()) {
             return new EntityClientPlayerMP(this.getObject()).getTicksSinceMovePacket();
         }
-        return MEntityPlayerSP.z$src$I$9x5vb2(EntityPlayerSP.c.getMappings().CC, this.I);
+        return MEntityPlayerSP.z$src$I$9x5vb2(EntityPlayerSP.vapeInstance.getMappings().CC, this.I);
     }
 
     public NetHandlerPlayClientImpl sendQueue() {
         if (ForgeVersion.MC_1_7_10.B()) {
             return new EntityClientPlayerMP(this.I).sendQueue();
         }
-        return new NetHandlerPlayClientImpl(MEntityPlayerSP.I(EntityPlayerSP.c.getMappings().CC, this.I));
+        return new NetHandlerPlayClientImpl(MEntityPlayerSP.I(EntityPlayerSP.vapeInstance.getMappings().CC, this.I));
     }
 
     public float n$src$F$1u53eru() {
-        return MEntityPlayerSP.V(EntityPlayerSP.c.getMappings().CC, this.I);
+        return MEntityPlayerSP.V(EntityPlayerSP.vapeInstance.getMappings().CC, this.I);
     }
 
     public float x$src$F$1ualcpg() {
-        return MEntityPlayerSP.j(EntityPlayerSP.c.getMappings().CC, this.I);
+        return MEntityPlayerSP.j(EntityPlayerSP.vapeInstance.getMappings().CC, this.I);
     }
 
     public void F(float f) {
-        MEntityPlayerSP.A(EntityPlayerSP.c.getMappings().CC, this.I, f);
+        MEntityPlayerSP.A(EntityPlayerSP.vapeInstance.getMappings().CC, this.I, f);
     }
 
     public double Q$src$D$1tp5din() {
         if (ForgeVersion.MC_1_7_10.B()) {
             return new EntityClientPlayerMP(this.getObject()).O$src$D$l0xo66();
         }
-        return MEntityPlayerSP.T(EntityPlayerSP.c.getMappings().CC, this.I);
+        return MEntityPlayerSP.T(EntityPlayerSP.vapeInstance.getMappings().CC, this.I);
     }
 
     public float q$src$F$1u6qsjx() {
-        return MEntityPlayerSP.o(EntityPlayerSP.c.getMappings().CC, this.I);
+        return MEntityPlayerSP.o(EntityPlayerSP.vapeInstance.getMappings().CC, this.I);
     }
 
     public static void P(GuiComponent[] guiComponentArray) {
@@ -199,7 +194,7 @@ extends AbstractClientPlayer {
     }
 
     public MovementInput movementInput() {
-        return new MovementInput(EntityPlayerSP.c.getMappings().CC.r$src$Ljava_lang_Object_$zogw4x(this.I));
+        return new MovementInput(EntityPlayerSP.vapeInstance.getMappings().CC.r$src$Ljava_lang_Object_$zogw4x(this.I));
     }
 
     static {

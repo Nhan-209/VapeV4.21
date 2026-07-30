@@ -7,27 +7,26 @@ import gg.vape.protocol.packet.ZeusTrackedPacket;
 
 public class GroupInvitePacket
 extends ZeusTrackedPacket<GroupInviteResponsePacket> {
-    private UserModel x;
+    private UserModel invitedUser;
 
-    public UserModel x() {
-        return this.x;
+    public UserModel getInvitedUser() {
+        return this.invitedUser;
     }
 
     @Override
     public void x(ZeusPacketBuffer zeusPacketBuffer) {
-        this.x = new UserModel(zeusPacketBuffer);
+        this.invitedUser = new UserModel(zeusPacketBuffer);
     }
 
     public GroupInvitePacket() {
     }
 
-    public GroupInvitePacket(UserModel userModel) {
-        this.x = userModel;
+    public GroupInvitePacket(UserModel invitedUser) {
+        this.invitedUser = invitedUser;
     }
 
     @Override
     public void T(ZeusPacketBuffer zeusPacketBuffer) {
-        this.x.a(zeusPacketBuffer);
+        this.invitedUser.writeTo(zeusPacketBuffer);
     }
 }
-

@@ -4,16 +4,15 @@ import gg.vape.event.impl.EventStep;
 
 public class EventStepHeightOverride
 extends EventStep {
-    private final float j;
+    private final float realHeight;
 
-    public EventStepHeightOverride(Object object, double d) {
-        super(object);
-        this.j = (float)(1.0 + d);
+    public EventStepHeightOverride(Object entityHandle, double heightOffset) {
+        super(entityHandle);
+        this.realHeight = (float)(1.0 + heightOffset);
     }
 
     @Override
     public double getRealHeight() {
-        return this.j;
+        return this.realHeight;
     }
 }
-

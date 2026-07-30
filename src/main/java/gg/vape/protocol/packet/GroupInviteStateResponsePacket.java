@@ -9,46 +9,45 @@ import org.jetbrains.annotations.Nullable;
 
 public class GroupInviteStateResponsePacket
 extends ZeusTrackedPacket<GroupInviteStatePacket> {
-    private GroupInviteStateStatus e;
-    private PartyStateModel d;
+    private GroupInviteStateStatus status;
+    private PartyStateModel partyState;
 
     public GroupInviteStateResponsePacket() {
     }
 
-    public GroupInviteStateStatus M() {
-        return this.e;
+    public GroupInviteStateStatus getStatus() {
+        return this.status;
     }
 
-    public GroupInviteStateResponsePacket(GroupInviteStatePacket groupInviteStatePacket, GroupInviteStateStatus dr_22) {
+    public GroupInviteStateResponsePacket(GroupInviteStatePacket groupInviteStatePacket, GroupInviteStateStatus status) {
         super(groupInviteStatePacket);
-        this.e = dr_22;
+        this.status = status;
     }
 
     @Override
     public void T(ZeusPacketBuffer gx_12) {
-        gx_12.U(this.e);
-        if (this.e == GroupInviteStateStatus.SUCCESSFULLY_ACCEPTED) {
-            this.d.k(gx_12);
+        gx_12.writeEnum(this.status);
+        if (this.status == GroupInviteStateStatus.SUCCESSFULLY_ACCEPTED) {
+            this.partyState.writeTo(gx_12);
         }
     }
 
 
     @Nullable
-    public PartyStateModel Y() {
-        return this.d;
+    public PartyStateModel getPartyState() {
+        return this.partyState;
     }
 
     public GroupInviteStateResponsePacket(GroupInviteStatePacket groupInviteStatePacket, PartyStateModel partyStateModel) {
         this(groupInviteStatePacket, GroupInviteStateStatus.SUCCESSFULLY_ACCEPTED);
-        this.d = partyStateModel;
+        this.partyState = partyStateModel;
     }
 
     @Override
     public void x(ZeusPacketBuffer gx_12) {
-        this.e = gx_12.Y(GroupInviteStateStatus.class);
-        if (this.e == GroupInviteStateStatus.SUCCESSFULLY_ACCEPTED) {
-            this.d = new PartyStateModel(gx_12);
+        this.status = gx_12.readEnum(GroupInviteStateStatus.class);
+        if (this.status == GroupInviteStateStatus.SUCCESSFULLY_ACCEPTED) {
+            this.partyState = new PartyStateModel(gx_12);
         }
     }
 }
-

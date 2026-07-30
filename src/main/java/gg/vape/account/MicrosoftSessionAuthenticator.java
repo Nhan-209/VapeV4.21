@@ -24,182 +24,189 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 
 public class MicrosoftSessionAuthenticator {
-    private final String t;
-    private MutableAccountCredentials I;
-    private final String s;
-    private final String G;
-    private final String E;
-    private static String[] l;
+    private final String minecraftAuthenticationEndpoint;
+    private MutableAccountCredentials credentials;
+    private final String microsoftAuthorizationEndpoint;
+    private final String xstsAuthorizationEndpoint;
+    private final String xboxLiveAuthenticationEndpoint;
+    private static String[] opaqueStringSlots;
 
-    public MinecraftSessionWrapper j() throws IOException {
-        String[] stringArray = this.g();
-        if (stringArray == null || stringArray.length < 2) {
+    public MinecraftSessionWrapper authenticate() throws IOException {
+        String[] microsoftTokens = this.requestMicrosoftOAuthTokens();
+        if (microsoftTokens == null || microsoftTokens.length < 2) {
             return null;
         }
-        XboxLiveAuthResult xboxLiveAuthResult = this.C(stringArray[0]);
-        if (xboxLiveAuthResult == null) {
+        XboxLiveAuthResult xboxLiveAuth = this.requestXboxLiveToken(microsoftTokens[0]);
+        if (xboxLiveAuth == null) {
             return null;
         }
-        String string = this.w(xboxLiveAuthResult.x);
-        if (string == null) {
+        String xstsToken = this.requestXstsToken(xboxLiveAuth.token);
+        if (xstsToken == null) {
             return null;
         }
-        String string2 = this.l(xboxLiveAuthResult.A, string);
-        if (string2 == null) {
+        String minecraftAccessToken = this.exchangeXboxTokenForMinecraftAccessToken(xboxLiveAuth.userHash, xstsToken);
+        if (minecraftAccessToken == null) {
             return null;
         }
-        if (this.I.F() == null || this.I.T() == null) {
-            String[] stringArray2 = this.Z(string2);
-            if (stringArray2 == null) {
+        if (this.credentials.getProfileId() == null || this.credentials.getProfileName() == null) {
+            String[] minecraftProfile = this.requestMinecraftProfile(minecraftAccessToken);
+            if (minecraftProfile == null) {
                 return null;
             }
-            this.I.X(stringArray2[0]);
-            this.I.T(stringArray2[1]);
+            this.credentials.setProfileName(minecraftProfile[0]);
+            this.credentials.setProfileId(minecraftProfile[1]);
         }
-        return MinecraftSessionWrapper.U(this.I.T(), this.I.F(), string2, "mojang");
+        return MinecraftSessionWrapper.createLegacy(this.credentials.getProfileName(), this.credentials.getProfileId(),
+                minecraftAccessToken, "mojang");
     }
 
-    public static void l(String[] stringArray) {
-        l = stringArray;
+    public static void setOpaqueStringSlots(String[] slots) {
+        opaqueStringSlots = slots;
     }
 
-    private XboxLiveAuthResult C(String string) throws IOException {
-        String string2 = "https://user.auth.xboxlive.com/user/authenticate";
-        JsonObject jsonObject = new JsonObject();
-        JsonObject jsonObject2 = new JsonObject();
-        jsonObject2.addProperty("AuthMethod", "RPS");
-        jsonObject2.addProperty("SiteName", "user.auth.xboxlive.com");
-        jsonObject2.addProperty("RpsTicket", string);
-        jsonObject.add("Properties", (JsonElement)jsonObject2);
-        jsonObject.addProperty("RelyingParty", "http://auth.xboxlive.com");
-        jsonObject.addProperty("TokenType", "JWT");
-        HttpRequest httpRequest = new HttpRequest(string2, "POST").L("application/json").e("Content-Type", "application/json").x(jsonObject.toString());
-        JsonObject jsonObject3 = httpRequest.P();
-        if (httpRequest.e().getResponseCode() != 200) {
+    private XboxLiveAuthResult requestXboxLiveToken(String microsoftAccessToken) throws IOException {
+        JsonObject requestBody = new JsonObject();
+        JsonObject properties = new JsonObject();
+        properties.addProperty("AuthMethod", "RPS");
+        properties.addProperty("SiteName", "user.auth.xboxlive.com");
+        properties.addProperty("RpsTicket", microsoftAccessToken);
+        requestBody.add("Properties", (JsonElement)properties);
+        requestBody.addProperty("RelyingParty", "http://auth.xboxlive.com");
+        requestBody.addProperty("TokenType", "JWT");
+        HttpRequest request = new HttpRequest(this.xboxLiveAuthenticationEndpoint, "POST")
+                .L("application/json").e("Content-Type", "application/json").x(requestBody.toString());
+        JsonObject responseBody = request.P();
+        if (request.e().getResponseCode() != 200) {
             return null;
         }
-        return new XboxLiveAuthResult(jsonObject3.getAsJsonObject("DisplayClaims").getAsJsonArray("xui").get(0).getAsJsonObject().get("uhs").getAsString(), jsonObject3.get("Token").getAsString());
+        return new XboxLiveAuthResult(responseBody.getAsJsonObject("DisplayClaims").getAsJsonArray("xui")
+                .get(0).getAsJsonObject().get("uhs").getAsString(), responseBody.get("Token").getAsString());
     }
 
-    private String l(String string, String string2) throws IOException {
-        String string3 = "https://api.minecraftservices.com/authentication/login_with_xbox";
-        JsonObject jsonObject = new JsonObject();
-        jsonObject.addProperty("identityToken", "XBL3.0 x=" + string + ";" + string2);
-        HttpRequest httpRequest = new HttpRequest(string3, "POST").L("application/json").e("Content-Type", "application/json").x(jsonObject.toString());
-        JsonObject jsonObject2 = httpRequest.P();
-        if (httpRequest.e().getResponseCode() != 200) {
+    private String exchangeXboxTokenForMinecraftAccessToken(String userHash, String xstsToken) throws IOException {
+        JsonObject requestBody = new JsonObject();
+        requestBody.addProperty("identityToken", "XBL3.0 x=" + userHash + ";" + xstsToken);
+        HttpRequest request = new HttpRequest(this.minecraftAuthenticationEndpoint, "POST")
+                .L("application/json").e("Content-Type", "application/json").x(requestBody.toString());
+        JsonObject responseBody = request.P();
+        if (request.e().getResponseCode() != 200) {
             return null;
         }
-        return jsonObject2.get("access_token").getAsString();
+        return responseBody.get("access_token").getAsString();
     }
 
-    public static String[] V() {
-        return l;
+    public static String[] getOpaqueStringSlots() {
+        return opaqueStringSlots;
     }
 
-    private static IOException a(IOException iOException) {
-        return iOException;
+    private static IOException preserveIOException(IOException error) {
+        return error;
     }
 
-    private String w(String string) throws IOException {
-        String string2 = "https://xsts.auth.xboxlive.com/xsts/authorize";
-        JsonObject jsonObject = new JsonObject();
-        JsonObject jsonObject2 = new JsonObject();
-        jsonObject2.addProperty("SandboxId", "RETAIL");
-        JsonArray jsonArray = new JsonArray();
-        jsonArray.add((JsonElement)new JsonPrimitive(string));
-        jsonObject2.add("UserTokens", (JsonElement)jsonArray);
-        jsonObject.add("Properties", (JsonElement)jsonObject2);
-        jsonObject.addProperty("RelyingParty", "rp://api.minecraftservices.com/");
-        jsonObject.addProperty("TokenType", "JWT");
-        HttpRequest httpRequest = new HttpRequest(string2, "POST").L("application/json").e("Content-Type", "application/json").x(jsonObject.toString());
-        JsonObject jsonObject3 = httpRequest.P();
-        if (httpRequest.e().getResponseCode() != 200) {
+    private String requestXstsToken(String xboxUserToken) throws IOException {
+        JsonObject requestBody = new JsonObject();
+        JsonObject properties = new JsonObject();
+        properties.addProperty("SandboxId", "RETAIL");
+        JsonArray userTokens = new JsonArray();
+        userTokens.add((JsonElement)new JsonPrimitive(xboxUserToken));
+        properties.add("UserTokens", (JsonElement)userTokens);
+        requestBody.add("Properties", (JsonElement)properties);
+        requestBody.addProperty("RelyingParty", "rp://api.minecraftservices.com/");
+        requestBody.addProperty("TokenType", "JWT");
+        HttpRequest request = new HttpRequest(this.xstsAuthorizationEndpoint, "POST")
+                .L("application/json").e("Content-Type", "application/json").x(requestBody.toString());
+        JsonObject responseBody = request.P();
+        if (request.e().getResponseCode() != 200) {
             return null;
         }
-        return jsonObject3.get("Token").getAsString();
+        return responseBody.get("Token").getAsString();
     }
 
     static {
-        MicrosoftSessionAuthenticator.l(new String[4]);
+        MicrosoftSessionAuthenticator.setOpaqueStringSlots(new String[4]);
     }
 
-    public MicrosoftSessionAuthenticator(MutableAccountCredentials mutableAccountCredentials) {
-        this.s = "https://login.live.com/oauth20_authorize.srf?client_id=000000004C12AE6F&redirect_uri=https://login.live.com/oauth20_desktop.srf&scope=service::user.auth.xboxlive.com::MBI_SSL&display=touch&response_type=token&locale=en";
-        this.E = "https://user.auth.xboxlive.com/user/authenticate";
-        this.G = "https://xsts.auth.xboxlive.com/xsts/authorize";
-        this.t = "https://api.minecraftservices.com/authentication/login_with_xbox";
-        this.I = mutableAccountCredentials;
+    public MicrosoftSessionAuthenticator(MutableAccountCredentials credentials) {
+        this.microsoftAuthorizationEndpoint = "https://login.live.com/oauth20_authorize.srf?client_id=000000004C12AE6F&redirect_uri=https://login.live.com/oauth20_desktop.srf&scope=service::user.auth.xboxlive.com::MBI_SSL&display=touch&response_type=token&locale=en";
+        this.xboxLiveAuthenticationEndpoint = "https://user.auth.xboxlive.com/user/authenticate";
+        this.xstsAuthorizationEndpoint = "https://xsts.auth.xboxlive.com/xsts/authorize";
+        this.minecraftAuthenticationEndpoint = "https://api.minecraftservices.com/authentication/login_with_xbox";
+        this.credentials = credentials;
         CookieHandler.setDefault(new CookieManager());
-        TrustManager[] trustManagerArray = new TrustManager[]{new PermissiveX509TrustManager(this)};
+        TrustManager[] trustManagers = new TrustManager[]{new PermissiveX509TrustManager(this)};
         try {
-            SSLContext sSLContext = SSLContext.getInstance("SSL");
-            sSLContext.init(null, trustManagerArray, new SecureRandom());
-            HttpsURLConnection.setDefaultSSLSocketFactory(sSLContext.getSocketFactory());
+            SSLContext sslContext = SSLContext.getInstance("SSL");
+            sslContext.init(null, trustManagers, new SecureRandom());
+            HttpsURLConnection.setDefaultSSLSocketFactory(sslContext.getSocketFactory());
         }
-        catch (Exception exception) {
-            Vape.logThrowable(exception);
+        catch (Exception error) {
+            Vape.logThrowable(error);
         }
     }
 
-    private String[] g() throws IOException {
-        HttpRequest httpRequest = new HttpRequest("https://login.live.com/oauth20_authorize.srf?client_id=000000004C12AE6F&redirect_uri=https://login.live.com/oauth20_desktop.srf&scope=service::user.auth.xboxlive.com::MBI_SSL&display=touch&response_type=token&locale=en", "GET");
-        Pattern pattern = Pattern.compile("value=\"(.+?)\"");
-        String string = httpRequest.h();
-        Matcher matcher = pattern.matcher(string);
-        String string2 = "";
-        if (!matcher.find()) {
+    private String[] requestMicrosoftOAuthTokens() throws IOException {
+        HttpRequest authorizationRequest = new HttpRequest(this.microsoftAuthorizationEndpoint, "GET");
+        Pattern ppftPattern = Pattern.compile("value=\"(.+?)\"");
+        String authorizationPage = authorizationRequest.h();
+        Matcher ppftMatcher = ppftPattern.matcher(authorizationPage);
+        String ppft = "";
+        if (!ppftMatcher.find()) {
             return null;
         }
-        string2 = matcher.group(1);
-        Pattern pattern2 = Pattern.compile("urlPost:'(.+?)'");
-        Matcher matcher2 = pattern2.matcher(string);
-        String string3 = "";
-        if (!matcher2.find()) {
+        ppft = ppftMatcher.group(1);
+        Pattern postUrlPattern = Pattern.compile("urlPost:'(.+?)'");
+        Matcher postUrlMatcher = postUrlPattern.matcher(authorizationPage);
+        String postUrl = "";
+        if (!postUrlMatcher.find()) {
             return null;
         }
-        string3 = matcher2.group(1);
-        String string4 = URLEncoder.encode("login", "UTF-8") + "=" + URLEncoder.encode(this.I.y(), "UTF-8") + "&" + URLEncoder.encode("loginfmt", "UTF-8") + "=" + URLEncoder.encode(this.I.y(), "UTF-8") + "&" + URLEncoder.encode("passwd", "UTF-8") + "=" + URLEncoder.encode(this.I.U(), "UTF-8") + "&" + URLEncoder.encode("PPFT", "UTF-8") + "=" + URLEncoder.encode(string2, "UTF-8");
-        byte[] byArray = string4.toString().getBytes(StandardCharsets.UTF_8);
-        HttpRequest httpRequest2 = new HttpRequest(string3, "POST").e("Content-Type", "application/x-www-form-urlencoded").e("Content-Length", Integer.toString(byArray.length)).x(string4);
-        String string5 = httpRequest2.h();
-        HttpURLConnection httpURLConnection = httpRequest2.e();
-        if (httpURLConnection.getResponseCode() != 200) {
+        postUrl = postUrlMatcher.group(1);
+        String formBody = URLEncoder.encode("login", "UTF-8") + "=" + URLEncoder.encode(this.credentials.getUsername(), "UTF-8")
+                + "&" + URLEncoder.encode("loginfmt", "UTF-8") + "=" + URLEncoder.encode(this.credentials.getUsername(), "UTF-8")
+                + "&" + URLEncoder.encode("passwd", "UTF-8") + "=" + URLEncoder.encode(this.credentials.getPassword(), "UTF-8")
+                + "&" + URLEncoder.encode("PPFT", "UTF-8") + "=" + URLEncoder.encode(ppft, "UTF-8");
+        byte[] formBytes = formBody.getBytes(StandardCharsets.UTF_8);
+        HttpRequest loginRequest = new HttpRequest(postUrl, "POST")
+                .e("Content-Type", "application/x-www-form-urlencoded")
+                .e("Content-Length", Integer.toString(formBytes.length)).x(formBody);
+        String loginResponse = loginRequest.h();
+        HttpURLConnection connection = loginRequest.e();
+        if (connection.getResponseCode() != 200) {
             return null;
         }
-        if (string5.contains("Sign in to")) {
+        if (loginResponse.contains("Sign in to")) {
             throw new IllegalStateException("Invalid Email or Password");
         }
-        if (string5.contains("Help us protect your account")) {
+        if (loginResponse.contains("Help us protect your account")) {
             throw new IllegalStateException("2-Factor Enabled unable to log in");
         }
-        String string6 = httpURLConnection.getURL().toString();
-        Vape.debugLog("redirected URl: " + string6);
-        String string7 = string6.split("#")[1];
-        String[] stringArray = string7.split("&");
-        String string8 = null;
-        String string9 = null;
-        for (String string10 : stringArray) {
-            if (string10.contains("access_token")) {
-                string8 = string10.split("=")[1];
+        String redirectUrl = connection.getURL().toString();
+        Vape.debugLog("redirected URl: " + redirectUrl);
+        String fragment = redirectUrl.split("#")[1];
+        String[] parameters = fragment.split("&");
+        String accessToken = null;
+        String refreshToken = null;
+        for (String parameter : parameters) {
+            if (parameter.contains("access_token")) {
+                accessToken = parameter.split("=")[1];
                 continue;
             }
-            if (!string10.contains("refresh_token")) continue;
-            string9 = string10.split("=")[1];
+            if (!parameter.contains("refresh_token")) continue;
+            refreshToken = parameter.split("=")[1];
         }
-        return new String[]{string8, string9};
+        return new String[]{accessToken, refreshToken};
     }
 
-    private String[] Z(String string) throws IOException {
-        String string2 = "https://api.minecraftservices.com/minecraft/profile";
-        HttpRequest httpRequest = new HttpRequest(string2, "GET").e("Authorization", "Bearer " + string);
-        if (httpRequest.e().getResponseCode() != 200) {
+    private String[] requestMinecraftProfile(String minecraftAccessToken) throws IOException {
+        String profileEndpoint = "https://api.minecraftservices.com/minecraft/profile";
+        HttpRequest request = new HttpRequest(profileEndpoint, "GET")
+                .e("Authorization", "Bearer " + minecraftAccessToken);
+        if (request.e().getResponseCode() != 200) {
             return null;
         }
-        JsonObject jsonObject = httpRequest.P();
-        String string3 = jsonObject.get("name").getAsString();
-        String string4 = jsonObject.get("id").getAsString();
-        return new String[]{string3, string4};
+        JsonObject responseBody = request.P();
+        String profileName = responseBody.get("name").getAsString();
+        String profileId = responseBody.get("id").getAsString();
+        return new String[]{profileName, profileId};
     }
 }
-

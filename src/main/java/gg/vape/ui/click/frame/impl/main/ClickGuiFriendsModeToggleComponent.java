@@ -15,7 +15,7 @@ extends BooleanToggleComponent {
 
     @Override
     public void synchronizeAnimationsImmediately() {
-        if (this.friendEntry.c()) {
+        if (this.friendEntry.isTargeted()) {
             this.getKnobPositionAnimation().C();
         } else {
             this.getKnobPositionAnimation().O();
@@ -24,14 +24,14 @@ extends BooleanToggleComponent {
 
     @Override
     public boolean isOn() {
-        return this.friendEntry.c();
+        return this.friendEntry.isTargeted();
     }
 
     @Override
     public void toggle() {
-        this.friendEntry.k(!this.friendEntry.c());
+        this.friendEntry.setTargeted(!this.friendEntry.isTargeted());
         this.synchronizeAnimationsImmediately();
-        OnlineFriendUiHelper.U();
+        OnlineFriendUiHelper.refreshMinecraftFriends();
     }
 
 }

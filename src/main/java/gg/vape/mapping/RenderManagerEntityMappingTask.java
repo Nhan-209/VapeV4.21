@@ -10,12 +10,12 @@ import gg.vape.wrapper.impl.ForgeVersion;
 public class RenderManagerEntityMappingTask
 extends JavassistMappingTask {
     @Override
-    public void c() {
+    public void transform() {
         MappingMethod mappingMethod;
-        if (ForgeVersion.MC_1_8_9.L() && !(mappingMethod = Vape.INSTANCE.getMappings().CA.W).h()) {
+        if (ForgeVersion.MC_1_8_9.L() && !(mappingMethod = Vape.INSTANCE.getMappings().CA.W).hasResolutionFailed()) {
             this.O(mappingMethod, EventPreRenderEntity.class, "$1", "false");
         }
-        if (ForgeVersion.MC_1_16_5.d() && !(mappingMethod = Vape.INSTANCE.getMappings().CA.W).h()) {
+        if (ForgeVersion.MC_1_16_5.d() && !(mappingMethod = Vape.INSTANCE.getMappings().CA.W).hasResolutionFailed()) {
             this.c(mappingMethod, EventPreRenderEntity.class, "$1");
         }
     }

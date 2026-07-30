@@ -7,69 +7,69 @@ import org.jetbrains.annotations.Nullable;
 
 public class GroupUserModel {
     @Nullable
-    private final String C;
-    private final UUID x;
-    private final UserModel T;
-    private final String s;
-    private final int I;
+    private final String minecraftServer;
+    private final UUID minecraftUuid;
+    private final UserModel user;
+    private final String minecraftUsername;
+    private final int groupRole;
 
-    public long V() {
-        return this.T.g();
+    public long getUserId() {
+        return this.user.getId();
     }
 
-    public void f(ZeusPacketBuffer zeusPacketBuffer) {
-        this.T.a(zeusPacketBuffer);
-        zeusPacketBuffer.r(this.x);
-        zeusPacketBuffer.y(this.s);
-        ZeusPacketBuffer zeusPacketBuffer2 = zeusPacketBuffer;
-        boolean bl = this.C != null;
-        zeusPacketBuffer2.Y(bl);
-        if (this.C != null) {
-            zeusPacketBuffer.y(this.C);
+    public void writeTo(ZeusPacketBuffer buffer) {
+        this.user.writeTo(buffer);
+        buffer.writeUuid(this.minecraftUuid);
+        buffer.writeString(this.minecraftUsername);
+        ZeusPacketBuffer output = buffer;
+        boolean hasMinecraftServer = this.minecraftServer != null;
+        output.writeBoolean(hasMinecraftServer);
+        if (this.minecraftServer != null) {
+            buffer.writeString(this.minecraftServer);
         }
-        zeusPacketBuffer.K(this.I);
+        buffer.writeInt(this.groupRole);
     }
 
-    public String i() {
-        return this.s;
+    public String getMinecraftUsername() {
+        return this.minecraftUsername;
     }
 
 
-    public GroupUserModel(ZeusPacketBuffer zeusPacketBuffer) {
-        this.T = new UserModel(zeusPacketBuffer);
-        this.x = zeusPacketBuffer.N();
-        this.s = zeusPacketBuffer.v(16);
-        this.C = zeusPacketBuffer.boolean_a() ? zeusPacketBuffer.v(128) : null;
-        this.I = zeusPacketBuffer.k();
+    public GroupUserModel(ZeusPacketBuffer buffer) {
+        this.user = new UserModel(buffer);
+        this.minecraftUuid = buffer.readUuid();
+        this.minecraftUsername = buffer.readString(16);
+        this.minecraftServer = buffer.readBoolean() ? buffer.readString(128) : null;
+        this.groupRole = buffer.readInt();
     }
 
     @Nullable
-    public String n() {
-        return this.C;
+    public String getMinecraftServer() {
+        return this.minecraftServer;
     }
 
-    public GroupUserModel(UserModel userModel, UUID uUID, String string, @Nullable String string2, int n) {
-        this.T = userModel;
-        this.x = uUID;
-        this.s = string;
-        this.C = string2;
-        this.I = n;
+    public GroupUserModel(UserModel user, UUID minecraftUuid, String minecraftUsername, @Nullable String minecraftServer, int groupRole) {
+        this.user = user;
+        this.minecraftUuid = minecraftUuid;
+        this.minecraftUsername = minecraftUsername;
+        this.minecraftServer = minecraftServer;
+        this.groupRole = groupRole;
     }
 
-    public String Y() {
-        return this.T.T();
+    public String getDisplayName() {
+        return this.user.getDisplayName();
     }
 
-    public UUID N() {
-        return this.x;
+    public UUID getMinecraftUuid() {
+        return this.minecraftUuid;
     }
 
-    public UserModel j() {
-        return this.T;
+    public UserModel getUser() {
+        return this.user;
     }
 
-    public int e() {
-        return this.I;
+    public int getGroupRole() {
+        return this.groupRole;
     }
 }
 

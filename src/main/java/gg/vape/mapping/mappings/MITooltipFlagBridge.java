@@ -36,7 +36,7 @@ extends Mapping {
         boolean bl = true;
         String string = b;
         MITooltipFlagBridge mITooltipFlagBridge = this;
-        this.H = this.u(string, bl, clazz);
+        this.H = this.registerStaticField(string, bl, clazz);
         if (GuiComponent.getLegacyComponentState() == null) {
             MITooltipFlagBridge.s(new GuiComponent[1]);
         }

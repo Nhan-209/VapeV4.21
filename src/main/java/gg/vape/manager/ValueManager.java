@@ -24,20 +24,20 @@ public class ValueManager {
     }
 
     public JsonArray toJson() {
-        JsonArray jsonArray = new JsonArray();
+        JsonArray result = new JsonArray();
         for (Value<?, ?> value : this.getValues()) {
-            JsonObject jsonObject;
-            if (NON_SERIALIZED_OWNER_TYPES.contains(value.getOwner().getClass()) || !value.isSerializable() || value.isDefault() || (jsonObject = value.toJson(false)).entrySet().size() <= 1) continue;
-            jsonArray.add((JsonElement)jsonObject);
+            JsonObject serializedValue;
+            if (NON_SERIALIZED_OWNER_TYPES.contains(value.getOwner().getClass()) || !value.isSerializable() || value.isDefault() || (serializedValue = value.toJson(false)).entrySet().size() <= 1) continue;
+            result.add((JsonElement)serializedValue);
         }
-        return jsonArray;
+        return result;
     }
 
 
-    private void loadConfigSettings(JsonObject jsonObject) {
-        for (Mod mod : Vape.INSTANCE.getModManager().s()) {
+    private void loadConfigSettings(JsonObject serializedValue) {
+        for (Mod mod : Vape.INSTANCE.getModManager().getAllModules()) {
             if (!(mod instanceof ConfigSettingsModule)) continue;
-            ((ConfigSettingsModule)mod).loadMatchingValues(jsonObject);
+            ((ConfigSettingsModule)mod).loadMatchingValues(serializedValue);
         }
     }
 
@@ -45,16 +45,16 @@ public class ValueManager {
         this.registeredValues.add(value);
     }
 
-    public void loadJson(JsonArray jsonArray) {
-        ArrayList arrayList = new ArrayList();
-        for (int i = 0; i < jsonArray.size(); ++i) {
-            JsonObject jsonObject;
-            JsonElement jsonElement = jsonArray.get(i);
-            if (!jsonElement.isJsonObject() || jsonElement.isJsonNull() || (jsonObject = jsonElement.getAsJsonObject()).get("id") == null || jsonObject.get("id").isJsonNull()) continue;
+    public void loadJson(JsonArray serializedValues) {
+        ArrayList loadedValues = new ArrayList();
+        for (int index = 0; index < serializedValues.size(); ++index) {
+            JsonObject serializedValue;
+            JsonElement element = serializedValues.get(index);
+            if (!element.isJsonObject() || element.isJsonNull() || (serializedValue = element.getAsJsonObject()).get("id") == null || serializedValue.get("id").isJsonNull()) continue;
             for (Value<?, ?> value : this.getValues()) {
-                if (arrayList.contains(value) || !CONFIG_SETTINGS_OWNER_TYPES.contains(value.getOwner().getClass().getSuperclass()) && !CONFIG_SETTINGS_OWNER_TYPES.contains(value.getOwner().getClass()) && NON_SERIALIZED_OWNER_TYPES.contains(value.getOwner().getClass().getSuperclass()) || NON_SERIALIZED_OWNER_TYPES.contains(value.getOwner().getClass()) || !value.matchesJsonId(jsonObject)) continue;
-                arrayList.add(value);
-                value.loadJson(jsonObject);
+                if (loadedValues.contains(value) || !CONFIG_SETTINGS_OWNER_TYPES.contains(value.getOwner().getClass().getSuperclass()) && !CONFIG_SETTINGS_OWNER_TYPES.contains(value.getOwner().getClass()) && NON_SERIALIZED_OWNER_TYPES.contains(value.getOwner().getClass().getSuperclass()) || NON_SERIALIZED_OWNER_TYPES.contains(value.getOwner().getClass()) || !value.matchesJsonId(serializedValue)) continue;
+                loadedValues.add(value);
+                value.loadJson(serializedValue);
             }
         }
     }

@@ -128,11 +128,11 @@ extends Mapping {
     }
 
     private Object u(int n, int n2, int n3) {
-        return this.C.O(n, n2, n3);
+        return this.C.newInstance(n, n2, n3);
     }
 
     private int N(Object object) {
-        return this.Y.Z(object, new Object[0]);
+        return this.Y.invokeInt(object, new Object[0]);
     }
 
     public static boolean e$src$Z$v3xxtq(MPotionEffect mPotionEffect, Object object) {
@@ -156,16 +156,16 @@ extends Mapping {
     }
 
     private int e(Object object) {
-        return this.Q.Z(object, new Object[0]);
+        return this.Q.invokeInt(object, new Object[0]);
     }
 
 
     public Object A(Object object, int n, int n2) {
-        return this.V.O(object, n, n2);
+        return this.V.newInstance(object, n, n2);
     }
 
     private int h(Object object) {
-        return this.e.Z(object, new Object[0]);
+        return this.e.invokeInt(object, new Object[0]);
     }
 
     public static Object I$src$Ljava_lang_Object_$1dcpybi(MPotionEffect mPotionEffect, Object object) {

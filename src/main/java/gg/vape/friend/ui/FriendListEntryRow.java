@@ -19,14 +19,14 @@ extends SelectableTextRowComponent {
     @Override
     public void H() {
         super.H();
-        String text = this.friendEntry.s();
+        String text = this.friendEntry.getName();
         if (!this.isHovered()) {
-            if (!this.friendEntry.o().equals(this.friendEntry.s())) {
-                text = "*" + this.friendEntry.E();
+            if (!this.friendEntry.getDisplayName().equals(this.friendEntry.getName())) {
+                text = "*" + this.friendEntry.getAlias();
             }
         } else if (this.friendEntry instanceof ExternalFriend) {
             ExternalFriend externalFriend = (ExternalFriend)this.friendEntry;
-            text = "*" + externalFriend.d().C();
+            text = "*" + externalFriend.getOnlineFriend().getDisplayName();
         }
         this.setText(text);
     }
@@ -35,12 +35,12 @@ extends SelectableTextRowComponent {
     public void g(GuiMouseEvent guiMouseEvent) {
         super.g(guiMouseEvent);
         if (guiMouseEvent.getAction().equals((Object)MouseButton.LEFT_CLICK)) {
-            this.friendEntry.k(!this.friendEntry.c());
+            this.friendEntry.setTargeted(!this.friendEntry.isTargeted());
         }
     }
 
     public FriendListEntryRow(FriendEntry friendEntry) {
-        super(FriendListEntryRow.J.B, friendEntry.s());
+        super(FriendListEntryRow.J.B, friendEntry.getName());
         this.friendEntry = friendEntry;
         if (friendEntry instanceof ExternalFriend) {
             this.setIndicatorIcon("synced@2x");
@@ -57,7 +57,7 @@ extends SelectableTextRowComponent {
 
     @Override
     public boolean isSelected() {
-        return this.friendEntry.c();
+        return this.friendEntry.isTargeted();
     }
 }
 

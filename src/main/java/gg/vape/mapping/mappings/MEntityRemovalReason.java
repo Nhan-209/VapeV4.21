@@ -26,27 +26,27 @@ extends Mapping {
         boolean bl = true;
         String string = "KILLED";
         MEntityRemovalReason mEntityRemovalReason = this;
-        this.x = this.u(string, bl, clazz);
+        this.x = this.registerStaticField(string, bl, clazz);
         Class clazz2 = MappedClasses.c;
         boolean bl2 = true;
         String string2 = "DISCARDED";
         MEntityRemovalReason mEntityRemovalReason2 = this;
-        this.O = this.u(string2, bl2, clazz2);
+        this.O = this.registerStaticField(string2, bl2, clazz2);
         Class clazz3 = MappedClasses.c;
         boolean bl3 = true;
         String string3 = "UNLOADED_TO_CHUNK";
         MEntityRemovalReason mEntityRemovalReason3 = this;
-        this.X = this.u(string3, bl3, clazz3);
+        this.X = this.registerStaticField(string3, bl3, clazz3);
         Class clazz4 = MappedClasses.c;
         boolean bl4 = true;
         String string4 = "UNLOADED_WITH_PLAYER";
         MEntityRemovalReason mEntityRemovalReason4 = this;
-        this.f = this.u(string4, bl4, clazz4);
+        this.f = this.registerStaticField(string4, bl4, clazz4);
         Class clazz5 = MappedClasses.c;
         boolean bl5 = true;
         String string5 = "CHANGED_DIMENSION";
         MEntityRemovalReason mEntityRemovalReason5 = this;
-        this.v = this.u(string5, bl5, clazz5);
+        this.v = this.registerStaticField(string5, bl5, clazz5);
     }
 
     public static Object Z(MEntityRemovalReason mEntityRemovalReason) {

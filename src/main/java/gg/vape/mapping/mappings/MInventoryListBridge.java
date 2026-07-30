@@ -28,7 +28,7 @@ extends Mapping {
         boolean bl = true;
         String string = "ARMOR";
         MInventoryListBridge mInventoryListBridge = this;
-        this.c = this.u(string, bl, clazz);
+        this.c = this.registerStaticField(string, bl, clazz);
         Class<List> clazz2 = List.class;
         boolean bl2 = true;
         String string2 = "slots";
