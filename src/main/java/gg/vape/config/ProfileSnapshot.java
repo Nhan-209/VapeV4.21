@@ -75,7 +75,7 @@ public class ProfileSnapshot {
     public List<ProfileModuleSnapshot> getModules(boolean includeDefaults) {
         ArrayList<ProfileModuleSnapshot> modules = new ArrayList<>();
         for (ProfileModuleSnapshot moduleSnapshot : this.getAllModules()) {
-            if (moduleSnapshot.getModule() instanceof SubModule || moduleSnapshot.getModule().getCategory() == Category.b || !moduleSnapshot.hasChanges() && !includeDefaults) continue;
+            if (moduleSnapshot.getModule() instanceof SubModule || moduleSnapshot.getModule().getCategory() == Category.NONE || !moduleSnapshot.hasChanges() && !includeDefaults) continue;
             modules.add(moduleSnapshot);
         }
         return modules;

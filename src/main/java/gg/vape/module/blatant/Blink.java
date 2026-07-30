@@ -116,7 +116,7 @@ extends Mod {
     }
 
     public Blink() {
-        super("Blink", (int)MODULE_ID, Category.Y, "Chokes packets until disabled.");
+        super("Blink", (int)MODULE_ID, Category.UTILITY, "Chokes packets until disabled.");
         this.bidirectionalMode = new ModeOption("Bi-directional");
         this.directionMode = ModeValue.create((Object)this, "Direction", "Outgoing only - only chokes packets that you're sending\nBi-directional - additionally chokes incoming packets from the server", (ModeSelection)this.outgoingOnlyMode, this.outgoingOnlyMode, this.bidirectionalMode);
         this.allPacketsMode = new ModeOption("All");

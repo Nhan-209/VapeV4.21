@@ -279,10 +279,10 @@ public class MappingMethod {
         this.declaredParameterTypes = parameterTypes;
         MemberLookupSignature memberLookupSignature = RuntimeNameMappingRegistry.lookupMethodMapping(ownerClass, methodName);
         if (memberLookupSignature != null) {
-            this.runtimeName = memberLookupSignature.M;
-            this.resolvedReturnType = memberLookupSignature.a != null ? memberLookupSignature.a : returnType;
-            this.resolvedParameterTypes = memberLookupSignature.v.length > 0 ? memberLookupSignature.v : parameterTypes;
-            this.mappedMember = memberLookupSignature.H() != null ? memberLookupSignature.H() : mappedMember;
+            this.runtimeName = memberLookupSignature.runtimeName;
+            this.resolvedReturnType = memberLookupSignature.resolvedType != null ? memberLookupSignature.resolvedType : returnType;
+            this.resolvedParameterTypes = memberLookupSignature.parameterTypes.length > 0 ? memberLookupSignature.parameterTypes : parameterTypes;
+            this.mappedMember = memberLookupSignature.getMappedMemberOverride() != null ? memberLookupSignature.getMappedMemberOverride() : mappedMember;
         } else {
             this.runtimeName = methodName;
             this.resolvedReturnType = returnType;
@@ -388,15 +388,15 @@ public class MappingMethod {
     public static MappingMethod fromBuilder(MappingMethodBuilder mappingMethodBuilder) {
         MemberLookupSignature memberLookupSignature = RuntimeNameMappingRegistry.lookupMethodMapping(mappingMethodBuilder.getOwnerClass(), mappingMethodBuilder.getMemberName());
         if (memberLookupSignature != null) {
-            mappingMethodBuilder.setMemberName(memberLookupSignature.M);
-            if (memberLookupSignature.a != null) {
-                mappingMethodBuilder.setType(memberLookupSignature.a);
+            mappingMethodBuilder.setMemberName(memberLookupSignature.runtimeName);
+            if (memberLookupSignature.resolvedType != null) {
+                mappingMethodBuilder.setType(memberLookupSignature.resolvedType);
             }
-            if (memberLookupSignature.v.length > 0) {
-                mappingMethodBuilder.setParameterTypes(memberLookupSignature.v);
+            if (memberLookupSignature.parameterTypes.length > 0) {
+                mappingMethodBuilder.setParameterTypes(memberLookupSignature.parameterTypes);
             }
-            if (memberLookupSignature.H() != null) {
-                mappingMethodBuilder.setMappedMember(memberLookupSignature.H());
+            if (memberLookupSignature.getMappedMemberOverride() != null) {
+                mappingMethodBuilder.setMappedMember(memberLookupSignature.getMappedMemberOverride());
             }
         }
         MappingMethod mappingMethod = new MappingMethod(mappingMethodBuilder.getMappingOwner(), mappingMethodBuilder.getOwnerClass(), mappingMethodBuilder.getMemberName(), mappingMethodBuilder.isMappedMember(), mappingMethodBuilder.isStaticMember(), mappingMethodBuilder.isSecondaryMember(), mappingMethodBuilder.getType(), mappingMethodBuilder.getParameterTypes());

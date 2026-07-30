@@ -179,7 +179,7 @@ extends Mod {
     }
 
     public StorageESP() {
-        super("StorageESP", (int)MODULE_ID, Category.k);
+        super("StorageESP", (int)MODULE_ID, Category.RENDER);
         this.renderChests = BooleanValue.create(this, "Render Chests", true);
         this.renderTrappedChests = BooleanValue.create(this, "Render Trapped Chests", true);
         this.renderEnderchests = BooleanValue.create(this, "Render Enderchests", false);

@@ -1,7 +1,5 @@
 package gg.vape.module.combat.silentaura;
 
-import gg.vape.module.combat.SilentAuraTargetingModule;
-import gg.vape.module.combat.silentaura.SilentAuraAdaptiveRotationEntry;
 import gg.vape.rotation.AdaptiveRotationController;
 
 public class SilentAuraAdaptiveRotationController

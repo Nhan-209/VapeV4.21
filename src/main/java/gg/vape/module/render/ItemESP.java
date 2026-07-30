@@ -117,7 +117,7 @@ extends Mod {
     }
 
     public ItemESP() {
-        super("ItemESP", 48779, Category.k, "Renders tags on dropped items.");
+        super("ItemESP", 48779, Category.RENDER, "Renders tags on dropped items.");
         this.groupItems = BooleanValue.create(this, "Group Items", false, "Groups items into easier to read tags.");
         this.autoScale = BooleanValue.create(this, "Auto Scale", true, "Automatically scales up tags\nthe further the distance.");
         this.whitelistOnly = BooleanValue.create(this, "Whitelist Only", false, "Only renders whitelisted items.");

@@ -22,10 +22,7 @@ import gg.vape.input.MouseInput;
 import gg.vape.mapping.MappedClasses;
 import gg.vape.module.Category;
 import gg.vape.module.Mod;
-import gg.vape.module.blatant.InvWalkSettingsState;
-import gg.vape.module.none.ClientSettingsBooleanValue;
-import gg.vape.module.none.ClientSettingsGuiBindBendable;
-import gg.vape.module.none.TextGuiSettingsFrame;
+import gg.vape.module.blatant.invwalk.InvWalkSettingsState;
 import gg.vape.module.utility.inventory.HotbarSlotRuleItemPickerFrame;
 import gg.vape.module.utility.inventory.cleaner.ui.InventoryCleanerPopupFrame;
 import gg.vape.module.utility.inventory.cleaner.ui.InventoryFilterRuleEditorFrame;
@@ -643,16 +640,16 @@ extends Mod {
         ClientSettings.registerFrame((Frame)settingsSearchFrame, mainStack);
         ClientSettings.registerFrame((Frame)new ClientSettingsFrame(), mainStack);
         ClientSettings.registerFrame((Frame)new ClientSettingsSectionFrame(), mainStack);
-        legitModuleCategoryFrame = new ModuleCategoryFrame(Category.g);
+        legitModuleCategoryFrame = new ModuleCategoryFrame(Category.COMBAT);
         ClientSettings.registerFrame((Frame)legitModuleCategoryFrame, mainStack);
         Vape vape = Vape.INSTANCE;
         if (vape.isFeatureDisabled()) {
-            ClientSettings.registerFrame((Frame)new ModuleCategoryFrame(Category.w), mainStack);
+            ClientSettings.registerFrame((Frame)new ModuleCategoryFrame(Category.OTHER), mainStack);
         }
-        ClientSettings.registerFrame((Frame)new ModuleCategoryFrame(Category.k), mainStack);
-        ClientSettings.registerFrame((Frame)new ModuleCategoryFrame(Category.Y), mainStack);
-        ClientSettings.registerFrame((Frame)new ModuleCategoryFrame(Category.m), mainStack);
-        ClientSettings.registerFrame((Frame)new ModuleCategoryFrame(Category.M), mainStack);
+        ClientSettings.registerFrame((Frame)new ModuleCategoryFrame(Category.RENDER), mainStack);
+        ClientSettings.registerFrame((Frame)new ModuleCategoryFrame(Category.UTILITY), mainStack);
+        ClientSettings.registerFrame((Frame)new ModuleCategoryFrame(Category.WORLD), mainStack);
+        ClientSettings.registerFrame((Frame)new ModuleCategoryFrame(Category.INVENTORY), mainStack);
         ClientSettings.registerFrame((Frame)new VisibleModuleListFrame(), mainStack);
         ClientSettings.registerFrame((Frame)new ProfilesSettingsFrame(), mainStack);
         ClientSettings.registerFrame((Frame)new FrameMacros(), mainStack);
@@ -893,7 +890,7 @@ extends Mod {
     }
 
     public ClientSettings() {
-        super("GUI", 161, 0, Category.b, "Shift click any module button to bind it to a key.\n(You can shift click this to bind the GUI)\nHold TAB to view modules binds.");
+        super("GUI", 161, 0, Category.NONE, "Shift click any module button to bind it to a key.\n(You can shift click this to bind the GUI)\nHold TAB to view modules binds.");
         this.guiBindIndicator = BooleanValue.create((Object)((Object)this), (String)"GUI bind indicator", (boolean)true, (String)"Displays a message indicating your GUI keybind upon injecting.\nI.E. \"Press RSHIFT to open GUI\"");
         this.smoothFont = new ClientSettingsBooleanValue((Object)this, "Smooth Font", true);
         this.showTooltips = BooleanValue.create((Object)((Object)this), (String)"Show tooltips", (boolean)true, (String)"Toggles visibility of these");

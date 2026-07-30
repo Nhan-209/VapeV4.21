@@ -118,7 +118,7 @@ implements INamed {
     }
 
     public boolean hasChanges() {
-        if (this.module.getCategory() == Category.b) {
+        if (this.module.getCategory() == Category.NONE) {
             return false;
         }
         for (ValueSnapshot<?, ?> valueSnapshot : this.getValueSnapshots()) {

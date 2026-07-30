@@ -7,8 +7,8 @@ import gg.vape.module.Category;
 import gg.vape.module.MinecraftVersionConstraint;
 import gg.vape.module.Mod;
 import gg.vape.module.ModDisplayInfo;
-import gg.vape.module.combat.CrystalAuraPlacementSubModule;
-import gg.vape.module.combat.CrystalAuraTargetSubModule;
+import gg.vape.module.combat.crystalaura.CrystalAuraPlacementSubModule;
+import gg.vape.module.combat.crystalaura.CrystalAuraTargetSubModule;
 import gg.vape.module.combat.crystalaura.ExplosionType;
 import gg.vape.module.control.SharedModuleControlClaims;
 import gg.vape.module.none.ClientSettings;
@@ -210,7 +210,7 @@ extends Mod {
     }
 
     public CrystalAura() {
-        super("CrystalAura", -4263937, Category.g, "Automatically places crystals on obsidian and breaks them for you.");
+        super("CrystalAura", -4263937, Category.COMBAT, "Automatically places crystals on obsidian and breaks them for you.");
         this.mode = ModeValue.create((Object)this, "Mode", "Auto - Automatically finds targets and places/breaks crystals\nManual - Hold right-click on obsidian with crystal to place and break crystals", (ModeSelection)this.autoSubModule.getSelectionValue(), this.autoSubModule.getSelectionValue(), this.manualSubModule.getSelectionValue());
         this.P(this.mode, new MinecraftVersionConstraint[0]);
         this.rotationClaim.setPriority(this, 6);

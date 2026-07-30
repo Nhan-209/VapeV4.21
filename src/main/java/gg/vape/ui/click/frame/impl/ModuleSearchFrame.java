@@ -22,10 +22,10 @@ extends ModuleCategoryFrame {
             return;
         }
         for (Mod mod : Vape.INSTANCE.getModManager().collectMods()) {
-            if (mod.getCategory().equals(Category.b)) continue;
+            if (mod.getCategory().equals(Category.NONE)) continue;
             String string2 = StringUtils.y(mod.getName());
             String string3 = StringUtils.y(string);
-            if (mod.getCategory().equals(Category.w) ? !string2.equals(string3) : !string2.contains(string3)) continue;
+            if (mod.getCategory().equals(Category.OTHER) ? !string2.equals(string3) : !string2.contains(string3)) continue;
             ModuleComponent moduleComponent = new ModuleComponent(this, mod);
             this.h(moduleComponent, new Object[0]);
             moduleComponent.buildValueComponents();
@@ -47,7 +47,7 @@ extends ModuleCategoryFrame {
     }
 
     public ModuleSearchFrame() {
-        super(Category.b);
+        super(Category.NONE);
         this.setDisabledOverlayColor(ModuleSearchFrame.J.r);
         this.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M(false);
         this.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M("wrap");

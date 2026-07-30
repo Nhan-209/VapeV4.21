@@ -48,7 +48,7 @@ extends Mod {
     public final BooleanValue showBoundingBox;
 
     public ESP() {
-        super("ESP", -16711936, Category.k, "Extra Sensory Perception\nRenders an ESP on players.");
+        super("ESP", -16711936, Category.RENDER, "Extra Sensory Perception\nRenders an ESP on players.");
         ESP2D esp2D = new ESP2D(this, "2D");
         this.twoDimensionalMode = esp2D.getSelectionValue();
         this.outlineRenderer = new ESPOutline(this, "Outline");

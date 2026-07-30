@@ -95,7 +95,7 @@ extends UtilityMod {
     }
 
     public ThrowDebuff() {
-        super("ThrowDebuff", Category.M, "");
+        super("ThrowDebuff", Category.INVENTORY, "");
         this.oneOfEachOption = new ModeOption("One of each");
         this.firstOption = new ModeOption("First");
         this.mode = ModeValue.create((Object)this, "Mode", "All - Throws all debuffs on hotbar\nOne of each - Throws one of each debuff\nFirst - Throws only first debuff on hotbar", (ModeSelection)this.oneOfEachOption, this.allOption, this.oneOfEachOption, this.firstOption);

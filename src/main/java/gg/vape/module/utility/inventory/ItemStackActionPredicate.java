@@ -2,7 +2,7 @@ package gg.vape.module.utility.inventory;
 
 import gg.vape.input.KeyBindingHelper;
 import gg.vape.mapping.MappedClasses;
-import gg.vape.module.utility.MLGImpactState;
+import gg.vape.module.utility.mlg.MLGImpactState;
 import gg.vape.wrapper.impl.Container;
 import gg.vape.wrapper.impl.EntityPlayerSP;
 import gg.vape.wrapper.impl.Minecraft;

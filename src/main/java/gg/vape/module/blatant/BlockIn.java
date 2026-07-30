@@ -357,7 +357,7 @@ extends Mod {
     }
 
     public BlockIn() {
-        super("Clutch", -65404, Category.Y, "Saves yourself from falling");
+        super("Clutch", -65404, Category.UTILITY, "Saves yourself from falling");
         this.onLethalFall = BooleanValue.create(this, "On lethal fall", true, "Catches the player if they are about to die due to fall damage");
         this.onMoreThanXBlocks = BooleanValue.create(this, "On more than x blocks", false, "Catches the player if their landing block is more than x amount of blocks");
         this.blocksThreshold = NumberValue.create((Object)this, "Blocks", "#", "", 3.0, 6.0, 10.0, 1.0);

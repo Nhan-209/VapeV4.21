@@ -19,7 +19,7 @@ extends Mod {
     }
 
     public OmniSprint() {
-        super("OmniSprint", -256, Category.w);
+        super("OmniSprint", -256, Category.OTHER);
         this.addValue(this.rate, this.rateChange);
     }
 }

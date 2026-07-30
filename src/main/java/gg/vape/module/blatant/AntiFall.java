@@ -27,7 +27,7 @@ extends Mod {
     private final NumberValue fallDistance = NumberValue.createWithDescription(this, "Fall Dist", "#.#", "m", 0.1, 2.0, 5.0, "The amount of blocks to fall before attempting to lag back.");
 
     public AntiFall() {
-        super("AntiFall", 16028225, Category.w, "Helps you with your Parkinson's\nPrevents you from falling into the void.");
+        super("AntiFall", 16028225, Category.OTHER, "Helps you with your Parkinson's\nPrevents you from falling into the void.");
         this.lagbackTimer = new TimerUtil();
         this.addValue(this.ignoreWhileSpeedEnabled, this.fallDistance);
     }

@@ -316,7 +316,7 @@ extends Mod {
     }
 
     public Scaffold() {
-        super("Scaffold", (int)MODULE_ID, Category.Y, "Helps you make bridges/scaffold walk.");
+        super("Scaffold", (int)MODULE_ID, Category.UTILITY, "Helps you make bridges/scaffold walk.");
         this.godBridgeMode = new BlatantScaffoldMode(this, "GodBridge");
         this.tellyBridgeMode = new TellyBridgeScaffoldMode(this, "TellyBridge");
         this.blockCountDisplay = BooleanValue.create(this, "Block count", false, "Renders your block count on the center of your screen");

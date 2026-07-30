@@ -120,7 +120,7 @@ extends Mod {
     }
 
     public Fullbright() {
-        super("Fullbright", -256, Category.k);
+        super("Fullbright", -256, Category.RENDER);
         this.gammaMode = new ModeOption("Gamma");
         this.mode = ModeValue.create((Object)this, "Mode", this.nightVisionMode, this.nightVisionMode, this.gammaMode);
         this.fade = BooleanValue.create(this, "Fade", false, "Brightness changes will fade in or out");

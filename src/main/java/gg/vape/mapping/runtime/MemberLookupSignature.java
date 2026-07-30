@@ -1,20 +1,19 @@
 package gg.vape.mapping.runtime;
 
 public class MemberLookupSignature {
-    public final String M;
-    public final Class<?> a;
-    public final Class<?>[] v;
-    private final Boolean H;
+    public final String runtimeName;
+    public final Class<?> resolvedType;
+    public final Class<?>[] parameterTypes;
+    private final Boolean mappedMemberOverride;
 
-    public MemberLookupSignature(String string, Boolean bl, Class<?> clazz, Class<?> ... classArray) {
-        this.M = string;
-        this.a = clazz;
-        this.v = classArray;
-        this.H = bl;
+    public MemberLookupSignature(String runtimeName, Boolean mappedMemberOverride, Class<?> resolvedType, Class<?> ... parameterTypes) {
+        this.runtimeName = runtimeName;
+        this.resolvedType = resolvedType;
+        this.parameterTypes = parameterTypes;
+        this.mappedMemberOverride = mappedMemberOverride;
     }
 
-    public Boolean H() {
-        return this.H;
+    public Boolean getMappedMemberOverride() {
+        return this.mappedMemberOverride;
     }
 }
-

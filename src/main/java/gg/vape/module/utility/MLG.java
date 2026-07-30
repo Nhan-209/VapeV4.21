@@ -1,337 +1,221 @@
 package gg.vape.module.utility;
 
+import gg.vape.Vape;
 import gg.vape.event.EventHandler;
-import gg.vape.event.impl.EventPacketReceive;
 import gg.vape.event.impl.EventPreTick;
-import gg.vape.input.KeyBindingHelper;
 import gg.vape.inventory.InventoryClick;
-import gg.vape.mapping.MappedClasses;
+import gg.vape.mapping.ItemMappingEntry;
 import gg.vape.module.Category;
 import gg.vape.module.Mod;
-import gg.vape.module.utility.MLGBlockWrapper;
-import gg.vape.module.utility.MLGImpactState;
+import gg.vape.module.blatant.Fly;
+import gg.vape.module.blatant.blockin.BlockInHotbarSlotHelper;
+import gg.vape.module.blatant.blockin.BlockPlacementGraph;
+import gg.vape.module.blatant.blockin.BlockPlacementUtility;
+import gg.vape.module.blatant.blockin.HotbarSlotResolution;
+import gg.vape.module.blatant.blockin.HotbarSlotResolutionWithValue;
+import gg.vape.module.control.SharedModuleControlClaims;
 import gg.vape.module.utility.inventory.ItemStackActionPredicate;
+import gg.vape.module.utility.mlg.MLGPlacementController;
+import gg.vape.rotation.AdaptiveRotationController;
+import gg.vape.rotation.FixedRotationController;
+import gg.vape.rotation.RotationManager;
+import gg.vape.unmap.ItemLimitData;
 import gg.vape.utils.BlockUtil;
 import gg.vape.utils.TimerUtil;
+import gg.vape.utils.datas.BlockCoordinate;
 import gg.vape.value.BooleanValue;
+import gg.vape.value.LimitValue;
+import gg.vape.value.NumberValue;
 import gg.vape.value.RandomValue;
-import gg.vape.wrapper.impl.AxisAlignedBB;
 import gg.vape.wrapper.impl.Block;
 import gg.vape.wrapper.impl.BlockPos;
-import gg.vape.wrapper.impl.BlockStateWorldBridge;
-import gg.vape.wrapper.impl.Entity;
-import gg.vape.wrapper.impl.EntityPlayerMacroBridge;
+import gg.vape.wrapper.impl.BlockState;
 import gg.vape.wrapper.impl.EntityPlayerSP;
 import gg.vape.wrapper.impl.ForgeVersion;
-import gg.vape.wrapper.impl.GuiContainer;
-import gg.vape.wrapper.impl.InventoryPlayer;
-import gg.vape.wrapper.impl.ItemStack;
-import gg.vape.wrapper.impl.KeyBinding;
-import gg.vape.wrapper.impl.Material;
 import gg.vape.wrapper.impl.Minecraft;
-import gg.vape.wrapper.impl.Packet;
-import gg.vape.wrapper.impl.SPacketEntityVelocity;
+import gg.vape.wrapper.impl.ModelPlayer;
 import gg.vape.wrapper.impl.Slot;
 import gg.vape.wrapper.impl.World;
-import gg.vape.wrapper.impl.WorldClient;
-import java.util.ArrayDeque;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class MLG
 extends Mod {
-    private final BooleanValue refillRods;
-    private final BooleanValue recastGround;
-    private final TimerUtil stationaryTimer;
-    private static final int RECAST_GROUND_DELAY_MS = 3000;
-    private boolean biteDetected = false;
-    private static final double VELOCITY_THRESHOLD = 0.05;
-    private final Queue<InventoryClick> clickQueue;
-    private boolean velocityBite = false;
-    private boolean hasCast = false;
-    private final ArrayDeque<KeyBinding> pressedKeys;
-    private final TimerUtil castTimer;
-    private double accumulatedMotionY = 0.0;
-    private final TimerUtil clickTimer;
-    private static final int STATIONARY_DELAY_MS = 1000;
-    private final RandomValue clickDelay = RandomValue.createWithDescription(this, "Click delay", "#", "ms", 50.0, 75.0, 125.0, 200.0, 5.0, "How long to wait between clicks in the inventory");
-    private boolean refillPending = false;
-    private final ArrayDeque<KeyBinding> queuedKeys;
-    private final BooleanValue recastCaught;
-    private final TimerUtil groundTimer;
+    @NotNull
+    public final TimerUtil inventoryClickTimer;
+    private MLGState state;
+    private final BooleanValue onLethalFall;
+    @Nullable
+    private BlockCoordinate lastPlacePos = null;
+    public final NumberValue aimSpeed;
+    public final BooleanValue checkInventory;
+    private final BlockInHotbarSlotHelper slotHelper;
+    private final BooleanValue onXDamage = BooleanValue.create(this, "On at least X damage", false, "Activate MLG when the fall will do at least X health");
+    @NotNull
+    private final TimerUtil conserveTimer;
+    @Nullable
+    private BlockCoordinate targetCoordinate = null;
+    @Nullable
+    private ItemMappingEntry mlgItem = null;
+    private double lastHealth = 0.0;
+    @Nullable
+    public FixedRotationController pickupRotation = null;
+    public final LimitValue nonRemovableItems;
+    public final Queue<InventoryClick> clickQueue;
+    private final RandomValue clickDelayValue;
+    private boolean guiOpenedByMlg = false;
+    private final NumberValue healthValue;
+    @Nullable
+    private BlockPlacementGraph placementGraph = null;
+    public final BooleanValue useCobwebs;
+    @NotNull
+    public final TimerUtil placementTimer;
+    private double accumulatedFall = 0.0;
+    private static final long MAGIC_ID = 7584752828418109695L;
+    private final BooleanValue pickUpWater;
+    public final BooleanValue useBuckets;
+    @Nullable
+    public FixedRotationController placementRotation = null;
+    public final MLGPlacementController placementController;
+    public final BooleanValue silentAim;
 
-    private boolean cancelRefill() {
-        if (this.refillPending) {
-            this.clickQueue.clear();
-            this.refillPending = false;
-            return ItemStackActionPredicate.closeCurrentScreen();
-        }
-        return false;
-    }
-
-
-    private boolean pumpKeyPresses() {
-        boolean processedKey = false;
-        KeyBinding pressedKey = this.pressedKeys.poll();
-        if (pressedKey != null && pressedKey.isNotNull()) {
-            KeyBindingHelper.updateKeyBinding(pressedKey, false, false);
-            processedKey = true;
-        }
-        KeyBinding queuedKey = this.queuedKeys.poll();
-        if (queuedKey != null && queuedKey.isNotNull()) {
-            KeyBindingHelper.updateKeyBinding(queuedKey, true, true);
-            processedKey = true;
-            this.pressedKeys.add(queuedKey);
-        }
-        return processedKey;
-    }
-
-    private boolean hasWaterBelow(EntityPlayerMacroBridge fishHook, WorldClient world) {
-        double hookX = fishHook.z();
-        double hookY = fishHook.N();
-        double hookZ = fishHook.h();
-        for (double scanY = hookY; scanY >= 0.0 && scanY >= hookY - 3.0; scanY -= 1.0) {
-            Block block = world.getBlock(hookX, scanY, hookZ);
-            if (block == null || !block.isNotNull()) continue;
-            if (BlockUtil.C(block)) {
-                return true;
-            }
-            if (BlockUtil.p(block)) continue;
+    private boolean shouldActivate() {
+        if (Minecraft.currentScreen().isNotNull()) {
             return false;
         }
-        return false;
-    }
-
-    private boolean beginRefill() {
-        this.refillPending = true;
-        return ItemStackActionPredicate.openInventory();
-    }
-
-    @EventHandler
-    public void onTick(EventPreTick event) {
-        EntityPlayerSP localPlayer = event.getThePlayer();
-        WorldClient world = event.getWorld();
-        if (!this.isHoldingRod()) {
-            InventoryClick pendingClick;
-            Slot hotbarRodSlot = ItemStackActionPredicate.findSlotByItemClass(MappedClasses.Yi, MLGImpactState.HOTBAR);
-            if (hotbarRodSlot != null && hotbarRodSlot.isNotNull()) {
-                if (ItemStackActionPredicate.isAnyScreenOpen()) {
-                    if (this.refillPending) {
-                        this.cancelRefill();
-                    }
-                    return;
-                }
-                InventoryPlayer inventoryPlayer = localPlayer.V$src$Lgg_vape_wrapper_impl_InventoryPlayer_$erqak6();
-                if (inventoryPlayer.isNull()) {
-                    return;
-                }
-                int rodHotbarIndex = hotbarRodSlot.g() - 36;
-                int selectedHotbarSlot = inventoryPlayer.v();
-                if (selectedHotbarSlot == rodHotbarIndex) {
-                    return;
-                }
-                inventoryPlayer.g(rodHotbarIndex);
-                return;
-            }
-            if (!this.refillRods.getEffectiveValue().booleanValue()) {
-                this.Y(false);
-                return;
-            }
-            Slot inventoryRodSlot = ItemStackActionPredicate.findSlotByItemClass(MappedClasses.Yi, MLGImpactState.MAIN_INVENTORY);
-            if (inventoryRodSlot == null || inventoryRodSlot.isNull()) {
-                this.Y(false);
-                return;
-            }
-            int inventorySlot = inventoryRodSlot.g();
-            if (!ItemStackActionPredicate.isInventoryScreenOpen()) {
-                if (ItemStackActionPredicate.isAnyScreenOpen()) {
-                    if (this.refillPending) {
-                        this.cancelRefill();
-                    }
-                    return;
-                }
-                this.beginRefill();
-                return;
-            }
-            GuiContainer guiContainer = new GuiContainer(Minecraft.currentScreen().getObject());
-            int windowId = guiContainer.getInventorySlots().getWindowId();
-            if (this.clickQueue.isEmpty()) {
-                this.clickQueue.add(new InventoryClick(windowId, inventorySlot, 0, 2));
-                return;
-            }
-            if (this.clickTimer.hasTimeElapsed((long)this.clickDelay.getRandomValue()) && (pendingClick = this.clickQueue.poll()) != null) {
-                this.performClick(pendingClick, windowId);
-            }
-            return;
-        }
-        if (ItemStackActionPredicate.isAnyScreenOpen()) {
-            if (this.refillPending) {
-                this.cancelRefill();
-            }
-            return;
-        }
-        if (this.pumpKeyPresses()) {
-            return;
-        }
-        EntityPlayerMacroBridge fishHook = this.getFishHook();
-        if (fishHook == null || fishHook.isNull()) {
-            this.recast();
-            return;
-        }
-        Entity caughtEntity = fishHook.r$src$Lgg_vape_wrapper_impl_Entity_$18p7x3h();
-        if (caughtEntity != null && caughtEntity.isNotNull()) {
-            if (this.recastCaught.getEffectiveValue().booleanValue()) {
-                this.recast();
-            } else {
-                this.Y(false);
-            }
-            return;
-        }
-        if (!this.isHookInLiquid(fishHook, world)) {
-            if (this.recastGround.getEffectiveValue().booleanValue() && this.groundTimer.hasTimeElapsed(RECAST_GROUND_DELAY_MS)) {
-                this.recast();
-            }
-            return;
-        }
-        this.groundTimer.reset();
-        double motionY = fishHook.q();
-        if (!this.biteDetected) {
-            double motionX = fishHook.t();
-            double motionZ = fishHook.T();
-            double totalMotion = Math.abs(motionX) + Math.abs(motionY) + Math.abs(motionZ);
-            if (totalMotion <= VELOCITY_THRESHOLD) {
-                if (this.stationaryTimer.hasTimeElapsed(STATIONARY_DELAY_MS)) {
-                    this.biteDetected = true;
-                }
-            } else {
-                this.stationaryTimer.reset();
-            }
-            return;
-        }
-        this.accumulatedMotionY = motionY <= -0.1 ? (this.accumulatedMotionY += motionY) : 0.0;
-        if (this.accumulatedMotionY <= -VELOCITY_THRESHOLD || this.velocityBite) {
-            this.recast();
-            this.castTimer.reset();
-            this.stationaryTimer.reset();
-            this.groundTimer.reset();
-            this.biteDetected = false;
-            this.velocityBite = false;
-        }
-    }
-
-    @Nullable
-    private EntityPlayerMacroBridge getFishHook() {
         EntityPlayerSP localPlayer = Minecraft.thePlayer();
         if (localPlayer.isNull()) {
-            return null;
+            return false;
         }
-        EntityPlayerMacroBridge attachedHook = localPlayer.K$src$Lgg_vape_wrapper_impl_EntityPlayerMacroBridge_$1agjn9();
-        if (attachedHook.isNotNull()) {
-            return attachedHook;
+        ModelPlayer capabilities = localPlayer.C$src$Lgg_vape_wrapper_impl_ModelPlayer_$19uhx86();
+        if (this.accumulatedFall < 2.0 || localPlayer.q() == 0.0 || capabilities.isCreativeMode() || capabilities.N() || capabilities.isFlying() || localPlayer.Q$src$Z$fh9faz() || localPlayer.M$src$Z$ff28xj() || localPlayer.k$src$Z$15enw27() || ForgeVersion.MC_1_16_5.d() && localPlayer.X$src$Z$1id4hz7() || localPlayer.b$src$Z$fqlxe4() || localPlayer.S$src$Z$151gttj() || localPlayer.h$src$Z$ftwoya() || localPlayer.d() || localPlayer.D$src$Z$fa43la()) {
+            return false;
         }
-        World world = localPlayer.getWorld();
-        if (world.isNull()) {
-            return null;
+        if (Vape.INSTANCE.getModManager().getMod(Fly.class).r$src$Z$14eylz9()) {
+            return false;
         }
-        ArrayList<EntityPlayerMacroBridge> ownedHooks = new ArrayList<>();
-        for (Object handle : world.z()) {
-            Entity entity = new Entity(handle);
-            if (!entity.isInstance(MappedClasses.lM)) continue;
-            EntityPlayerMacroBridge hook = new EntityPlayerMacroBridge(entity.getObject());
-            if (!localPlayer.equals(hook.A$src$Lgg_vape_wrapper_impl_Entity_$12ijiu4())) continue;
-            ownedHooks.add(hook);
-        }
-        switch (ownedHooks.size()) {
-            case 0: {
-                return null;
+        float predictedDropDistance = 0.0f;
+        BlockCoordinate landingCoordinate = BlockPlacementUtility.predictLandingBlock(false, 50, localPlayer, this.getPlacementGraph(localPlayer, true));
+        if (landingCoordinate != null) {
+            World world = localPlayer.getWorld();
+            for (int heightOffset = 0; heightOffset <= 3; ++heightOffset) {
+                Block block;
+                BlockPos blockPos = landingCoordinate.E$src$Lgg_vape_wrapper_impl_BlockPos_$1bb1czr().W(heightOffset);
+                BlockState blockState = world.getBlockState(blockPos);
+                if (!blockState.isNotNull() || !(block = blockState.getBlock()).isNotNull() || !BlockUtil.C(block)) continue;
+                return false;
             }
-            case 1: {
-                return ownedHooks.get(0);
-            }
+            predictedDropDistance = (float)(localPlayer.N() - (double)(landingCoordinate.E() + 1));
         }
-        return null;
-    }
-
-    private boolean isHookInBlock(EntityPlayerMacroBridge fishHook, WorldClient world) {
-        BlockPos blockPos = fishHook.J$src$Lgg_vape_wrapper_impl_BlockPos_$kv8a0x();
-        BlockStateWorldBridge blockState = world.o(blockPos);
-        float fluidHeight = 0.0f;
-        if (blockState.o(MLGBlockWrapper.getWaterBlock())) {
-            fluidHeight = blockState.i(world, blockPos);
+        float groundDistance = BlockPlacementUtility.getDistanceToGround(localPlayer, true, false, this.getPlacementGraph(localPlayer, false));
+        float fallDistance = Math.max(predictedDropDistance, groundDistance);
+        if (fallDistance <= 0.0f) {
+            return false;
         }
-        return fluidHeight > 0.0f;
-    }
-
-    private boolean isHookInWater(EntityPlayerMacroBridge fishHook, WorldClient world) {
-        int sampleCount = 5;
-        double submergedFraction = 0.0;
-        for (int sample = 0; sample < sampleCount; ++sample) {
-            AxisAlignedBB hookBounds = fishHook.u$src$Lgg_vape_wrapper_impl_AxisAlignedBB_$kogbsu();
-            double height = hookBounds.getMaxY() - hookBounds.getMinY();
-            double sampleMinY = hookBounds.getMinY() + height * (double)sample / (double)sampleCount;
-            double sampleMaxY = hookBounds.getMinY() + height * (double)(sample + 1) / (double)sampleCount;
-            AxisAlignedBB sampleBounds = AxisAlignedBB.create(hookBounds.getMinX(), sampleMinY, hookBounds.getMinZ(), hookBounds.getMaxX(), sampleMaxY, hookBounds.getMaxZ());
-            if (!fishHook.getWorld().h(sampleBounds, Material.f())) continue;
-            submergedFraction += 1.0 / (double)sampleCount;
-        }
-        return submergedFraction > 0.0;
-    }
-
-    private void recast() {
-        EntityPlayerMacroBridge fishHook = this.getFishHook();
-        boolean hasActiveHook = fishHook != null && fishHook.isNotNull();
-        if (hasActiveHook || !this.hasCast || this.castTimer.hasTimeElapsed(1000L)) {
-            this.pressUseKey(Minecraft.gameSettings().b$src$Lgg_vape_wrapper_impl_KeyBinding_$1yi3362());
-            this.castTimer.reset();
-            this.groundTimer.reset();
-            this.stationaryTimer.reset();
-            this.hasCast = true;
-            this.accumulatedMotionY = 0.0;
-        }
-    }
-
-    private void pressUseKey(KeyBinding keyBinding) {
-        KeyBindingHelper.updateKeyBinding(keyBinding, true, true);
-        this.pressedKeys.add(keyBinding);
-    }
-
-    public MLG() {
-        super("AutoFish", 12452021, Category.m, "Automatically fishes for you.");
-        this.clickQueue = new ConcurrentLinkedQueue<InventoryClick>();
-        this.queuedKeys = new ArrayDeque();
-        this.pressedKeys = new ArrayDeque();
-        this.recastCaught = BooleanValue.create(this, "Recast caught", false, "Automatically recasts if the hook catches onto an entity");
-        this.recastGround = BooleanValue.create(this, "Recast ground", false, "Automatically recasts if the hook hits the ground");
-        this.clickTimer = new TimerUtil();
-        this.castTimer = new TimerUtil();
-        this.stationaryTimer = new TimerUtil();
-        this.groundTimer = new TimerUtil();
-        this.refillRods = BooleanValue.create(this, "Refill rods", true, "Automatically replaces broken rods with rods from your inventory.");
-        this.refillRods.addDependentValues(this.clickDelay);
-        this.addValue(this.recastGround, this.recastCaught, this.refillRods, this.clickDelay);
-    }
-
-    private boolean isHookInLiquid(EntityPlayerMacroBridge fishHook, WorldClient world) {
-        if (fishHook.h$src$Z$ftwoya()) {
+        float fallDamage = BlockPlacementUtility.calculateFallDamage(localPlayer, fallDistance);
+        double damageThreshold = (Double)this.healthValue.getValue();
+        float remainingHealth = localPlayer.w$src$F$15l9epb() - fallDamage;
+        if (this.onXDamage.getEffectiveValue().booleanValue() && (double)fallDamage >= damageThreshold) {
             return true;
         }
-        if (ForgeVersion.MC_1_16_5.d()) {
-            return this.isHookInBlock(fishHook, world);
-        }
-        if (ForgeVersion.MC_1_12_2.d()) {
-            return this.hasWaterBelow1122(fishHook, world);
-        }
-        return this.isHookInWater(fishHook, world) || this.hasWaterBelow(fishHook, world);
+        return this.onLethalFall.getEffectiveValue() != false && remainingHealth <= 0.0f;
     }
 
-    private void performClick(InventoryClick inventoryClick, int currentWindowId) {
-        this.clickTimer.reset();
-        int clickWindowId = inventoryClick.getWindowId();
-        if (currentWindowId == clickWindowId) {
-            inventoryClick.execute();
+
+    public MLG() {
+        super("MLG", (int)MAGIC_ID, Category.WORLD, "Automatically places water under you when you fall");
+        this.onLethalFall = BooleanValue.create(this, "On lethal fall", true, "Activate MLG when the fall would deal enough damage to kill you");
+        this.aimSpeed = NumberValue.create(this, "Aim speed", "#.#", "", 5.0, 5.0, 15.0, 0.5, "How quickly MLG will change your look angles");
+        this.pickUpWater = BooleanValue.create(this, "Pick up water", false, "Pick up placed water back into the bucket");
+        this.inventoryClickTimer = new TimerUtil();
+        this.clickDelayValue = RandomValue.createWithDescription(this, "Click Delay", "#", "ms", 50.0, 75.0, 125.0, 200.0, 5.0, "Delay used between inv clicks");
+        this.placementTimer = new TimerUtil();
+        this.conserveTimer = new TimerUtil();
+        this.clickQueue = new ConcurrentLinkedQueue<InventoryClick>();
+        this.silentAim = BooleanValue.create(this, "Silent aim", false, "Uses Silent Aim system");
+        this.useBuckets = BooleanValue.create(this, "Use buckets", true, "Allow use of water buckets to save from fall damage");
+        this.useCobwebs = BooleanValue.create(this, "Use cobwebs", true, "Allow use of cobwebs to save from fall damage");
+        this.checkInventory = BooleanValue.create(this, "Check inventory", true, "Retrieves MLG Item to use from Inventory if not in Hotbar");
+        this.nonRemovableItems = LimitValue.create(this, "mlg-whitelisteditems", "Non-removable Items", LimitValue.ALLOW_LIST_COLOR, Arrays.asList(new ItemLimitData("Water Bucket"), new ItemLimitData("Bucket"), new ItemLimitData("Cobweb")));
+        this.healthValue = NumberValue.create(this, "Health", "#", "", 1.0, 5.0, 20.0, 1.0, "Min amount of fall damage for activation");
+        this.state = MLGState.IDLE;
+        this.useBuckets.addDependentValues(this.pickUpWater);
+        this.onXDamage.addDependentValues(this.healthValue);
+        this.checkInventory.addDependentValues(this.clickDelayValue);
+        this.addValue(this.useBuckets, this.pickUpWater, this.useCobwebs, this.checkInventory, this.clickDelayValue, this.silentAim, this.aimSpeed, this.onLethalFall, this.onXDamage, this.healthValue);
+        this.placementController = new MLGPlacementController(this);
+        this.slotHelper = new BlockInHotbarSlotHelper(this);
+        SharedModuleControlClaims.rotation.setPriority(this, 10);
+    }
+
+    private void releaseRotation(FixedRotationController fixedRotationController, boolean releaseClaim, boolean restoreAdaptive) {
+        if (fixedRotationController == null) {
+            return;
         }
+        if (fixedRotationController.equals(RotationManager.INSTANCE.getActiveController())) {
+            RotationManager.INSTANCE.releaseController(fixedRotationController);
+        }
+        fixedRotationController.setRetainAfterCompletion(false);
+        if (restoreAdaptive && fixedRotationController instanceof AdaptiveRotationController) {
+            ((AdaptiveRotationController)fixedRotationController).setRelativeMode(false);
+            fixedRotationController.setComplete(true);
+        }
+        if (releaseClaim) {
+            SharedModuleControlClaims.rotation.release(this);
+        }
+    }
+
+    @NotNull
+    public HotbarSlotResolution openInventory() {
+        if (ItemStackActionPredicate.isInventoryScreenOpen()) {
+            this.guiOpenedByMlg = true;
+            return HotbarSlotResolution.success("Inventory GUI is open.");
+        }
+        if (ItemStackActionPredicate.isAnyScreenOpen()) {
+            HotbarSlotResolution closeResult = this.closeInventory();
+            if (closeResult.isFailure()) {
+                return HotbarSlotResolution.failure(String.format("Cannot open inventory GUI because we cannot exit our current GUI due to: %s", closeResult.getMessage())).setForced(closeResult.canContinue());
+            }
+            return closeResult.isSuccess() ? HotbarSlotResolution.pending("Closed existing GUI, will open inventory next tick.") : HotbarSlotResolution.pending("Waiting to close GUI");
+        }
+        if (this.isInventoryClickReady()) {
+            this.inventoryClickTimer.reset();
+            boolean waitingForOpen = ItemStackActionPredicate.openInventory();
+            if (!waitingForOpen) {
+                return HotbarSlotResolution.success("Opened inventory GUI");
+            }
+            this.guiOpenedByMlg = true;
+            return HotbarSlotResolution.pending("Waiting for inventory to open");
+        }
+        return HotbarSlotResolution.pending("Waiting for inventory delay before opening GUI.");
+    }
+
+    @NotNull
+    public HotbarSlotResolution closeInventory() {
+        if (!ItemStackActionPredicate.isAnyScreenOpen()) {
+            this.guiOpenedByMlg = false;
+            return HotbarSlotResolution.success("No GUI is open.");
+        }
+        if (!this.guiOpenedByMlg) {
+            return HotbarSlotResolution.failure("In a GUI opened by the player (not MLG), cannot close it.").force();
+        }
+        if (this.isInventoryClickReady()) {
+            this.inventoryClickTimer.reset();
+            boolean waitingForClose = ItemStackActionPredicate.closeCurrentScreen();
+            if (!waitingForClose) {
+                return HotbarSlotResolution.success("GUI closed.");
+            }
+            this.guiOpenedByMlg = false;
+            return HotbarSlotResolution.pending("Waiting for GUI to close.");
+        }
+        return HotbarSlotResolution.pending("Waiting for inventory click to be available");
+    }
+
+    public boolean acquireRotationControl() {
+        return SharedModuleControlClaims.rotation.isOwnedBy(this) || SharedModuleControlClaims.rotation.acquire(this, this.silentAim.getEffectiveValue());
     }
 
     @Override
@@ -340,63 +224,175 @@ extends Mod {
         this.resetState();
     }
 
-    private void resetState() {
-        this.clickTimer.reset();
-        this.castTimer.reset();
-        this.stationaryTimer.reset();
-        this.groundTimer.reset();
-        this.clickQueue.clear();
-        this.queuedKeys.clear();
-        this.pressedKeys.clear();
-        this.hasCast = false;
-        this.biteDetected = false;
-        this.velocityBite = false;
-        this.refillPending = false;
-        this.accumulatedMotionY = 0.0;
+    private BlockPlacementGraph getPlacementGraph(EntityPlayerSP localPlayer, boolean forceRebuild) {
+        if (forceRebuild || this.placementGraph == null) {
+            this.placementGraph = new BlockPlacementGraph(localPlayer);
+        }
+        return this.placementGraph;
+    }
+
+    @Override
+    public void onEnable() {
+        super.onEnable();
+        this.resetState();
+    }
+
+    public boolean isInventoryClickReady() {
+        return this.clickDelayValue.getMaximumValue() <= 0.0 || this.inventoryClickTimer.hasTimeElapsed((long)this.clickDelayValue.getRandomValue());
     }
 
     @EventHandler
-    public void onPacketReceive(EventPacketReceive eventPacketReceive) {
-        if (!this.biteDetected) {
+    public void onTick(EventPreTick event) {
+        HotbarSlotResolution hotbarSlotResolution;
+        EntityPlayerSP localPlayer = event.getThePlayer();
+        if (localPlayer.isNull()) {
             return;
         }
-        EntityPlayerMacroBridge fishHook = this.getFishHook();
-        if (fishHook == null || fishHook.isNull()) {
+        double health = localPlayer.N();
+        double healthDelta = health - this.lastHealth;
+        if (healthDelta > 0.0) {
+            this.accumulatedFall = 0.0;
+        } else if (healthDelta < 0.0) {
+            this.accumulatedFall -= healthDelta;
+        }
+        if (localPlayer.b$src$Z$fqlxe4()) {
+            this.accumulatedFall = 0.0;
+        }
+        this.lastHealth = health;
+        if (this.state == MLGState.IDLE && !this.shouldActivate()) {
             return;
         }
-        Packet packet = eventPacketReceive.getPacket();
-        if (packet.isInstance(MappedClasses.YX)) {
-            SPacketEntityVelocity velocityPacket = new SPacketEntityVelocity(packet);
-            if (velocityPacket.getEntityId() != fishHook.S()) {
+        if (localPlayer.b$src$Z$fqlxe4() && (this.state == MLGState.EQUIPPING_ITEM || this.state == MLGState.AIMING)) {
+            this.resetState();
+            return;
+        }
+        if (localPlayer.N() < (double)event.getWorld().R()) {
+            this.resetState();
+            return;
+        }
+        if (this.state == MLGState.AIMING || this.state == MLGState.EQUIPPING_ITEM) {
+            this.targetCoordinate = BlockPlacementUtility.predictLandingBlock(false, 50, localPlayer, this.getPlacementGraph(localPlayer, true));
+            HotbarSlotResolutionWithValue<Slot> slotResolution = this.slotHelper.equipAvailableMlgItem();
+            if (!slotResolution.canContinue()) {
+                this.resetState();
                 return;
             }
-            int motionX = velocityPacket.getMotionX();
-            int motionZ = velocityPacket.getMotionZ();
-            double motionY = (double)velocityPacket.getMotionY() / 8000.0;
-            if (motionX == 0 && motionZ == 0 && motionY <= -VELOCITY_THRESHOLD) {
-                this.velocityBite = true;
+            if (!slotResolution.isSuccess()) {
+                return;
             }
-            return;
+            Slot slot = slotResolution.getValue();
+            if (slot == null || slot.isNull()) {
+                this.resetState();
+                return;
+            }
+            this.mlgItem = BlockPlacementUtility.getSlotItem(slot);
+            if (this.state == MLGState.EQUIPPING_ITEM) {
+                this.state = MLGState.AIMING;
+            }
         }
-        if (packet.isInstance(MappedClasses.qz) && !packet.isInstance(MappedClasses.uJ)) {
-            return;
-        }
-        if (packet.isInstance(MappedClasses.Dk)) {
-            return;
+        switch (this.state) {
+            case IDLE: {
+                this.state = MLGState.EQUIPPING_ITEM;
+            }
+            case EQUIPPING_ITEM: {
+                break;
+            }
+            case AIMING: {
+                if (this.placementRotation == null) {
+                    this.placementRotation = this.placementController.createRotationController(this.targetCoordinate, this.mlgItem);
+                }
+                if (this.mlgItem == null) {
+                    this.resetState();
+                    return;
+                }
+                hotbarSlotResolution = this.placementController.aimAtTarget(this.mlgItem, this.targetCoordinate, this.placementRotation, false);
+                if (!hotbarSlotResolution.canContinue()) {
+                    this.resetState();
+                    return;
+                }
+                if (!hotbarSlotResolution.isSuccess()) {
+                    return;
+                }
+                HotbarSlotResolutionWithValue<BlockPos> placementResolution = this.placementController.placeItem(this.mlgItem, this.targetCoordinate, null);
+                if (!placementResolution.canContinue()) {
+                    this.resetState();
+                    return;
+                }
+                if (!placementResolution.isSuccess()) {
+                    return;
+                }
+                BlockPos blockPos = placementResolution.getValue();
+                if (blockPos != null && blockPos.isNotNull()) {
+                    this.lastPlacePos = new BlockCoordinate(blockPos.P(), blockPos.o(), blockPos.d());
+                }
+                if (BlockPlacementUtility.getWaterBucketItem().equals(this.mlgItem) && this.pickUpWater.getEffectiveValue().booleanValue()) {
+                    this.placementTimer.reset();
+                    this.conserveTimer.reset();
+                    this.state = MLGState.CONSERVING_WATER;
+                    break;
+                }
+                this.resetState();
+                return;
+            }
+            case CONSERVING_WATER: {
+                if (!this.conserveTimer.hasTimeElapsed(100L)) {
+                    return;
+                }
+                HotbarSlotResolution aimResolution = this.handleWaterAim();
+                hotbarSlotResolution = this.slotHelper.placeMlgItem(this.lastPlacePos, this.conserveTimer);
+                if (!hotbarSlotResolution.canContinue()) {
+                    this.resetState();
+                    return;
+                }
+                if (!aimResolution.canContinue()) {
+                    this.resetState();
+                    return;
+                }
+                if (hotbarSlotResolution.isSuccess()) {
+                    this.resetState();
+                }
+                return;
+            }
         }
     }
 
-    private boolean hasWaterBelow1122(EntityPlayerMacroBridge fishHook, WorldClient world) {
-        return this.hasWaterBelow(fishHook, world);
+    private HotbarSlotResolution handleWaterAim() {
+        if (this.lastPlacePos == null) {
+            return HotbarSlotResolution.failure("Cannot handle water aim job, lastPlacePos is null.");
+        }
+        if (this.pickupRotation == null) {
+            this.pickupRotation = this.placementController.createRotationController(this.lastPlacePos, BlockPlacementUtility.getEmptyBucketItem());
+        }
+        return this.placementController.aimAtTarget(BlockPlacementUtility.getEmptyBucketItem(), this.lastPlacePos, this.pickupRotation, true);
     }
 
-    private boolean isHoldingRod() {
-        EntityPlayerSP localPlayer = Minecraft.thePlayer();
-        if (localPlayer.isNull()) {
-            return false;
+    private void resetState() {
+        this.placementTimer.reset();
+        this.conserveTimer.reset();
+        this.clickQueue.clear();
+        if (this.placementRotation != null) {
+            this.releaseRotation(this.placementRotation, true, false);
         }
-        ItemStack itemStack = localPlayer.getHeldItemHand();
-        return !itemStack.isNull() && itemStack.getItem().isInstance(MappedClasses.Yi);
+        if (this.pickupRotation != null) {
+            this.releaseRotation(this.pickupRotation, true, false);
+        }
+        this.placementRotation = null;
+        this.pickupRotation = null;
+        this.mlgItem = null;
+        this.guiOpenedByMlg = false;
+        this.lastPlacePos = null;
+        this.placementGraph = null;
+        this.targetCoordinate = null;
+        this.state = MLGState.IDLE;
+        this.accumulatedFall = 0.0;
+        this.lastHealth = 0.0;
+        this.inventoryClickTimer.reset();
+    }
+
+    enum MLGState {
+        IDLE,
+        EQUIPPING_ITEM,
+        AIMING,
+        CONSERVING_WATER
     }
 }
-

@@ -36,7 +36,7 @@ extends Mod {
     }
 
     public Step() {
-        super(NAME, new Color(42, 175, 224).getRGB(), Category.w);
+        super(NAME, new Color(42, 175, 224).getRGB(), Category.OTHER);
     }
 
     @Override

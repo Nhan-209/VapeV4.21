@@ -11,7 +11,7 @@ import gg.vape.event.impl.EventPrePlayerTick;
 import gg.vape.mapping.MappedClasses;
 import gg.vape.module.Category;
 import gg.vape.module.Mod;
-import gg.vape.module.combat.VelocityPacketMode;
+import gg.vape.module.combat.velocity.VelocityPacketMode;
 import gg.vape.notification.NotificationType;
 import gg.vape.unmap.NumberFormat;
 import gg.vape.utils.MathUtil;
@@ -74,7 +74,7 @@ extends Mod {
     }
 
     public Velocity() {
-        super("Velocity", (int)COLOR_ID, Category.Y, "Reduces knockback taken");
+        super("Velocity", (int)COLOR_ID, Category.UTILITY, "Reduces knockback taken");
         this.waterCheck = BooleanValue.create(this, "Water check", false, "Won't reduce knockback if in water");
         this.chance = NumberValue.createWithDescription(this, "Chance", "#", "%", 0.0, 40.0, 100.0, "Chance of reducing knockback");
         this.kiteMode = BooleanValue.create(this, "Kite mode", false, "Increases knockback while not facing opponent");

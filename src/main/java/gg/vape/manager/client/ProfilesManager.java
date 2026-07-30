@@ -17,7 +17,7 @@ import gg.vape.event.impl.ProfileListMutationEvent;
 import gg.vape.module.Category;
 import gg.vape.module.Mod;
 import gg.vape.module.none.ClientSettings;
-import gg.vape.module.none.Search;
+import gg.vape.module.render.Search;
 import gg.vape.ui.click.component.value.AbstractListValueComponent;
 import gg.vape.ui.click.component.value.FloatingValueDropdownLayer;
 import gg.vape.ui.click.frame.Frame;
@@ -41,7 +41,7 @@ public class ProfilesManager {
 
     public void resetAllSettings() {
         for (Mod object : Vape.INSTANCE.getModManager().getAllModules()) {
-            if (object.getCategory() == Category.b && !(object instanceof Search) || object.r$src$Z$14eylz9()) {
+            if (object.getCategory() == Category.NONE && !(object instanceof Search) || object.r$src$Z$14eylz9()) {
                 // empty if block
             }
             if (object.a().usesOwnKeybindStorage()) {

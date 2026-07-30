@@ -1,7 +1,6 @@
 package gg.vape.event;
 
 import gg.vape.Vape;
-import gg.vape.event.EventHandler;
 import gg.vape.event.impl.EventChat;
 import gg.vape.event.impl.EventChatMessageRender;
 import gg.vape.event.impl.EventEntityRenderState;
@@ -9,7 +8,7 @@ import gg.vape.event.impl.EventNameFormat;
 import gg.vape.event.impl.EventPlayerTabOverlayDisplayName;
 import gg.vape.friend.FriendAliasDisplayNameListener;
 import gg.vape.mapping.MappedClasses;
-import gg.vape.module.world.ChestStealInventoryState;
+import gg.vape.module.world.cheststeal.ChestStealInventoryState;
 import gg.vape.wrapper.Wrapper;
 import gg.vape.wrapper.impl.ForgeVersion;
 import gg.vape.wrapper.impl.ITextComponent;

@@ -20,7 +20,7 @@ extends Mod {
     }
 
     public Timer() {
-        super("Timer", (int)MODULE_ID, Category.w, "Modifies game timer");
+        super("Timer", (int)MODULE_ID, Category.OTHER, "Modifies game timer");
         this.R(false);
         this.addValue(this.speedValue);
     }

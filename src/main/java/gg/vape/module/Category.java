@@ -7,24 +7,24 @@ import java.util.List;
 
 public class Category
 implements INamed {
-    public static Category g;
-    public static Category k;
-    public static Category b;
+    public static Category COMBAT;
+    public static Category RENDER;
+    public static Category NONE;
     private final String name;
-    public static Category m;
+    public static Category WORLD;
     private static List<Category> values;
     private final int color;
     private final String description;
-    public static Category M;
-    public static Category A;
+    public static Category INVENTORY;
+    public static Category HIDDEN;
     private static GuiComponent[] components;
-    public static Category Y;
+    public static Category UTILITY;
     private final String iconKey;
-    public static Category w;
-    public static Category L;
-    public static Category v;
+    public static Category OTHER;
+    public static Category FAVORITES;
+    public static Category NETWORK;
 
-    public static GuiComponent[] N$src$ALgg_vape_ui_click_component_GuiComponent_$lect5v() {
+    public static GuiComponent[] getLegacyComponents() {
         return components;
     }
 
@@ -32,50 +32,48 @@ implements INamed {
         return this.color;
     }
 
-    private Category(String string, String string2, String string3, int n) {
-        this.name = string;
-        this.iconKey = string2;
-        this.description = string3;
-        this.color = n;
+    private Category(String name, String iconKey, String description, int color) {
+        this.name = name;
+        this.iconKey = iconKey;
+        this.description = description;
+        this.color = color;
     }
 
     static {
-        if (Category.N$src$ALgg_vape_ui_click_component_GuiComponent_$lect5v() == null) {
-            Category.q(new GuiComponent[4]);
+        if (Category.getLegacyComponents() == null) {
+            Category.setLegacyComponents(new GuiComponent[4]);
         }
-        String[] stringArray = new String[]{"other", "Network", "utility", "combat", "Other", "network", "Combat", "newfavorites", "None", "newfavorites", "inventory", "Combat advantage modules", "Inventory", "Hidden", "All kinds of visual goodies", "World", "Favorites", "Utility", "render", "favorites", "Render", "world"};
-        long[] lArray = new long[]{963278542204507525L, -6863823725787672923L, 5523565669093088006L, -1209571427471355580L, -3432970327529852768L, 7953830955999004703L, -2569924983285672571L, -6593822668313179888L, -8696848907968820976L};
-        b = new Category(stringArray[8], stringArray[9], (int)lArray[5]);
-        g = new Category(stringArray[6], stringArray[3], stringArray[11], (int)lArray[2]);
-        Y = new Category(stringArray[17], stringArray[2], (int)lArray[3]);
-        k = new Category(stringArray[20], stringArray[18], stringArray[14], (int)lArray[1]);
-        m = new Category(stringArray[15], stringArray[21], (int)lArray[8]);
-        M = new Category(stringArray[12], stringArray[10], (int)lArray[7]);
-        v = new Category(stringArray[1], stringArray[5], (int)lArray[4]);
-        w = new Category(stringArray[4], stringArray[0], (int)lArray[0]);
-        L = new Category(stringArray[16], stringArray[7], "", 0);
-        A = new Category(stringArray[13], stringArray[19], (int)lArray[6]);
+        NONE = new Category("None", "newfavorites", -2914273);
+        COMBAT = new Category("Combat", "combat", "Combat advantage modules", -2745594);
+        UTILITY = new Category("Utility", "utility", -14970556);
+        RENDER = new Category("Render", "render", "All kinds of visual goodies", -7926107);
+        WORLD = new Category("World", "world", -12170992);
+        INVENTORY = new Category("Inventory", "inventory", -12170992);
+        NETWORK = new Category("Network", "network", -14651232);
+        OTHER = new Category("Other", "other", -2419323);
+        FAVORITES = new Category("Favorites", "newfavorites", "", 0);
+        HIDDEN = new Category("Hidden", "favorites", -2419323);
         values = new ArrayList<Category>();
-        values.add(L);
-        values.add(g);
-        values.add(k);
-        values.add(Y);
-        values.add(m);
-        values.add(M);
-        values.add(w);
-        values.add(b);
+        values.add(FAVORITES);
+        values.add(COMBAT);
+        values.add(RENDER);
+        values.add(UTILITY);
+        values.add(WORLD);
+        values.add(INVENTORY);
+        values.add(OTHER);
+        values.add(NONE);
     }
 
-    private Category(String string, String string2, int n) {
-        this(string, string2, "", n);
+    private Category(String name, String iconKey, int color) {
+        this(name, iconKey, "", color);
     }
 
     public String toString() {
         return this.name;
     }
 
-    public static void q(GuiComponent[] guiComponentArray) {
-        components = guiComponentArray;
+    public static void setLegacyComponents(GuiComponent[] legacyComponents) {
+        components = legacyComponents;
     }
 
     @Override
@@ -90,20 +88,20 @@ implements INamed {
     public static void destruct() {
         values.clear();
         values = null;
-        b = null;
-        g = null;
-        Y = null;
-        k = null;
-        w = null;
-        m = null;
-        L = null;
+        NONE = null;
+        COMBAT = null;
+        UTILITY = null;
+        RENDER = null;
+        OTHER = null;
+        WORLD = null;
+        FAVORITES = null;
     }
 
-    public String O() {
+    public String getDescription() {
         return this.description;
     }
 
-    public String N() {
+    public String getIconKey() {
         return this.iconKey;
     }
 }

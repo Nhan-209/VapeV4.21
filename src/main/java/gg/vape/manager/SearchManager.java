@@ -3,7 +3,7 @@ package gg.vape.manager;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import gg.vape.Vape;
-import gg.vape.module.none.Search;
+import gg.vape.module.render.Search;
 import gg.vape.ui.unmap.SearchBlock;
 import java.util.HashSet;
 import java.util.Set;

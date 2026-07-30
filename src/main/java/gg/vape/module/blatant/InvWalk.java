@@ -7,7 +7,7 @@ import gg.vape.input.KeyboardInput;
 import gg.vape.mapping.MappedClasses;
 import gg.vape.module.Category;
 import gg.vape.module.Mod;
-import gg.vape.module.blatant.InvWalkSettingsState;
+import gg.vape.module.blatant.invwalk.InvWalkSettingsState;
 import gg.vape.module.none.ClientSettings;
 import gg.vape.utils.MathUtil;
 import gg.vape.value.BooleanValue;
@@ -24,7 +24,7 @@ extends Mod {
     private final BooleanValue inventoryOnly = BooleanValue.create(this, "Inventory Only", false, "Only moves you when in inventory/pause screen.\nIgnores any chests/containers.");
 
     public InvWalk() {
-        super("InvWalk", new Color(193, 113, 0).getRGB(), Category.w, "Walk and look around in UI's\nUse arrow keys to look around\nDoes not bypass some anti-cheats!");
+        super("InvWalk", new Color(193, 113, 0).getRGB(), Category.OTHER, "Walk and look around in UI's\nUse arrow keys to look around\nDoes not bypass some anti-cheats!");
         this.sneak = BooleanValue.create(this, "Sneak", false, "Takes sneaking input");
         this.rotate = BooleanValue.create(this, "Rotate", false, "Rotates your head with the arrow keys.");
         this.R(false);

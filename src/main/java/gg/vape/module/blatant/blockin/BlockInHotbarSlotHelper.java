@@ -3,12 +3,9 @@ package gg.vape.module.blatant.blockin;
 import gg.vape.Vape;
 import gg.vape.inventory.InventoryClick;
 import gg.vape.mapping.ItemMappingEntry;
-import gg.vape.module.blatant.blockin.BlockPlacementUtility;
-import gg.vape.module.blatant.blockin.HotbarSlotResolution;
-import gg.vape.module.blatant.blockin.HotbarSlotResolutionWithValue;
-import gg.vape.module.combat.AttackPacketTimingTracker;
-import gg.vape.module.utility.AutoMLG;
-import gg.vape.module.utility.MLGImpactState;
+import gg.vape.combat.AttackPacketTimingTracker;
+import gg.vape.module.utility.MLG;
+import gg.vape.module.utility.mlg.MLGImpactState;
 import gg.vape.module.utility.inventory.ItemStackActionPredicate;
 import gg.vape.utils.TimerUtil;
 import gg.vape.utils.datas.BlockCoordinate;
@@ -24,11 +21,11 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class BlockInHotbarSlotHelper {
-    private final AutoMLG autoMLG;
+    private final MLG MLG;
 
     @Nullable
     private Slot findEmptyBucketSlot(ItemMappingEntry bucketItem) {
-        if (!this.autoMLG.checkInventory.getEffectiveValue().booleanValue()) {
+        if (!this.MLG.checkInventory.getEffectiveValue().booleanValue()) {
             return null;
         }
         return ItemStackActionPredicate.findSlot(BlockPlacementUtility.createItemPredicate(bucketItem), MLGImpactState.MAIN_INVENTORY);
@@ -60,16 +57,16 @@ public class BlockInHotbarSlotHelper {
             slot = equipResult.getValue();
         }
         long placementDelay = Math.max(AttackPacketTimingTracker.INSTANCE.getAverageHitDelay(), 150L);
-        if (!this.autoMLG.placementTimer.hasTimeElapsed(placementDelay)) {
+        if (!this.MLG.placementTimer.hasTimeElapsed(placementDelay)) {
             return HotbarSlotResolution.pending("Waiting for latency timer to exceed ping / 50ms");
         }
         if (slot == null || slot.isNull()) {
             return HotbarSlotResolution.pending("Waiting to find a Hotbar Slot w/ Empty Bucket.");
         }
         HotbarSlotResolutionWithValue<BlockPos> placementResult =
-                this.autoMLG.placementController.placeItem(BlockPlacementUtility.getEmptyBucketItem(), targetCoordinate, timeoutTimer);
+                this.MLG.placementController.placeItem(BlockPlacementUtility.getEmptyBucketItem(), targetCoordinate, timeoutTimer);
         if (placementResult.isSuccess()) {
-            this.autoMLG.placementTimer.reset();
+            this.MLG.placementTimer.reset();
         }
         return placementResult;
     }
@@ -86,17 +83,17 @@ public class BlockInHotbarSlotHelper {
     @Nullable
     private Slot findPreferredMlgSlot() {
         Slot slot;
-        if (this.autoMLG.useBuckets.getEffectiveValue().booleanValue() && (slot = BlockPlacementUtility.findHotbarSlot(BlockPlacementUtility.getWaterBucketItem())) != null) {
+        if (this.MLG.useBuckets.getEffectiveValue().booleanValue() && (slot = BlockPlacementUtility.findHotbarSlot(BlockPlacementUtility.getWaterBucketItem())) != null) {
             return slot;
         }
-        if (this.autoMLG.useCobwebs.getEffectiveValue().booleanValue()) {
+        if (this.MLG.useCobwebs.getEffectiveValue().booleanValue()) {
             return BlockPlacementUtility.findHotbarSlot(BlockPlacementUtility.getCobwebItem());
         }
         return null;
     }
 
-    public BlockInHotbarSlotHelper(AutoMLG autoMLG) {
-        this.autoMLG = autoMLG;
+    public BlockInHotbarSlotHelper(MLG MLG) {
+        this.MLG = MLG;
     }
 
     @Nullable
@@ -113,19 +110,19 @@ public class BlockInHotbarSlotHelper {
     }
 
     private boolean isReplaceableBlock(Slot slot) {
-        return slot.I().isNotNull() && this.autoMLG.nonRemovableItems.doesNotMatch(slot.I());
+        return slot.I().isNotNull() && this.MLG.nonRemovableItems.doesNotMatch(slot.I());
     }
 
     @Nullable
     private Slot findMlgSlotInInventory() {
         Slot slot;
-        if (!this.autoMLG.checkInventory.getEffectiveValue().booleanValue()) {
+        if (!this.MLG.checkInventory.getEffectiveValue().booleanValue()) {
             return null;
         }
-        if (this.autoMLG.useBuckets.getEffectiveValue().booleanValue() && (slot = this.findEmptyBucketSlot(BlockPlacementUtility.getWaterBucketItem())) != null) {
+        if (this.MLG.useBuckets.getEffectiveValue().booleanValue() && (slot = this.findEmptyBucketSlot(BlockPlacementUtility.getWaterBucketItem())) != null) {
             return slot;
         }
-        if (this.autoMLG.useCobwebs.getEffectiveValue().booleanValue()) {
+        if (this.MLG.useCobwebs.getEffectiveValue().booleanValue()) {
             return this.findEmptyBucketSlot(BlockPlacementUtility.getCobwebItem());
         }
         return null;
@@ -140,7 +137,7 @@ public class BlockInHotbarSlotHelper {
         }
         boolean isHotbarSlot = slot.g() >= 36 && slot.g() <= 44;
         if (isHotbarSlot) {
-            HotbarSlotResolution hotbarSlotResolution = this.autoMLG.closeInventory();
+            HotbarSlotResolution hotbarSlotResolution = this.MLG.closeInventory();
             if (hotbarSlotResolution.isFailure()) {
                 return result.markFailure(String.format("Failed to close GUI before equipping MLG item. Reason: %s", hotbarSlotResolution.getMessage())).setForced(hotbarSlotResolution.canContinue());
             }
@@ -151,14 +148,14 @@ public class BlockInHotbarSlotHelper {
             player.V$src$Lgg_vape_wrapper_impl_InventoryPlayer_$erqak6().g(hotbarIndex);
             return result.markSuccess("Equipped MLG Item").setValue(slot);
         }
-        if (!this.autoMLG.checkInventory.getEffectiveValue().booleanValue()) {
+        if (!this.MLG.checkInventory.getEffectiveValue().booleanValue()) {
             return result.markFailure("MLG Item is in inventory, but inventory use is disabled.");
         }
         Slot slot2 = this.findHotbarReplaceSlot();
         if (slot2 == null || slot2.isNull()) {
             return result.markFailure("No slot to replace found on Hotbar");
         }
-        HotbarSlotResolution hotbarSlotResolution = this.autoMLG.openInventory();
+        HotbarSlotResolution hotbarSlotResolution = this.MLG.openInventory();
         if (hotbarSlotResolution.isFailure()) {
             return result.markFailure(String.format("Failed to open Inventory GUI before equipping MLG item due to: %s", hotbarSlotResolution.getMessage())).setForced(hotbarSlotResolution.canContinue());
         }
@@ -174,13 +171,13 @@ public class BlockInHotbarSlotHelper {
             return result.markPending("Inventory slots are null, cannot enqueue click.");
         }
         int windowId = container.getWindowId();
-        if (this.autoMLG.clickQueue.isEmpty()) {
+        if (this.MLG.clickQueue.isEmpty()) {
             InventoryClick inventoryClick = InventoryClick.builder().window(windowId).slot(slot.g())
                     .swapWithHotbarSlot(slot2.g() - 36).build();
-            this.autoMLG.clickQueue.add(inventoryClick);
+            this.MLG.clickQueue.add(inventoryClick);
         }
-        if (!this.autoMLG.clickQueue.isEmpty() && this.autoMLG.isInventoryClickReady()) {
-            InventoryClick inventoryClick = this.autoMLG.clickQueue.poll();
+        if (!this.MLG.clickQueue.isEmpty() && this.MLG.isInventoryClickReady()) {
+            InventoryClick inventoryClick = this.MLG.clickQueue.poll();
             if (inventoryClick != null) {
                 this.executeClick(inventoryClick, windowId);
             }
@@ -200,7 +197,7 @@ public class BlockInHotbarSlotHelper {
 
 
     private void executeClick(@NotNull InventoryClick inventoryClick, int currentWindowId) {
-        this.autoMLG.inventoryClickTimer.reset();
+        this.MLG.inventoryClickTimer.reset();
         if (currentWindowId == inventoryClick.getWindowId()) {
             inventoryClick.execute();
         }

@@ -5,7 +5,7 @@ import gg.vape.module.Category;
 import gg.vape.module.Mod;
 import gg.vape.module.ModuleDisplayScope;
 import gg.vape.module.none.ClientSettings;
-import gg.vape.module.none.Search;
+import gg.vape.module.render.Search;
 import gg.vape.module.render.hud.HudModule;
 import gg.vape.ui.click.animation.ColorAnimation;
 import gg.vape.ui.click.component.FriendModuleInteractiveComponent;
@@ -20,20 +20,6 @@ import gg.vape.ui.click.component.value.SearchBlockListComponent;
 import gg.vape.ui.click.component.value.ValueComponentFactory;
 import gg.vape.ui.click.component.value.ValueComponentMode;
 import gg.vape.ui.click.frame.FrameScrollbarPlacement;
-import gg.vape.ui.click.frame.impl.main.ClickGuiContentPanel;
-import gg.vape.ui.click.frame.impl.main.ClickGuiLegitModuleCardComponent;
-import gg.vape.ui.click.frame.impl.main.ClickGuiMacrosController;
-import gg.vape.ui.click.frame.impl.main.ClickGuiMainFrame;
-import gg.vape.ui.click.frame.impl.main.ClickGuiModuleCardComponent;
-import gg.vape.ui.click.frame.impl.main.ClickGuiModuleViewMode;
-import gg.vape.ui.click.frame.impl.main.ClickGuiModuleViewModeSwitchMap;
-import gg.vape.ui.click.frame.impl.main.ClickGuiModulesFilterInputComponent;
-import gg.vape.ui.click.frame.impl.main.ClickGuiModulesSearchInputComponent;
-import gg.vape.ui.click.frame.impl.main.ClickGuiModulesSidecarPanel;
-import gg.vape.ui.click.frame.impl.main.ClickGuiOverlayPlacement;
-import gg.vape.ui.click.frame.impl.main.ClickGuiOverlaySpec;
-import gg.vape.ui.click.frame.impl.main.ClickGuiPageBase;
-import gg.vape.ui.click.frame.impl.main.ClickGuiSidecarPanelBase;
 import gg.vape.utils.StringUtils;
 import gg.vape.value.BooleanValue;
 import gg.vape.value.ListValue;
@@ -48,7 +34,7 @@ extends ClickGuiPageBase {
     private ClickGuiModuleViewMode viewMode;
     private final Runnable pageResetAction;
     private ClickGuiContentPanel moduleContent;
-    private Category selectedCategory = Category.L;
+    private Category selectedCategory = Category.FAVORITES;
     private ClickGuiContentPanel legitContent;
     private String legitSearchQuery = "";
     private LabeledTextInputComponent moduleSearchInput;
@@ -246,7 +232,7 @@ extends ClickGuiPageBase {
                 clickGuiModuleCardComponent.setSettingsAction(() -> this.lambda$filterModuleButtons$16(clickGuiModuleCardComponent));
                 clickGuiModuleCardComponent.setFavoriteControlVisible(bl2);
                 clickGuiModuleCardComponent.setUnsafeBadgeEnabled(bl2);
-                if (this.reorderingFavorites && this.selectedCategory == Category.L) {
+                if (this.reorderingFavorites && this.selectedCategory == Category.FAVORITES) {
                     clickGuiModuleCardComponent.setReordering(true);
                     clickGuiModuleCardComponent.setReorderAction(this::lambda$filterModuleButtons$17);
                 }
@@ -301,7 +287,7 @@ extends ClickGuiPageBase {
                 HudModule hudModule = (HudModule)mod;
                 arrayList.add(hudModule);
             }
-        } else if (this.selectedCategory == Category.L) {
+        } else if (this.selectedCategory == Category.FAVORITES) {
             arrayList = new ArrayList<Mod>(Vape.INSTANCE.getModuleProfileMetadataCodec().getSelectedModules());
         } else {
             arrayList = new ArrayList<Mod>(Vape.INSTANCE.getModManager().collectMods());
@@ -310,7 +296,7 @@ extends ClickGuiPageBase {
         }
         int n = 0;
         for (Mod mod : arrayList) {
-            if (!bl && (this.selectedCategory != Category.L ? mod.getCategory() != this.selectedCategory : !mod.f$src$Z$148d2ux())) continue;
+            if (!bl && (this.selectedCategory != Category.FAVORITES ? mod.getCategory() != this.selectedCategory : !mod.f$src$Z$148d2ux())) continue;
             if (bl) {
                 ClickGuiLegitModuleCardComponent clickGuiLegitModuleCardComponent = new ClickGuiLegitModuleCardComponent((HudModule)mod);
                 clickGuiLegitModuleCardComponent.o(clickGuiContentPanel.A() / 3.0);
@@ -324,7 +310,7 @@ extends ClickGuiPageBase {
             clickGuiModuleCardComponent.setSettingsAction(() -> this.lambda$filterModuleButtons$16(clickGuiModuleCardComponent));
             clickGuiModuleCardComponent.setFavoriteControlVisible(bl2);
             clickGuiModuleCardComponent.setUnsafeBadgeEnabled(bl2);
-            if (this.reorderingFavorites && this.selectedCategory == Category.L) {
+            if (this.reorderingFavorites && this.selectedCategory == Category.FAVORITES) {
                 clickGuiModuleCardComponent.setReordering(true);
                 clickGuiModuleCardComponent.setReorderAction(this::lambda$filterModuleButtons$17);
             }
@@ -424,7 +410,7 @@ extends ClickGuiPageBase {
 
     private static boolean lambda$filterModuleButtons$13(String string, Mod mod) {
         String string2 = StringUtils.y(mod.getName());
-        if (mod.getCategory() == Category.w) {
+        if (mod.getCategory() == Category.OTHER) {
             return !string2.equals(string);
         }
         return !string2.contains(string);
@@ -462,7 +448,7 @@ extends ClickGuiPageBase {
         labeledTextInputComponent.setVerticalInset(0.0f);
         labeledTextInputComponent.setUseExplicitHeight(true);
         labeledTextInputComponent.Y(16.0);
-        if (!bl && this.selectedCategory == Category.L) {
+        if (!bl && this.selectedCategory == Category.FAVORITES) {
             labeledTextInputComponent.setShowEditButton(true);
             labeledTextInputComponent.getEditButton().addClickListener(() -> this.lambda$renderModuleContent$9(labeledTextInputComponent));
             labeledTextInputComponent.getDoneLabel().addClickListener(() -> this.lambda$renderModuleContent$10(labeledTextInputComponent));
@@ -505,7 +491,7 @@ extends ClickGuiPageBase {
     }
 
     private static boolean lambda$filterModuleButtons$11(Mod mod) {
-        return mod.getCategory() == Category.b;
+        return mod.getCategory() == Category.NONE;
     }
 
     private void lambda$renderCategoryButtons$4(Category category) {
@@ -530,11 +516,11 @@ extends ClickGuiPageBase {
         this.getSidebarContent().removeMarkedChildren();
         ArrayList<FriendModuleInteractiveComponent> arrayList = new ArrayList<>();
         for (Category object2 : Category.values()) {
-            if (object2 == Category.b || object2 == Category.w) continue;
-            FriendModuleInteractiveComponent friendModuleInteractiveComponent = new FriendModuleInteractiveComponent(object2.getName(), object2.N(), () -> this.lambda$renderCategoryButtons$1(object2), ClientSettings.INSTANCE.showEnabledCount.getEffectiveValue().booleanValue() ? (object2 == Category.L ? ClickGuiModulesPage::lambda$renderCategoryButtons$2 : () -> ClickGuiModulesPage.lambda$renderCategoryButtons$3(object2)) : null, "expandarrow");
+            if (object2 == Category.NONE || object2 == Category.OTHER) continue;
+            FriendModuleInteractiveComponent friendModuleInteractiveComponent = new FriendModuleInteractiveComponent(object2.getName(), object2.getIconKey(), () -> this.lambda$renderCategoryButtons$1(object2), ClientSettings.INSTANCE.showEnabledCount.getEffectiveValue().booleanValue() ? (object2 == Category.FAVORITES ? ClickGuiModulesPage::lambda$renderCategoryButtons$2 : () -> ClickGuiModulesPage.lambda$renderCategoryButtons$3(object2)) : null, "expandarrow");
             friendModuleInteractiveComponent.setSelectedBadgeColor(Color.WHITE);
             friendModuleInteractiveComponent.setBadgeColor(ClickGuiModulesPage.J.h);
-            if (object2 == Category.L) {
+            if (object2 == Category.FAVORITES) {
                 friendModuleInteractiveComponent.getCountBadge().setBackgroundColor(new Color(255, 255, 255, 7));
                 friendModuleInteractiveComponent.setSelectedBadgeColor(Color.WHITE);
                 friendModuleInteractiveComponent.setBadgeColor(ClickGuiModulesPage.J.h);
@@ -547,7 +533,7 @@ extends ClickGuiPageBase {
                 arrayList.add(friendModuleInteractiveComponent);
             }
             friendModuleInteractiveComponent.addClickListener(() -> this.lambda$renderCategoryButtons$4(object2));
-            this.getSidebarContent().h(new PaddedComponent(0.0, object2 == Category.L ? 3.0 : 2.0, 0.0, 0.0, friendModuleInteractiveComponent), new Object[0]);
+            this.getSidebarContent().h(new PaddedComponent(0.0, object2 == Category.FAVORITES ? 3.0 : 2.0, 0.0, 0.0, friendModuleInteractiveComponent), new Object[0]);
         }
         FriendModuleInteractiveComponent friendModuleInteractiveComponent = new FriendModuleInteractiveComponent("Macros", "newmacros", this::lambda$renderCategoryButtons$5, null, "expandarrow");
         arrayList.add(friendModuleInteractiveComponent);

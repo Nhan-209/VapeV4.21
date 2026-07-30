@@ -2,7 +2,7 @@ package gg.vape.module.render;
 
 import gg.vape.module.Category;
 import gg.vape.module.Mod;
-import gg.vape.module.render.AnimationsBlockingState;
+import gg.vape.module.render.animations.AnimationsBlockingState;
 import gg.vape.module.render.animations.AnimationsMode;
 import gg.vape.module.render.animations.DamageResponsiveAnimationsMode;
 import gg.vape.module.render.animations.LegacyBlockingPacketBufferedAnimationsMode;
@@ -68,7 +68,7 @@ extends Mod {
     }
 
     public Animations() {
-        super("BlockHit", (int)MODULE_COLOR, Category.g, "Automatically blockhit");
+        super("BlockHit", (int)MODULE_COLOR, Category.COMBAT, "Automatically blockhit");
         this.predictiveMode = new DamageResponsiveAnimationsMode(this, "Predict").getSelectionValue();
         this.automaticMode = new SwordUseMouseGuardAnimationsMode(this, "Auto").getSelectionValue();
         this.lagMode = new LegacyBlockingPacketBufferedAnimationsMode(this, "Lag").getSelectionValue();

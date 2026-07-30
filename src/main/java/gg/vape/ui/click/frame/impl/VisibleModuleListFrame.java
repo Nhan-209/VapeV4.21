@@ -15,7 +15,7 @@ extends ModuleCategoryFrame {
 
 
     public VisibleModuleListFrame() {
-        super(Category.L);
+        super(Category.FAVORITES);
         U2 = this;
     }
 

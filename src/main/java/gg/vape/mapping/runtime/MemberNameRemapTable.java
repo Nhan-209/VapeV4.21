@@ -10,13 +10,13 @@ import java.util.Map;
 import org.jetbrains.annotations.Nullable;
 
 public class MemberNameRemapTable {
-    private final HashMap<Class<?>, Map<String, MemberLookupSignature>> s = new HashMap();
-    private static String[] v;
-    private final HashMap<Class<?>, Map<String, MemberLookupSignature>> e = new HashMap();
-    private static final String d;
+    private final HashMap<Class<?>, Map<String, MemberLookupSignature>> fieldMappings = new HashMap();
+    private static String[] controlFlowState;
+    private final HashMap<Class<?>, Map<String, MemberLookupSignature>> methodMappings = new HashMap();
+    private static final String initializerMethodName;
 
     public static String[] C() {
-        return v;
+        return controlFlowState;
     }
 
     public void G(Class<?> clazz, String string, String string2, Class<?> clazz2) {
@@ -28,7 +28,7 @@ public class MemberNameRemapTable {
     }
 
     public void L(Class<?> clazz, String string, String string2, Boolean bl, Class<?> clazz2) {
-        this.s.compute(clazz, (arg_0, arg_1) -> MemberNameRemapTable.lambda$setFieldMapping$0(string, string2, bl, clazz2, arg_0, arg_1));
+        this.fieldMappings.compute(clazz, (arg_0, arg_1) -> MemberNameRemapTable.lambda$setFieldMapping$0(string, string2, bl, clazz2, arg_0, arg_1));
     }
 
     public void f(Class<?> clazz, String string, String string2, boolean bl) {
@@ -44,12 +44,12 @@ public class MemberNameRemapTable {
     }
 
     public void z(Class<?> clazz, String string, String string2, Boolean bl, Class<?> clazz2, Class<?> ... classArray) {
-        this.e.compute(clazz, (arg_0, arg_1) -> MemberNameRemapTable.lambda$setMethodMapping$1(string, string2, bl, clazz2, classArray, arg_0, arg_1));
+        this.methodMappings.compute(clazz, (arg_0, arg_1) -> MemberNameRemapTable.lambda$setMethodMapping$1(string, string2, bl, clazz2, classArray, arg_0, arg_1));
     }
 
     @Nullable
     public MemberLookupSignature U(Class<?> clazz, String string) {
-        Map<String, MemberLookupSignature> map = this.s.get(clazz);
+        Map<String, MemberLookupSignature> map = this.fieldMappings.get(clazz);
         if (map == null) {
             return null;
         }
@@ -69,7 +69,7 @@ public class MemberNameRemapTable {
         for (Class<?> clazz : arrayList) {
             Method[] methodArray;
             for (Method method : methodArray = clazz.getDeclaredMethods()) {
-                if (method.getParameterCount() != 0 || d.equals(method.getName())) continue;
+                if (method.getParameterCount() != 0 || initializerMethodName.equals(method.getName())) continue;
                 method.setAccessible(true);
                 try {
                     method.invoke(this, new Object[0]);
@@ -83,7 +83,7 @@ public class MemberNameRemapTable {
 
     @Nullable
     public MemberLookupSignature B(Class<?> clazz, String string) {
-        Map<String, MemberLookupSignature> map = this.e.get(clazz);
+        Map<String, MemberLookupSignature> map = this.methodMappings.get(clazz);
         if (map == null) {
             return null;
         }
@@ -91,7 +91,7 @@ public class MemberNameRemapTable {
     }
 
     public static void w(String[] stringArray) {
-        v = stringArray;
+        controlFlowState = stringArray;
     }
 
     private static Map lambda$setMethodMapping$1(String string, String string2, Boolean bl, Class clazz, Class[] classArray, Class clazz2, Map hashMap) {
@@ -108,7 +108,7 @@ public class MemberNameRemapTable {
 
     static {
         MemberNameRemapTable.w(null);
-        d = "initialize";
+        initializerMethodName = "initialize";
     }
 
     public void b(Class<?> clazz, String string, String string2, boolean bl) {

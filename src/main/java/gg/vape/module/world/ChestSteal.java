@@ -8,7 +8,7 @@ import gg.vape.mapping.MappedClasses;
 import gg.vape.module.Category;
 import gg.vape.module.Mod;
 import gg.vape.module.utility.inventory.InventoryActionModule;
-import gg.vape.module.world.ChestStealInventoryState;
+import gg.vape.module.world.cheststeal.ChestStealInventoryState;
 import gg.vape.module.world.cheststeal.ChestStealBestSlotTracker;
 import gg.vape.module.world.cheststeal.ChestStealSlotDistanceComparator;
 import gg.vape.utils.RandomUtil;
@@ -159,7 +159,7 @@ implements InventoryActionModule {
     }
 
     public ChestSteal() {
-        super("ChestSteal", -208, Category.m, "Take items upon opening a chest");
+        super("ChestSteal", -208, Category.WORLD, "Take items upon opening a chest");
         this.keepOpen = BooleanValue.create(this, "Keep open", false, "Keep chest open after clearing");
         this.shuffle = BooleanValue.create(this, "Shuffle", false, "Take items in a random order");
         this.clickDelay = RandomValue.createWithIncrement(this, "Click delay", "#", "", 50.0, 150.0, 200.0, 300.0, 5.0);

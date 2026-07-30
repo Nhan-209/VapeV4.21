@@ -3,7 +3,7 @@ package gg.vape.event.impl;
 import gg.vape.Vape;
 import gg.vape.event.Event;
 import gg.vape.event.EventListeners;
-import gg.vape.module.none.XRay;
+import gg.vape.module.world.XRay;
 import gg.vape.wrapper.impl.Block;
 import gg.vape.wrapper.impl.RenderBlocks;
 

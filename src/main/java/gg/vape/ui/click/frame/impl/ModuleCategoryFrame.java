@@ -36,7 +36,7 @@ implements CollapsibleFrame {
     }
 
     public void s$src$V$1a2f6mi() {
-        this.HF = new ModuleCategoryFrameHeader(this, this.Hp.N(), this.HK);
+        this.HF = new ModuleCategoryFrameHeader(this, this.Hp.getIconKey(), this.HK);
         this.Y(this.HF);
         ArrayList<Mod> arrayList = new ArrayList<Mod>(Vape.INSTANCE.getModManager().collectMods());
         Collections.sort(arrayList, new NameComparator());
@@ -115,7 +115,7 @@ implements CollapsibleFrame {
     public ModuleCategoryFrame(Category category) {
         this.HK = category.getName();
         this.Hp = category;
-        if (category.equals(Category.b)) {
+        if (category.equals(Category.NONE)) {
             return;
         }
         this.setDisabledOverlayColor(ModuleCategoryFrame.J.i);

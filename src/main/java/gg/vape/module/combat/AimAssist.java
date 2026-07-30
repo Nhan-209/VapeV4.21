@@ -5,8 +5,8 @@ import gg.vape.config.ClientSettings;
 import gg.vape.mapping.MappedClasses;
 import gg.vape.module.Category;
 import gg.vape.module.Mod;
-import gg.vape.module.combat.AimAssistRotationSubModule;
-import gg.vape.module.combat.AimAssistTargetingSubModule;
+import gg.vape.module.combat.aimassist.AimAssistRotationSubModule;
+import gg.vape.module.combat.aimassist.AimAssistTargetingSubModule;
 import gg.vape.module.control.SharedModuleControlClaims;
 import gg.vape.unmap.ItemLimitData;
 import gg.vape.unmap.ModeOption;
@@ -162,7 +162,7 @@ extends Mod {
     }
 
     public AimAssist() {
-        super("AimAssist", -327674, Category.g, "Smoothly aims to closest valid target");
+        super("AimAssist", -327674, Category.COMBAT, "Smoothly aims to closest valid target");
         this.adaptiveTargeting = new AimAssistTargetingSubModule(this, "Adaptive");
         this.mode = ModeValue.create((Object)this, "Mode", "Simple - Lightweight smooth aiming\nAdaptive - Advanced tracking with adaptive behavior", (ModeSelection)this.simpleRotation.getSelectionValue(), this.simpleRotation.getSelectionValue(), this.adaptiveTargeting.getSelectionValue());
         this.targetFilter = EntityTargetFilterValue.createForModule(this);

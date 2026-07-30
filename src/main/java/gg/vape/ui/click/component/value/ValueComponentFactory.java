@@ -1,7 +1,7 @@
 package gg.vape.ui.click.component.value;
 
-import gg.vape.module.blatant.AntiBotBooleanValue;
-import gg.vape.module.blatant.AntiBotModeValue;
+import gg.vape.module.blatant.antibot.AntiBotBooleanValue;
+import gg.vape.module.blatant.antibot.AntiBotModeValue;
 import gg.vape.module.utility.inventory.HotbarSlotRuleEditorComponent;
 import gg.vape.module.utility.inventory.HotbarSlotRuleValue;
 import gg.vape.module.utility.inventory.cleaner.InventoryCleanerProfileValue;
@@ -9,17 +9,6 @@ import gg.vape.module.utility.inventory.cleaner.ui.InventoryCleanerProfileValueC
 import gg.vape.ui.click.component.DropdownSelectComponent;
 import gg.vape.ui.click.component.GuiComponent;
 import gg.vape.ui.click.component.input.BindValueRowComponent;
-import gg.vape.ui.click.component.value.AntiBotBooleanValueOptionRow;
-import gg.vape.ui.click.component.value.BooleanToggleComponent;
-import gg.vape.ui.click.component.value.ColorValueDropdownComponent;
-import gg.vape.ui.click.component.value.ColorValueEditorComponent;
-import gg.vape.ui.click.component.value.EntityTargetFilterComponent;
-import gg.vape.ui.click.component.value.EntityTargetFilterPopupComponent;
-import gg.vape.ui.click.component.value.ListValueComponent;
-import gg.vape.ui.click.component.value.NumberSliderComponent;
-import gg.vape.ui.click.component.value.RandomRangeSliderComponent;
-import gg.vape.ui.click.component.value.StringMapValueComponent;
-import gg.vape.ui.click.component.value.ValueComponentMode;
 import gg.vape.unmap.ItemLimitData;
 import gg.vape.value.BindValue;
 import gg.vape.value.BooleanValue;

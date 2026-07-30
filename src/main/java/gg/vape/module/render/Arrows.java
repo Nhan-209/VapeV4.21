@@ -165,7 +165,7 @@ extends Mod {
     }
 
     public Arrows() {
-        super("Arrows", (int)MODULE_COLOR, Category.k, "Draws arrows on screen when entities\nare out of your field of view.");
+        super("Arrows", (int)MODULE_COLOR, Category.RENDER, "Draws arrows on screen when entities\nare out of your field of view.");
         this.showDistance = BooleanValue.create(this, "Show Distance", false, "Renders the distance next to the arrow.");
         this.scaleOpacity = BooleanValue.create(this, "Scale Opacity", false, "Lowers the opacity the farther they are.");
         this.radiusScale = NumberValue.create((Object)this, "Radius Scale", "#.##", "x", 0.0, 0.5, 1.0, 0.05);

@@ -6,11 +6,11 @@ import gg.vape.module.Mod;
 public class UtilityMod
 extends Mod {
     public UtilityMod(String name) {
-        super(name, 0, 0, Category.Y, "");
+        super(name, 0, 0, Category.UTILITY, "");
     }
 
     public UtilityMod(String name, String description) {
-        super(name, 0, 0, Category.Y, description);
+        super(name, 0, 0, Category.UTILITY, description);
     }
 
     @Override

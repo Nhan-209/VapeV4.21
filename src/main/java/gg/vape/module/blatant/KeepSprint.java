@@ -82,7 +82,7 @@ extends Mod {
     }
 
     public KeepSprint() {
-        super("KeepSprint", (int)MODULE_ID, Category.w, "Prevents you from losing sprint when attacking");
+        super("KeepSprint", (int)MODULE_ID, Category.OTHER, "Prevents you from losing sprint when attacking");
         this.sprintResetTimer = new TimerUtil();
         this.addValue(this.retainFactor, this.resetSprint);
     }

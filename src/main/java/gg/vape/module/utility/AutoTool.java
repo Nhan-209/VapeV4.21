@@ -130,7 +130,7 @@ extends Mod {
     }
 
     public AutoTool() {
-        super("AutoTool", (int)MAGIC_ID, Category.m, "Automatically swaps your hand to the appropriate tool");
+        super("AutoTool", (int)MAGIC_ID, Category.WORLD, "Automatically swaps your hand to the appropriate tool");
         this.instantSwap = BooleanValue.create(this, "Instant swap", true, "Swaps to weapon without swap delay");
         this.swapToDelay = NumberValue.create(this, "Swap to delay", "#", "ms", 0.0, 50.0, 500.0, 50.0, "How long to wait before swapping to tool");
         this.swapBack = BooleanValue.create(this, "Swap back", false, "Swaps back to your original item when not hovering over blocks");

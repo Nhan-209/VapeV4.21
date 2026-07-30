@@ -426,7 +426,7 @@ extends PublicProfileSnapshotPanelBase {
             return jsonObject;
         }
         for (Mod mod : Vape.INSTANCE.getModManager().collectMods()) {
-            if (mod.getCategory() != Category.w) continue;
+            if (mod.getCategory() != Category.OTHER) continue;
             jsonObject3.remove(mod.getName());
         }
         return jsonObject;

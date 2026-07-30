@@ -109,7 +109,7 @@ extends Mod {
 
 
     public Clutch() {
-        super("Block-In", 8191953, Category.m, "Automatically blocks you in by building walls around you");
+        super("Block-In", 8191953, Category.WORLD, "Automatically blocks you in by building walls around you");
         this.faceOffsets = new int[][]{null, null, {5, 4}, {5, 4}, {2, 3}, {2, 3}};
         this.silentAim = BooleanValue.create(this, "Silent aim", false, "Uses Silent Aim system");
         this.sneak = BooleanValue.create(this, "Sneak", false, "Sneak when placing blocks");

@@ -9,8 +9,8 @@ extends MappingOverrideSet {
     private static boolean P;
 
     @Override
-    protected void J() {
-        this.g(MMinecraft.class, MVertexFormat.class);
+    protected void registerOverrides() {
+        this.registerOverride(MMinecraft.class, MVertexFormat.class);
     }
 
     public static void setFeatureFlag(boolean bl) {

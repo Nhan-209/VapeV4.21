@@ -17,7 +17,6 @@ extends Mod {
     }
 
     public Phase() {
-        super("Phase", new Color(73, 208, 176).getRGB(), Category.w, "Phase/Clip through walls.");
+        super("Phase", new Color(73, 208, 176).getRGB(), Category.OTHER, "Phase/Clip through walls.");
     }
 }
-

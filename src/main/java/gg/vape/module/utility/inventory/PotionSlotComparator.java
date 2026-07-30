@@ -1,6 +1,6 @@
 package gg.vape.module.utility.inventory;
 
-import gg.vape.module.utility.InventoryManager;
+import gg.vape.module.utility.AutoHotbar;
 import gg.vape.wrapper.impl.ItemStack;
 import gg.vape.wrapper.impl.Slot;
 import gg.vape.wrapper.impl.TileEntityEnderChest;
@@ -12,7 +12,7 @@ implements Comparator<Slot> {
     public int compare(Slot first, Slot second) {
         return this.comparePotionScore(first, second);
     }
-    final InventoryManager inventoryManager;
+    final AutoHotbar autoHotbar;
 
     public int comparePotionScore(Slot first, Slot second) {
         ItemStack firstStack = first.I();
@@ -24,7 +24,7 @@ implements Comparator<Slot> {
         return Float.compare(firstScore, secondScore);
     }
 
-    public PotionSlotComparator(InventoryManager inventoryManager) {
-        this.inventoryManager = inventoryManager;
+    public PotionSlotComparator(AutoHotbar autoHotbar) {
+        this.autoHotbar = autoHotbar;
     }
 }

@@ -71,7 +71,7 @@ extends Mod {
     }
 
     public BowAimbot() {
-        super("AntiFireball", (int)MODULE_ID, Category.Y, "Aims and swings at a fireball to reflect it.\nBy default will only attack fireballs heading towards you.");
+        super("AntiFireball", (int)MODULE_ID, Category.UTILITY, "Aims and swings at a fireball to reflect it.\nBy default will only attack fireballs heading towards you.");
         this.stopMovement = BooleanValue.create(this, "Stop movement", false, "Forces you to stand when attacking fireball");
         this.moveOnFinish = BooleanValue.create(this, "Move on finish", false, "Will repress your movement keys after attacking");
         this.silentAim = BooleanValue.create(this, "Silent aim", false, "Uses Silent Aim system");

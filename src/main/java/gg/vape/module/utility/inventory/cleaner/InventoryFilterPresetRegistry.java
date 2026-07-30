@@ -5,13 +5,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import gg.vape.Vape;
 import gg.vape.config.ConfigJsonUtils;
-import gg.vape.module.utility.InvCleaner;
-import gg.vape.module.utility.inventory.cleaner.InventoryCleanerProfile;
-import gg.vape.module.utility.inventory.cleaner.InventoryFilterPresetStore;
-import gg.vape.module.utility.inventory.cleaner.ItemInventoryFilterRule;
-import gg.vape.module.utility.inventory.cleaner.SharedInventoryFilterPreset;
-import gg.vape.module.utility.inventory.cleaner.SlotInventoryFilterRule;
-import java.util.Iterator;
+import gg.vape.module.utility.InventoryManager;
 
 public class InventoryFilterPresetRegistry {
     private final InventoryFilterPresetStore slotRulePresets = new InventoryFilterPresetStore();
@@ -59,8 +53,8 @@ public class InventoryFilterPresetRegistry {
     }
 
     public void clearReferencesTo(SharedInventoryFilterPreset sharedInventoryFilterPreset) {
-        InvCleaner invCleaner = Vape.INSTANCE.getModManager().getMod(InvCleaner.class);
-        for (InventoryCleanerProfile inventoryCleanerProfile : invCleaner.getProfileValue().getProfiles()) {
+        InventoryManager inventoryManager = Vape.INSTANCE.getModManager().getMod(InventoryManager.class);
+        for (InventoryCleanerProfile inventoryCleanerProfile : inventoryManager.getProfileValue().getProfiles()) {
             for (ItemInventoryFilterRule itemInventoryFilterRule : inventoryCleanerProfile.getItemRules()) {
                 if (!sharedInventoryFilterPreset.equals(itemInventoryFilterRule.resolvePreset())) continue;
                 itemInventoryFilterRule.clearPresetReference();

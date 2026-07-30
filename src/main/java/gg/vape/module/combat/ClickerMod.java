@@ -62,7 +62,7 @@ extends Mod {
     }
 
     public ClickerMod(String moduleName) {
-        super(moduleName, (int)MODULE_ID, Category.g, "");
+        super(moduleName, (int)MODULE_ID, Category.COMBAT, "");
     }
 
     public void setClickEngine(ClickEngine clickEngine) {

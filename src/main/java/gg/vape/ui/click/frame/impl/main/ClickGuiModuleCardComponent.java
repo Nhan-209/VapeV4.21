@@ -394,7 +394,7 @@ extends GuiComponent {
         this.detailComponent.Y(d8);
         boolean bl9 = bl2 && this.module.X();
         boolean bl10 = this.module.L() && !this.module.r$src$Z$14eylz9();
-        boolean bl11 = this.module.getCategory() == Category.w && this.unsafeBadgeEnabled;
+        boolean bl11 = this.module.getCategory() == Category.OTHER && this.unsafeBadgeEnabled;
         boolean bl12 = !this.module.r$src$Z$14eylz9() && (this.module.t$src$Z$14g275z() || this.module.Q());
         double d25 = 0.0;
         if (bl10 && !bl9) {

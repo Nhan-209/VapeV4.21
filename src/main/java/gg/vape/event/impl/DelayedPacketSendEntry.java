@@ -1,8 +1,5 @@
 package gg.vape.event.impl;
 
-import gg.vape.event.impl.EventPacketSend;
-import gg.vape.module.world.fastuse.FastUsePacketDelaySubModule;
-
 public class DelayedPacketSendEntry {
     private boolean offsetApplied;
     private final EventPacketSend event;

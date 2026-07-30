@@ -239,7 +239,7 @@ EventListener {
     }
 
     public Mod(String string, int n) {
-        this(string, n, 0, Category.b, null);
+        this(string, n, 0, Category.NONE, null);
     }
 
     public void M(boolean bl) {
@@ -267,7 +267,7 @@ EventListener {
 
     public void setEnabled(boolean enabled, boolean bypassVisibilityCheck) {
         boolean stateChanged = this.enabled != enabled;
-        if (!bypassVisibilityCheck && !this.O() && this.E != Category.b && enabled) {
+        if (!bypassVisibilityCheck && !this.O() && this.E != Category.NONE && enabled) {
             if (Vape.INSTANCE.getNotificationManager() != null) {
                 Vape.INSTANCE.getNotificationManager().show("Hidden Module", "Attempted to toggle " + this.getName() + "!", NotificationType.WARNING, 2500L);
             }
@@ -292,7 +292,7 @@ EventListener {
             }
         }
         this.syncSubModuleStates(enabled, bypassVisibilityCheck);
-        if (stateChanged && this.E != Category.b) {
+        if (stateChanged && this.E != Category.NONE) {
             Vape.INSTANCE.saveAndStop();
         }
     }
@@ -330,7 +330,7 @@ EventListener {
     }
 
     public boolean q$src$Z$12h8h4c() {
-        return this.getCategory() != Category.b && !(this instanceof UtilityMod);
+        return this.getCategory() != Category.NONE && !(this instanceof UtilityMod);
     }
 
     public void K(boolean bl) {
@@ -526,7 +526,7 @@ EventListener {
     }
 
     public Mod(String string) {
-        this(string, 0, Category.b);
+        this(string, 0, Category.NONE);
     }
 
     public Mod(String string, int n, int n2, Category category, String string2) {

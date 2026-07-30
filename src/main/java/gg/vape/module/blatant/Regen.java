@@ -31,7 +31,7 @@ extends Mod {
     }
 
     public Regen() {
-        super("Regen", (int)MOD_ID, Category.w, "Regenerates health quicker.");
+        super("Regen", (int)MOD_ID, Category.OTHER, "Regenerates health quicker.");
     }
 
 }

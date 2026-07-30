@@ -27,7 +27,7 @@ extends Mod {
     private final ModeOption blocksOption;
 
     public FastPlace() {
-        super("FastPlace", (int)MODULE_COLOR, Category.m, "Changes the block place delay.");
+        super("FastPlace", (int)MODULE_COLOR, Category.WORLD, "Changes the block place delay.");
         this.allOption = new ModeOption("All");
         this.blocksOption = new ModeOption("Blocks");
         this.projectilesOption = new ModeOption("Projectiles");

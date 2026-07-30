@@ -35,21 +35,21 @@ import java.util.Map;
 import org.jetbrains.annotations.Nullable;
 
 public class RuntimeNameMappingRegistry {
-    private static MemberNameRemapTable D;
-    private static final Map<String, String> Y;
-    private static final ClassNameRemapTable l;
+    private static MemberNameRemapTable memberNameRemapTable;
+    private static final Map<String, String> registeredClassNames;
+    private static final ClassNameRemapTable classNameRemapTable;
 
-    public static void registerClassName(String string, String string2) {
-        Y.put(string.replace("/", "."), string2.replace("/", "."));
-        NativeBridge.scm(string, string2);
+    public static void registerClassName(String sourceClassName, String runtimeClassName) {
+        registeredClassNames.put(sourceClassName.replace("/", "."), runtimeClassName.replace("/", "."));
+        NativeBridge.scm(sourceClassName, runtimeClassName);
     }
 
     @Nullable
-    public static MemberLookupSignature lookupMethodMapping(Class clazz, String string) {
-        if (D == null) {
+    public static MemberLookupSignature lookupMethodMapping(Class ownerClass, String methodName) {
+        if (memberNameRemapTable == null) {
             return null;
         }
-        return D.B(clazz, string);
+        return memberNameRemapTable.B(ownerClass, methodName);
     }
 
     @Nullable
@@ -57,15 +57,15 @@ public class RuntimeNameMappingRegistry {
         if (clazz == null) {
             return null;
         }
-        return Y.get(clazz.getName());
+        return registeredClassNames.get(clazz.getName());
     }
 
     @Nullable
-    public static MemberLookupSignature lookupFieldMapping(Class clazz, String string) {
-        if (D == null) {
+    public static MemberLookupSignature lookupFieldMapping(Class ownerClass, String fieldName) {
+        if (memberNameRemapTable == null) {
             return null;
         }
-        return D.U(clazz, string);
+        return memberNameRemapTable.U(ownerClass, fieldName);
     }
 
     public static void initializeRegistry() {
@@ -73,127 +73,127 @@ public class RuntimeNameMappingRegistry {
         switch (n) {
             case 35: 
             case 36: {
-                D = new MemberNameRemapTableV35V36();
+                memberNameRemapTable = new MemberNameRemapTableV35V36();
                 break;
             }
             case 37: {
-                D = new MemberNameRemapTableV37();
+                memberNameRemapTable = new MemberNameRemapTableV37();
                 break;
             }
             case 50: {
-                D = new MemberNameRemapTableV50();
+                memberNameRemapTable = new MemberNameRemapTableV50();
                 break;
             }
             case 51: {
-                D = new MemberNameRemapTableV51();
+                memberNameRemapTable = new MemberNameRemapTableV51();
                 break;
             }
             case 54: {
-                D = new MemberNameRemapTableV54();
+                memberNameRemapTable = new MemberNameRemapTableV54();
                 break;
             }
             case 55: {
-                D = new MemberNameRemapTableV55();
+                memberNameRemapTable = new MemberNameRemapTableV55();
                 break;
             }
             case 56: {
-                D = new MemberNameRemapTableV56();
+                memberNameRemapTable = new MemberNameRemapTableV56();
                 break;
             }
             case 60: {
-                D = new MemberNameRemapTableV60();
+                memberNameRemapTable = new MemberNameRemapTableV60();
                 break;
             }
             case 61: {
-                D = new MemberNameRemapTableV61();
+                memberNameRemapTable = new MemberNameRemapTableV61();
                 break;
             }
             case 100: {
-                D = new MemberNameRemapTableV100();
+                memberNameRemapTable = new MemberNameRemapTableV100();
                 break;
             }
             case 110: {
-                D = new MemberNameRemapTableV110();
+                memberNameRemapTable = new MemberNameRemapTableV110();
             }
         }
-        if (D != null) {
-            D.T();
+        if (memberNameRemapTable != null) {
+            memberNameRemapTable.T();
         }
     }
 
     static {
-        Y = new LinkedHashMap<String, String>();
+        registeredClassNames = new LinkedHashMap<String, String>();
         int n = ForgeVersion.c();
         switch (n) {
             case 23: {
-                l = new ClassNameRemapTableV23();
+                classNameRemapTable = new ClassNameRemapTableV23();
                 break;
             }
             case 35: 
             case 36: {
                 if (Vape.INSTANCE.isNativeAvailable()) {
-                    l = new ClassNameRemapTableV35V36Direct();
+                    classNameRemapTable = new ClassNameRemapTableV35V36Direct();
                     break;
                 }
-                l = new ClassNameRemapTableV35V36Layered();
+                classNameRemapTable = new ClassNameRemapTableV35V36Layered();
                 break;
             }
             case 37: {
-                l = new ClassNameRemapTableV37();
+                classNameRemapTable = new ClassNameRemapTableV37();
                 break;
             }
             case 50: {
-                l = new ClassNameRemapTableV50();
+                classNameRemapTable = new ClassNameRemapTableV50();
                 break;
             }
             case 51: {
-                l = new ClassNameRemapTableV51();
+                classNameRemapTable = new ClassNameRemapTableV51();
                 break;
             }
             case 54: {
-                l = new ClassNameRemapTableV54();
+                classNameRemapTable = new ClassNameRemapTableV54();
                 break;
             }
             case 55: {
-                l = new ClassNameRemapTableV55();
+                classNameRemapTable = new ClassNameRemapTableV55();
                 break;
             }
             case 56: {
-                l = new ClassNameRemapTableV56();
+                classNameRemapTable = new ClassNameRemapTableV56();
                 break;
             }
             case 60: {
-                l = new ClassNameRemapTableV60();
+                classNameRemapTable = new ClassNameRemapTableV60();
                 break;
             }
             case 61: {
-                l = new ClassNameRemapTableV61();
+                classNameRemapTable = new ClassNameRemapTableV61();
                 break;
             }
             case 100: {
-                l = new ClassNameRemapTableV100();
+                classNameRemapTable = new ClassNameRemapTableV100();
                 break;
             }
             case 110: {
-                l = new ClassNameRemapTableV110();
+                classNameRemapTable = new ClassNameRemapTableV110();
                 break;
             }
             default: {
-                l = null;
+                classNameRemapTable = null;
             }
         }
         if (ForgeVersion.MC_1_16_5_ACTUAL.Y() && !Vape.INSTANCE.isNativeAvailable()) {
-            ClassNameRemapTable.m = true;
+            ClassNameRemapTable.propagateMappingsToRuntimeRegistry = true;
             new ClassNameRemapTableV35V36Direct();
         }
     }
 
 
-    public static String remapClassName(String string) {
-        if (l == null) {
+    public static String remapClassName(String sourceClassName) {
+        if (classNameRemapTable == null) {
             return null;
         }
-        return l.n(string);
+        return classNameRemapTable.n(sourceClassName);
     }
 }
 

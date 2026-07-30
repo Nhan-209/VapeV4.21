@@ -514,7 +514,7 @@ extends Mod {
     }
 
     public Indicators() {
-        super("Indicators", (int)MODULE_ID, Category.k, "Draws arrows on screen when projectiles\nare nearby/hitting you.");
+        super("Indicators", (int)MODULE_ID, Category.RENDER, "Draws arrows on screen when projectiles\nare nearby/hitting you.");
         this.fireballProjectile = new Projectile(Collections.singleton(MappedClasses.qZ), new Color(255, 0, 0));
         this.alwaysMode = new ModeOption("Always");
         this.threatMode = new ModeOption("Threat");

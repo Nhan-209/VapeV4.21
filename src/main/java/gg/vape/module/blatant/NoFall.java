@@ -44,7 +44,7 @@ extends Mod {
 
 
     public NoFall() {
-        super("NoFall", (int)MODULE_ID, Category.w, "Prevents taking fall damage.\nThis may not bypass AntiCheats.");
+        super("NoFall", (int)MODULE_ID, Category.OTHER, "Prevents taking fall damage.\nThis may not bypass AntiCheats.");
         this.antiCheatMode = new ModeOption("AntiCheat");
         this.mode = ModeValue.create((Object)this, "Mode", "NoFall method to prevent you from taking fall damage.\nNormal - Works on vanilla/some anti-cheats (Does not Bypass AntiCheat)\nAntiCheat - Works and bypasses on various anti-cheats", (ModeSelection)this.normalMode, this.normalMode, this.antiCheatMode);
         this.addValue(this.mode);

@@ -5,11 +5,12 @@ import gg.vape.event.impl.EventRender3D;
 import gg.vape.mapping.MappedClasses;
 import gg.vape.module.Category;
 import gg.vape.module.Mod;
-import gg.vape.module.render.TrajectoriesProjectileRenderState;
+import gg.vape.module.render.trajectories.TrajectoriesProjectileRenderState;
 import gg.vape.module.render.proj.ArrowProjectile;
 import gg.vape.module.render.proj.IProjectile;
 import gg.vape.module.render.proj.PotionProjectile;
 import gg.vape.module.render.proj.Projectile;
+import gg.vape.module.render.trajectories.WideArrowProjectile;
 import gg.vape.utils.MathUtil;
 import gg.vape.utils.render.BufferedRenderPrimitives;
 import gg.vape.utils.render.GuiRenderPrimitives;
@@ -86,7 +87,7 @@ extends Mod {
     }
 
     public Trajectories() {
-        super("Trajectories", -16535661, Category.k, "Shows a path of where your projectile will land\nTarget Color will only be used on the cross if there is an entity intersecting it");
+        super("Trajectories", -16535661, Category.RENDER, "Shows a path of where your projectile will land\nTarget Color will only be used on the cross if there is an entity intersecting it");
         this.arrowProjectile = new WideArrowProjectile();
         this.ghostBowCharge = BooleanValue.create(this, "Ghost Bow Charge", false, "Draws a ghost trajectory of a fully charged\nshot when not pulling back bow");
         this.eggProjectile = new Projectile(Collections.singleton(MappedClasses.l2), new Color(255, 238, 154));

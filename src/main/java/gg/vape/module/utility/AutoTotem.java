@@ -338,7 +338,7 @@ implements InventoryActionModule {
     }
 
     public AutoTotem() {
-        super("AutoTotem", -43691, Category.M, "Automatically equips totems to your offhand");
+        super("AutoTotem", -43691, Category.INVENTORY, "Automatically equips totems to your offhand");
         this.actionTimer = new TimerUtil();
         this.clickQueue = new ConcurrentLinkedQueue<InventoryClick>();
         this.openInventory = BooleanValue.create(this, "Open inventory", true, "Opens your inventory to equip a totem");

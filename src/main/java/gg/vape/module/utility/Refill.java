@@ -128,7 +128,7 @@ extends UtilityMod
     }
 
     public Refill() {
-        super("Refill", Category.M, "Refills your hotbar with healing items.");
+        super("Refill", Category.INVENTORY, "Refills your hotbar with healing items.");
         this.soupMode = new ModeOption("Soup");
         this.typeMode = ModeValue.create((Object)this, "Type", this.bothMode, this.bothMode, this.potsMode, this.soupMode);
         this.allowedItems = LimitValue.create(this, "refill-alloweditems", "Non Junk Items", LimitValue.ALLOW_LIST_COLOR, Collections.emptyList());

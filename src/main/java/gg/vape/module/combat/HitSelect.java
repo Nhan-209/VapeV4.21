@@ -24,7 +24,7 @@ extends Mod {
 
 
     public HitSelect() {
-        super("HitSelect", 0, (int)MODULE_ID, Category.g, "");
+        super("HitSelect", 0, (int)MODULE_ID, Category.COMBAT, "");
         this.chance = NumberValue.create(this, "Chance", "#", "%", 0.0, 90.0, 100.0);
         this.addValue(this.mode, this.chance);
         this.mode.setDescription("Mode");

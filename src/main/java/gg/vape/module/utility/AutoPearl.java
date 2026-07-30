@@ -469,7 +469,7 @@ extends Mod {
     }
 
     public AutoPearl() {
-        super("AutoPearl", (int)MODULE_ID, Category.Y, "Aims and throws a pearl at an enemies pearl trajectory.");
+        super("AutoPearl", (int)MODULE_ID, Category.UTILITY, "Aims and throws a pearl at an enemies pearl trajectory.");
         this.trackedPearls = new HashMap<Integer, AutoPearlTrackedPearl>();
         this.handledPearlIds = new HashSet<Integer>();
         this.throwDelayTimer = new TimerUtil();

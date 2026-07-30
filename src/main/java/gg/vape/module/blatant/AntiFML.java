@@ -28,7 +28,7 @@ extends Mod {
     }
 
     public AntiFML() {
-        super("Anti-FML", (int)MOD_ID, Category.w, "Some servers prevent Forge from connecting\nthis will bypass that.\nYou must reconnect to the server inorder for this to work.");
+        super("Anti-FML", (int)MOD_ID, Category.OTHER, "Some servers prevent Forge from connecting\nthis will bypass that.\nYou must reconnect to the server inorder for this to work.");
     }
 
 }

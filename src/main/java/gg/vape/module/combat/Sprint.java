@@ -48,7 +48,7 @@ extends Mod {
     }
 
     public Sprint() {
-        super("Sprint", (int)MODULE_ID, Category.g, "Sets your sprinting to true.");
+        super("Sprint", (int)MODULE_ID, Category.COMBAT, "Sets your sprinting to true.");
         this.addValue(this.cancelInvis);
     }
 }

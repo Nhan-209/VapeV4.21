@@ -18,12 +18,6 @@ import gg.vape.ui.click.frame.Frame;
 import gg.vape.ui.click.frame.FrameNavigationButtonComponent;
 import gg.vape.ui.click.frame.ModuleCategoryNavigationButtonComponent;
 import gg.vape.ui.click.frame.OutlinedFrameBase;
-import gg.vape.ui.click.frame.impl.ClientSettingsFrame;
-import gg.vape.ui.click.frame.impl.ClientSettingsSearchFrameClassOpenClickHandler;
-import gg.vape.ui.click.frame.impl.ClientSettingsSearchFrameHeader;
-import gg.vape.ui.click.frame.impl.ClientSettingsSectionFrame;
-import gg.vape.ui.click.frame.impl.FrameMacros;
-import gg.vape.ui.click.frame.impl.ModuleCategoryFrame;
 import gg.vape.ui.click.frame.impl.profile.ProfilesFrameNavigationButtonComponent;
 import gg.vape.ui.click.frame.impl.profile.ProfilesSettingsFrame;
 import gg.vape.ui.click.frame.impl.quickactions.QuickActionsFrame;
@@ -64,10 +58,10 @@ extends ModuleCategoryFrame {
         this.removeMarkedChildren();
         if (((ModeSelection)ClientSettings.INSTANCE.searchBarStyle.getValue()).equals(ClientSettings.INSTANCE.integratedSearchBarMode) && this.Ij.O$src$Lgg_vape_ui_click_component_input_ModuleSearchIn$1smhagf().getText().length() > 0) {
             for (Mod mod : Vape.INSTANCE.getModManager().collectMods()) {
-                if (mod.getCategory().equals(Category.b)) continue;
+                if (mod.getCategory().equals(Category.NONE)) continue;
                 String string = StringUtils.y(mod.getName());
                 String string2 = StringUtils.y(this.Ij.O$src$Lgg_vape_ui_click_component_input_ModuleSearchIn$1smhagf().getText());
-                boolean bl = mod.getCategory().equals(Category.w) ? string.equals(string2) : string.contains(string2);
+                boolean bl = mod.getCategory().equals(Category.OTHER) ? string.equals(string2) : string.contains(string2);
                 if (!bl) continue;
                 ModuleComponent moduleComponent = new ModuleComponent(this, mod);
                 this.h(moduleComponent, new Object[0]);
@@ -93,7 +87,7 @@ extends ModuleCategoryFrame {
     }
 
     public ClientSettingsSearchFrame() {
-        super(Category.b);
+        super(Category.NONE);
         this.setDisabledOverlayColor(ClientSettingsSearchFrame.J.r);
         this.K(32.0);
         this.S(32.0);
@@ -178,11 +172,11 @@ extends ModuleCategoryFrame {
     private void o$src$V$1nv32hf() {
         if (this.II.isEmpty()) {
             this.g(new ColorDividerComponent(ClientSettingsSearchFrame.J.m));
-            this.g(new ModuleCategoryNavigationButtonComponent("Combat", Category.g.N()));
-            this.g(new ModuleCategoryNavigationButtonComponent("Render", Category.k.N()));
-            this.g(new ModuleCategoryNavigationButtonComponent("Utility", Category.Y.N()));
-            this.g(new ModuleCategoryNavigationButtonComponent("World", Category.m.N()));
-            this.g(new ModuleCategoryNavigationButtonComponent("Inventory", Category.M.N()).Q(-1));
+            this.g(new ModuleCategoryNavigationButtonComponent("Combat", Category.COMBAT.getIconKey()));
+            this.g(new ModuleCategoryNavigationButtonComponent("Render", Category.RENDER.getIconKey()));
+            this.g(new ModuleCategoryNavigationButtonComponent("Utility", Category.UTILITY.getIconKey()));
+            this.g(new ModuleCategoryNavigationButtonComponent("World", Category.WORLD.getIconKey()));
+            this.g(new ModuleCategoryNavigationButtonComponent("Inventory", Category.INVENTORY.getIconKey()).Q(-1));
             Vape vape = Vape.INSTANCE;
             if (vape.isFeatureDisabled()) {
                 this.g(new ModuleCategoryNavigationButtonComponent("Other", "other").Q(1));

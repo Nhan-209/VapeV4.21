@@ -2,7 +2,7 @@ package gg.vape.wrapper.impl;
 
 import gg.vape.mapping.MappedClasses;
 import gg.vape.mapping.mappings.MPacket;
-import gg.vape.module.blatant.BacktrackPacketQueueEntry;
+import gg.vape.module.blatant.backtrack.BacktrackPacketQueueEntry;
 import gg.vape.wrapper.Wrapper;
 
 import java.util.function.Consumer;

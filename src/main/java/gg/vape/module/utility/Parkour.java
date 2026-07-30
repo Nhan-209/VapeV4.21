@@ -23,7 +23,7 @@ extends Mod {
     private static final long MODULE_ID = -6495356621742786881L;
 
     public Parkour() {
-        super("Parkour", (int)MODULE_ID, Category.m, "Jumps for you at the edge of blocks.");
+        super("Parkour", (int)MODULE_ID, Category.WORLD, "Jumps for you at the edge of blocks.");
     }
 
 

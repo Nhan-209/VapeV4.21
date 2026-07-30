@@ -26,7 +26,7 @@ extends Mod {
     private final NumberValue speed = NumberValue.create(this, "Speed", "#.#", "", 0.1, 0.5, 1.0);
 
     public Strafe() {
-        super("Strafe", -256, Category.w);
+        super("Strafe", -256, Category.OTHER);
         this.targetMinAngle = NumberValue.create(this, "Target minimum angle", "#", "", 1.0, 120.0, 360.0);
         this.selfMinAngle = NumberValue.create(this, "Your minimum angle", "#", "", 1.0, 90.0, 360.0);
         this.addValue(this.distance, this.speed, this.targetMinAngle, this.selfMinAngle);

@@ -1,7 +1,7 @@
 package gg.vape.module.utility.inventory;
 
 import gg.vape.config.ClientSettings;
-import gg.vape.module.utility.InventoryManager;
+import gg.vape.module.utility.AutoHotbar;
 import gg.vape.wrapper.impl.Slot;
 import java.util.Comparator;
 
@@ -11,13 +11,13 @@ implements Comparator<Slot> {
     public int compare(Slot first, Slot second) {
         return this.compareBowScore(first, second);
     }
-    final InventoryManager inventoryManager;
+    final AutoHotbar autoHotbar;
 
     public int compareBowScore(Slot first, Slot second) {
         return Double.compare(ClientSettings.getToolDamageScore(first.I()), ClientSettings.getToolDamageScore(second.I()));
     }
 
-    public BowSlotComparator(InventoryManager inventoryManager) {
-        this.inventoryManager = inventoryManager;
+    public BowSlotComparator(AutoHotbar autoHotbar) {
+        this.autoHotbar = autoHotbar;
     }
 }

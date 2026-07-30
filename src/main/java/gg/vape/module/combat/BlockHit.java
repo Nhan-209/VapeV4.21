@@ -18,7 +18,7 @@ extends Mod {
 
 
     public BlockHit() {
-        super("NoItemRelease", (int)MODULE_ID, Category.w);
+        super("NoItemRelease", (int)MODULE_ID, Category.OTHER);
         this.addValue(this.allowedItems);
     }
 

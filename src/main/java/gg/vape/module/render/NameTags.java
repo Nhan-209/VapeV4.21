@@ -12,9 +12,9 @@ import gg.vape.friend.ui.OnlineRadarPreviewState;
 import gg.vape.mapping.MappedClasses;
 import gg.vape.module.Category;
 import gg.vape.module.Mod;
-import gg.vape.module.minigame.MurderMystery;
-import gg.vape.module.render.NameTagsNameState;
-import gg.vape.module.render.NameTagsRenderStateTracker;
+import gg.vape.module.render.nametags.NameTagsNameState;
+import gg.vape.module.render.nametags.NameTagsRenderStateTracker;
+import gg.vape.module.world.MurderFinder;
 import gg.vape.module.render.entity.RenderEntityContext;
 import gg.vape.module.render.entity.RenderEntityContextCache;
 import gg.vape.module.render.hud.FreeLookHudModule;
@@ -415,7 +415,7 @@ extends Mod {
     }
 
     public NameTags() {
-        super("NameTags", -16711936, Category.k, "Renders nametags on entities through walls.");
+        super("NameTags", -16711936, Category.RENDER, "Renders nametags on entities through walls.");
         this.ignoreInvisibles = BooleanValue.create(this, "Ignore Invisibles", false, "Determines if we draw a nametag\nfor invisible entities");
         this.autoScale = BooleanValue.create(this, "Auto Scale", true, "Automatically scales up nametags\nthe further the distance.");
         this.hideBots = BooleanValue.create(this, "Hide bots", true, "Hides bots if you're using antibot");
@@ -599,7 +599,7 @@ extends Mod {
                 mutableColor2.setColor(Vape.INSTANCE.getFriendManager().friendColor.getMutableColor());
             }
         }
-        if (Vape.INSTANCE.getModManager().getMod(MurderMystery.class).isMurderer(entityLivingBase)) {
+        if (Vape.INSTANCE.getModManager().getMod(MurderFinder.class).isMurderer(entityLivingBase)) {
             n = -59882;
         }
         if (renderEntityContext.isInvisible()) {

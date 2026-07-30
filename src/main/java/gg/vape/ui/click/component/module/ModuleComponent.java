@@ -2,12 +2,11 @@ package gg.vape.ui.click.component.module;
 
 import func.skidline.RectData;
 import gg.vape.Vape;
-import gg.vape.input.InputEventDispatcher;
 import gg.vape.input.MouseInput;
 import gg.vape.module.Category;
 import gg.vape.module.Mod;
 import gg.vape.module.none.ClientSettings;
-import gg.vape.module.none.Search;
+import gg.vape.module.render.Search;
 import gg.vape.ui.click.MouseButton;
 import gg.vape.ui.click.MousePosition;
 import gg.vape.ui.click.animation.DoubleAnimation;
@@ -17,12 +16,6 @@ import gg.vape.ui.click.component.SquareIconButtonComponent;
 import gg.vape.ui.click.component.gui.InteractiveComponent;
 import gg.vape.ui.click.component.gui.TextLabel;
 import gg.vape.ui.click.component.input.BindableInputComponent;
-import gg.vape.ui.click.component.module.ModuleComponentDragStartClickHandler;
-import gg.vape.ui.click.component.module.ModuleComponentExpandToggleClickHandler;
-import gg.vape.ui.click.component.module.ModuleComponentSelectModuleClickHandler;
-import gg.vape.ui.click.component.module.ModuleComponentToggleClickHandler;
-import gg.vape.ui.click.component.module.ModuleComponentToggleModEnabledClickHandler;
-import gg.vape.ui.click.component.module.ModuleComponentVerticalComparator;
 import gg.vape.ui.click.component.value.SearchBlockListComponent;
 import gg.vape.ui.click.component.value.ValueComponentFactory;
 import gg.vape.ui.click.frame.impl.ClientSettingsSearchFrame;
@@ -38,7 +31,6 @@ import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.concurrent.ThreadLocalRandom;
 
 public class ModuleComponent
 extends InteractiveComponent {
@@ -321,7 +313,7 @@ extends InteractiveComponent {
         }
         boolean showingBindStatus = this.statusText != null && (this.statusText.toLowerCase(Locale.ROOT).startsWith("bound") || this.statusText.toLowerCase(Locale.ROOT).startsWith("press") || this.statusText.toLowerCase(Locale.ROOT).startsWith("bind"));
         boolean showNewBadge = this.module.L() && !this.module.r$src$Z$14eylz9();
-        boolean showUnsafeBadge = this.module.getCategory() == Category.w && (this.categoryFrame instanceof ModuleSearchFrame || this.categoryFrame instanceof ClientSettingsSearchFrame);
+        boolean showUnsafeBadge = this.module.getCategory() == Category.OTHER && (this.categoryFrame instanceof ModuleSearchFrame || this.categoryFrame instanceof ClientSettingsSearchFrame);
         if (showNewBadge && !showingBindStatus) {
             double newBadgeX = contentX + fontRenderer.N(this.module.getName()) + 5.0;
             GuiRenderPrimitives.d(newBadgeX, badgeY, 20.0, 7.0, J.z());

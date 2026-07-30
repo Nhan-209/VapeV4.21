@@ -31,7 +31,7 @@ extends Mod {
 
 
     public SpawnerFinder() {
-        super("SpawnerFinder", (int)moduleId, Category.k);
+        super("SpawnerFinder", (int)moduleId, Category.RENDER);
         this.showDistance = BooleanValue.create(this, "Show distance", true);
         this.spawnerWhitelist = OptionalLimitValue.create(this, "Spawner names-whitelist", "Spawners", OptionalLimitValue.ALLOW_LIST_COLOR, "Zombie", "Skeleton", "Creeper", "Spider");
         this.addValue(this.scale, this.showDistance, this.spawnerWhitelist);

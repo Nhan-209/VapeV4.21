@@ -96,7 +96,7 @@ extends Mod {
     }
 
     public LongJump() {
-        super("LongJump", (int)MODULE_ID, Category.w, "Does not work on a advanced anti-cheat servers.");
+        super("LongJump", (int)MODULE_ID, Category.OTHER, "Does not work on a advanced anti-cheat servers.");
         this.autoDisable = BooleanValue.create(this, "Toggle", true, "Toggles off after touching the ground.");
         this.addValue(this.boost, this.autoDisable);
         this.moveSpeed = 0.27999999999999997;

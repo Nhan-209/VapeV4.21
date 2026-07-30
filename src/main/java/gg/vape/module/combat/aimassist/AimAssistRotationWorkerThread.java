@@ -1,7 +1,6 @@
 package gg.vape.module.combat.aimassist;
 
 import gg.vape.Vape;
-import gg.vape.module.combat.AimAssistRotationSubModule;
 
 public class AimAssistRotationWorkerThread
 extends Thread {

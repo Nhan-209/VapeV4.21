@@ -332,7 +332,7 @@ extends Mod {
     }
 
     public Reach() {
-        super("Reach", -16711936, Category.g, "Extends attack reach");
+        super("Reach", -16711936, Category.COMBAT, "Extends attack reach");
         this.chance = NumberValue.createWithDescription(this, "Chance", "#", "%", 0.0, 50.0, 100.0, "The chance of reach taking affect when hitting an opponent");
         this.advancedMode = new ModeOption("Advanced");
         this.normalMode = new ModeOption("Normal");

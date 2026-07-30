@@ -12,11 +12,11 @@ import gg.vape.module.Category;
 import gg.vape.module.MinecraftVersionConstraint;
 import gg.vape.module.Mod;
 import gg.vape.module.SubModule;
-import gg.vape.module.blatant.AnchorMacro;
+import gg.vape.module.blatant.AutoAnchor;
 import gg.vape.module.blatant.AntiBot;
-import gg.vape.module.blatant.AutoSoup;
+import gg.vape.module.blatant.AutoHeal;
 import gg.vape.module.blatant.Backtrack;
-import gg.vape.module.blatant.BlinkPacketRenderModule;
+import gg.vape.module.blatant.blink.BlinkPacketRenderModule;
 import gg.vape.module.blatant.BlockIn;
 import gg.vape.module.blatant.Fly;
 import gg.vape.module.blatant.HitBoxes;
@@ -24,14 +24,14 @@ import gg.vape.module.blatant.InvWalk;
 import gg.vape.module.blatant.KeepSprint;
 import gg.vape.module.blatant.KillAura;
 import gg.vape.module.blatant.NoFall;
-import gg.vape.module.blatant.NoSlow;
+import gg.vape.module.blatant.NoSlowdown;
 import gg.vape.module.blatant.SafeWalk;
 import gg.vape.module.blatant.Scaffold;
 import gg.vape.module.blatant.Speed;
 import gg.vape.module.blatant.Timer;
 import gg.vape.module.combat.AimAssist;
-import gg.vape.module.combat.AutoClicker;
-import gg.vape.module.combat.AutoClickerInputModule;
+import gg.vape.module.combat.Triggerbot;
+import gg.vape.module.combat.autoclicker.AutoClickerInputModule;
 import gg.vape.module.combat.HitSwap;
 import gg.vape.module.combat.BlockHit;
 import gg.vape.module.combat.BowAimbot;
@@ -40,35 +40,35 @@ import gg.vape.module.combat.LeftClicker;
 import gg.vape.module.combat.Reach;
 import gg.vape.module.combat.RightClicker;
 import gg.vape.module.combat.SilentAura;
-import gg.vape.module.combat.SilentAuraTargetingModule;
+import gg.vape.module.combat.silentaura.SilentAuraTargetingModule;
 import gg.vape.module.combat.Sprint;
 import gg.vape.module.combat.WTap;
 import gg.vape.module.combat.Velocity;
-import gg.vape.module.combat.VelocityPacketMode;
-import gg.vape.module.combat.VelocityPacketReceiveMode;
+import gg.vape.module.combat.velocity.VelocityPacketMode;
+import gg.vape.module.combat.velocity.VelocityPacketReceiveMode;
 import gg.vape.module.combat.HitSelect;
 import gg.vape.module.combat.silentaura.SilentAuraClicker;
-import gg.vape.module.minigame.BedPlates;
-import gg.vape.module.minigame.MurderMystery;
+import gg.vape.module.render.BedPlates;
+import gg.vape.module.world.MurderFinder;
 import gg.vape.module.none.ClientSettings;
 import gg.vape.module.none.MouseDelayFix;
-import gg.vape.module.none.Search;
+import gg.vape.module.render.Search;
 import gg.vape.module.none.TextGuiSettings;
-import gg.vape.module.none.XRay;
-import gg.vape.module.other.AntiAFK;
+import gg.vape.module.world.XRay;
+import gg.vape.module.world.AntiAFK;
 import gg.vape.module.render.Animations;
 import gg.vape.module.render.AntiDebuff;
 import gg.vape.module.render.Arrows;
 import gg.vape.module.render.Chams;
 import gg.vape.module.render.ESP;
-import gg.vape.module.render.Explosions;
+import gg.vape.module.render.PropHunt;
 import gg.vape.module.render.Freecam;
 import gg.vape.module.render.Fullbright;
-import gg.vape.module.render.HealthDisplay;
+import gg.vape.module.render.Health;
 import gg.vape.module.render.Indicators;
 import gg.vape.module.render.ItemESP;
 import gg.vape.module.render.NameTags;
-import gg.vape.module.render.PearlESP;
+import gg.vape.module.render.Explosions;
 import gg.vape.module.render.SpawnerFinder;
 import gg.vape.module.render.StorageESP;
 import gg.vape.module.render.Tracers;
@@ -97,26 +97,26 @@ import gg.vape.module.render.hud.WeatherChangerHudModule;
 import gg.vape.module.render.proj.Projectiles;
 import gg.vape.module.utility.ArmorSwitch;
 import gg.vape.module.utility.AutoArmor;
-import gg.vape.module.utility.AutoHotbar;
-import gg.vape.module.utility.AutoMLG;
+import gg.vape.module.utility.InvCleaner;
+import gg.vape.module.utility.MLG;
 import gg.vape.module.utility.AutoPearl;
 import gg.vape.module.utility.AutoTool;
 import gg.vape.module.utility.AutoTotem;
 import gg.vape.module.utility.Clutch;
-import gg.vape.module.utility.InvCleaner;
 import gg.vape.module.utility.InventoryManager;
-import gg.vape.module.utility.MLG;
+import gg.vape.module.utility.AutoHotbar;
+import gg.vape.module.utility.AutoFish;
 import gg.vape.module.utility.Panic;
 import gg.vape.module.utility.Parkour;
 import gg.vape.module.utility.Refill;
 import gg.vape.module.utility.ThrowDebuff;
 import gg.vape.module.utility.Throwpot;
-import gg.vape.module.utility.WindChargeJump;
+import gg.vape.module.utility.WindCharge;
 import gg.vape.module.utility.inventory.InventoryActionModule;
 import gg.vape.module.world.BedBreaker;
 import gg.vape.module.world.ChestSteal;
 import gg.vape.module.world.FastPlace;
-import gg.vape.module.world.FastUseModule;
+import gg.vape.module.world.FakeLag;
 import gg.vape.notification.NotificationType;
 import gg.vape.notification.ReusableTextNotification;
 import gg.vape.ui.click.component.GuiComponent;
@@ -157,7 +157,7 @@ implements EventListener {
     }
 
     public void init() {
-        GuiComponent[] legacyComponentsSnapshot = Category.N$src$ALgg_vape_ui_click_component_GuiComponent_$lect5v();
+        GuiComponent[] legacyComponentsSnapshot = Category.getLegacyComponents();
         Mod[] coreModules = new Mod[61];
         coreModules[0] = new ClientSettings();
         coreModules[1] = new LeftClicker();
@@ -182,7 +182,7 @@ implements EventListener {
         coreModules[20] = new Fullbright();
         coreModules[21] = new WTap();
         coreModules[22] = new AutoArmor();
-        coreModules[23] = new AutoHotbar();
+        coreModules[23] = new InvCleaner();
         coreModules[24] = new ThrowDebuff();
         coreModules[25] = new AutoTool();
         coreModules[26] = new AimAssist();
@@ -199,16 +199,16 @@ implements EventListener {
         coreModules[37] = new AntiAFK();
         coreModules[38] = new ArmorSwitch();
         coreModules[39] = new ItemESP();
-        coreModules[40] = new AutoMLG();
-        coreModules[41] = new InventoryManager();
-        coreModules[42] = new AutoSoup();
-        coreModules[43] = new Explosions();
+        coreModules[40] = new MLG();
+        coreModules[41] = new AutoHotbar();
+        coreModules[42] = new AutoHeal();
+        coreModules[43] = new PropHunt();
         coreModules[44] = new Parkour();
-        coreModules[45] = new MurderMystery();
+        coreModules[45] = new MurderFinder();
         coreModules[46] = new BowAimbot();
         coreModules[47] = new Indicators();
         coreModules[48] = new Sprint();
-        coreModules[49] = new HealthDisplay();
+        coreModules[49] = new Health();
         coreModules[50] = new HitSelect();
         coreModules[51] = new Animations();
         SilentAura silentAura = new SilentAura();
@@ -216,13 +216,13 @@ implements EventListener {
         coreModules[53] = new SilentAuraClicker(silentAura);
         coreModules[54] = new SilentAuraTargetingModule();
         coreModules[55] = new Clutch();
-        coreModules[56] = new InvCleaner();
+        coreModules[56] = new InventoryManager();
         coreModules[57] = new BlockHit();
         coreModules[58] = new Timer();
         coreModules[59] = new AutoClickerInputModule();
         coreModules[60] = new BedPlates();
         this.registerModules(Stream.of(coreModules));
-        ModRegistrationBuilder.create().setModule(new PearlESP()).addVersionConstraint(ForgeVersion.MC_1_16_5.b()).registerWith(this);
+        ModRegistrationBuilder.create().setModule(new Explosions()).addVersionConstraint(ForgeVersion.MC_1_16_5.b()).registerWith(this);
         Mod[] versionConstrainedModules = new Mod[2];
         versionConstrainedModules[0] = new Chams();
         XRay xRay = new XRay();
@@ -234,11 +234,11 @@ implements EventListener {
         ModRegistrationBuilder.create().setModule(new Freecam()).addVersionConstraint(ForgeVersion.MC_1_16_5.b()).addVersionConstraint(ForgeVersion.MC_1_21_11.n()).registerWith(this);
         this.registerModules(Stream.of(new InvWalk()), ModManager::addMinecraft189Constraint);
         this.registerModules(Stream.of(new Backtrack()), ModManager::addBacktrackVersionConstraints);
-        this.registerModules(Stream.of(new MLG(), new BedBreaker(), new BlockIn(), new FastUseModule()), ModManager::addMinecraft1710Constraint);
+        this.registerModules(Stream.of(new AutoFish(), new BedBreaker(), new BlockIn(), new FakeLag()), ModManager::addMinecraft1710Constraint);
         this.registerModules(Stream.of(new BedPlates()), ModManager::addBedPlatesVersionConstraints);
         this.registerModules(Stream.of(new AntiBot()));
-        this.registerModules(Stream.of(new AutoClicker(), new HitSwap(), new AnchorMacro(), new WindChargeJump(), new CrystalAura(), new AutoTotem()), ModManager::addMinecraft1214Constraint);
-        this.registerModules(Stream.of(new NoFall(), new NoSlow(), new Speed(), new BlockHit(), new Timer()), ModManager::addModernMinecraftConstraint);
+        this.registerModules(Stream.of(new Triggerbot(), new HitSwap(), new AutoAnchor(), new WindCharge(), new CrystalAura(), new AutoTotem()), ModManager::addMinecraft1214Constraint);
+        this.registerModules(Stream.of(new NoFall(), new NoSlowdown(), new Speed(), new BlockHit(), new Timer()), ModManager::addModernMinecraftConstraint);
         this.registerTextGuiSettings();
         this.registerHudModules();
         if (preservedLegacyComponents == null) {
@@ -272,7 +272,7 @@ implements EventListener {
         JsonObject enabledStates = profile.getEnabledModuleStates();
         int enabledCount = 0;
         for (Mod mod : this.collectMods()) {
-            if (mod instanceof HudModule || mod.getCategory().equals(Category.b)) continue;
+            if (mod instanceof HudModule || mod.getCategory().equals(Category.NONE)) continue;
             try {
                 if (enabledStates.has(mod.getName())) {
                     if (!mod.O()) continue;
@@ -526,7 +526,7 @@ implements EventListener {
     public void disableNonHudModules() {
         this.suppressStateNotifications = true;
         for (Mod mod : this.collectMods()) {
-            if (mod.getCategory() == Category.b || !mod.r$src$Z$14eylz9() || mod instanceof HudModule) continue;
+            if (mod.getCategory() == Category.NONE || !mod.r$src$Z$14eylz9() || mod instanceof HudModule) continue;
             mod.Y(false);
         }
         this.suppressStateNotifications = false;
@@ -547,7 +547,7 @@ implements EventListener {
     public List<Mod> getProfileModules(JsonObject enabledModuleStates) {
         ArrayList<Mod> modules = new ArrayList<Mod>();
         for (Mod mod : this.collectMods()) {
-            if (!enabledModuleStates.has(mod.getName()) || !mod.O() || mod.getCategory() == Category.b) continue;
+            if (!enabledModuleStates.has(mod.getName()) || !mod.O() || mod.getCategory() == Category.NONE) continue;
             modules.add(mod);
         }
         return modules;
@@ -600,7 +600,7 @@ implements EventListener {
     }
 
     public ModManager() {
-        GuiComponent[] legacyComponentsSnapshot = Category.N$src$ALgg_vape_ui_click_component_GuiComponent_$lect5v();
+        GuiComponent[] legacyComponentsSnapshot = Category.getLegacyComponents();
         Object[] discardedSlotStorage = new Object[877];
         Array.newInstance(Long.TYPE, 837);
         Array.newInstance(Byte.TYPE, 904);
@@ -618,7 +618,7 @@ implements EventListener {
         this.activeModuleList = new ArrayList();
         this.profileSwitchNotification = new ReusableTextNotification(NotificationType.INFO, "", "", 2000L);
         if (GuiComponent.getLegacyComponentState() == null) {
-            Category.q(new GuiComponent[1]);
+            Category.setLegacyComponents(new GuiComponent[1]);
         }
     }
 

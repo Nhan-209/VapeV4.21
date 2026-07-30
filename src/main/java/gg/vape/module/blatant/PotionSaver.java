@@ -42,7 +42,7 @@ extends Mod {
     }
 
     public PotionSaver() {
-        super("PotionSaver", -256, Category.w, "Saves your potion effect(s) duration when standing still");
+        super("PotionSaver", -256, Category.OTHER, "Saves your potion effect(s) duration when standing still");
     }
 }
 

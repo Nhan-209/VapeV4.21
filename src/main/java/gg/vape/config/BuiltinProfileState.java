@@ -4,7 +4,7 @@ import gg.vape.module.blatant.Backtrack;
 import gg.vape.module.combat.AimAssist;
 import gg.vape.module.combat.LeftClicker;
 import gg.vape.module.combat.Sprint;
-import gg.vape.module.combat.VelocityPacketReceiveMode;
+import gg.vape.module.combat.velocity.VelocityPacketReceiveMode;
 import gg.vape.module.combat.HitSelect;
 import gg.vape.wrapper.impl.ForgeVersion;
 

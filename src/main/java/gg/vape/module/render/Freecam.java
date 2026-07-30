@@ -102,7 +102,7 @@ extends Mod {
     }
 
     public Freecam() {
-        super("Freecam", (int)MODULE_ID, Category.m, "Lets you fly and clip through walls freely\nwithout moving your player server-sided.");
+        super("Freecam", (int)MODULE_ID, Category.WORLD, "Lets you fly and clip through walls freely\nwithout moving your player server-sided.");
         this.allowInteracting = BooleanValue.create(this, "Allow Interacting", true, "Allows you to interact with blocks and entities while in freecam.");
         this.horizontalSpeed = NumberValue.create(this, "Speed", "#.#", "", 1.0, 3.0, 5.0, 0.1, "Horizontal speed multiplier");
         this.moveFakePlayer = BooleanValue.create(this, "Move Fake", false, "Move your fake entity with your arrow keys.");

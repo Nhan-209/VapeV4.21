@@ -308,7 +308,7 @@ extends Mod {
     }
 
     public KillAura() {
-        super("Killaura", (int)MODULE_ID, Category.w, "Attack players around you\nwithout aiming at them.");
+        super("Killaura", (int)MODULE_ID, Category.OTHER, "Attack players around you\nwithout aiming at them.");
         this.swingRange = NumberValue.create(this, "Swing range", "#.#", "", 0.0, 4.0, 6.0);
         this.attackRange = NumberValue.create(this, "Attack range", "#.#", "", 0.0, 3.5, 6.0);
         this.requireMouseDown = BooleanValue.create(this, "Require mouse down", false);

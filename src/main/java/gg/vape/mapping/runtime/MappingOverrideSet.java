@@ -5,36 +5,35 @@ import java.util.HashMap;
 import java.util.Map;
 
 public abstract class MappingOverrideSet {
-    private int R;
-    private static String i;
-    private Map<Class, Class> D = new HashMap<Class, Class>();
+    private final int mappingVersion;
+    private static String controlFlowMarker;
+    private final Map<Class, Class> overrides = new HashMap<Class, Class>();
 
-    public static String K() {
-        return i;
+    public static String getControlFlowMarker() {
+        return controlFlowMarker;
     }
 
-    protected abstract void J();
+    protected abstract void registerOverrides();
 
-    public static void X(String string) {
-        i = string;
+    public static void setControlFlowMarker(String marker) {
+        controlFlowMarker = marker;
     }
 
-    public <T extends Mapping, O extends T> void g(Class<T> clazz, Class<O> clazz2) {
-        this.D.put(clazz, clazz2);
+    public <T extends Mapping, O extends T> void registerOverride(Class<T> mappingClass, Class<O> overrideClass) {
+        this.overrides.put(mappingClass, overrideClass);
     }
 
-    public MappingOverrideSet(int n) {
-        this.R = n;
+    public MappingOverrideSet(int mappingVersion) {
+        this.mappingVersion = mappingVersion;
     }
 
-    public Class z(Class clazz) {
-        return this.D.get(clazz);
+    public Class getOverrideClass(Class mappingClass) {
+        return this.overrides.get(mappingClass);
     }
 
     static {
-        if (MappingOverrideSet.K() == null) {
-            MappingOverrideSet.X("idae5");
+        if (MappingOverrideSet.getControlFlowMarker() == null) {
+            MappingOverrideSet.setControlFlowMarker("idae5");
         }
     }
 }
-

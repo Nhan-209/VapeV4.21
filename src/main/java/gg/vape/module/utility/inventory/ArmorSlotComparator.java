@@ -1,6 +1,6 @@
 package gg.vape.module.utility.inventory;
 
-import gg.vape.module.utility.InventoryManager;
+import gg.vape.module.utility.AutoHotbar;
 import gg.vape.wrapper.impl.ItemSplashPotion;
 import gg.vape.wrapper.impl.ItemStack;
 import gg.vape.wrapper.impl.PotionEffect;
@@ -10,10 +10,10 @@ import java.util.List;
 
 public class ArmorSlotComparator
 implements Comparator<Slot> {
-    final InventoryManager inventoryManager;
+    final AutoHotbar autoHotbar;
 
-    public ArmorSlotComparator(InventoryManager inventoryManager) {
-        this.inventoryManager = inventoryManager;
+    public ArmorSlotComparator(AutoHotbar autoHotbar) {
+        this.autoHotbar = autoHotbar;
     }
 
     @Override

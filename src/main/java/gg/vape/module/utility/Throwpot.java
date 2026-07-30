@@ -177,7 +177,7 @@ extends UtilityMod {
     }
 
     public Throwpot() {
-        super("Throwpot", Category.M, "Throws or consumes healing items automatically or upon pressing keybind");
+        super("Throwpot", Category.INVENTORY, "Throws or consumes healing items automatically or upon pressing keybind");
         this.potsOption = new ModeOption("Pots");
         this.soupOption = new ModeOption("Soup");
         this.typeValue = ModeValue.create((Object)this, "Type", this.bothOption, this.bothOption, this.potsOption, this.soupOption);

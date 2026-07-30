@@ -3,7 +3,7 @@ package gg.vape.event.listener;
 import gg.vape.event.EventHandler;
 import gg.vape.event.EventListener;
 import gg.vape.event.impl.EventPreTick;
-import gg.vape.module.render.NameTagsRenderStateTracker;
+import gg.vape.module.render.nametags.NameTagsRenderStateTracker;
 import gg.vape.utils.TimerUtil;
 import gg.vape.utils.render.EntityModelRenderCache;
 import gg.vape.utils.render.ItemIconRenderer;

@@ -10,10 +10,10 @@ import gg.vape.mapping.MappedClasses;
 import gg.vape.module.Category;
 import gg.vape.module.MinecraftVersionConstraint;
 import gg.vape.module.Mod;
-import gg.vape.module.blatant.AntiBotBooleanValue;
-import gg.vape.module.blatant.AntiBotEntityCache;
-import gg.vape.module.blatant.AntiBotModeValue;
-import gg.vape.module.blatant.AntiBotStateTracker;
+import gg.vape.module.blatant.antibot.AntiBotBooleanValue;
+import gg.vape.module.blatant.antibot.AntiBotEntityCache;
+import gg.vape.module.blatant.antibot.AntiBotModeValue;
+import gg.vape.module.blatant.antibot.AntiBotStateTracker;
 import gg.vape.module.render.entity.RenderEntityContext;
 import gg.vape.notification.NotificationType;
 import gg.vape.unmap.ModeOption;
@@ -553,7 +553,7 @@ extends Mod {
     }
 
     public AntiBot() {
-        super("TargetFilter", -28416, Category.Y, "");
+        super("TargetFilter", -28416, Category.UTILITY, "");
         this.teamsByServer = BooleanValue.create(this, "Teams by server", false, "Ignore players on your team designated by the server\n\u00a7cThis is not guaranteed to be accurate, as server teams are assigned by the server");
         this.teamsByColor = BooleanValue.create(this, "Teams by color", false, "Ignore players with the selected name color\n\u00a7cThis is not guaranteed to be accurate - team colors depend on the server implementation");
         this.recolorVisuals = BooleanValue.create(this, "Recolor visuals", false, "Changes colors of visuals(Tracers, ESP) to their according team color");

@@ -36,7 +36,7 @@ extends AbstractListValueSuggestionProvider {
         if (this.cachedModuleNames == null) {
             this.cachedModuleNames = new ArrayList<String>();
             for (Mod module : Vape.INSTANCE.getModManager().collectMods()) {
-                if (module.getCategory() == Category.b || this.excludeOtherCategory && module.getCategory() == Category.w) continue;
+                if (module.getCategory() == Category.NONE || this.excludeOtherCategory && module.getCategory() == Category.OTHER) continue;
                 this.cachedModuleNames.add(module.getName());
             }
         }

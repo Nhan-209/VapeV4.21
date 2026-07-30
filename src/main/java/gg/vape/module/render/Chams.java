@@ -13,7 +13,6 @@ import gg.vape.event.impl.EventSetArmorModel;
 import gg.vape.mapping.MappedClasses;
 import gg.vape.module.Category;
 import gg.vape.module.Mod;
-import gg.vape.module.render.ESP;
 import gg.vape.utils.render.OpenGlBackendHolder;
 import gg.vape.utils.render.RenderUtil;
 import gg.vape.utils.render.RenderUtils;
@@ -198,7 +197,7 @@ extends Mod {
     }
 
     public Chams() {
-        super("Chams", -16711936, Category.k, "Render players through walls.");
+        super("Chams", -16711936, Category.RENDER, "Render players through walls.");
         this.colored = BooleanValue.create(this, "Colored", false, "Colors entities.");
         this.visibleColor = ColorValue.create(this, "Visible Color", new Color(255, 0, 0));
         this.colorBehindWalls = BooleanValue.create(this, "Color Behind Walls", true, "Renders a different color when\nplayers are behind walls.");

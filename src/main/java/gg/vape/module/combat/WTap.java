@@ -64,7 +64,7 @@ extends Mod {
     }
 
     public WTap() {
-        super("WTap", (int)MODULE_ID, Category.g);
+        super("WTap", (int)MODULE_ID, Category.COMBAT);
         this.releaseTimer = new TimerUtil();
         this.rePressTimer = new TimerUtil();
         this.addValue(this.chance, this.releaseDelay, this.rePressDelay, this.selectHits);

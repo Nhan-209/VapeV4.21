@@ -35,7 +35,7 @@ extends ClickerMod {
     }
 
     public SilentAuraClicker(SilentAura silentAura) {
-        super(CLICKER_NAME, 0, Category.b);
+        super(CLICKER_NAME, 0, Category.NONE);
         this.silentAura = silentAura;
         ClickEngine clickEngine = new ClickEngine(ClickButton.LEFT, silentAura.getAttackRate(), silentAura.getLimitToItems(), silentAura.getAllowedItems(), silentAura.getRequireMouseDown(), null, new BooleanValue((Object)null, "", false), this);
         this.setClickEngine(clickEngine);

@@ -43,7 +43,7 @@ extends UtilityMod {
 
 
     public ArmorSwitch() {
-        super("ArmorSwitch", Category.M, "Switches between armor sets");
+        super("ArmorSwitch", Category.INVENTORY, "Switches between armor sets");
         this.delayValue = NumberValue.create(this, "Delay", "#", "", 0.0, 100.0, 200.0);
         this.timer = new TimerUtil();
         this.armorSlotTargets = new HashMap<Integer, Integer>();

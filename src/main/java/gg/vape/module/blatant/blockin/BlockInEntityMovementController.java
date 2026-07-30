@@ -1,9 +1,7 @@
 package gg.vape.module.blatant.blockin;
 
 import gg.vape.mapping.MappedClasses;
-import gg.vape.module.blatant.blockin.AbstractBlockInMovementController;
-import gg.vape.module.blatant.blockin.BlockPlacementGraph;
-import gg.vape.module.utility.MLGBlockWrapper;
+import gg.vape.module.utility.mlg.MLGBlockWrapper;
 import gg.vape.utils.math.NumericMathUtil;
 import gg.vape.wrapper.impl.AttributeInstance;
 import gg.vape.wrapper.impl.AttributeModifier;

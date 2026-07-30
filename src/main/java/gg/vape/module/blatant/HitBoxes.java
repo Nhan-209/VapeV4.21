@@ -18,7 +18,7 @@ extends Mod {
     private static final long MODULE_ID = -170962805321564187L;
 
     public HitBoxes() {
-        super("HitBoxes", (int)MODULE_ID, Category.w, "Expands entities hitboxes");
+        super("HitBoxes", (int)MODULE_ID, Category.OTHER, "Expands entities hitboxes");
         this.addValue(this.expandAmount);
     }
 

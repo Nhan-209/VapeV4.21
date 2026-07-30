@@ -351,8 +351,8 @@ public class MappingField {
             this.declaredFieldType = fieldType;
             MemberLookupSignature memberLookupSignature = RuntimeNameMappingRegistry.lookupFieldMapping(ownerClass, fieldName);
             if (memberLookupSignature != null) {
-                this.runtimeName = memberLookupSignature.M;
-                this.resolvedFieldType = memberLookupSignature.a != null ? memberLookupSignature.a : fieldType;
+                this.runtimeName = memberLookupSignature.runtimeName;
+                this.resolvedFieldType = memberLookupSignature.resolvedType != null ? memberLookupSignature.resolvedType : fieldType;
             } else {
                 this.runtimeName = fieldName;
                 this.resolvedFieldType = fieldType;

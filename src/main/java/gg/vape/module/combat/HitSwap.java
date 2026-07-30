@@ -314,7 +314,7 @@ extends Mod {
     }
 
     public HitSwap() {
-        super("HitSwap", (int)MODULE_ID, Category.Y, "Swaps into another weapon on attack, copying its attributes\nAKA BreachSwap, ZeroTick");
+        super("HitSwap", (int)MODULE_ID, Category.UTILITY, "Swaps into another weapon on attack, copying its attributes\nAKA BreachSwap, ZeroTick");
         this.smashOnly = BooleanValue.create(this, "Smash only", true, "Only swap to mace if will smash");
         this.breachMaces = BooleanValue.create(this, "Breach maces", false, "Will use Maces with Breach enchantment");
         this.densityMaces = BooleanValue.create(this, "Density maces", true, "Will use Maces with Breach enchantment");

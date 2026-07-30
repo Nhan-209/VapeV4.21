@@ -41,7 +41,7 @@ extends Mod {
     }
 
     public SafeWalk() {
-        super("SafeWalk", (int)MODULE_ID, Category.m, "Helps you from falling off the edge.");
+        super("SafeWalk", (int)MODULE_ID, Category.WORLD, "Helps you from falling off the edge.");
         this.addValue(this.directionCheck);
     }
 }

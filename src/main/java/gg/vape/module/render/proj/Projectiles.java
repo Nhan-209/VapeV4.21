@@ -6,11 +6,6 @@ import gg.vape.event.impl.EventRender3D;
 import gg.vape.mapping.MappedClasses;
 import gg.vape.module.Category;
 import gg.vape.module.Mod;
-import gg.vape.module.render.proj.ArrowProjectile;
-import gg.vape.module.render.proj.EnderPearlProjectileBridge;
-import gg.vape.module.render.proj.IProjectile;
-import gg.vape.module.render.proj.PotionProjectile;
-import gg.vape.module.render.proj.Projectile;
 import gg.vape.utils.render.BufferedRenderPrimitives;
 import gg.vape.utils.render.GuiRenderPrimitives;
 import gg.vape.utils.render.OpenGlBackendHolder;
@@ -173,7 +168,7 @@ extends Mod {
     }
 
     public Projectiles() {
-        super("Projectiles", -16535661, Category.k, "Shows projectile trajectories while in air");
+        super("Projectiles", -16535661, Category.RENDER, "Shows projectile trajectories while in air");
         this.eggProjectile = new Projectile(Collections.singleton(MappedClasses.l2), new Color(255, 238, 154));
         this.snowballProjectile = new Projectile(Collections.singleton(MappedClasses.YZ), new Color(255, 255, 255));
         this.showArrows = BooleanValue.create(this, "Show Arrows", true);

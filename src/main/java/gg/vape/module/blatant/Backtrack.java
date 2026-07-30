@@ -10,9 +10,9 @@ import gg.vape.event.impl.EventWorldChange;
 import gg.vape.mapping.MappedClasses;
 import gg.vape.module.Category;
 import gg.vape.module.Mod;
-import gg.vape.module.blatant.BacktrackPacketQueueEntry;
-import gg.vape.module.blatant.BacktrackPacketReplayState;
-import gg.vape.module.blatant.BacktrackPacketState;
+import gg.vape.module.blatant.backtrack.BacktrackPacketQueueEntry;
+import gg.vape.module.blatant.backtrack.BacktrackPacketReplayState;
+import gg.vape.module.blatant.backtrack.BacktrackPacketState;
 import gg.vape.utils.datas.PlayerLocationSnapshot;
 import gg.vape.utils.network.PacketDispatchGuard;
 import gg.vape.utils.render.RenderUtil;
@@ -92,7 +92,7 @@ extends Mod {
     }
 
     public Backtrack() {
-        super("BackTrack", -57312, Category.Y);
+        super("BackTrack", -57312, Category.UTILITY);
         this.renderServerPosition = BooleanValue.create(this, "Render server pos", true);
         this.renderColor = ColorValue.createWithAlpha(this, "Color", new Color(5, 134, 105), 100);
         this.dispatchGuard = PacketDispatchGuard.b;

@@ -117,7 +117,7 @@ extends Mod {
 
 
     public Tracers() {
-        super("Tracers", (int)MODULE_COLOR, Category.k);
+        super("Tracers", (int)MODULE_COLOR, Category.RENDER);
         this.renderPlayers = BooleanValue.create(this, "Render Players", true);
         this.renderMobs = BooleanValue.create(this, "Render Mobs", false);
         this.renderAnimals = BooleanValue.create(this, "Render Animals", false);

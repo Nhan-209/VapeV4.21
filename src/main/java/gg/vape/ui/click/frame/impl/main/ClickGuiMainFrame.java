@@ -257,7 +257,7 @@ extends OutlinedFrameBase {
     }
 
     public Category s$src$Lgg_vape_module_Category_$154whg1() {
-        return Category.b;
+        return Category.NONE;
     }
 
 

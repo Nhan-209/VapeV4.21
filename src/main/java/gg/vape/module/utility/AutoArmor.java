@@ -18,7 +18,6 @@ import gg.vape.value.BooleanValue;
 import gg.vape.value.RandomValue;
 import gg.vape.wrapper.impl.EntityPlayerSP;
 import gg.vape.wrapper.impl.ForgeVersion;
-import gg.vape.wrapper.impl.InventoryPlayer;
 import gg.vape.wrapper.impl.Item;
 import gg.vape.wrapper.impl.ItemStack;
 import gg.vape.wrapper.impl.KeyBinding;
@@ -218,7 +217,7 @@ implements InventoryActionModule {
     }
 
     public AutoArmor() {
-        super("AutoArmor", (int)MAGIC_ID, Category.M, "Automatically equips armor when needed.");
+        super("AutoArmor", (int)MAGIC_ID, Category.INVENTORY, "Automatically equips armor when needed.");
         this.inventoryOnly = BooleanValue.create(this, "Inventory only", true, "Only equip armor when in inventory");
         this.checkDurability = BooleanValue.create(this, "Check durability", true, "Always puts on the armor with the highest durability");
         this.dropEquipped = BooleanValue.create(this, "Drop equipped", false, "Drops worse equipped armor for better armor when active");
