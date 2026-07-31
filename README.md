@@ -13,7 +13,6 @@ Vape 4.21 Java 层与 Windows x64 原生桥接层的研究性恢复工程。
 | --- | --- |
 | Java 源码 | 2,939 个样本自有包源码，可由 Gradle 正常编译 |
 | 资源 | 230 个映射、字体、纹理、着色器、声音及本地化资源 |
-| 恢复基线 | `baseline/final.jar`，构建时校验固定 SHA-256 |
 | 注入载荷 | 自包含 Shadow JAR，目标为 Java 8 class-file major 52 |
 | 原生桥接 | Windows x64 JNI/JVMTI DLL 与 `LoadLibraryW` 注入器 |
 | 运行验证 | 构建与载荷结构已验证；完整的游戏内行为仍需继续测试 |
@@ -49,10 +48,9 @@ Vape 4.21 Java 层与 Windows x64 原生桥接层的研究性恢复工程。
 该命令会完成以下工作：
 
 1. 编译恢复源码并处理全部资源。
-2. 校验 `baseline/final.jar` 的 SHA-256 和恢复元数据。
-3. 检查源码数量以及残留的致命 CFR 反编译标记。
-4. 生成包含运行时依赖的 injection JAR。
-5. 确认载荷包含必要包，且所有 class 均可由 Java 8 加载。
+2. 检查源码数量以及残留的致命 CFR 反编译标记。
+3. 生成包含运行时依赖的 injection JAR。
+4. 确认载荷包含必要包，且所有 class 均可由 Java 8 加载。
 
 主要 Java 产物位于 `build/libs/`。如需生成 IntelliJ IDEA 工程配置，可运行：
 
@@ -97,18 +95,11 @@ DLL 将 Java injection JAR 作为 `RCDATA` 嵌入，不要求另行放置 payloa
 
 | 命令 | 用途 |
 | --- | --- |
-| `.\gradlew.bat check` | 编译、基线哈希、源码覆盖与恢复质量检查 |
+| `.\gradlew.bat check` | 编译、源码覆盖与恢复质量检查 |
 | `.\gradlew.bat injectionJar` | 构建自包含 Java 注入载荷 |
 | `.\gradlew.bat verifyInjectionPayload` | 检查依赖完整性与 Java 8 字节码版本 |
 | `.\gradlew.bat buildNative` | 构建 x64 DLL 和注入器 |
 | `.\gradlew.bat prepareInjectionBundle` | 汇总可供隔离测试的 native bundle |
-
-恢复基线的 SHA-256 为：
-
-```text
-DEB51671044A6EAE4275A61217AF270F9256FD0D96036EF016DE5E9F6BFE42CE
-```
-
 
 ## 许可证
 

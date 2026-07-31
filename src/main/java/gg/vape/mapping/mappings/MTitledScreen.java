@@ -103,7 +103,7 @@ extends Mapping {
                 MTitledScreen mTitledScreen = this;
                 this.renderHudMethod = mTitledScreen.registerInstanceMethodForOwner(clazz4, string, bl, clazz, classArray);
             }
-            if (!Wrapper.isNativeAvailable && !this.renderHudMethod.hasResolutionFailed() && Vape.INSTANCE.isMappingsRemapped()) {
+            if (this.renderHudMethod != null && !Wrapper.isNativeAvailable && !this.renderHudMethod.hasResolutionFailed() && Vape.INSTANCE.isMappingsRemapped()) {
                 if (ForgeVersion.MC_1_16_5.d()) {
                     if (MappedClasses.DC != null) {
                         Class[] classArray = new Class[]{MappedClasses.DQ, Float.TYPE};

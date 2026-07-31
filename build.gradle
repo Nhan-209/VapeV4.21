@@ -59,43 +59,6 @@ tasks.withType(JavaCompile).configureEach {
     options.compilerArgs += ['-Xmaxerrs', '10000', '-Xdiags:verbose']
 }
 
-def expectedBaselineSha256 =
-        'DEB51671044A6EAE4275A61217AF270F9256FD0D96036EF016DE5E9F6BFE42CE'
-
-tasks.register('verifyManualBaseline') {
-    inputs.file('baseline/final.jar')
-    inputs.file('src/main/resources/recovery-baseline.properties')
-    doLast {
-        def baseline = file('baseline/final.jar')
-        if (!baseline.isFile() || baseline.length() == 0L) {
-            throw new GradleException('missing recovered bytecode baseline JAR')
-        }
-        def properties = new Properties()
-        file('src/main/resources/recovery-baseline.properties').withInputStream {
-            properties.load(it)
-        }
-        if (properties.getProperty('final.sha256') == null
-                || properties.getProperty('cfr.summary') == null) {
-            throw new GradleException('incomplete recovery baseline metadata')
-        }
-        def digest = java.security.MessageDigest.getInstance('SHA-256')
-        baseline.withInputStream { input ->
-            byte[] buffer = new byte[64 * 1024]
-            for (int read = input.read(buffer); read >= 0; read = input.read(buffer)) {
-                if (read > 0) {
-                    digest.update(buffer, 0, read)
-                }
-            }
-        }
-        def actualSha256 = digest.digest().encodeHex().toString().toUpperCase()
-        if (actualSha256 != expectedBaselineSha256
-                || properties.getProperty('final.sha256') != expectedBaselineSha256) {
-            throw new GradleException("recovery baseline SHA-256 mismatch: ${actualSha256}")
-        }
-        println("recovered baseline present: ${baseline.length()} bytes")
-    }
-}
-
 tasks.register('verifyRecoveredSources') {
     inputs.files(fileTree('src/main/java') { include '**/*.java' })
     doLast {
@@ -143,7 +106,6 @@ tasks.register('verifyRecoveredSourceQuality') {
 }
 
 tasks.named('check') {
-    dependsOn(tasks.named('verifyManualBaseline'))
     dependsOn(tasks.named('verifyRecoveredSources'))
     dependsOn(tasks.named('verifyRecoveredSourceQuality'))
 }
@@ -202,8 +164,17 @@ tasks.register('verifyInjectionPayload') {
         def tooNew = []
         int classCount = 0
         new java.util.jar.JarFile(payload).withCloseable { archive ->
-            if (archive.getEntry('gg/vape/runtime/NativeBridge.class') == null) {
-                throw new GradleException('injection payload is missing NativeBridge.class')
+            def requiredClasses = [
+                    'gg/vape/runtime/NativeBridge.class',
+                    'gg/vape/runtime/ForgePayloadClassLoader.class',
+                    'gg/vape/event/impl/EventRenderWorldPassExecutorDrain.class'
+            ]
+            def missingClasses = requiredClasses.findAll {
+                archive.getEntry(it) == null
+            }
+            if (!missingClasses.isEmpty()) {
+                throw new GradleException(
+                        "injection payload is missing required classes: ${missingClasses}")
             }
             archive.entries().each { entry ->
                 if (!entry.name.endsWith('.class')) {

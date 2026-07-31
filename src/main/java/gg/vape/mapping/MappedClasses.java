@@ -715,7 +715,8 @@ public class MappedClasses {
         Zk = MappedClasses.m("net/minecraft/block/Block");
         ZH = MappedClasses.m("net/minecraft/item/ItemEnderPearl");
         ITEM_FOOD = MappedClasses.m("net/minecraft/item/ItemFood");
-        ZX = MappedClasses.m("net/minecraft/client/renderer/Tessellator");
+        ZX = ForgeVersion.MC_26_2.d()
+                ? null : MappedClasses.m("net/minecraft/client/renderer/Tessellator");
         Dt = MappedClasses.m("net/minecraft/client/renderer/texture/TextureManager");
         qY = MappedClasses.m("net/minecraft/client/resources/IResourceManager");
         ll = MappedClasses.m("net/minecraft/client/shader/Framebuffer");
@@ -850,7 +851,8 @@ public class MappedClasses {
         z1 = MappedClasses.m("net/minecraft/network/play/client/C13PacketPlayerAbilities");
         l7 = MappedClasses.m("net/minecraft/network/play/client/C0DPacketCloseWindow");
         YB = MappedClasses.m("net/minecraft/network/play/client/C08PacketPlayerBlockPlacement");
-        z8 = MappedClasses.m("net/minecraft/client/renderer/entity/RenderItem");
+        z8 = ForgeVersion.MC_26_2.d()
+                ? null : MappedClasses.m("net/minecraft/client/renderer/entity/RenderItem");
         if (ForgeVersion.MC_26_1.v()) {
             D5 = MappedClasses.m("net/minecraft/network/play/client/C02PacketUseEntity$Action");
         }
@@ -916,7 +918,8 @@ public class MappedClasses {
         q_ = MappedClasses.m("net/minecraft/block/BlockStairs");
         zQ = MappedClasses.m("net/minecraft/entity/EntityLiving");
         Dz = MappedClasses.m("net/minecraft/entity/monster/EntitySpider");
-        Y2 = MappedClasses.E("org/lwjgl/opengl/GLContext", ForgeVersion.MC_1_16_5.d());
+        Y2 = ForgeVersion.MC_1_16_5.d()
+                ? null : MappedClasses.E("org/lwjgl/opengl/GLContext", false);
         VE = MappedClasses.m("net/minecraft/network/play/server/S00PacketKeepAlive");
         uW = MappedClasses.m("net/minecraft/network/play/server/S0CPacketSpawnPlayer");
         Yv = MappedClasses.m("net/minecraft/network/play/server/S13PacketDestroyEntities");
@@ -1032,7 +1035,8 @@ public class MappedClasses {
             e = MappedClasses.m("net/minecraft/network/play/client/C09PacketHeldItemChange");
             z1 = MappedClasses.m("net/minecraft/network/play/client/C13PacketPlayerAbilities");
             l7 = MappedClasses.m("net/minecraft/network/play/client/C0DPacketCloseWindow");
-            z8 = MappedClasses.m("net/minecraft/client/renderer/entity/RenderItem");
+            z8 = ForgeVersion.MC_26_2.d()
+                    ? null : MappedClasses.m("net/minecraft/client/renderer/entity/RenderItem");
             if (ForgeVersion.MC_26_1.v()) {
                 D5 = MappedClasses.m("net/minecraft/network/play/client/C02PacketUseEntity$Action");
             }
@@ -1080,7 +1084,8 @@ public class MappedClasses {
             qF = MappedClasses.m("net/minecraft/util/math/BlockRayTraceResult");
             zl = MappedClasses.m("net/minecraft/util/math/EntityRayTraceResult");
             zH = MappedClasses.m("net/minecraft/client/renderer/LightTexture");
-            ZK = MappedClasses.m("net/minecraft/client/renderer/IRenderTypeBuffer");
+            ZK = ForgeVersion.MC_26_2.d()
+                    ? null : MappedClasses.m("net/minecraft/client/renderer/IRenderTypeBuffer");
             za = MappedClasses.m("net/minecraft/block/AbstractBlock");
             Fj = MappedClasses.m("net/minecraft/block/AbstractBlock$AbstractBlockState");
             ut = MappedClasses.m("net/minecraft/client/renderer/texture/Texture");
@@ -1119,8 +1124,10 @@ public class MappedClasses {
             DS = MappedClasses.m("net/minecraft/util/math/RayTraceContext$BlockMode");
             Dm = MappedClasses.m("net/minecraft/util/math/RayTraceContext$FluidMode");
             la = MappedClasses.m("net/minecraft/util/math/shapes/VoxelShape");
-            lp = MappedClasses.m("net/minecraft/client/renderer/IRenderTypeBuffer$Impl");
-            zh = MappedClasses.m("net/minecraft/client/renderer/OutlineBufferSource");
+            lp = ForgeVersion.MC_26_2.d()
+                    ? null : MappedClasses.m("net/minecraft/client/renderer/IRenderTypeBuffer$Impl");
+            zh = ForgeVersion.MC_26_2.d()
+                    ? null : MappedClasses.m("net/minecraft/client/renderer/OutlineBufferSource");
             D2 = MappedClasses.m("net/minecraft/client/gui/screen/DeathScreen");
             Q = MappedClasses.m("net/minecraft/client/util/InputMappings");
             f = MappedClasses.m("net/minecraft/util/math/MutableBoundingBox");
@@ -1378,7 +1385,7 @@ public class MappedClasses {
         if (ForgeVersion.MC_1_21_4.v()) {
             z = MappedClasses.m("net/minecraft/item/ItemSoup");
         }
-        if (!NativeBridge.isForgeAbsent()) {
+        if (!NativeBridge.isForgeAbsent() && ForgeVersion.MC_26_2.v()) {
             DC = MappedClasses.m("net/minecraftforge/client/GuiIngameForge");
         }
         if (ForgeVersion.MC_1_12_2.d()) {
@@ -1425,7 +1432,9 @@ public class MappedClasses {
                 return clazz;
             }
             catch (ClassNotFoundException classNotFoundException) {
-                Vape.debugLog("Failed get class " + string);
+                if (!bl) {
+                    Vape.debugLog("Failed get class " + string);
+                }
                 return null;
             }
         }

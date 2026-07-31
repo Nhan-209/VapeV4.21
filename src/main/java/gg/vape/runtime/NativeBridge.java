@@ -558,6 +558,12 @@ public class NativeBridge {
         }
         try {
             int parsed = Integer.parseInt(text.substring(start, end));
+            if (parsed == 62) {
+                return 100;
+            }
+            if (parsed == 65) {
+                return 110;
+            }
             return isKnownVersionId(parsed) ? parsed : -1;
         }
         catch (NumberFormatException ignored) {

@@ -68,6 +68,9 @@ extends Mapping {
     }
 
     private Object x(Object object, Object object2, Object object3, Object object4) {
+        if (ForgeVersion.MC_1_21_4.d()) {
+            return this.Z.invokeObject(object, object2, object3, object4, Boolean.FALSE);
+        }
         return this.Z.invokeObject(object, object2, object3, object4);
     }
 
