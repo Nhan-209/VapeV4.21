@@ -494,6 +494,21 @@ public class NativeBridge {
             lastFailure = throwable;
         }
 
+        try {
+            Class<?> fmlLoader = Class.forName("net.minecraftforge.fml.loading.FMLLoader");
+            Object versionInfo = fmlLoader.getMethod("versionInfo").invoke(null);
+            Object forgeVersion = versionInfo.getClass().getMethod("forgeVersion").invoke(versionInfo);
+            int parsedVersion = parseForgeVersion(forgeVersion);
+            if (parsedVersion >= 0) {
+                return parsedVersion;
+            }
+            lastFailure = new IllegalStateException(
+                    "FMLLoader.versionInfo().forgeVersion() is not supported: " + forgeVersion);
+        }
+        catch (Throwable throwable) {
+            lastFailure = throwable;
+        }
+
         IllegalStateException failure = new IllegalStateException(
                 "Unable to determine Forge minor version");
         if (lastFailure != null) {

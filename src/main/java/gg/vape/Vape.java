@@ -693,7 +693,7 @@ public class Vape {
     static {
         Vape.setOpaqueState(66);
         VERSION = "4.21";
-        supportedVersionIds = new int[]{13, 15, 23, 35, 36};
+        supportedVersionIds = new int[]{13, 15, 23, 35, 36, 61};
         buildDate = new Date(1710640988922L);
         renderReady = false;
         mappingsLoaded = false;

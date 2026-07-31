@@ -166,24 +166,29 @@ static jint JNICALL native_scb(
 }
 
 static void JNICALL native_smd(
-        JNIEnv *env, jclass bridge, jint ignored, jint message) {
+        JNIEnv *env, jclass bridge, jint button_mask, jint message) {
     POINT point;
     HWND window;
     WCHAR class_name[256];
+    WPARAM wparam;
     (void)env;
     (void)bridge;
-    (void)ignored;
     memset(&point, 0, sizeof(point));
-    GetCursorPos(&point);
-    window = GetForegroundWindow();
+    window = g_lwjgl3_window != NULL && IsWindow(g_lwjgl3_window)
+            ? g_lwjgl3_window : GetForegroundWindow();
     if (window == NULL || GetClassNameW(window, class_name, 256) <= 0) {
         return;
     }
     if (wcscmp(class_name, L"LWJGL") != 0
-            && wcscmp(class_name, L"LWJGL3") != 0) {
+            && wcscmp(class_name, L"LWJGL3") != 0
+            && wcscmp(class_name, L"GLFW30") != 0) {
         return;
     }
-    PostMessageA(window, (UINT)message, 0,
+    GetCursorPos(&point);
+    ScreenToClient(window, &point);
+    wparam = message == WM_LBUTTONDOWN || message == WM_RBUTTONDOWN
+            || message == WM_MBUTTONDOWN ? (WPARAM)button_mask : 0;
+    PostMessageW(window, (UINT)message, wparam,
             MAKELPARAM((WORD)point.x, (WORD)point.y));
 }
 

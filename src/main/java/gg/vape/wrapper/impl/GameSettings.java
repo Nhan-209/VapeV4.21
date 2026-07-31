@@ -34,7 +34,7 @@ extends Wrapper {
     public void y(float f) {
         if (ForgeVersion.MC_1_20_6.d()) {
             GameSettingsValue gameSettingsValue = new GameSettingsValue(MGameSettings.H$src$Ljava_lang_Object_$1jqua4d(GameSettings.vapeInstance.getMappings().RM, this.I));
-            gameSettingsValue.f(Float.valueOf(f));
+            gameSettingsValue.f(Double.valueOf((double)f));
             return;
         }
         MGameSettings.U(GameSettings.vapeInstance.getMappings().RM, this.I, f);

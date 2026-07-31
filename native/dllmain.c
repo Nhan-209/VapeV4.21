@@ -229,6 +229,156 @@ static jobject find_client_class_loader(JNIEnv *env) {
     return result;
 }
 
+/*
+ * ModLauncher 10.2+ defines game classes in ModuleClassLoader, which cannot
+ * see an ordinary child URLClassLoader. Add only the product packages to its
+ * package routing table so transformed game classes and the bootstrap use the
+ * same gg.vape class identities without replacing Forge's global fallback.
+ *
+ * Returns 1 when installed, 0 when the loader is not modular, and -1
+ * when a compatible loader was detected but setup failed.
+ */
+static int install_modular_payload_loader(
+        JNIEnv *env, jobject *loader, jclass url_loader_class,
+        jclass url_class, jobject url) {
+    jclass runtime_loader_class;
+    jclass loader_class;
+    jclass payload_loader_class;
+    jclass target_event_class;
+    jclass payload_event_class;
+    jfieldID package_routes_field;
+    jmethodID url_loader_init;
+    jmethodID load_class;
+    jmethodID payload_loader_init;
+    jmethodID build_package_routes;
+    jmethodID modular_loader_marker;
+    jobjectArray urls;
+    jobject bootstrap_loader;
+    jobject payload_loader;
+    jobject previous_package_routes;
+    jobject package_routes;
+    jstring payload_loader_name;
+    jstring target_event_name;
+
+    runtime_loader_class = (*env)->GetObjectClass(env, *loader);
+    if (runtime_loader_class == NULL) {
+        vape_log_pending_exception(env, L"resolve runtime ClassLoader type");
+        return -1;
+    }
+    package_routes_field = (*env)->GetFieldID(env, runtime_loader_class,
+            "packageToParentLoader", "Ljava/util/Map;");
+    if (package_routes_field == NULL) {
+        if ((*env)->ExceptionCheck(env)) {
+            (*env)->ExceptionClear(env);
+        }
+        modular_loader_marker = (*env)->GetMethodID(env, runtime_loader_class,
+                "setFallbackClassLoader", "(Ljava/lang/ClassLoader;)V");
+        if (modular_loader_marker != NULL) {
+            vape_log(L"ModLauncher package routing field is unavailable");
+            return -1;
+        }
+        if ((*env)->ExceptionCheck(env)) {
+            (*env)->ExceptionClear(env);
+        }
+        return 0;
+    }
+
+    loader_class = (*env)->FindClass(env, "java/lang/ClassLoader");
+    url_loader_init = (*env)->GetMethodID(env, url_loader_class, "<init>",
+            "([Ljava/net/URL;Ljava/lang/ClassLoader;)V");
+    load_class = loader_class == NULL ? NULL : (*env)->GetMethodID(
+            env, loader_class, "loadClass", "(Ljava/lang/String;)Ljava/lang/Class;");
+    urls = (*env)->NewObjectArray(env, 1, url_class, NULL);
+    if (loader_class == NULL || url_loader_init == NULL
+            || load_class == NULL || urls == NULL) {
+        vape_log_pending_exception(env,
+                L"resolve modular payload ClassLoader methods");
+        return -1;
+    }
+    (*env)->SetObjectArrayElement(env, urls, 0, url);
+
+    /* Load the custom ClassLoader type before installing package routes. */
+    bootstrap_loader = (*env)->NewObject(env, url_loader_class,
+            url_loader_init, urls, *loader);
+    payload_loader_name = (*env)->NewStringUTF(env,
+            "gg.vape.runtime.ForgePayloadClassLoader");
+    payload_loader_class = bootstrap_loader == NULL
+            || payload_loader_name == NULL ? NULL
+            : (jclass)(*env)->CallObjectMethod(env, bootstrap_loader,
+                    load_class, payload_loader_name);
+    if (payload_loader_class == NULL || (*env)->ExceptionCheck(env)) {
+        vape_log_pending_exception(env,
+                L"load ForgePayloadClassLoader bootstrap class");
+        return -1;
+    }
+
+    payload_loader_init = (*env)->GetMethodID(env, payload_loader_class,
+            "<init>", "([Ljava/net/URL;Ljava/lang/ClassLoader;)V");
+    build_package_routes = (*env)->GetMethodID(env, payload_loader_class,
+            "buildPackageRoutingMap", "(Ljava/util/Map;)Ljava/util/Map;");
+    payload_loader = payload_loader_init == NULL ? NULL
+            : (*env)->NewObject(env, payload_loader_class,
+                    payload_loader_init, urls, *loader);
+    if (build_package_routes == NULL || payload_loader == NULL
+            || (*env)->ExceptionCheck(env)) {
+        vape_log_pending_exception(env, L"create modular payload ClassLoader");
+        return -1;
+    }
+
+    previous_package_routes = (*env)->GetObjectField(
+            env, *loader, package_routes_field);
+    package_routes = (jobject)(*env)->CallObjectMethod(env, payload_loader,
+            build_package_routes, previous_package_routes);
+    if (package_routes == NULL || (*env)->ExceptionCheck(env)) {
+        vape_log_pending_exception(env, L"build ModLauncher payload package routes");
+        return -1;
+    }
+    (*env)->SetObjectField(env, *loader, package_routes_field, package_routes);
+    if ((*env)->ExceptionCheck(env)) {
+        vape_log_pending_exception(env, L"install ModLauncher payload package routes");
+        return -1;
+    }
+
+    /* Fail before any JVMTI redefine if the exact crashing reference is hidden. */
+    target_event_name = (*env)->NewStringUTF(env,
+            "gg.vape.event.impl.EventRenderWorldPassExecutorDrain");
+    target_event_class = target_event_name == NULL ? NULL
+            : (jclass)(*env)->CallObjectMethod(env, *loader,
+                    load_class, target_event_name);
+    if (target_event_class == NULL || (*env)->ExceptionCheck(env)) {
+        vape_log_pending_exception(env,
+                L"resolve payload event from ModuleClassLoader");
+        (*env)->SetObjectField(env, *loader, package_routes_field,
+                previous_package_routes);
+        if ((*env)->ExceptionCheck(env)) {
+            vape_log_pending_exception(env,
+                    L"restore ModLauncher package routes after visibility failure");
+        }
+        return -1;
+    }
+    payload_event_class = target_event_name == NULL ? NULL
+            : (jclass)(*env)->CallObjectMethod(env, payload_loader,
+                    load_class, target_event_name);
+    if (payload_event_class == NULL || (*env)->ExceptionCheck(env)
+            || !(*env)->IsSameObject(env, target_event_class,
+                    payload_event_class)) {
+        vape_log_pending_exception(env,
+                L"verify modular payload visibility");
+        (*env)->SetObjectField(env, *loader, package_routes_field,
+                previous_package_routes);
+        if ((*env)->ExceptionCheck(env)) {
+            vape_log_pending_exception(env,
+                    L"restore ModLauncher package routes after identity failure");
+        }
+        return -1;
+    }
+
+    (*env)->DeleteLocalRef(env, *loader);
+    *loader = payload_loader;
+    vape_log(L"installed payload package routes on ModLauncher ModuleClassLoader");
+    return 1;
+}
+
 static int add_jar_to_loader(
         JNIEnv *env, jobject *loader, const wchar_t *jar_path) {
     jclass url_loader_class;
@@ -249,6 +399,7 @@ static int add_jar_to_loader(
     jclass runtime_loader_class;
     jfieldID delegated_loader_field;
     jobject delegated_loader;
+    int modular_result;
 
     url_loader_class = (*env)->FindClass(env, "java/net/URLClassLoader");
     url_class = (*env)->FindClass(env, "java/net/URL");
@@ -320,6 +471,12 @@ static int add_jar_to_loader(
         }
     } else if ((*env)->ExceptionCheck(env)) {
         (*env)->ExceptionClear(env);
+    }
+
+    modular_result = install_modular_payload_loader(
+            env, loader, url_loader_class, url_class, url);
+    if (modular_result != 0) {
+        return modular_result > 0;
     }
 
     url_loader_init = (*env)->GetMethodID(env, url_loader_class, "<init>",

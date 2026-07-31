@@ -17,6 +17,11 @@ import org.lwjgl.opengl.GLContext;
 import gg.vape.utils.render.GlPixelStoreState;
 
 public class GlImageTexture {
+    private static final int GL_TEXTURE_2D = 3553;
+    private static final int GL_TEXTURE_WRAP_S = 10242;
+    private static final int GL_TEXTURE_WRAP_T = 10243;
+    private static final int GL_CLAMP = 10496;
+    private static final int GL_CLAMP_TO_EDGE = 33071;
     public int width;
     public int minFilter;
     public float maxU;
@@ -49,22 +54,24 @@ public class GlImageTexture {
         try {
             int effectiveMinFilter = requestedFilter;
             int effectiveMagFilter = requestedFilter == 9987 ? 9729 : requestedFilter;
-            boolean textureEnabled = GL11.glIsEnabled((int)3553);
+            boolean tracksTextureCapability = !GuiRenderPrimitives.d();
+            boolean textureEnabled = !tracksTextureCapability
+                    || GL11.glIsEnabled(GL_TEXTURE_2D);
             int previousTextureId = GlStateManager.p();
-            if (!textureEnabled) {
+            if (tracksTextureCapability && !textureEnabled) {
                 GlStateManager.enableTexture2D();
             }
             if (requestedFilter == 9987) {
                 int textureUnitCount = GL11.glGetInteger((int)33307);
                 if (textureUnitCount < 3) {
-                    effectiveMagFilter = 33071;
-                    effectiveMinFilter = 33071;
+                    effectiveMagFilter = 9729;
+                    effectiveMinFilter = 9729;
                 }
                 if (MappedClasses.Y2 != null) {
                     ContextCapabilities capabilities = GLContext.getCapabilities();
                     if (!capabilities.GL_ARB_framebuffer_object) {
-                        effectiveMagFilter = 33071;
-                        effectiveMinFilter = 33071;
+                        effectiveMagFilter = 9729;
+                        effectiveMinFilter = 9729;
                     }
                 }
             }
@@ -81,8 +88,10 @@ public class GlImageTexture {
             GL11.glPixelStorei((int)3317, (int)1);
             GL11.glTexParameteri((int)3553, (int)10241, (int)effectiveMinFilter);
             GL11.glTexParameteri((int)3553, (int)10240, (int)effectiveMagFilter);
-            GL11.glTexParameteri((int)3553, (int)10242, (int)wrapMode);
-            GL11.glTexParameteri((int)3553, (int)10243, (int)wrapMode);
+            int compatibleWrapMode = normalizeTextureParameterValue(
+                    GL_TEXTURE_WRAP_S, wrapMode);
+            GL11.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, compatibleWrapMode);
+            GL11.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, compatibleWrapMode);
             if (effectiveMinFilter == 9987) {
                 GL11.glTexParameteri((int)3553, (int)33084, (int)0);
                 GL11.glTexParameteri((int)3553, (int)33085, (int)1);
@@ -92,7 +101,7 @@ public class GlImageTexture {
                 GL30.glGenerateMipmap((int)3553);
             }
             GlStateManager.bindTexture(previousTextureId);
-            if (!textureEnabled) {
+            if (tracksTextureCapability && !textureEnabled) {
                 GlStateManager.disableTexture2D();
             }
         }
@@ -128,7 +137,16 @@ public class GlImageTexture {
     }
 
     public void setParameter(int parameter, int value) {
-        GL11.glTexParameteri((int)3553, (int)parameter, (int)value);
+        GL11.glTexParameteri(GL_TEXTURE_2D, parameter,
+                normalizeTextureParameterValue(parameter, value));
+    }
+
+    static int normalizeTextureParameterValue(int parameter, int value) {
+        if ((parameter == GL_TEXTURE_WRAP_S || parameter == GL_TEXTURE_WRAP_T)
+                && value == GL_CLAMP) {
+            return GL_CLAMP_TO_EDGE;
+        }
+        return value;
     }
 
     public static GlImageTexture create(int width, int height, ByteBuffer pixels, int format, int filter, int wrapMode) {
