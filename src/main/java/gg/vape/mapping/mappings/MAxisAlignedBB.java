@@ -213,8 +213,8 @@ extends Mapping {
             this.A = this.Y(string20, bl20, clazz20, classArray);
             Class[] classArray10 = new Class[]{MappedClasses.uk};
             Class<Boolean> clazz21 = Boolean.TYPE;
-            boolean bl21 = true;
-            String string21 = "intersectsWith";
+            boolean bl21 = ForgeVersion.MC_1_12_2.d() ? Wrapper.isNativeAvailable : true;
+            String string21 = ForgeVersion.MC_1_12_2.d() ? "func_72326_a" : "intersectsWith";
             MAxisAlignedBB mAxisAlignedBB21 = this;
             this.e = this.Y(string21, bl21, clazz21, classArray10);
         }
