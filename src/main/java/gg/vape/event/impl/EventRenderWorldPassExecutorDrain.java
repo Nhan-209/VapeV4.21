@@ -42,7 +42,7 @@ extends Event {
 
     public EventRenderWorldPassExecutorDrain(Object deltaTrackerHandle) {
         DeltaTracker deltaTracker = new DeltaTracker(deltaTrackerHandle);
-        this.partialTicks = deltaTracker.r();
+        this.partialTicks = deltaTracker.getGameTimeDeltaTicks();
     }
 
     public static EventListeners getEventListeners() {

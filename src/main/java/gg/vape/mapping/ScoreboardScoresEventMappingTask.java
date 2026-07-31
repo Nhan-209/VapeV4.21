@@ -8,12 +8,12 @@ import gg.vape.mapping.MappedClasses;
 
 public class ScoreboardScoresEventMappingTask
 extends JavassistMappingTask {
-    private static final String c = "$event.getScores();";
+    private static final String SCORES_RETURN_EXPRESSION = "$event.getScores();";
 
     @Override
     public void transform() {
-        EventInjectionSpec eventInjectionSpec = new EventInjectionSpec(Vape.INSTANCE.getMappings().Dz.P, EventScoreboardScores.class);
-        eventInjectionSpec.setReturnExpression(c);
+        EventInjectionSpec eventInjectionSpec = new EventInjectionSpec(Vape.INSTANCE.getMappings().scoreboard.listPlayerScoresMethod, EventScoreboardScores.class);
+        eventInjectionSpec.setReturnExpression(SCORES_RETURN_EXPRESSION);
         this.registerEventInjection(eventInjectionSpec);
     }
 

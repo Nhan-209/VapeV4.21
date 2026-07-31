@@ -6,46 +6,46 @@ import gg.vape.mapping.MappingMethod;
 
 public class MISelectionContext
 extends Mapping {
-    private static final String b;
-    private static boolean i;
-    private final MappingMethod z;
+    private static final String FOR_ENTITY_METHOD_NAME;
+    private static boolean selectionContextControlFlowState;
+    private final MappingMethod forEntityMethod;
 
-    public static void Y(boolean bl) {
-        i = bl;
+    public static void setSelectionContextControlFlowState(boolean state) {
+        selectionContextControlFlowState = state;
     }
 
-    public static boolean P() {
-        return i;
+    public static boolean getSelectionContextControlFlowState() {
+        return selectionContextControlFlowState;
     }
 
-    public static boolean a() {
-        boolean bl = MISelectionContext.P();
+    public static boolean shouldUpdateLegacyState() {
+        boolean controlFlowState = MISelectionContext.getSelectionContextControlFlowState();
         return false;
     }
 
-    public Object v(Object object) {
-        return this.z.newInstance(object);
+    public Object forEntity(Object entityHandle) {
+        return this.forEntityMethod.newInstance(entityHandle);
     }
 
 
     public MISelectionContext() {
-        this(MISelectionContext.P());
+        this(MISelectionContext.getSelectionContextControlFlowState());
     }
 
-    private MISelectionContext(boolean bl) {
+    private MISelectionContext(boolean controlFlowState) {
         super(MappedClasses.qg);
-        Class[] classArray = new Class[]{MappedClasses.zc};
-        Class clazz = MappedClasses.qg;
-        boolean bl2 = true;
-        String string = b;
-        MISelectionContext mISelectionContext = this;
-        this.z = this.registerStaticMethod(string, bl2, clazz, classArray);
-        boolean bl3 = bl;
+        Class[] parameterTypes = new Class[]{MappedClasses.zc};
+        Class returnType = MappedClasses.qg;
+        boolean methodPublic = true;
+        String methodName = FOR_ENTITY_METHOD_NAME;
+        MISelectionContext mapping = this;
+        this.forEntityMethod = mapping.registerStaticMethod(methodName, methodPublic, returnType, parameterTypes);
+        boolean currentControlFlowState = controlFlowState;
     }
 
     static {
-        MISelectionContext.Y(true);
-        b = "forEntity";
+        MISelectionContext.setSelectionContextControlFlowState(true);
+        FOR_ENTITY_METHOD_NAME = "forEntity";
     }
 }
 

@@ -495,8 +495,8 @@ extends Mod {
                 if (localTeam.isInstance(MappedClasses.u6) && otherTeam.isInstance(MappedClasses.u6)) {
                     ScorePlayerTeam localScoreTeam = new ScorePlayerTeam(localTeam);
                     ScorePlayerTeam otherScoreTeam = new ScorePlayerTeam(otherTeam);
-                    String localTeamName = localScoreTeam.A();
-                    String otherTeamName = otherScoreTeam.A();
+                    String localTeamName = localScoreTeam.getPrefix();
+                    String otherTeamName = otherScoreTeam.getPrefix();
                     if (localTeamName.equals(otherTeamName)) {
                         return true;
                     }

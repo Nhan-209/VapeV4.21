@@ -75,8 +75,8 @@ implements EntityModelRenderBackend {
         GlStateManager.disableBlend();
         int faceWidth = 32;
         int faceHeight = 32 + legacyVerticalOffset;
-        Minecraft.Z().G(texture);
-        Minecraft.Z().g(texture);
+        Minecraft.getTextureManager().getTexture(texture);
+        Minecraft.getTextureManager().bindTexture(texture);
         RenderUtils.R(0, 0, faceWidth, faceHeight, 32, 32 + legacyVerticalOffset);
         GL11.glPopMatrix();
         GL11.glMatrixMode((int)5888);

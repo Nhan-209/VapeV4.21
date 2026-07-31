@@ -19,10 +19,10 @@ extends Mapping {
     public MappingMethod O;
     private static String[] r;
     private final MappingMethod p;
-    private final MappingField v;
+    private final MappingField channelField;
 
-    public static Object T(MNetworkManager mNetworkManager, Object object) {
-        return mNetworkManager.K(object);
+    public static Object getChannel(MNetworkManager mapping, Object networkManager) {
+        return mapping.getChannel(networkManager);
     }
 
     public static void B(MNetworkManager mNetworkManager, Object object, Object object2) {
@@ -41,8 +41,8 @@ extends Mapping {
         return (Queue)this.Y.getObject(object);
     }
 
-    private Object K(Object object) {
-        return this.v.getObject(object);
+    private Object getChannel(Object networkManager) {
+        return this.channelField.getObject(networkManager);
     }
 
     private void U(Object object) {
@@ -64,7 +64,7 @@ extends Mapping {
         boolean bl = true;
         String string = "channel";
         MNetworkManager mNetworkManager = this;
-        this.v = this.J(string, bl, clazz);
+        this.channelField = this.J(string, bl, clazz);
         Class<Queue> clazz2 = Queue.class;
         boolean bl2 = true;
         String string2 = "outboundPacketsQueue";

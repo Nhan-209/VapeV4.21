@@ -6,17 +6,17 @@ import gg.vape.wrapper.Wrapper;
 
 public class RenderItemTextBridge
 extends Wrapper {
-    public static void x(MatrixStack matrixStack, int n, int n2, int n3, int n4, int n5, TextureAtlasSprite textureAtlasSprite) {
+    public static void drawSprite(MatrixStack matrixStack, int x, int y, int blitOffset, int width, int height, TextureAtlasSprite sprite) {
         if (ForgeVersion.MC_1_21_0.d()) {
             return;
         }
         if (ForgeVersion.MC_1_17.d()) {
-            ResourceLocation resourceLocation = ForgeVersion.MC_1_20_6.d() ? new SoundEventRegistryName(textureAtlasSprite.e()).getRegistryName() : null;
-            float[] fArray = textureAtlasSprite.j();
-            RenderItemTextBridge.n(resourceLocation, matrixStack, n, n + n4, n2, n2 + n5, n3, fArray[0], fArray[1], fArray[2], fArray[3]);
+            ResourceLocation atlasLocation = ForgeVersion.MC_1_20_6.d() ? new SoundEventRegistryName(sprite.getContentsOrAtlasTexture()).getRegistryName() : null;
+            float[] textureCoordinates = sprite.getTextureCoordinates();
+            RenderItemTextBridge.drawTexturedQuad(atlasLocation, matrixStack, x, x + width, y, y + height, blitOffset, textureCoordinates[0], textureCoordinates[1], textureCoordinates[2], textureCoordinates[3]);
             return;
         }
-        MAbstractGui.x(RenderItemTextBridge.vapeInstance.getMappings().qQ, null, matrixStack.getObject(), n, n2, n3, n4, n5, textureAtlasSprite.getObject());
+        MAbstractGui.x(RenderItemTextBridge.vapeInstance.getMappings().qQ, null, matrixStack.getObject(), x, y, blitOffset, width, height, sprite.getObject());
     }
 
 
@@ -72,17 +72,17 @@ extends Wrapper {
         return new Matrix4fHandle(RenderItemTextBridge.vapeInstance.getMappings().qQ.B(this.I));
     }
 
-    public static void n(ResourceLocation resourceLocation, MatrixStack matrixStack, int n, int n2, int n3, int n4, int n5, float f, float f2, float f3, float f4) {
-        Object object = null;
+    public static void drawTexturedQuad(ResourceLocation atlasLocation, MatrixStack matrixStack, int left, int right, int top, int bottom, int blitOffset, float u0, float u1, float v0, float v1) {
+        Object graphicsHandle = null;
         if (ForgeVersion.MC_1_21_0.d()) {
             return;
         }
         if (ForgeVersion.MC_1_20_6.d()) {
-            object = RenderItemTextBridge.t(matrixStack).getObject();
-            MAbstractGui.e(RenderItemTextBridge.vapeInstance.getMappings().qQ, object, resourceLocation.getObject(), n, n2, n3, n4, n5, f, f2, f3, f4);
+            graphicsHandle = RenderItemTextBridge.t(matrixStack).getObject();
+            MAbstractGui.e(RenderItemTextBridge.vapeInstance.getMappings().qQ, graphicsHandle, atlasLocation.getObject(), left, right, top, bottom, blitOffset, u0, u1, v0, v1);
             return;
         }
-        MAbstractGui.e(RenderItemTextBridge.vapeInstance.getMappings().qQ, object, matrixStack.F().getMatrix().getObject(), n, n2, n3, n4, n5, f, f2, f3, f4);
+        MAbstractGui.e(RenderItemTextBridge.vapeInstance.getMappings().qQ, graphicsHandle, matrixStack.F().getMatrix().getObject(), left, right, top, bottom, blitOffset, u0, u1, v0, v1);
     }
 
     public void k() {

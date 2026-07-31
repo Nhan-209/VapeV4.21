@@ -7,15 +7,15 @@ import gg.vape.wrapper.Wrapper;
 public class RenderWorldLastEvent
 extends Wrapper {
 
-    public static float getPartialTicks() {
+    public static float getRenderResolutionMultiplier() {
         if (!Vape.renderReady) {
             return 1.0f;
         }
-        return MRenderWorldLastEvent.o(RenderWorldLastEvent.vapeInstance.getMappingsMapperCompat().Cf);
+        return MRenderWorldLastEvent.getRenderResolutionMultiplier(RenderWorldLastEvent.vapeInstance.getMappingsMapperCompat().shadersConfig);
     }
 
-    public RenderWorldLastEvent(Object object) {
-        super(object);
+    public RenderWorldLastEvent(Object handle) {
+        super(handle);
     }
 }
 

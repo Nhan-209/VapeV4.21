@@ -9,6 +9,6 @@ extends Wrapper {
     }
 
     public ResourceLocation getTexturePath() {
-        return new ResourceLocation(TextureAtlasSpriteInfo.vapeInstance.getMappingsMapperCompat().Cz.getTexturePath(this.I));
+        return new ResourceLocation(TextureAtlasSpriteInfo.vapeInstance.getMappingsMapperCompat().textureAtlasSpriteInfo.getTexturePath(this.I));
     }
 }

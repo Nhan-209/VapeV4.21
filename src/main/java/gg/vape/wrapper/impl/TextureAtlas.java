@@ -5,20 +5,19 @@ import gg.vape.wrapper.Wrapper;
 
 public class TextureAtlas
 extends Wrapper {
-    public TextureAtlasSprite a(ResourceLocation resourceLocation) {
-        return new TextureAtlasSprite(MTextureAtlasSpriteInfo.U(TextureAtlas.vapeInstance.getMappings().R6, this.I, resourceLocation.getObject()));
+    public TextureAtlasSprite getSprite(ResourceLocation location) {
+        return new TextureAtlasSprite(MTextureAtlasSpriteInfo.getSprite(TextureAtlas.vapeInstance.getMappings().textureAtlas, this.I, location.getObject()));
     }
 
     public TextureAtlas(Object object) {
         super(object);
     }
 
-    public static ResourceLocation m$src$Lgg_vape_wrapper_impl_ResourceLocation_$4fmn0t() {
-        return new ResourceLocation(MTextureAtlasSpriteInfo.Y(TextureAtlas.vapeInstance.getMappings().R6));
+    public static ResourceLocation getBlocksAtlasLocation() {
+        return new ResourceLocation(MTextureAtlasSpriteInfo.getBlocksAtlasLocation(TextureAtlas.vapeInstance.getMappings().textureAtlas));
     }
 
-    public ResourceLocation K() {
-        return new ResourceLocation(MTextureAtlasSpriteInfo.x(TextureAtlas.vapeInstance.getMappings().R6, this.I));
+    public ResourceLocation getTextureLocation() {
+        return new ResourceLocation(MTextureAtlasSpriteInfo.getTextureLocation(TextureAtlas.vapeInstance.getMappings().textureAtlas, this.I));
     }
 }
-

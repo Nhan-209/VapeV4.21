@@ -8,42 +8,42 @@ import gg.vape.ui.click.component.GuiComponent;
 
 public class MItems
 extends Mapping {
-    private MappingField g;
-    private MappingField H;
+    private MappingField orthographicField;
+    private MappingField perspectiveField;
 
 
-    public static Object T(MItems mItems) {
-        return mItems.g();
+    public static Object getPerspective(MItems mapping) {
+        return mapping.readPerspective();
     }
 
-    private Object g() {
-        return this.H.getObject(null);
+    private Object readPerspective() {
+        return this.perspectiveField.getObject(null);
     }
 
     public MItems() {
         super(MappedClasses.zq);
-        Class clazz = MappedClasses.zq;
-        boolean bl = true;
-        String string = "PERSPECTIVE";
-        MItems mItems = this;
-        this.H = this.registerStaticField(string, bl, clazz);
-        Class clazz2 = MappedClasses.zq;
-        boolean bl2 = true;
-        String string2 = "ORTHOGRAPHIC";
-        MItems mItems2 = this;
-        this.g = this.registerStaticField(string2, bl2, clazz2);
+        Class perspectiveFieldType = MappedClasses.zq;
+        boolean perspectiveFieldPublic = true;
+        String perspectiveFieldName = "PERSPECTIVE";
+        MItems mapping = this;
+        this.perspectiveField = mapping.registerStaticField(perspectiveFieldName, perspectiveFieldPublic, perspectiveFieldType);
+        Class orthographicFieldType = MappedClasses.zq;
+        boolean orthographicFieldPublic = true;
+        String orthographicFieldName = "ORTHOGRAPHIC";
+        MItems orthographicMapping = this;
+        this.orthographicField = orthographicMapping.registerStaticField(orthographicFieldName, orthographicFieldPublic, orthographicFieldType);
         if (MTickEventPhase.P() != null) {
             GuiComponent.setLegacyComponentState(new GuiComponent[5]);
             return;
         }
     }
 
-    private Object X() {
-        return this.g.getObject(null);
+    private Object readOrthographic() {
+        return this.orthographicField.getObject(null);
     }
 
-    public static Object d(MItems mItems) {
-        return mItems.X();
+    public static Object getOrthographic(MItems mapping) {
+        return mapping.readOrthographic();
     }
 }
 

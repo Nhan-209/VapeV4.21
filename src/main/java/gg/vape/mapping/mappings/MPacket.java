@@ -8,49 +8,49 @@ import gg.vape.wrapper.impl.ForgeVersion;
 
 public class MPacket
 extends Mapping {
-    private final MappingMethod z;
-    private MappingMethod n;
+    private final MappingMethod processPacketMethod;
+    private MappingMethod hasPriorityMethod;
 
-    private void processPacket(Object object, Object object2) {
-        this.z.invokeVoid(object, object2);
+    private void invokeProcessPacket(Object packetHandle, Object listenerHandle) {
+        this.processPacketMethod.invokeVoid(packetHandle, listenerHandle);
     }
 
-    public static boolean hasPriority(MPacket mPacket, Object object) {
-        return mPacket.hasPriority(object);
+    public static boolean hasPriority(MPacket mapping, Object packetHandle) {
+        return mapping.invokeHasPriority(packetHandle);
     }
 
-    public static void processPacket(MPacket mPacket, Object object, Object object2) {
-        mPacket.processPacket(object, object2);
+    public static void processPacket(MPacket mapping, Object packetHandle, Object listenerHandle) {
+        mapping.invokeProcessPacket(packetHandle, listenerHandle);
     }
 
     public MPacket() {
         this(MNetworkManager.Q());
     }
 
-    private MPacket(String[] stringArray) {
+    private MPacket(String[] controlFlowState) {
         super(MappedClasses.Fm);
-        if (stringArray != null) {
+        if (controlFlowState != null) {
             if (ForgeVersion.MC_1_7_10.L()) {
-                Class[] classArray = new Class[]{};
-                Class<Boolean> clazz = Boolean.TYPE;
-                boolean bl = true;
-                String string = "hasPriority";
-                MPacket mPacket = this;
-                this.n = mPacket.Y(string, bl, clazz, classArray);
+                Class[] hasPriorityParameterTypes = new Class[]{};
+                Class<Boolean> hasPriorityReturnType = Boolean.TYPE;
+                boolean hasPriorityPublic = true;
+                String hasPriorityMethodName = "hasPriority";
+                MPacket mapping = this;
+                this.hasPriorityMethod = mapping.Y(hasPriorityMethodName, hasPriorityPublic, hasPriorityReturnType, hasPriorityParameterTypes);
             }
-            Class[] classArray = new Class[]{MappedClasses.Yy};
-            Class<Void> clazz = Void.TYPE;
-            boolean bl = true;
-            String string = "processPacket";
-            MPacket mPacket = this;
-            this.z = mPacket.Y(string, bl, clazz, classArray);
+            Class[] processPacketParameterTypes = new Class[]{MappedClasses.Yy};
+            Class<Void> processPacketReturnType = Void.TYPE;
+            boolean processPacketPublic = true;
+            String processPacketMethodName = "processPacket";
+            MPacket processPacketMapping = this;
+            this.processPacketMethod = processPacketMapping.Y(processPacketMethodName, processPacketPublic, processPacketReturnType, processPacketParameterTypes);
             return;
         }
-        this.z = null;
+        this.processPacketMethod = null;
     }
 
 
-    private boolean hasPriority(Object object) {
-        return this.n.invokeBoolean(object, new Object[0]);
+    private boolean invokeHasPriority(Object packetHandle) {
+        return this.hasPriorityMethod.invokeBoolean(packetHandle, new Object[0]);
     }
 }

@@ -182,7 +182,7 @@ extends AbstractBlockInMovementController {
                     Direction.w(), Direction.M()};
             for (EnumFacing facing : horizontalFacings) {
                 Direction direction = new Direction(facing.getObject());
-                double axisPosition = direction.n().W(localX, 0.0, localZ);
+                double axisPosition = direction.n().choose(localX, 0.0, localZ);
                 double edgeDistance = direction.Q$src$Lgg_vape_wrapper_impl_DirectionVector_$l2h44r()
                         .equals(DirectionVector.positive())
                         ? 1.0 - axisPosition : axisPosition;
@@ -195,7 +195,7 @@ extends AbstractBlockInMovementController {
             }
             if (nearestDirection != null) {
                 Vec3 motion = this.simulatedPlayer.C$src$Lgg_vape_wrapper_impl_Vec3_$1q93kwi();
-                if (nearestDirection.n().equals(DirectionAxis.j())) {
+                if (nearestDirection.n().equals(DirectionAxis.x())) {
                     this.simulatedPlayer.F(0.1 * nearestDirection.S(), motion.getY(), motion.getZ());
                 } else {
                     this.simulatedPlayer.F(motion.getX(), motion.getY(), 0.1 * nearestDirection.F());
@@ -569,7 +569,7 @@ extends AbstractBlockInMovementController {
                         this.simulatedPlayer.I$src$Lgg_vape_wrapper_impl_Vec3_$q14opk(),
                         this.simulatedPlayer.I$src$Lgg_vape_wrapper_impl_Vec3_$q14opk()
                                 .add(adjustedMovement),
-                        ChestType.e(), ITooltipFlag.n(), this.simulatedPlayer));
+                        ChestType.e(), ITooltipFlag.water(), this.simulatedPlayer));
                 if (!rayTrace.getTypeOfHit().equals(RayTraceResult_type.miss())) {
                     this.simulatedPlayer.U(0.0f);
                 }
@@ -696,7 +696,7 @@ extends AbstractBlockInMovementController {
                 this.travel(movementInput);
                 this.simulatedPlayer.h(this.simulatedPlayer
                         .C$src$Lgg_vape_wrapper_impl_Vec3_$1q93kwi()
-                        .i(DirectionAxis.T(), previousVerticalMotion * 0.6));
+                        .i(DirectionAxis.y(), previousVerticalMotion * 0.6));
             } else {
                 this.travel(movementInput);
             }

@@ -127,7 +127,7 @@ extends UtilityMod {
             ArmorItemMappingEntry armorMapping;
             Item item;
             Slot slot = inventorySlots.get(slotIndex);
-            if (!slot.v() || !ItemStackScoreUtil.R(item = slot.I().getItem()) || !(armorMapping = (ArmorItemMappingEntry)Vape.INSTANCE.getItemStackResolver().resolve(slot.I())).getArmorMaterial().equals((Object)armorMaterialType)) continue;
+            if (!slot.hasStack() || !ItemStackScoreUtil.R(item = slot.getStack().getItem()) || !(armorMapping = (ArmorItemMappingEntry)Vape.INSTANCE.getItemStackResolver().resolve(slot.getStack())).getArmorMaterial().equals((Object)armorMaterialType)) continue;
             int armorType = ItemStackScoreUtil.H(item);
             switch (armorType) {
                 case 0: {
@@ -202,8 +202,8 @@ extends UtilityMod {
         List<Slot> inventorySlots = container.getInventorySlots();
         for (int armorSlot = 5; armorSlot < 9; ++armorSlot) {
             Slot slot = inventorySlots.get(armorSlot);
-            if (!slot.v() || !ItemStackScoreUtil.R(slot.I().getItem())) continue;
-            ArmorItemMappingEntry armorMapping = (ArmorItemMappingEntry)Vape.INSTANCE.getItemStackResolver().resolve(slot.I());
+            if (!slot.hasStack() || !ItemStackScoreUtil.R(slot.getStack().getItem())) continue;
+            ArmorItemMappingEntry armorMapping = (ArmorItemMappingEntry)Vape.INSTANCE.getItemStackResolver().resolve(slot.getStack());
             this.currentMaterial = armorMapping.getArmorMaterial();
             return true;
         }

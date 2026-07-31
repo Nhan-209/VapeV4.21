@@ -8,26 +8,26 @@ import gg.vape.wrapper.impl.ForgeVersion;
 
 public class MChatMessageRenderTarget
 extends Mapping {
-    private static boolean w;
-    public MappingMethod T;
-    private static final String b;
+    private static boolean chatMessageControlFlowState;
+    public MappingMethod addMessageMethod;
+    private static final String ADD_MESSAGE_METHOD_NAME;
 
-    public static boolean m() {
-        return w;
+    public static boolean getChatMessageControlFlowState() {
+        return chatMessageControlFlowState;
     }
 
-    public static boolean a() {
-        boolean bl = MChatMessageRenderTarget.m();
+    public static boolean getDisabledControlFlowState() {
+        boolean bl = MChatMessageRenderTarget.getChatMessageControlFlowState();
         return false;
     }
 
-    public static void Y(boolean bl) {
-        w = bl;
+    public static void setChatMessageControlFlowState(boolean state) {
+        chatMessageControlFlowState = state;
     }
 
 
     public MChatMessageRenderTarget() {
-        this(MChatMessageRenderTarget.a());
+        this(MChatMessageRenderTarget.getDisabledControlFlowState());
     }
 
     private MChatMessageRenderTarget(boolean bl) {
@@ -37,9 +37,9 @@ extends Mapping {
                 Class[] classArray = new Class[]{MappedClasses.Yr, MappedClasses.uh, MappedClasses.zF};
                 Class<Void> clazz = Void.TYPE;
                 boolean bl2 = true;
-                String string = b;
+                String string = ADD_MESSAGE_METHOD_NAME;
                 MChatMessageRenderTarget mChatMessageRenderTarget = this;
-                this.T = mChatMessageRenderTarget.Y(string, bl2, clazz, classArray);
+                this.addMessageMethod = mChatMessageRenderTarget.Y(string, bl2, clazz, classArray);
             }
             GuiComponent.setLegacyComponentState(new GuiComponent[2]);
             return;
@@ -48,14 +48,14 @@ extends Mapping {
             Class[] classArray = new Class[]{MappedClasses.Yr, MappedClasses.uh, MappedClasses.zF};
             Class<Void> clazz = Void.TYPE;
             boolean bl3 = true;
-            String string = b;
+            String string = ADD_MESSAGE_METHOD_NAME;
             MChatMessageRenderTarget mChatMessageRenderTarget = this;
-            this.T = mChatMessageRenderTarget.Y(string, bl3, clazz, classArray); 
+            this.addMessageMethod = mChatMessageRenderTarget.Y(string, bl3, clazz, classArray);
         }
     }
 
     static {
-        MChatMessageRenderTarget.Y(true);
-        b = "addMessage";
+        MChatMessageRenderTarget.setChatMessageControlFlowState(true);
+        ADD_MESSAGE_METHOD_NAME = "addMessage";
     }
 }

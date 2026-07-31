@@ -37,7 +37,7 @@ extends Mapping {
     }
 
     public MFontManager() {
-        this(MFontSet.A());
+        this(MFontSet.getFontSetControlFlowMarker());
     }
 
     private MFontManager(String string) {
@@ -69,12 +69,12 @@ extends Mapping {
             MFontManager mFontManager4 = this;
             this.U = this.Y(string5, bl4, clazz4, classArray);
             if (GuiComponent.getLegacyComponentState() == null) {
-                MFontSet.c("qmD2Ub");
+                MFontSet.setFontSetControlFlowMarker("qmD2Ub");
             }
             return;
         }
         if (GuiComponent.getLegacyComponentState() == null) {
-            MFontSet.c("qmD2Ub");
+            MFontSet.setFontSetControlFlowMarker("qmD2Ub");
         }
     }
 

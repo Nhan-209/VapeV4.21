@@ -6,6 +6,7 @@ import gg.vape.event.impl.EventRender3D;
 import gg.vape.mapping.MappedClasses;
 import gg.vape.module.Category;
 import gg.vape.module.Mod;
+import gg.vape.runtime.NativeBridge;
 import gg.vape.utils.render.BufferedRenderPrimitives;
 import gg.vape.utils.render.GuiRenderPrimitives;
 import gg.vape.utils.render.OpenGlBackendHolder;
@@ -93,10 +94,10 @@ extends Mod {
         int stride = 28;
         FloatBuffer positionBuffer = this.vertexBuffer.duplicate();
         positionBuffer.position(0);
-        GL11.glVertexPointer((int)3, (int)stride, (FloatBuffer)positionBuffer);
+        NativeBridge.vertexPointer(3, stride, positionBuffer);
         FloatBuffer colorBuffer = this.vertexBuffer.duplicate();
         colorBuffer.position(3);
-        GL11.glColorPointer((int)4, (int)stride, (FloatBuffer)colorBuffer);
+        NativeBridge.colorPointer(4, stride, colorBuffer);
         int trajectoryCount = this.firstVertices.size();
         if (this.firstVertexBuffer == null || this.firstVertexBuffer.capacity() < trajectoryCount) {
             this.firstVertexBuffer = BufferUtils.createIntBuffer((int)trajectoryCount);

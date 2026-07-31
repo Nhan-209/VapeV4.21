@@ -17,7 +17,7 @@ extends Mapping {
     }
 
     public MGlStateManagerFogStateObject() {
-        this(MTextComponentTranslationBridge.I());
+        this(MTextComponentTranslationBridge.isControlFlowStateEnabled());
     }
 
     private MGlStateManagerFogStateObject(boolean controlFlowState) {

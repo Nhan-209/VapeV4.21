@@ -6,53 +6,53 @@ import gg.vape.mapping.MappingField;
 
 public class MPlayerInput
 extends Mapping {
-    private MappingField p;
-    private MappingField g;
+    private MappingField yField;
+    private MappingField xField;
 
-    public static float e(MPlayerInput mPlayerInput, Object object) {
-        return mPlayerInput.a(object);
+    public static float getY(MPlayerInput mapping, Object vectorHandle) {
+        return mapping.readY(vectorHandle);
     }
 
-    private float a(Object object) {
-        return this.p.getFloat(object);
+    private float readY(Object vectorHandle) {
+        return this.yField.getFloat(vectorHandle);
     }
 
     public MPlayerInput() {
         super(MappedClasses.YG);
-        Class<Float> clazz = Float.TYPE;
-        boolean bl = true;
-        String string = "x";
-        MPlayerInput mPlayerInput = this;
-        this.g = this.J(string, bl, clazz);
-        Class<Float> clazz2 = Float.TYPE;
-        boolean bl2 = true;
-        String string2 = "y";
-        MPlayerInput mPlayerInput2 = this;
-        this.p = this.J(string2, bl2, clazz2);
+        Class<Float> xFieldType = Float.TYPE;
+        boolean xFieldPublic = true;
+        String xFieldName = "x";
+        MPlayerInput mapping = this;
+        this.xField = mapping.J(xFieldName, xFieldPublic, xFieldType);
+        Class<Float> yFieldType = Float.TYPE;
+        boolean yFieldPublic = true;
+        String yFieldName = "y";
+        MPlayerInput yMapping = this;
+        this.yField = yMapping.J(yFieldName, yFieldPublic, yFieldType);
     }
 
-    private void y(Object object, float f) {
-        this.g.setFloat(object, f);
+    private void writeX(Object vectorHandle, float x) {
+        this.xField.setFloat(vectorHandle, x);
     }
 
-    private void f(Object object, float f) {
-        this.p.setFloat(object, f);
+    private void writeY(Object vectorHandle, float y) {
+        this.yField.setFloat(vectorHandle, y);
     }
 
-    public static float B(MPlayerInput mPlayerInput, Object object) {
-        return mPlayerInput.s(object);
+    public static float getX(MPlayerInput mapping, Object vectorHandle) {
+        return mapping.readX(vectorHandle);
     }
 
-    private float s(Object object) {
-        return this.g.getFloat(object);
+    private float readX(Object vectorHandle) {
+        return this.xField.getFloat(vectorHandle);
     }
 
-    public static void s(MPlayerInput mPlayerInput, Object object, float f) {
-        mPlayerInput.y(object, f);
+    public static void setX(MPlayerInput mapping, Object vectorHandle, float x) {
+        mapping.writeX(vectorHandle, x);
     }
 
-    public static void K(MPlayerInput mPlayerInput, Object object, float f) {
-        mPlayerInput.f(object, f);
+    public static void setY(MPlayerInput mapping, Object vectorHandle, float y) {
+        mapping.writeY(vectorHandle, y);
     }
 }
 

@@ -133,21 +133,21 @@ extends HudModule {
         }
         boolean includeScoreNumbers = this.showScoreNumbers.getEffectiveValue();
         FontRenderer fontRenderer = Minecraft.getFontRenderer();
-        Scoreboard scoreboard = this.objective.P();
+        Scoreboard scoreboard = this.objective.getScoreboard();
         EventScoreboardScores.setLocked(false);
-        Collection<Score> scores = scoreboard.p(this.objective);
+        Collection<Score> scores = scoreboard.getPlayerScores(this.objective);
         EventScoreboardScores.setLocked(true);
         ArrayList<Score> visibleScores = Lists.newArrayList(
                 Iterables.filter(scores, new ScoreboardVisibleScorePredicate()));
         scores = visibleScores.size() > 15
                 ? Lists.newArrayList(Iterables.skip(visibleScores, scores.size() - 15))
                 : visibleScores;
-        int scoreboardWidth = fontRenderer.getStringWidth(this.objective.h());
+        int scoreboardWidth = fontRenderer.getStringWidth(this.objective.getDisplayNameText());
         for (Score score : scores) {
-            ScorePlayerTeam team = scoreboard.l(score.P());
-            String scoreLine = ScorePlayerTeam.o(team, score.P()) + ":";
+            ScorePlayerTeam team = scoreboard.getPlayersTeam(score.getOwner());
+            String scoreLine = ScorePlayerTeam.formatPlayerName(team, score.getOwner()) + ":";
             if (includeScoreNumbers) {
-                scoreLine += " \u00a7c" + score.j();
+                scoreLine += " \u00a7c" + score.getScore();
             }
             scoreboardWidth = Math.max(scoreboardWidth, fontRenderer.getStringWidth(scoreLine));
         }
@@ -159,13 +159,13 @@ extends HudModule {
         Map<String, String> replacements = this.textReplacements.getValue();
         for (Score score : scores) {
             ++rowIndex;
-            ScorePlayerTeam team = scoreboard.l(score.P());
-            String playerName = ScorePlayerTeam.o(team, score.P());
+            ScorePlayerTeam team = scoreboard.getPlayersTeam(score.getOwner());
+            String playerName = ScorePlayerTeam.formatPlayerName(team, score.getOwner());
             for (Map.Entry<String, String> replacement : replacements.entrySet()) {
                 playerName = this.replaceScoreText(
                         replacement.getKey(), playerName, replacement.getValue());
             }
-            String scoreText = "\u00a7c" + score.j();
+            String scoreText = "\u00a7c" + score.getScore();
             int rowY = bottom - rowIndex * fontRenderer.getFontHeight();
             if (drawBackground) {
                 float backgroundX = left - 2;
@@ -177,7 +177,7 @@ extends HudModule {
             }
             renderedHeight += fontRenderer.getFontHeight();
             if (ForgeVersion.MC_1_16_5.d()) {
-                fontRenderer.J(MatrixStack.A(), new TextComponent(team, score.P()), left, rowY, -1);
+                fontRenderer.J(MatrixStack.A(), new TextComponent(team, score.getOwner()), left, rowY, -1);
             } else {
                 fontRenderer.drawString(playerName, left, rowY, 0x20FFFFFF);
             }
@@ -187,7 +187,7 @@ extends HudModule {
             }
             GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
             if (rowIndex == scores.size()) {
-                String title = this.objective.h();
+                String title = this.objective.getDisplayNameText();
                 for (Map.Entry<String, String> replacement : replacements.entrySet()) {
                     title = this.replaceScoreText(
                             replacement.getKey(), title, replacement.getValue());
@@ -200,7 +200,7 @@ extends HudModule {
                             new Color(0x50000000, true));
                 }
                 if (ForgeVersion.MC_1_16_5.d()) {
-                    fontRenderer.J(MatrixStack.A(), this.objective.i(),
+                    fontRenderer.J(MatrixStack.A(), this.objective.getDisplayNameComponent(),
                             left + scoreboardWidth / 2 - fontRenderer.getStringWidth(title) / 2,
                             rowY - fontRenderer.getFontHeight(), -1);
                 } else {

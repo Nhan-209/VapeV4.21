@@ -82,7 +82,7 @@ implements InventoryActionModule {
             return;
         }
         for (int i = 0; i < 45; ++i) {
-            ItemStack itemStack = entityPlayerSP.F$src$Lgg_vape_wrapper_impl_Container_$152y6lm().getSlot(i).I();
+            ItemStack itemStack = entityPlayerSP.F$src$Lgg_vape_wrapper_impl_Container_$152y6lm().getSlot(i).getStack();
             if (itemStack.isNull() || itemStack.getItem().isNull()) continue;
             this.bestSlotTracker.trackCandidate(itemStack, -1);
         }
@@ -245,7 +245,7 @@ implements InventoryActionModule {
                 this.stealing = true;
                 this.previousSlot = slotIndex;
                 Slot slot = guiChest.getInventorySlots().getSlot(slotIndex);
-                if (slot.v()) {
+                if (slot.hasStack()) {
                     this.performingWindowClick = true;
                     this.windowClickGuardTimer.reset();
                     Minecraft.playerController().O(guiChest.getInventorySlots().getWindowId(), slotIndex, 0, 1, Minecraft.thePlayer());
@@ -267,7 +267,7 @@ implements InventoryActionModule {
     private boolean isInventoryFull() {
         Container container = Minecraft.thePlayer().F$src$Lgg_vape_wrapper_impl_Container_$152y6lm();
         for (int i = 9; i <= 44; ++i) {
-            ItemStack itemStack = container.getSlot(i).I();
+            ItemStack itemStack = container.getSlot(i).getStack();
             if (!itemStack.isNull() && (!ForgeVersion.MC_26_1.v() || !itemStack.toString().contains("tile.air"))) continue;
             return false;
         }

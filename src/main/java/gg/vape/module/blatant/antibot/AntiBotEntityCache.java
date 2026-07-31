@@ -56,8 +56,8 @@ public class AntiBotEntityCache {
                 ScorePlayerTeam scoreTeam = playerInfo.X();
                 TextFormatting formatting;
                 Integer formattingColor;
-                if (!scoreTeam.isNotNull() || (formatting = scoreTeam.W()) == null
-                        || (formattingColor = formatting.K()) == null
+                if (!scoreTeam.isNotNull() || (formatting = scoreTeam.getColor()) == null
+                        || (formattingColor = formatting.getColor()) == null
                         || formattingColor.equals(NO_TEAM_COLOR)) continue;
                 teamColor = formattingColor;
             }
@@ -178,9 +178,9 @@ public class AntiBotEntityCache {
                 return null;
             }
         }
-        TextFormatting formatting = TextFormatting.q(colorName);
+        TextFormatting formatting = TextFormatting.fromName(colorName);
         if (formatting != null) {
-            return formatting.K();
+            return formatting.getColor();
         }
         return null;
     }

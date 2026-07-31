@@ -159,11 +159,11 @@ public abstract class PingMarker {
     }
 
     public void renderScreenMarker() {
-        float partialTicks = RenderWorldLastEvent.getPartialTicks();
+        float renderResolutionMultiplier = RenderWorldLastEvent.getRenderResolutionMultiplier();
         float uiScale = 1.0f;
         float coordinateScale = 2.0f;
-        double screenX = this.clippedScreenPosition[0] / (double)coordinateScale / (double)uiScale / (double)partialTicks;
-        double screenY = this.clippedScreenPosition[1] / (double)partialTicks / (double)coordinateScale / (double)uiScale;
+        double screenX = this.clippedScreenPosition[0] / (double)coordinateScale / (double)uiScale / (double)renderResolutionMultiplier;
+        double screenY = this.clippedScreenPosition[1] / (double)renderResolutionMultiplier / (double)coordinateScale / (double)uiScale;
         boolean offscreen = !this.projectedScreenPosition.equals(this.clippedScreenPosition);
         OpenGlBackendHolder.backend.translate(screenX, screenY, 0.0);
         this.render2D(offscreen);
@@ -345,16 +345,16 @@ public abstract class PingMarker {
     }
 
     public void renderOffscreenArrow() {
-        float partialTicks = RenderWorldLastEvent.getPartialTicks();
+        float renderResolutionMultiplier = RenderWorldLastEvent.getRenderResolutionMultiplier();
         Color color = OnlineFriendColorUtil.getGroupRoleColor(this.getFriend());
-        partialTicks *= 2.0f;
+        renderResolutionMultiplier *= 2.0f;
         double angleDegrees = this.calculateAngleBetweenPoints(this.projectedScreenPosition, this.clippedScreenPosition);
         double leftAngle = Math.toRadians(angleDegrees + 45.0);
         double rightAngle = Math.toRadians(angleDegrees - 45.0);
         double angle = Math.toRadians(angleDegrees);
         double radius = Math.min(this.getWidth() / 2.0, this.calculateArrowRadius(angle));
-        double tipX = (double)(1.0f / partialTicks) + (radius + this.getEdgePadding()) * Math.cos(angle);
-        double tipY = (double)(1.0f / partialTicks) + (radius + this.getEdgePadding()) * Math.sin(angle);
+        double tipX = (double)(1.0f / renderResolutionMultiplier) + (radius + this.getEdgePadding()) * Math.cos(angle);
+        double tipY = (double)(1.0f / renderResolutionMultiplier) + (radius + this.getEdgePadding()) * Math.sin(angle);
         double leftX = tipX - this.getEdgePadding() * Math.cos(leftAngle);
         double leftY = tipY - this.getEdgePadding() * Math.sin(leftAngle);
         double notchX = tipX - this.getEdgePadding() * 0.6 * Math.cos(angle);

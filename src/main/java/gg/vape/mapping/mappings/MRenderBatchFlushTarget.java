@@ -7,24 +7,24 @@ import gg.vape.ui.click.component.GuiComponent;
 
 public class MRenderBatchFlushTarget
 extends Mapping {
-    private static int N;
-    private static final String b;
-    public MappingMethod i;
+    private static int glCommandEncoderControlFlowState;
+    private static final String DRAW_FROM_BUFFERS_METHOD_NAME;
+    public MappingMethod drawFromBuffersMethod;
 
-    public static int T() {
-        int n = MRenderBatchFlushTarget.f();
+    public static int getInitialControlFlowState() {
+        int n = MRenderBatchFlushTarget.getGlCommandEncoderControlFlowState();
         if (n == 0) {
             return 64;
         }
         return 0;
     }
 
-    public static void c(int n) {
-        N = n;
+    public static void setGlCommandEncoderControlFlowState(int state) {
+        glCommandEncoderControlFlowState = state;
     }
 
     public MRenderBatchFlushTarget() {
-        this(MRenderBatchFlushTarget.T());
+        this(MRenderBatchFlushTarget.getInitialControlFlowState());
     }
 
     private MRenderBatchFlushTarget(int n) {
@@ -33,27 +33,27 @@ extends Mapping {
             Class[] classArray = new Class[]{MappedClasses.uq, Integer.TYPE, Integer.TYPE, Integer.TYPE, MappedClasses.Yz, MappedClasses.FA, Integer.TYPE};
             Class<Void> clazz = Void.TYPE;
             boolean bl = true;
-            String string = b;
+            String string = DRAW_FROM_BUFFERS_METHOD_NAME;
             MRenderBatchFlushTarget mRenderBatchFlushTarget = this;
-            this.i = mRenderBatchFlushTarget.Y(string, bl, clazz, classArray);
+            this.drawFromBuffersMethod = mRenderBatchFlushTarget.Y(string, bl, clazz, classArray);
             return;
         }
         Class[] classArray = new Class[]{MappedClasses.uq, Integer.TYPE, Integer.TYPE, Integer.TYPE, MappedClasses.Yz, MappedClasses.FA, Integer.TYPE};
         Class<Void> clazz = Void.TYPE;
         boolean bl = true;
-        String string = b;
+        String string = DRAW_FROM_BUFFERS_METHOD_NAME;
         MRenderBatchFlushTarget mRenderBatchFlushTarget = this;
-        this.i = mRenderBatchFlushTarget.Y(string, bl, clazz, classArray);
+        this.drawFromBuffersMethod = mRenderBatchFlushTarget.Y(string, bl, clazz, classArray);
         GuiComponent.setLegacyComponentState(new GuiComponent[3]);
     }
 
     static {
-        MRenderBatchFlushTarget.c(0);
-        b = "drawFromBuffers";
+        MRenderBatchFlushTarget.setGlCommandEncoderControlFlowState(0);
+        DRAW_FROM_BUFFERS_METHOD_NAME = "drawFromBuffers";
     }
 
-    public static int f() {
-        return N;
+    public static int getGlCommandEncoderControlFlowState() {
+        return glCommandEncoderControlFlowState;
     }
 
 }

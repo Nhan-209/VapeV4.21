@@ -32,7 +32,7 @@ implements EventListener {
             return false;
         }
         NetworkManager networkManager = eventPacketSend.getNetworkManager();
-        if (networkManager.B().D().G()) {
+        if (networkManager.getChannel().eventLoop().inEventLoop()) {
             NetworkPacketHandle networkPacketHandle = networkManager.c();
             if (!networkPacketHandle.isInstance(MappedClasses.F1)) {
                 return false;
@@ -44,7 +44,7 @@ implements EventListener {
             }
             catch (Exception exception) {}
         } else {
-            networkManager.B().D().F(() -> this.lambda$invokeWrite$1(eventPacketSend));
+            networkManager.getChannel().eventLoop().execute(() -> this.lambda$invokeWrite$1(eventPacketSend));
         }
         return false;
     }
@@ -60,10 +60,10 @@ implements EventListener {
         }
         NetHandlerPlayClientImpl netHandlerPlayClientImpl = playerControllerMP.n();
         NetworkManager networkManager = netHandlerPlayClientImpl.a();
-        if (networkManager.B().D().G()) {
+        if (networkManager.getChannel().eventLoop().inEventLoop()) {
             runnable.run();
         } else {
-            networkManager.B().D().F(runnable);
+            networkManager.getChannel().eventLoop().execute(runnable);
         }
     }
 
@@ -96,10 +96,10 @@ implements EventListener {
     }
 
     public static void b(NetworkManager networkManager, Runnable runnable) {
-        if (networkManager.B().D().G()) {
+        if (networkManager.getChannel().eventLoop().inEventLoop()) {
             runnable.run();
         } else {
-            networkManager.B().D().F(runnable);
+            networkManager.getChannel().eventLoop().execute(runnable);
         }
     }
 
@@ -116,7 +116,7 @@ implements EventListener {
             return;
         }
         NetworkManager networkManager = netHandlerPlayClientImpl.a();
-        if (networkManager.B().D().G()) {
+        if (networkManager.getChannel().eventLoop().inEventLoop()) {
             this.R(packet);
             try {
                 packet.processPacket(netHandlerPlayClientImpl);
@@ -126,7 +126,7 @@ implements EventListener {
             }
             this.J(packet);
         } else {
-            networkManager.B().D().F(() -> this.lambda$invokeRead$0(packet, netHandlerPlayClientImpl));
+            networkManager.getChannel().eventLoop().execute(() -> this.lambda$invokeRead$0(packet, netHandlerPlayClientImpl));
         }
     }
 }

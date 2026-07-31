@@ -8,47 +8,47 @@ import gg.vape.wrapper.impl.ForgeVersion;
 
 public class MChannel
 extends Mapping {
-    private MappingMethod q;
-    private static GuiComponent[] X;
-    private static final String b;
+    private MappingMethod usesBlockLightMethod;
+    private static GuiComponent[] bakedModelControlFlowState;
+    private static final String USES_BLOCK_LIGHT_METHOD_NAME;
 
 
-    public static GuiComponent[] x() {
-        return X;
+    public static GuiComponent[] getBakedModelControlFlowState() {
+        return bakedModelControlFlowState;
     }
 
     public MChannel() {
-        this(MChannel.x());
+        this(MChannel.getBakedModelControlFlowState());
     }
 
-    private MChannel(GuiComponent[] guiComponentArray) {
+    private MChannel(GuiComponent[] controlFlowState) {
         super(MappedClasses.lc);
-        GuiComponent[] guiComponentArray2 = guiComponentArray;
+        GuiComponent[] currentControlFlowState = controlFlowState;
         if (ForgeVersion.MC_1_17.d()) {
-            Class[] classArray = new Class[]{};
-            Class<Boolean> clazz = Boolean.TYPE;
-            boolean bl = true;
-            String string = b;
-            MChannel mChannel = this;
-            this.q = this.Y(string, bl, clazz, classArray);
+            Class[] parameterTypes = new Class[]{};
+            Class<Boolean> returnType = Boolean.TYPE;
+            boolean methodPublic = true;
+            String methodName = USES_BLOCK_LIGHT_METHOD_NAME;
+            MChannel mapping = this;
+            this.usesBlockLightMethod = mapping.Y(methodName, methodPublic, returnType, parameterTypes);
         }
     }
 
-    private boolean H(Object object) {
-        return this.q.invokeBoolean(object, new Object[0]);
+    private boolean invokeUsesBlockLight(Object bakedModelHandle) {
+        return this.usesBlockLightMethod.invokeBoolean(bakedModelHandle, new Object[0]);
     }
 
     static {
-        MChannel.j(null);
-        b = "usesBlockLight";
+        MChannel.setBakedModelControlFlowState(null);
+        USES_BLOCK_LIGHT_METHOD_NAME = "usesBlockLight";
     }
 
-    public static void j(GuiComponent[] guiComponentArray) {
-        X = guiComponentArray;
+    public static void setBakedModelControlFlowState(GuiComponent[] controlFlowState) {
+        bakedModelControlFlowState = controlFlowState;
     }
 
-    public static boolean u(MChannel mChannel, Object object) {
-        return mChannel.H(object);
+    public static boolean usesBlockLight(MChannel mapping, Object bakedModelHandle) {
+        return mapping.invokeUsesBlockLight(bakedModelHandle);
     }
 }
 

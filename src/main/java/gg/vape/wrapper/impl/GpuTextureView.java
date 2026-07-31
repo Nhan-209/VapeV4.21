@@ -10,7 +10,7 @@ extends Wrapper {
             return -1;
         }
         TextureObjectHandle textureHandle = new TextureObjectHandle(texture);
-        return textureHandle.J();
+        return textureHandle.getId();
     }
 
     public int getBaseMipLevel() {

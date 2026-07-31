@@ -4,20 +4,19 @@ import gg.vape.wrapper.Wrapper;
 
 public class PlayerEventNameFormat
 extends Wrapper {
-    public String h() {
-        return PlayerEventNameFormat.vapeInstance.getMappingsMapperCompat().R1.u(this.I);
+    public String getUrl() {
+        return PlayerEventNameFormat.vapeInstance.getMappingsMapperCompat().resourcePackSendPacket.getUrl(this.I);
     }
 
-    public void J(String string) {
-        PlayerEventNameFormat.vapeInstance.getMappingsMapperCompat().R1.c(this.I, string);
+    public void setUrl(String url) {
+        PlayerEventNameFormat.vapeInstance.getMappingsMapperCompat().resourcePackSendPacket.setUrl(this.I, url);
     }
 
-    public PlayerEventNameFormat(Object object) {
-        super(object);
+    public PlayerEventNameFormat(Object handle) {
+        super(handle);
     }
 
-    public String G() {
-        return PlayerEventNameFormat.vapeInstance.getMappingsMapperCompat().R1.I(this.I);
+    public String getHash() {
+        return PlayerEventNameFormat.vapeInstance.getMappingsMapperCompat().resourcePackSendPacket.getHash(this.I);
     }
 }
-

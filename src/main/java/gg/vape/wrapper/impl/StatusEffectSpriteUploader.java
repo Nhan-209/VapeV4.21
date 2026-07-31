@@ -5,21 +5,20 @@ import gg.vape.wrapper.Wrapper;
 
 public class StatusEffectSpriteUploader
 extends Wrapper {
-    public StatusEffectSpriteUploader(Object object) {
-        super(object);
+    public StatusEffectSpriteUploader(Object handle) {
+        super(handle);
     }
 
-    public TextureAtlasSprite l(StatusEffect statusEffect) {
-        return new TextureAtlasSprite(MStatusEffectSpriteUploader.X(StatusEffectSpriteUploader.vapeInstance.getMappingsMapperCompat().hk, this.I, statusEffect.getObject()));
+    public TextureAtlasSprite getSprite(StatusEffect statusEffect) {
+        return new TextureAtlasSprite(MStatusEffectSpriteUploader.getSprite(StatusEffectSpriteUploader.vapeInstance.getMappingsMapperCompat().statusEffectSpriteUploader, this.I, statusEffect.getObject()));
     }
 
-    public TextureAtlasSprite T(Holder holder) {
-        return new TextureAtlasSprite(MStatusEffectSpriteUploader.X(StatusEffectSpriteUploader.vapeInstance.getMappingsMapperCompat().hk, this.I, holder.getObject()));
+    public TextureAtlasSprite getSprite(Holder holder) {
+        return new TextureAtlasSprite(MStatusEffectSpriteUploader.getSprite(StatusEffectSpriteUploader.vapeInstance.getMappingsMapperCompat().statusEffectSpriteUploader, this.I, holder.getObject()));
     }
 
-    public static StatusEffectSpriteUploader c() {
-        Object object = MStatusEffectSpriteUploader.C(StatusEffectSpriteUploader.vapeInstance.getMappingsMapperCompat().hk, Minecraft.i());
-        return new StatusEffectSpriteUploader(object);
+    public static StatusEffectSpriteUploader getPotionSprites() {
+        Object uploaderHandle = MStatusEffectSpriteUploader.getPotionSprites(StatusEffectSpriteUploader.vapeInstance.getMappingsMapperCompat().statusEffectSpriteUploader, Minecraft.i());
+        return new StatusEffectSpriteUploader(uploaderHandle);
     }
 }
-

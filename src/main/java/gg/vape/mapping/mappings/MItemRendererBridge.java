@@ -6,40 +6,40 @@ import gg.vape.mapping.MappingField;
 
 public class MItemRendererBridge
 extends Mapping {
-    private static final String c;
-    private static String D;
-    private MappingField X;
+    private static final String FIRST_PERSON_FIELD_NAME;
+    private static String controlFlowState;
+    private MappingField firstPersonField;
 
-    public static void M(String string) {
-        D = string;
+    public static void setItemCameraTransformControlFlowState(String state) {
+        controlFlowState = state;
     }
 
-    public Object V() {
-        return this.X.getObject(null);
+    public Object getFirstPerson() {
+        return this.firstPersonField.getObject(null);
     }
 
     public MItemRendererBridge() {
-        this(MItemRendererBridge.y());
+        this(MItemRendererBridge.getItemCameraTransformControlFlowState());
     }
 
-    private MItemRendererBridge(String string) {
+    private MItemRendererBridge(String state) {
         super(MappedClasses.z0);
-        String string2 = string;
-        Class clazz = MappedClasses.z0;
-        boolean bl = true;
-        String string3 = c;
-        MItemRendererBridge mItemRendererBridge = this;
-        this.X = this.registerStaticField(string3, bl, clazz);
+        String currentControlFlowState = state;
+        Class firstPersonFieldType = MappedClasses.z0;
+        boolean firstPersonFieldPublic = true;
+        String firstPersonFieldName = FIRST_PERSON_FIELD_NAME;
+        MItemRendererBridge mapping = this;
+        this.firstPersonField = mapping.registerStaticField(firstPersonFieldName, firstPersonFieldPublic, firstPersonFieldType);
     }
 
     static {
-        MItemRendererBridge.M((String)null);
-        c = "FIRST_PERSON";
+        MItemRendererBridge.setItemCameraTransformControlFlowState(null);
+        FIRST_PERSON_FIELD_NAME = "FIRST_PERSON";
     }
 
 
-    public static String y() {
-        return D;
+    public static String getItemCameraTransformControlFlowState() {
+        return controlFlowState;
     }
 }
 

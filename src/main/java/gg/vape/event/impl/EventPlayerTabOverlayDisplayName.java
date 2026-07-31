@@ -70,11 +70,11 @@ extends Event {
             String playerName = playerInfo.v().getName();
             if (ForgeVersion.MC_1_20_6.d()) {
                 TextComponentBaseBridge textComponentBaseBridge = ITextComponent.a(playerName);
-                TextComponentBaseBridge textComponentBaseBridge2 = ScorePlayerTeam.j(scorePlayerTeam, textComponentBaseBridge);
+                TextComponentBaseBridge textComponentBaseBridge2 = ScorePlayerTeam.formatNameForTeamMutable(scorePlayerTeam, textComponentBaseBridge);
                 this.vanillaDisplayName = guiPlayerTabOverlayBridge.L(playerInfo, textComponentBaseBridge2);
             } else {
                 ScorePlayerTeamTextComponent scorePlayerTeamTextComponent = ScorePlayerTeamTextComponent.B(playerName);
-                TextComponent textComponent = ScorePlayerTeam.h(scorePlayerTeam, scorePlayerTeamTextComponent);
+                TextComponent textComponent = ScorePlayerTeam.formatNameForTeamText(scorePlayerTeam, scorePlayerTeamTextComponent);
                 this.vanillaDisplayName = guiPlayerTabOverlayBridge.U(playerInfo, textComponent);
             }
         }

@@ -5,11 +5,11 @@ import gg.vape.wrapper.Wrapper;
 
 public class RenderTypeBuffer
 extends Wrapper {
-    public RenderTypeBuffer(Object object) {
-        super(object);
+    public RenderTypeBuffer(Object handle) {
+        super(handle);
     }
 
-    public void q() {
-        MRenderTypeBufferBridge.d(RenderTypeBuffer.vapeInstance.getMappingsMapperCompat().CU).invokeVoidNoArgs(this.getObject());
+    public void onInputReceived() {
+        MRenderTypeBufferBridge.onInputReceived(RenderTypeBuffer.vapeInstance.getMappingsMapperCompat().framerateLimitTracker, this.getObject());
     }
 }

@@ -4,9 +4,9 @@ import gg.vape.wrapper.Wrapper;
 
 public class TextFormatting
 extends Wrapper {
-    public static TextFormatting q(String string) {
-        Object object = TextFormatting.vapeInstance.getMappingsMapperCompat().Cq.h(string);
-        TextFormatting textFormatting = object != null ? new TextFormatting(object) : null;
+    public static TextFormatting fromName(String name) {
+        Object formattingHandle = TextFormatting.vapeInstance.getMappingsMapperCompat().textFormatting.getByName(name);
+        TextFormatting textFormatting = formattingHandle != null ? new TextFormatting(formattingHandle) : null;
         return textFormatting;
     }
 
@@ -14,13 +14,13 @@ extends Wrapper {
         super(object);
     }
 
-    public Integer K() {
-        return TextFormatting.vapeInstance.getMappingsMapperCompat().Cq.e(this.getObject());
+    public Integer getColor() {
+        return TextFormatting.vapeInstance.getMappingsMapperCompat().textFormatting.getColor(this.getObject());
     }
 
 
-    public String A() {
-        return TextFormatting.vapeInstance.getMappingsMapperCompat().Cq.m(this.getObject());
+    public String getName() {
+        return TextFormatting.vapeInstance.getMappingsMapperCompat().textFormatting.getName(this.getObject());
     }
 }
 

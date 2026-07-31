@@ -5,34 +5,34 @@ import gg.vape.wrapper.Wrapper;
 
 public class RayTraceResult_type
 extends Wrapper {
-    private static RayTraceResult_type f;
-    private static RayTraceResult_type r;
-    private static RayTraceResult_type g;
+    private static RayTraceResult_type entity;
+    private static RayTraceResult_type block;
+    private static RayTraceResult_type miss;
 
     public static RayTraceResult_type entity() {
-        if (f == null) {
-            f = new RayTraceResult_type(MRayTraceResult_Type.G(RayTraceResult_type.vapeInstance.getMappingsMapperCompat().q1));
+        if (entity == null) {
+            entity = new RayTraceResult_type(MRayTraceResult_Type.getEntity(RayTraceResult_type.vapeInstance.getMappingsMapperCompat().rayTraceResultType));
         }
-        return f;
+        return entity;
     }
 
     public static RayTraceResult_type block() {
-        if (r == null) {
-            r = new RayTraceResult_type(MRayTraceResult_Type.b(RayTraceResult_type.vapeInstance.getMappingsMapperCompat().q1));
+        if (block == null) {
+            block = new RayTraceResult_type(MRayTraceResult_Type.getBlock(RayTraceResult_type.vapeInstance.getMappingsMapperCompat().rayTraceResultType));
         }
-        return r;
+        return block;
     }
 
-    public RayTraceResult_type(Object object) {
-        super(object);
+    public RayTraceResult_type(Object handle) {
+        super(handle);
     }
 
 
     public static RayTraceResult_type miss() {
-        if (g == null) {
-            g = new RayTraceResult_type(RayTraceResult_type.vapeInstance.getMappingsMapperCompat().q1.c());
+        if (miss == null) {
+            miss = new RayTraceResult_type(RayTraceResult_type.vapeInstance.getMappingsMapperCompat().rayTraceResultType.getMiss());
         }
-        return g;
+        return miss;
     }
 }
 

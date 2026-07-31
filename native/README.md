@@ -1,8 +1,11 @@
 # Vape 4.21 native test bridge
 
 This directory contains an x64 Windows JNI/JVMTI bridge reconstructed from
-the nine-method `RegisterNatives` table in `sample.dll`. It is intended for an
-isolated Minecraft 1.8.9 test instance owned by the research project.
+the nine-method `RegisterNatives` table in `sample.dll`. It supports isolated
+Minecraft 1.7.10 Forge, 1.8.9 Forge, and 1.12.2 Forge test instances, including
+Forge-enabled Lunar Client injection. Vanilla and Fabric are not supported.
+Minecraft 1.16.5 support is incomplete and may have mapping, rendering, and
+module compatibility problems.
 
 The authoritative bridge surface is:
 
@@ -83,8 +86,8 @@ Outputs are written to `build/dist`:
 ## Direct injection
 
 `Vape421Native.dll` contains the recovered Java product as an `RCDATA`
-resource. Start Minecraft 1.8.9 with a 64-bit JVM, then run the injector from
-the bundle directory:
+resource. Start a supported Forge instance, or a Forge-enabled Lunar Client
+instance, with a 64-bit JVM, then run the injector from the bundle directory:
 
 ```powershell
 Vape421Injector.exe

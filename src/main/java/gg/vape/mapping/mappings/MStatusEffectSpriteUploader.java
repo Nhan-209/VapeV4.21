@@ -7,39 +7,39 @@ import gg.vape.mapping.MappingMethod;
 
 public class MStatusEffectSpriteUploader
 extends Mapping {
-    private MappingField b;
-    private MappingMethod N;
+    private MappingField potionSpritesField;
+    private MappingMethod getSpriteMethod;
 
-    public static Object X(MStatusEffectSpriteUploader mStatusEffectSpriteUploader, Object object, Object object2) {
-        return mStatusEffectSpriteUploader.S(object, object2);
+    public static Object getSprite(MStatusEffectSpriteUploader mapping, Object uploaderHandle, Object effectHandle) {
+        return mapping.invokeGetSprite(uploaderHandle, effectHandle);
     }
 
-    private Object e(Object object) {
-        return this.b.getObject(object);
+    private Object readPotionSprites(Object minecraftHandle) {
+        return this.potionSpritesField.getObject(minecraftHandle);
     }
 
-    public static Object C(MStatusEffectSpriteUploader mStatusEffectSpriteUploader, Object object) {
-        return mStatusEffectSpriteUploader.e(object);
+    public static Object getPotionSprites(MStatusEffectSpriteUploader mapping, Object minecraftHandle) {
+        return mapping.readPotionSprites(minecraftHandle);
     }
 
     public MStatusEffectSpriteUploader() {
         super(MappedClasses.u4);
-        Class[] classArray = new Class[]{MappedClasses.D3};
-        Class clazz = MappedClasses.Db;
-        boolean bl = true;
-        String string = "getSprite";
-        MStatusEffectSpriteUploader mStatusEffectSpriteUploader = this;
-        this.N = this.Y(string, bl, clazz, classArray);
-        Class clazz2 = MappedClasses.u4;
-        boolean bl2 = true;
-        String string2 = "potionSprites";
-        Class clazz3 = MappedClasses.uP;
-        MStatusEffectSpriteUploader mStatusEffectSpriteUploader2 = this;
-        this.b = this.registerInstanceFieldForOwner(clazz3, string2, bl2, clazz2);
+        Class[] getSpriteParameterTypes = new Class[]{MappedClasses.D3};
+        Class getSpriteReturnType = MappedClasses.Db;
+        boolean getSpritePublic = true;
+        String getSpriteMethodName = "getSprite";
+        MStatusEffectSpriteUploader mapping = this;
+        this.getSpriteMethod = mapping.Y(getSpriteMethodName, getSpritePublic, getSpriteReturnType, getSpriteParameterTypes);
+        Class potionSpritesFieldType = MappedClasses.u4;
+        boolean potionSpritesFieldPublic = true;
+        String potionSpritesFieldName = "potionSprites";
+        Class minecraftClass = MappedClasses.uP;
+        MStatusEffectSpriteUploader potionSpritesMapping = this;
+        this.potionSpritesField = potionSpritesMapping.registerInstanceFieldForOwner(minecraftClass, potionSpritesFieldName, potionSpritesFieldPublic, potionSpritesFieldType);
     }
 
-    private Object S(Object object, Object object2) {
-        return this.N.invokeObject(object, object2);
+    private Object invokeGetSprite(Object uploaderHandle, Object effectHandle) {
+        return this.getSpriteMethod.invokeObject(uploaderHandle, effectHandle);
     }
 }
 

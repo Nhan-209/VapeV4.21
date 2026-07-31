@@ -9,41 +9,41 @@ import gg.vape.wrapper.impl.ForgeVersion;
 
 public class MTextureObject
 extends Mapping {
-    private MappingMethod X;
-    private MappingField U;
-    private MappingMethod v;
-    private MappingField W;
+    private MappingMethod setFilterMethod;
+    private MappingField textureField;
+    private MappingMethod getGlTextureIdMethod;
+    private MappingField glTextureIdField;
 
 
-    public static void k(MTextureObject mTextureObject, Object object, boolean bl, boolean bl2) {
-        mTextureObject.k(object, bl, bl2);
+    public static void setFilter(MTextureObject mapping, Object textureObject, boolean blur, boolean mipmap) {
+        mapping.setFilter(textureObject, blur, mipmap);
     }
 
-    private void k(Object object, boolean bl, boolean bl2) {
-        this.X.invokeVoid(object, bl, bl2);
+    private void setFilter(Object textureObject, boolean blur, boolean mipmap) {
+        this.setFilterMethod.invokeVoid(textureObject, blur, mipmap);
     }
 
-    private Object i(Object object) {
-        return this.U.getObject(object);
+    private Object getTexture(Object textureObject) {
+        return this.textureField.getObject(textureObject);
     }
 
-    public static int m(MTextureObject mTextureObject, Object object) {
-        return mTextureObject.O(object);
+    public static int getGlTextureId(MTextureObject mapping, Object textureObject) {
+        return mapping.getGlTextureId(textureObject);
     }
 
-    public static Object B(MTextureObject mTextureObject, Object object) {
-        return mTextureObject.i(object);
+    public static Object getTexture(MTextureObject mapping, Object textureObject) {
+        return mapping.getTexture(textureObject);
     }
 
-    private int O(Object object) {
+    private int getGlTextureId(Object textureObject) {
         if (ForgeVersion.MC_1_20_6.d()) {
-            return this.W.getInt(object);
+            return this.glTextureIdField.getInt(textureObject);
         }
-        return this.v.invokeInt(object, new Object[0]);
+        return this.getGlTextureIdMethod.invokeInt(textureObject, new Object[0]);
     }
 
     public MTextureObject() {
-        this(MTextureManager.N());
+        this(MTextureManager.getInitialControlFlowState());
     }
 
     private MTextureObject(int n) {
@@ -54,20 +54,20 @@ extends Mapping {
                 boolean bl = true;
                 String string = "glTextureId";
                 MTextureObject mTextureObject = this;
-                this.W = mTextureObject.J(string, bl, clazz);
+                this.glTextureIdField = mTextureObject.J(string, bl, clazz);
                 Class[] classArray = new Class[]{Boolean.TYPE, Boolean.TYPE};
                 Class<Void> clazz2 = Void.TYPE;
                 boolean bl2 = true;
                 String string2 = "setFilter";
                 MTextureObject mTextureObject2 = this;
-                this.X = this.Y(string2, bl2, clazz2, classArray);
+                this.setFilterMethod = this.Y(string2, bl2, clazz2, classArray);
             }
             Class[] classArray = new Class[]{};
             Class<Integer> clazz = Integer.TYPE;
             boolean bl = true;
             String string = "getGlTextureId";
             MTextureObject mTextureObject = this;
-            this.v = mTextureObject.Y(string, bl, clazz, classArray);
+            this.getGlTextureIdMethod = mTextureObject.Y(string, bl, clazz, classArray);
             return;
         }
         if (ForgeVersion.MC_1_21_6.d()) {
@@ -75,26 +75,26 @@ extends Mapping {
             boolean bl = true;
             String string = "texture";
             MTextureObject mTextureObject = this;
-            this.U = mTextureObject.J(string, bl, clazz);
+            this.textureField = mTextureObject.J(string, bl, clazz);
         } else if (ForgeVersion.MC_1_20_6.d()) {
             Class<Integer> clazz = Integer.TYPE;
             boolean bl = true;
             String string = "glTextureId";
             MTextureObject mTextureObject = this;
-            this.W = mTextureObject.J(string, bl, clazz);
+            this.glTextureIdField = mTextureObject.J(string, bl, clazz);
             Class[] classArray = new Class[]{Boolean.TYPE, Boolean.TYPE};
             Class<Void> clazz3 = Void.TYPE;
             boolean bl3 = true;
             String string3 = "setFilter";
             MTextureObject mTextureObject3 = this;
-            this.X = this.Y(string3, bl3, clazz3, classArray);
+            this.setFilterMethod = this.Y(string3, bl3, clazz3, classArray);
         } else {
             Class[] classArray = new Class[]{};
             Class<Integer> clazz = Integer.TYPE;
             boolean bl = true;
             String string = "getGlTextureId";
             MTextureObject mTextureObject = this;
-            this.v = mTextureObject.Y(string, bl, clazz, classArray);
+            this.getGlTextureIdMethod = mTextureObject.Y(string, bl, clazz, classArray);
         }
     }
 }

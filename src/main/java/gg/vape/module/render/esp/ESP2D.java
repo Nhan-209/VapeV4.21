@@ -47,16 +47,16 @@ extends SubModule<ESP> {
         float coordinateScale = 2.0f;
         OpenGlBackendHolder.backend.scale(renderScale, renderScale, renderScale);
         GlStateManager.enableAlpha();
-        float partialTicks = RenderWorldLastEvent.getPartialTicks();
+        float renderResolutionMultiplier = RenderWorldLastEvent.getRenderResolutionMultiplier();
         boolean blendEnabled = GL11.glIsEnabled((int)3042);
         RenderUtils.g();
         for (ProjectedEntityBounds projectedEntityBounds : this.pendingBounds) {
             double textWidth;
             float displayHeight = event.getDisplayHeight();
-            double left = projectedEntityBounds.minX / (double)coordinateScale / (double)renderScale / (double)partialTicks;
-            double right = projectedEntityBounds.maxX / (double)coordinateScale / (double)renderScale / (double)partialTicks;
-            double top = ((double)displayHeight - projectedEntityBounds.maxY / (double)partialTicks) / (double)coordinateScale / (double)renderScale;
-            double bottom = ((double)displayHeight - projectedEntityBounds.minY / (double)partialTicks) / (double)coordinateScale / (double)renderScale;
+            double left = projectedEntityBounds.minX / (double)coordinateScale / (double)renderScale / (double)renderResolutionMultiplier;
+            double right = projectedEntityBounds.maxX / (double)coordinateScale / (double)renderScale / (double)renderResolutionMultiplier;
+            double top = ((double)displayHeight - projectedEntityBounds.maxY / (double)renderResolutionMultiplier) / (double)coordinateScale / (double)renderScale;
+            double bottom = ((double)displayHeight - projectedEntityBounds.minY / (double)renderResolutionMultiplier) / (double)coordinateScale / (double)renderScale;
             GlStateManager.disableTexture2D();
             OpenGlBackendHolder.backend.setLineWidth(1.0f);
             GlStateManager.enableBlend();

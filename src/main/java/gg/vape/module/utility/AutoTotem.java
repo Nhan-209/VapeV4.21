@@ -94,7 +94,7 @@ implements InventoryActionModule {
         int count = 0;
         for (int slot = 9; slot <= 45; ++slot) {
             ItemMappingEntry itemMappingEntry;
-            ItemStack itemStack = localPlayer.F$src$Lgg_vape_wrapper_impl_Container_$152y6lm().getSlot(slot).I();
+            ItemStack itemStack = localPlayer.F$src$Lgg_vape_wrapper_impl_Container_$152y6lm().getSlot(slot).getStack();
             if (itemStack.isNull() || (itemMappingEntry = Vape.INSTANCE.getItemStackResolver().resolve(itemStack)) == null || !itemMappingEntry.getResourceKey().toLowerCase().contains("totem_of_undying")) continue;
             count += itemStack.t();
         }
@@ -301,7 +301,7 @@ implements InventoryActionModule {
             this.closeInventory();
             return;
         }
-        ItemStack itemStack = localPlayer.F$src$Lgg_vape_wrapper_impl_Container_$152y6lm().getSlot(45).I();
+        ItemStack itemStack = localPlayer.F$src$Lgg_vape_wrapper_impl_Container_$152y6lm().getSlot(45).getStack();
         ItemMappingEntry itemMappingEntry = Vape.INSTANCE.getItemStackResolver().resolve(itemStack);
         if (itemMappingEntry != null && itemMappingEntry.getResourceKey().toLowerCase().contains("totem_of_undying")) {
             if (this.inventoryOpen && this.clickQueue.isEmpty()) {
@@ -371,7 +371,7 @@ implements InventoryActionModule {
         ArrayList<Integer> totemSlots = new ArrayList<Integer>();
         for (int slot = 9; slot < 45; ++slot) {
             ItemMappingEntry itemMappingEntry;
-            ItemStack itemStack = localPlayer.F$src$Lgg_vape_wrapper_impl_Container_$152y6lm().getSlot(slot).I();
+            ItemStack itemStack = localPlayer.F$src$Lgg_vape_wrapper_impl_Container_$152y6lm().getSlot(slot).getStack();
             if (itemStack.isNull() || (itemMappingEntry = Vape.INSTANCE.getItemStackResolver().resolve(itemStack)) == null || !itemMappingEntry.getResourceKey().toLowerCase().contains("totem_of_undying")) continue;
             if (!this.randomSlot.getEffectiveValue().booleanValue()) {
                 return slot;
@@ -388,11 +388,11 @@ implements InventoryActionModule {
         int slot;
         EntityPlayerSP localPlayer = Minecraft.thePlayer();
         for (slot = 36; slot < 45; ++slot) {
-            if (localPlayer.F$src$Lgg_vape_wrapper_impl_Container_$152y6lm().getSlot(slot).I().isNotNull()) continue;
+            if (localPlayer.F$src$Lgg_vape_wrapper_impl_Container_$152y6lm().getSlot(slot).getStack().isNotNull()) continue;
             return slot;
         }
         for (slot = 9; slot < 36; ++slot) {
-            if (localPlayer.F$src$Lgg_vape_wrapper_impl_Container_$152y6lm().getSlot(slot).I().isNotNull()) continue;
+            if (localPlayer.F$src$Lgg_vape_wrapper_impl_Container_$152y6lm().getSlot(slot).getStack().isNotNull()) continue;
             return slot;
         }
         return -1;

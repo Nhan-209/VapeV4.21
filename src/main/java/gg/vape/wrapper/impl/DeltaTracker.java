@@ -5,16 +5,15 @@ import gg.vape.wrapper.Wrapper;
 
 public class DeltaTracker
 extends Wrapper {
-    public float b(boolean bl) {
-        return MDeltaTracker.d(DeltaTracker.vapeInstance.getMappingsMapperCompat().RU, this.I, bl);
+    public float getGameTimeDeltaPartialTick(boolean runsNormally) {
+        return MDeltaTracker.getGameTimeDeltaPartialTick(DeltaTracker.vapeInstance.getMappingsMapperCompat().deltaTracker, this.I, runsNormally);
     }
 
-    public DeltaTracker(Object object) {
-        super(object);
+    public DeltaTracker(Object handle) {
+        super(handle);
     }
 
-    public float r() {
-        return MDeltaTracker.K(DeltaTracker.vapeInstance.getMappingsMapperCompat().RU, this.I);
+    public float getGameTimeDeltaTicks() {
+        return MDeltaTracker.getGameTimeDeltaTicks(DeltaTracker.vapeInstance.getMappingsMapperCompat().deltaTracker, this.I);
     }
 }
-

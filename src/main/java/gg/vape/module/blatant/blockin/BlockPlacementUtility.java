@@ -84,7 +84,7 @@ public final class BlockPlacementUtility {
 
     @Nullable
     public static ItemMappingEntry getSlotItem(@Nullable Slot slot) {
-        return slot == null || slot.isNull() || slot.I() == null || slot.I().isNull() ? null : Vape.INSTANCE.getItemStackResolver().resolve(slot.I());
+        return slot == null || slot.isNull() || slot.getStack() == null || slot.getStack().isNull() ? null : Vape.INSTANCE.getItemStackResolver().resolve(slot.getStack());
     }
 
     public static boolean isLookingAtPlacementTarget(@Nullable BlockCoordinate blockCoordinate,
@@ -108,7 +108,7 @@ public final class BlockPlacementUtility {
     }
 
     private static boolean slotContainsItem(ItemMappingEntry itemMappingEntry, Slot slot) {
-        return slot != null && slot.isNotNull() && slot.I().isNotNull() && itemMappingEntry.equals(Vape.INSTANCE.getItemStackResolver().resolve(slot.I()));
+        return slot != null && slot.isNotNull() && slot.getStack().isNotNull() && itemMappingEntry.equals(Vape.INSTANCE.getItemStackResolver().resolve(slot.getStack()));
     }
 
     public static ItemMappingEntry getEmptyBucketItem() {

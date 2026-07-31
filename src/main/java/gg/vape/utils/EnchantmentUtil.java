@@ -81,7 +81,7 @@ public class EnchantmentUtil {
 
     private static EnchantmentRegistryAccess z() {
         if (j == null) {
-            j = EnchantmentHelperBridge.i();
+            j = EnchantmentHelperBridge.createLookup();
         }
         return j;
     }
@@ -143,7 +143,7 @@ public class EnchantmentUtil {
         String string2 = string.contains(":") ? string : "minecraft:" + string;
         ResourceLocation resourceLocation = ResourceLocation.create(string2);
         RegistryAccess registryAccess = worldClient.e();
-        Registry registry = registryAccess.lookupOrThrow(ResourceKeyEnchantmentBridge.h());
+        Registry registry = registryAccess.lookupOrThrow(ResourceKeyEnchantmentBridge.enchantment());
         return registry.t(resourceLocation);
     }
 
@@ -164,7 +164,7 @@ public class EnchantmentUtil {
             return A;
         }
         EnchantmentRegistryAccess enchantmentRegistryAccess = EnchantmentUtil.z();
-        EnchantmentRegistry enchantmentRegistry = enchantmentRegistryAccess.lookupOrThrow(ResourceKeyEnchantmentBridge.h());
+        EnchantmentRegistry enchantmentRegistry = enchantmentRegistryAccess.lookupOrThrow(ResourceKeyEnchantmentBridge.enchantment());
         Stream<EnchantmentHolder> stream = enchantmentRegistry.listElements();
         Stream<Enchantment> stream2 = stream.map(EnchantmentUtil::lambda$getVanillaEnchantments_54$0);
         Enchantment[] enchantmentArray = (Enchantment[])stream2.toArray(EnchantmentUtil::lambda$getVanillaEnchantments_54$1);
@@ -213,7 +213,7 @@ public class EnchantmentUtil {
         }
         String string2 = string.contains(":") ? string : "minecraft:" + string;
         EnchantmentRegistryAccess enchantmentRegistryAccess = EnchantmentUtil.z();
-        EnchantmentRegistry enchantmentRegistry = enchantmentRegistryAccess.lookupOrThrow(ResourceKeyEnchantmentBridge.h());
+        EnchantmentRegistry enchantmentRegistry = enchantmentRegistryAccess.lookupOrThrow(ResourceKeyEnchantmentBridge.enchantment());
         Stream<EnchantmentHolder> stream = enchantmentRegistry.listElements();
         Optional<EnchantmentHolder> optional = stream.filter(arg_0 -> EnchantmentUtil.lambda$getEnchantmentByName$2(string2, arg_0)).findFirst();
         return optional.map(EnchantmentUtil::lambda$getEnchantmentByName$3).orElse(null);

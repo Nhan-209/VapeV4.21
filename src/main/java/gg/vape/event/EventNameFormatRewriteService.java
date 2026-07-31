@@ -133,7 +133,7 @@ extends FriendAliasDisplayNameListener {
             if (changed || rewrittenSibling.equals(sibling)) continue;
             changed = true;
         }
-        return changed ? TextComponentBaseBridge.l(rewrittenPayload, rewrittenSiblings, component.J()) : component;
+        return changed ? TextComponentBaseBridge.create(rewrittenPayload, rewrittenSiblings, component.J()) : component;
     }
 
     @EventHandler

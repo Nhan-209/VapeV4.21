@@ -60,7 +60,7 @@ extends Mapping {
         String string6 = "right";
         MGlyphInfo mGlyphInfo6 = this;
         this.A = this.J(string6, bl6, clazz6);
-        if (MGlyphProvider.f() != null) {
+        if (MGlyphProvider.getGlyphSourceControlFlowState() != null) {
             Class<Float> clazz7 = Float.TYPE;
             boolean bl7 = true;
             String string7 = "up";

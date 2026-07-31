@@ -59,14 +59,14 @@ public class InputEventDispatcher {
         if (ForgeVersion.MC_1_21_10.v()) {
             return;
         }
-        RenderTypeBuffer renderBuffer = Minecraft.K();
-        if (renderBuffer.isNull()) {
+        RenderTypeBuffer framerateLimitTracker = Minecraft.getFramerateLimitTracker();
+        if (framerateLimitTracker.isNull()) {
             return;
         }
         if (!this.focusState.isFocused()) {
             return;
         }
-        renderBuffer.q();
+        framerateLimitTracker.onInputReceived();
     }
 
     public boolean dispatch(int notificationCode, long firstArgument, long secondArgument) {

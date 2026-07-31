@@ -8,50 +8,50 @@ import java.util.List;
 
 public class MTextComponentBaseBridge
 extends Mapping {
-    private static final String c;
-    public MappingMethod D;
-    private static int[] C;
-    public MappingMethod b;
+    private static final String SET_STYLE_METHOD_NAME;
+    public MappingMethod constructor;
+    private static int[] mutableComponentControlFlowState;
+    public MappingMethod setStyleMethod;
 
     static {
-        MTextComponentBaseBridge.C(new int[2]);
-        c = "setStyle";
+        MTextComponentBaseBridge.setMutableComponentControlFlowState(new int[2]);
+        SET_STYLE_METHOD_NAME = "setStyle";
     }
 
-    public static int[] W() {
-        return C;
+    public static int[] getMutableComponentControlFlowState() {
+        return mutableComponentControlFlowState;
     }
 
-    public Object Q(Object object, List list, Object object2) {
-        return this.D.newInstance(object, list, object2);
+    public Object create(Object contentsHandle, List siblingHandles, Object styleHandle) {
+        return this.constructor.newInstance(contentsHandle, siblingHandles, styleHandle);
     }
 
     public MTextComponentBaseBridge() {
-        this(MTextComponentBaseBridge.W());
+        this(MTextComponentBaseBridge.getMutableComponentControlFlowState());
     }
 
-    private MTextComponentBaseBridge(int[] nArray) {
+    private MTextComponentBaseBridge(int[] controlFlowState) {
         super(MappedClasses.uM);
-        int[] nArray2 = nArray;
+        int[] currentControlFlowState = controlFlowState;
         if (ForgeVersion.MC_1_20_6.d()) {
-            Class[] classArray = new Class[]{MappedClasses.Va};
-            Class<?> clazz = MappedClasses.uM;
-            boolean bl = true;
-            String string = c;
-            MTextComponentBaseBridge mTextComponentBaseBridge = this;
-            this.b = this.Y(string, bl, clazz, classArray);
-            Class[] classArray2 = new Class[]{MappedClasses.YT, List.class, MappedClasses.Va};
-            MTextComponentBaseBridge mTextComponentBaseBridge2 = this;
-            this.D = this.registerConstructor(classArray2);
+            Class[] setStyleParameterTypes = new Class[]{MappedClasses.Va};
+            Class<?> setStyleReturnType = MappedClasses.uM;
+            boolean setStylePublic = true;
+            String setStyleMethodName = SET_STYLE_METHOD_NAME;
+            MTextComponentBaseBridge mapping = this;
+            this.setStyleMethod = mapping.Y(setStyleMethodName, setStylePublic, setStyleReturnType, setStyleParameterTypes);
+            Class[] constructorParameterTypes = new Class[]{MappedClasses.YT, List.class, MappedClasses.Va};
+            MTextComponentBaseBridge constructorMapping = this;
+            this.constructor = constructorMapping.registerConstructor(constructorParameterTypes);
         }
     }
 
-    public static void C(int[] nArray) {
-        C = nArray;
+    public static void setMutableComponentControlFlowState(int[] controlFlowState) {
+        mutableComponentControlFlowState = controlFlowState;
     }
 
-    public Object X(Object object, Object object2) {
-        return this.b.invokeObject(object, object2);
+    public Object setStyle(Object componentHandle, Object styleHandle) {
+        return this.setStyleMethod.invokeObject(componentHandle, styleHandle);
     }
 
 }

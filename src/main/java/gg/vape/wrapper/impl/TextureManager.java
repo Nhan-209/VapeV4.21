@@ -10,15 +10,15 @@ extends Wrapper {
         super(object);
     }
 
-    public void g(ResourceLocation resourceLocation) {
+    public void bindTexture(ResourceLocation location) {
         if (ForgeVersion.MC_1_21_0.d()) {
             return;
         }
-        MTextureManager.Y(TextureManager.vapeInstance.getMappingsMapperCompat().DW, this.I, resourceLocation.getObject());
+        MTextureManager.bindTexture(TextureManager.vapeInstance.getMappingsMapperCompat().textureManager, this.I, location.getObject());
     }
 
-    public TextureObject G(ResourceLocation resourceLocation) {
-        return new TextureObject(MTextureManager.a(TextureManager.vapeInstance.getMappingsMapperCompat().DW, this.I, resourceLocation.getObject()));
+    public TextureObject getTexture(ResourceLocation location) {
+        return new TextureObject(MTextureManager.getTexture(TextureManager.vapeInstance.getMappingsMapperCompat().textureManager, this.I, location.getObject()));
     }
 }
 

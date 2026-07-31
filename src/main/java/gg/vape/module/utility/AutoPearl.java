@@ -336,7 +336,7 @@ extends Mod {
         }
         for (int i = 36; i < 45; ++i) {
             Slot slot = container.getSlot(i);
-            if (!slot.v() || !slot.I().getItem().isInstance(MappedClasses.ZH)) continue;
+            if (!slot.hasStack() || !slot.getStack().getItem().isInstance(MappedClasses.ZH)) continue;
             return i;
         }
         return -1;

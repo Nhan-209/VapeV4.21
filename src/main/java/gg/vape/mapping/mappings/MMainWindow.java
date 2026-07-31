@@ -67,7 +67,7 @@ extends Mapping {
     }
 
     public MMainWindow() {
-        this(MTextureManager.N());
+        this(MTextureManager.getInitialControlFlowState());
     }
 
     private MMainWindow(int n) {
@@ -80,7 +80,7 @@ extends Mapping {
             MMainWindow mMainWindow = this;
             this.O = mMainWindow.J(string, bl, clazz);
             if (GuiComponent.getLegacyComponentState() == null) {
-                MTextureManager.T(++n2);
+                MTextureManager.setTextureManagerControlFlowState(++n2);
             }
             return;
         }
@@ -128,7 +128,7 @@ extends Mapping {
             this.O = this.J(string7, bl7, clazz7);
         }
         if (GuiComponent.getLegacyComponentState() == null) {
-            MTextureManager.T(++n2);
+            MTextureManager.setTextureManagerControlFlowState(++n2);
         }
     }
 

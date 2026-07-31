@@ -117,7 +117,7 @@ implements InventoryActionModule {
     }
 
     private boolean isSlotEmpty(Slot slot) {
-        ItemStack itemStack = slot.I();
+        ItemStack itemStack = slot.getStack();
         return itemStack.isNull();
     }
 
@@ -132,11 +132,11 @@ implements InventoryActionModule {
         }
         if (slotInventoryFilterRule instanceof ArmorSlotInventoryFilterRule) {
             wrapper = container.getSlot(slotInventoryFilterRule.getContainerSlot());
-            return ((Slot)wrapper).I().isNull();
+            return ((Slot)wrapper).getStack().isNull();
         }
         for (int i = 0; i < 9; ++i) {
             Slot slot = container.getSlot(36 + i);
-            if (!slot.I().isNull()) continue;
+            if (!slot.getStack().isNull()) continue;
             return i == slotInventoryFilterRule.getSlot();
         }
         return false;
@@ -172,10 +172,10 @@ implements InventoryActionModule {
         for (Slot slot : inventorySlots) {
             SlotInventoryFilterRule slotInventoryFilterRule;
             ItemInventoryFilterRule itemInventoryFilterRule;
-            ItemStack itemStack = slot.I();
-            if (itemStack.isNull() || itemStack.getItem().isNull() || (itemInventoryFilterRule = inventoryCleanerProfile.findMatchingItemRule(itemStack)) == null || !itemInventoryFilterRule.matches(itemStack) || slot.g() >= 36 && slot.g() <= 44 && (slotInventoryFilterRule = inventoryCleanerProfile.getOrCreateSlotRule(slot.g() - 36)).getItemSelection().matches(itemStack) && slotInventoryFilterRule.matches(itemStack) || this.touchedSlots.contains(slot.g())) continue;
+            ItemStack itemStack = slot.getStack();
+            if (itemStack.isNull() || itemStack.getItem().isNull() || (itemInventoryFilterRule = inventoryCleanerProfile.findMatchingItemRule(itemStack)) == null || !itemInventoryFilterRule.matches(itemStack) || slot.getSlotNumber() >= 36 && slot.getSlotNumber() <= 44 && (slotInventoryFilterRule = inventoryCleanerProfile.getOrCreateSlotRule(slot.getSlotNumber() - 36)).getItemSelection().matches(itemStack) && slotInventoryFilterRule.matches(itemStack) || this.touchedSlots.contains(slot.getSlotNumber())) continue;
             if (itemInventoryFilterRule.getAction() == InventoryFilterAction.REMOVE) {
-                InventoryClickQueue.enqueueDropSlot(slot.g(), container.getWindowId(), this.clickQueue);
+                InventoryClickQueue.enqueueDropSlot(slot.getSlotNumber(), container.getWindowId(), this.clickQueue);
                 continue;
             }
             if (itemInventoryFilterRule.getAction() != InventoryFilterAction.CONDENSE) continue;
@@ -193,7 +193,7 @@ implements InventoryActionModule {
         Container container = guiContainer.getInventorySlots();
         for (int slotIndex = 9; slotIndex < 36; ++slotIndex) {
             Slot slot = container.getSlot(slotIndex);
-            ItemStack itemStack = slot.I();
+            ItemStack itemStack = slot.getStack();
             if (!itemStack.isNull()) continue;
             return true;
         }
@@ -202,7 +202,7 @@ implements InventoryActionModule {
 
     private int getSlotItemValue(int slotIndex) {
         EntityPlayerSP localPlayer = Minecraft.thePlayer();
-        ItemStack itemStack = localPlayer.F$src$Lgg_vape_wrapper_impl_Container_$152y6lm().getSlot(slotIndex).I();
+        ItemStack itemStack = localPlayer.F$src$Lgg_vape_wrapper_impl_Container_$152y6lm().getSlot(slotIndex).getStack();
         return itemStack.isNotNull() ? itemStack.L() : 999;
     }
 
@@ -270,7 +270,7 @@ implements InventoryActionModule {
             if (!slotInventoryFilterRule.getItemSelection().matches(itemStack) || !slotInventoryFilterRule.matches(itemStack)) continue;
             Slot slot = container.getSlot(slotInventoryFilterRule.getContainerSlot());
             Comparator<ItemStack> comparator = slotInventoryFilterRule.getPriority().getComparator();
-            if (slotInventoryFilterRule.getPriority().equals(InventoryItemCategoryRegistry.FIRST_AVAILABLE) || comparator != null && (comparison = comparator.compare(slot.I(), itemStack)) >= 0) continue;
+            if (slotInventoryFilterRule.getPriority().equals(InventoryItemCategoryRegistry.FIRST_AVAILABLE) || comparator != null && (comparison = comparator.compare(slot.getStack(), itemStack)) >= 0) continue;
             foundBetter = true;
             break;
         }
@@ -290,26 +290,26 @@ implements InventoryActionModule {
             ArrayList<Integer> consumedSlots = new ArrayList<Integer>();
             slotLoop: for (int targetIndex = 0; targetIndex < matchingSlots.size(); ++targetIndex) {
                 Slot targetSlot = matchingSlots.get(targetIndex);
-                ItemStack targetStack = targetSlot.I();
+                ItemStack targetStack = targetSlot.getStack();
                 int targetCount = targetStack.t();
-                if (consumedSlots.contains(targetSlot.g())) continue;
+                if (consumedSlots.contains(targetSlot.getSlotNumber())) continue;
                 for (int sourceIndex = targetIndex + 1; sourceIndex < matchingSlots.size(); ++sourceIndex) {
                     Slot sourceSlot = matchingSlots.get(sourceIndex);
-                    if (targetSlot.g() == sourceSlot.g()) continue;
-                    ItemStack sourceStack = sourceSlot.I();
+                    if (targetSlot.getSlotNumber() == sourceSlot.getSlotNumber()) continue;
+                    ItemStack sourceStack = sourceSlot.getStack();
                     int sourceCount = sourceStack.t();
                     if (!targetStack.getItem().equals(sourceStack.getItem())) continue;
                     int combinedCount = targetCount + sourceCount;
                     int maxStackSize = targetStack.P();
                     if (combinedCount <= maxStackSize) {
-                        consumedSlots.add(sourceSlot.g());
-                        InventoryClickQueue.enqueueMove(sourceSlot.g(), targetSlot.g(), windowId, this.clickQueue);
+                        consumedSlots.add(sourceSlot.getSlotNumber());
+                        InventoryClickQueue.enqueueMove(sourceSlot.getSlotNumber(), targetSlot.getSlotNumber(), windowId, this.clickQueue);
                         continue slotLoop;
                     }
                     int remainingCapacity = maxStackSize - targetCount;
-                    InventoryClickQueue.enqueueClick(sourceSlot.g(), targetSlot.g(), windowId, this.clickQueue);
-                    InventoryClickQueue.enqueueClick(targetSlot.g(), sourceSlot.g(), windowId, this.clickQueue);
-                    InventoryClickQueue.enqueueClick(sourceSlot.g(), targetSlot.g(), windowId, this.clickQueue);
+                    InventoryClickQueue.enqueueClick(sourceSlot.getSlotNumber(), targetSlot.getSlotNumber(), windowId, this.clickQueue);
+                    InventoryClickQueue.enqueueClick(targetSlot.getSlotNumber(), sourceSlot.getSlotNumber(), windowId, this.clickQueue);
+                    InventoryClickQueue.enqueueClick(sourceSlot.getSlotNumber(), targetSlot.getSlotNumber(), windowId, this.clickQueue);
                     if (remainingCapacity == 0) continue slotLoop;
                 }
             }
@@ -324,7 +324,7 @@ implements InventoryActionModule {
     private int findBestSourceSlot(int targetSlot, boolean tieBreak) {
         int bestSlot = -1;
         EntityPlayerSP localPlayer = Minecraft.thePlayer();
-        ItemStack equippedStack = localPlayer.F$src$Lgg_vape_wrapper_impl_Container_$152y6lm().getSlot(targetSlot).I();
+        ItemStack equippedStack = localPlayer.F$src$Lgg_vape_wrapper_impl_Container_$152y6lm().getSlot(targetSlot).getStack();
         double score = 0.0;
         double itemValue = 999.0;
         if (equippedStack.isNotNull()) {
@@ -334,7 +334,7 @@ implements InventoryActionModule {
         double bestScore = score;
         double bestValue = itemValue;
         for (int candidateSlot = 9; candidateSlot < 45; ++candidateSlot) {
-            ItemStack candidateStack = localPlayer.F$src$Lgg_vape_wrapper_impl_Container_$152y6lm().getSlot(candidateSlot).I();
+            ItemStack candidateStack = localPlayer.F$src$Lgg_vape_wrapper_impl_Container_$152y6lm().getSlot(candidateSlot).getStack();
             if (!candidateStack.isNotNull() || this.getArmorSlotForItem(candidateStack) != targetSlot) continue;
             double candidateScore = ItemStackScoreUtil.L(candidateStack);
             double candidateValue = this.getSlotItemValue(candidateSlot);
@@ -361,7 +361,7 @@ implements InventoryActionModule {
         ItemStack lastValidStack = null;
         for (int slotIndex = 9; slotIndex < inventorySlots.size(); ++slotIndex) {
             Slot candidateSlot = container.getSlot(slotIndex);
-            ItemStack candidateStack = candidateSlot.I();
+            ItemStack candidateStack = candidateSlot.getStack();
             if (this.touchedSlots.contains(slotIndex) || !candidateStack.isNotNull() || !slotRule.getItemSelection().matches(candidateStack) || !slotRule.matches(candidateStack)) continue;
             lastValidStack = candidateStack;
             validSlots.add(candidateSlot);
@@ -442,7 +442,7 @@ implements InventoryActionModule {
     }
 
     private static int compareSlotsByItemComparator(Comparator<ItemStack> comparator, Slot first, Slot second) {
-        return comparator.compare(first.I(), second.I());
+        return comparator.compare(first.getStack(), second.getStack());
     }
 
     private void beginClose() {
@@ -451,8 +451,8 @@ implements InventoryActionModule {
     }
 
     private static int compareStackSizes(Slot first, Slot second) {
-        ItemStack firstStack = first.I();
-        ItemStack secondStack = second.I();
+        ItemStack firstStack = first.getStack();
+        ItemStack secondStack = second.getStack();
         return Integer.compare(firstStack.isNull() ? 0 : firstStack.t(), secondStack.isNull() ? 0 : secondStack.t());
     }
 
@@ -474,7 +474,7 @@ implements InventoryActionModule {
     }
 
     private static boolean isFullOrEmptyStack(Slot slot) {
-        ItemStack itemStack = slot.I();
+        ItemStack itemStack = slot.getStack();
         return itemStack.isNull() || itemStack.t() >= itemStack.P();
     }
 
@@ -487,7 +487,7 @@ implements InventoryActionModule {
         Container container = guiContainer.getInventorySlots();
         for (int i = 9; i < 36; ++i) {
             Slot slot = container.getSlot(i);
-            ItemStack itemStack = slot.I();
+            ItemStack itemStack = slot.getStack();
             if (!itemStack.isNull()) continue;
             InventoryClickQueue.enqueueClick(i, 0, container.getWindowId(), this.clickQueue);
             return true;
@@ -576,12 +576,12 @@ implements InventoryActionModule {
                 this.touchedSlots.add(slotInventoryFilterRule.getContainerSlot());
             }
             targetSlot = container.getSlot(slotInventoryFilterRule.getContainerSlot());
-            ItemStack targetStack = targetSlot.I();
+            ItemStack targetStack = targetSlot.getStack();
             if (targetStack.isNull() || !(slotInventoryFilterRule instanceof ArmorSlotInventoryFilterRule) && (!slotInventoryFilterRule.getItemSelection().matches(targetStack) || !slotInventoryFilterRule.matches(targetStack))) continue;
             List<Slot> validSlots = this.getOtherValid(container, targetSlot, slotInventoryFilterRule);
             if (!validSlots.isEmpty()) {
                 Slot bestSlot = validSlots.get(0);
-                if (bestSlot.g() != targetSlot.g()) continue;
+                if (bestSlot.getSlotNumber() != targetSlot.getSlotNumber()) continue;
                 this.touchedSlots.add(slotInventoryFilterRule.getContainerSlot());
                 continue;
             }
@@ -592,22 +592,22 @@ implements InventoryActionModule {
             int comparison;
             int targetSlotIndex = slotInventoryFilterRule.getContainerSlot();
             Slot targetSlot = container.getSlot(targetSlotIndex);
-            ItemStack currentStack = targetSlot.I();
+            ItemStack currentStack = targetSlot.getStack();
             List<Slot> validSlots = this.getOtherValid(container, targetSlot, slotInventoryFilterRule);
             if (currentStack.isNotNull() && currentStack.getItem().isNotNull()) {
                 if (slotInventoryFilterRule.getItemSelection().matches(currentStack) && slotInventoryFilterRule.matches(currentStack)) {
-                    if (validSlots.size() <= 1 || targetSlot.g() == validSlots.get(0).g()) continue;
+                    if (validSlots.size() <= 1 || targetSlot.getSlotNumber() == validSlots.get(0).getSlotNumber()) continue;
                     Slot bestSlot = validSlots.get(0);
                     Comparator<ItemStack> comparator = slotInventoryFilterRule.getPriority().getComparator();
                     if (slotInventoryFilterRule.getPriority().equals(InventoryItemCategoryRegistry.FIRST_AVAILABLE)) continue;
-                    if (comparator != null && (comparison = comparator.compare(targetSlot.I(), bestSlot.I())) >= 0) {
+                    if (comparator != null && (comparison = comparator.compare(targetSlot.getStack(), bestSlot.getStack())) >= 0) {
                         this.touchedSlots.add(slotInventoryFilterRule.getContainerSlot());
                         continue;
                     }
                 }
-                ItemInventoryFilterRule itemRule = inventoryCleanerProfile.findMatchingItemRule(targetSlot.I());
-                if (!(slotInventoryFilterRule instanceof ArmorSlotInventoryFilterRule) && itemRule != null && itemRule.matches(targetSlot.I()) && itemRule.getAction() == InventoryFilterAction.MOVE) {
-                    InventoryClickQueue.enqueueShiftClick(targetSlot.g(), container.getWindowId(), this.clickQueue);
+                ItemInventoryFilterRule itemRule = inventoryCleanerProfile.findMatchingItemRule(targetSlot.getStack());
+                if (!(slotInventoryFilterRule instanceof ArmorSlotInventoryFilterRule) && itemRule != null && itemRule.matches(targetSlot.getStack()) && itemRule.getAction() == InventoryFilterAction.MOVE) {
+                    InventoryClickQueue.enqueueShiftClick(targetSlot.getSlotNumber(), container.getWindowId(), this.clickQueue);
                 }
             }
             if (validSlots.isEmpty()) continue;
@@ -615,15 +615,15 @@ implements InventoryActionModule {
             if (selectedSlot.equals(targetSlot)) continue;
             this.touchedSlots.add(slotInventoryFilterRule.getContainerSlot());
             boolean swapRequired = !this.isSlotEmpty(targetSlot);
-            boolean shiftClick = this.isTargetSlotEmpty(slotInventoryFilterRule) && (selectedSlot.g() < 36 || slotInventoryFilterRule instanceof ArmorSlotInventoryFilterRule);
+            boolean shiftClick = this.isTargetSlotEmpty(slotInventoryFilterRule) && (selectedSlot.getSlotNumber() < 36 || slotInventoryFilterRule instanceof ArmorSlotInventoryFilterRule);
             if (shiftClick) {
-                InventoryClickQueue.enqueueShiftClick(selectedSlot.g(), container.getWindowId(), this.clickQueue);
+                InventoryClickQueue.enqueueShiftClick(selectedSlot.getSlotNumber(), container.getWindowId(), this.clickQueue);
             } else if (swapRequired) {
-                InventoryClickQueue.enqueueSwap(selectedSlot.g(), targetSlotIndex, container.getWindowId(), this.clickQueue);
+                InventoryClickQueue.enqueueSwap(selectedSlot.getSlotNumber(), targetSlotIndex, container.getWindowId(), this.clickQueue);
             } else {
-                InventoryClickQueue.enqueueMove(selectedSlot.g(), targetSlotIndex, container.getWindowId(), this.clickQueue);
+                InventoryClickQueue.enqueueMove(selectedSlot.getSlotNumber(), targetSlotIndex, container.getWindowId(), this.clickQueue);
             }
-            this.touchedSlots.add(selectedSlot.g());
+            this.touchedSlots.add(selectedSlot.getSlotNumber());
         }
     }
 

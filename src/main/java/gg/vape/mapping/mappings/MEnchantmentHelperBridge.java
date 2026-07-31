@@ -6,45 +6,45 @@ import gg.vape.mapping.MappingMethod;
 
 public class MEnchantmentHelperBridge
 extends Mapping {
-    private final MappingMethod F;
-    private static final String b;
-    private static int D;
+    private final MappingMethod createLookupMethod;
+    private static final String CREATE_LOOKUP_METHOD_NAME;
+    private static int vanillaRegistriesControlFlowState;
 
     public MEnchantmentHelperBridge() {
-        this(MEnchantmentHelperBridge.T());
+        this(MEnchantmentHelperBridge.getVanillaRegistriesControlFlowState());
     }
 
-    private MEnchantmentHelperBridge(int n) {
+    private MEnchantmentHelperBridge(int controlFlowState) {
         super(MappedClasses.qV);
-        int n2 = n;
-        Class[] classArray = new Class[]{};
-        Class clazz = MappedClasses.zi;
-        boolean bl = true;
-        String string = b;
-        MEnchantmentHelperBridge mEnchantmentHelperBridge = this;
-        this.F = this.registerStaticMethod(string, bl, clazz, classArray);
+        int currentControlFlowState = controlFlowState;
+        Class[] parameterTypes = new Class[]{};
+        Class returnType = MappedClasses.zi;
+        boolean methodPublic = true;
+        String methodName = CREATE_LOOKUP_METHOD_NAME;
+        MEnchantmentHelperBridge mapping = this;
+        this.createLookupMethod = mapping.registerStaticMethod(methodName, methodPublic, returnType, parameterTypes);
     }
 
-    public static int Y() {
-        int n = MEnchantmentHelperBridge.T();
+    public static int getControlFlowConstant() {
+        int controlFlowState = MEnchantmentHelperBridge.getVanillaRegistriesControlFlowState();
         return 41;
     }
 
-    public Object l() {
-        return this.F.invokeObject(null, new Object[0]);
+    public Object createLookup() {
+        return this.createLookupMethod.invokeObject(null, new Object[0]);
     }
 
-    public static void F(int n) {
-        D = n;
+    public static void setVanillaRegistriesControlFlowState(int state) {
+        vanillaRegistriesControlFlowState = state;
     }
 
     static {
-        MEnchantmentHelperBridge.F(0);
-        b = "createLookup";
+        MEnchantmentHelperBridge.setVanillaRegistriesControlFlowState(0);
+        CREATE_LOOKUP_METHOD_NAME = "createLookup";
     }
 
-    public static int T() {
-        return D;
+    public static int getVanillaRegistriesControlFlowState() {
+        return vanillaRegistriesControlFlowState;
     }
 
 }

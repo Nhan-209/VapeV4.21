@@ -14,7 +14,7 @@ extends Wrapper {
         if (ForgeVersion.MC_1_20_6.d()) {
             return;
         }
-        MItem.V(Item.vapeInstance.getMappings().CF, this.I, item.getObject(), TooltipFlagBridge.J().getObject(), list);
+        MItem.V(Item.vapeInstance.getMappings().CF, this.I, item.getObject(), TooltipFlagBridge.searchTab().getObject(), list);
     }
 
     private static Throwable a(Throwable throwable) {

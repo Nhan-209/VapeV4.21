@@ -11,7 +11,7 @@ extends Mapping {
     private final MappingMethod clipContextConstructor;
 
     public MBlockReader() {
-        this(MITooltipFlagBridge.D());
+        this(MITooltipFlagBridge.getFluidModeControlFlowState());
     }
 
     private MBlockReader(GuiComponent[] controlFlowState) {

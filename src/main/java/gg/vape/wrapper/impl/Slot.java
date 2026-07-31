@@ -10,29 +10,29 @@ extends Wrapper {
     }
 
 
-    public int o() {
-        return MSlot.Y(Slot.vapeInstance.getMappingsMapperCompat().qY, this.getObject());
+    public int getSlotIndex() {
+        return MSlot.getSlotIndex(Slot.vapeInstance.getMappingsMapperCompat().slot, this.getObject());
     }
 
-    public Inventory Z() {
-        return new Inventory(MSlot.n(Slot.vapeInstance.getMappingsMapperCompat().qY, this.getObject()));
+    public Inventory getInventory() {
+        return new Inventory(MSlot.getInventoryOrContainer(Slot.vapeInstance.getMappingsMapperCompat().slot, this.getObject()));
     }
 
-    public int g() {
-        return MSlot.d(Slot.vapeInstance.getMappingsMapperCompat().qY, this.getObject());
+    public int getSlotNumber() {
+        return MSlot.getSlotNumber(Slot.vapeInstance.getMappingsMapperCompat().slot, this.getObject());
     }
 
-    public ItemStack I() {
-        return new ItemStack(Slot.vapeInstance.getMappingsMapperCompat().qY.I(this.getObject()));
+    public ItemStack getStack() {
+        return new ItemStack(Slot.vapeInstance.getMappingsMapperCompat().slot.getStack(this.getObject()));
     }
 
-    public boolean v() {
+    public boolean hasStack() {
         if (ForgeVersion.MC_26_1.d()) {
-            boolean bl2 = !this.I().isNull();
-            return bl2;
+            boolean hasStack = !this.getStack().isNull();
+            return hasStack;
         }
-        boolean bl = Slot.vapeInstance.getMappingsMapperCompat().qY.I(this.getObject()) != null;
-        return bl;
+        boolean hasStack = Slot.vapeInstance.getMappingsMapperCompat().slot.getStack(this.getObject()) != null;
+        return hasStack;
     }
 }
 

@@ -5,12 +5,11 @@ import gg.vape.wrapper.Wrapper;
 
 public class GameSettingsGuiScale
 extends Wrapper {
-    public GameSettingsGuiScale(Object object) {
-        super(object);
+    public GameSettingsGuiScale(Object handle) {
+        super(handle);
     }
 
-    public Vec3 n() {
-        return new Vec3(MGameSettingsGuiScale.C(GameSettingsGuiScale.vapeInstance.getMappingsMapperCompat().Dp, this.I));
+    public Vec3 getBase() {
+        return new Vec3(MGameSettingsGuiScale.getBase(GameSettingsGuiScale.vapeInstance.getMappingsMapperCompat().vecDeltaCodec, this.I));
     }
 }
-

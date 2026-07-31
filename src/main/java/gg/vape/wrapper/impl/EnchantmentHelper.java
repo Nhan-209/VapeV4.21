@@ -28,7 +28,7 @@ extends Wrapper {
             return hashMap;
         }
         PotionVersionRange potionVersionRange = new PotionVersionRange(itemStack.w(DataComponents.O()));
-        for (Object entryObject : potionVersionRange.i()) {
+        for (Object entryObject : potionVersionRange.entrySet()) {
             ObjectToIntMapEntry entry = new ObjectToIntMapEntry(entryObject);
             Holder holder = new Holder(entry.getKey());
             hashMap.put(holder, entry.getIntValue());
@@ -40,11 +40,11 @@ extends Wrapper {
         return MEnchantmentHelper.z(EnchantmentHelper.vapeInstance.getMappings().Rk, itemStack.getObject());
     }
 
-    public static EnchantmentModifierDamage M() {
+    public static EnchantmentModifierDamage getDamageModifier() {
         if (ForgeVersion.MC_1_16_5.d()) {
             return null;
         }
-        return new EnchantmentModifierDamage(MEnchantmentHelper.z(EnchantmentHelper.vapeInstance.getMappings().Rk));
+        return new EnchantmentModifierDamage(MEnchantmentHelper.getDamageModifier(EnchantmentHelper.vapeInstance.getMappings().Rk));
     }
 
     public static void J(EnchantmentModifier enchantmentModifier, ItemStack[] itemStackArray) {
@@ -150,7 +150,7 @@ extends Wrapper {
                 return 0;
             }
             RegistryAccess registryAccess = worldClient.e();
-            Registry registry = registryAccess.lookupOrThrow(ResourceKeyEnchantmentBridge.h());
+            Registry registry = registryAccess.lookupOrThrow(ResourceKeyEnchantmentBridge.enchantment());
             Holder holder = registry.J(enchantment.getObject());
             return MEnchantmentHelper.X(EnchantmentHelper.vapeInstance.getMappings().Rk, holder.getObject(), itemStack.getObject());
         }

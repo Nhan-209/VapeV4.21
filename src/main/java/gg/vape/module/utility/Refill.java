@@ -169,7 +169,7 @@ extends UtilityMod
         while (inventorySlot < 36) {
             Item item;
             Slot slot = inventoryScreen.getInventorySlots().getInventorySlots().get(inventorySlot);
-            ItemStack itemStack = slot.I();
+            ItemStack itemStack = slot.getStack();
             if (!itemStack.isNull() && !(item = itemStack.getItem()).isNull() && ItemStackScoreUtil.o(itemStack, ((ModeSelection)this.typeMode.getValue()).equals(this.soupMode) || ((ModeSelection)this.typeMode.getValue()).equals(this.bothMode))) {
                 healingSlots.add(inventorySlot);
             }

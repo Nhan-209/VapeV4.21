@@ -41,9 +41,9 @@ extends Wrapper {
 
     public RayTraceResult K(Vec3 vec3, Vec3 vec32, boolean bl, boolean bl2, boolean bl3, Entity entity) {
         if (ForgeVersion.MC_1_16_5.d()) {
-            RayTraceContext$FluidMode rayTraceContext$FluidMode = bl2 ? RayTraceContext$FluidMode.I() : (bl3 ? RayTraceContext$FluidMode.n() : RayTraceContext$FluidMode.S());
-            RayTraceContext$BlockMode rayTraceContext$BlockMode = bl ? RayTraceContext$BlockMode.F() : RayTraceContext$BlockMode.I();
-            RayTraceContext rayTraceContext = RayTraceContext.b(vec3, vec32, rayTraceContext$FluidMode, rayTraceContext$BlockMode, entity);
+            RayTraceContext$FluidMode blockMode = bl2 ? RayTraceContext$FluidMode.collider() : (bl3 ? RayTraceContext$FluidMode.visual() : RayTraceContext$FluidMode.outline());
+            RayTraceContext$BlockMode fluidMode = bl ? RayTraceContext$BlockMode.any() : RayTraceContext$BlockMode.none();
+            RayTraceContext rayTraceContext = RayTraceContext.b(vec3, vec32, blockMode, fluidMode, entity);
             return new RayTraceResult(World.vapeInstance.getMappings().Cy.i(this.I, rayTraceContext.getObject()));
         }
         return new RayTraceResult(World.vapeInstance.getMappings().Cy.l(this.I, vec3.getObject(), vec32.getObject(), bl, bl2, bl3));

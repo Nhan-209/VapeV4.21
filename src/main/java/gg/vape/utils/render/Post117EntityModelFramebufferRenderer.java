@@ -70,9 +70,9 @@ implements EntityModelRenderBackend {
             GlStateManager.Y(770, 771);
             GL11.glClearColor((float)0.0f, (float)0.0f, (float)0.0f, (float)0.0f);
             GL11.glClear((int)16640);
-            TextureManager textureManager = Minecraft.Z();
-            TextureObject textureObject = textureManager.G(texture);
-            if (textureObject == null || textureObject.isNull() || textureObject.h() <= 0) {
+            TextureManager textureManager = Minecraft.getTextureManager();
+            TextureObject textureObject = textureManager.getTexture(texture);
+            if (textureObject == null || textureObject.isNull() || textureObject.getId() <= 0) {
                 this.framebuffer.unbind();
                 GL11.glViewport((int)viewport.get(0), (int)viewport.get(1), (int)viewport.get(2), (int)viewport.get(3));
                 GL30.glBindFramebuffer((int)36160, (int)previousFramebufferId);
@@ -85,14 +85,14 @@ implements EntityModelRenderBackend {
             }
             float textureScaleU = 0.00390625f;
             float textureScaleV = 0.00390625f;
-            RenderBatchBuilder batchBuilder = new RenderBatchBuilder().setTexture(new GlImageTexture(textureObject.h())).addTexturedRect(0.0f, 0.0f, 32.0f, 32.0f, textureWidth, textureHeight, 32.0f * textureScaleU, (float)(32 + textureHeight) * textureScaleV, (float)(32 + textureWidth) * textureScaleU, 32.0f * textureScaleV, Color.WHITE);
+            RenderBatchBuilder batchBuilder = new RenderBatchBuilder().setTexture(new GlImageTexture(textureObject.getId())).addTexturedRect(0.0f, 0.0f, 32.0f, 32.0f, textureWidth, textureHeight, 32.0f * textureScaleU, (float)(32 + textureHeight) * textureScaleV, (float)(32 + textureWidth) * textureScaleU, 32.0f * textureScaleV, Color.WHITE);
             RenderMatrix4f previousProjectionMatrix = BufferedGuiRenderPrimitives.projectionMatrix;
             RenderMatrix4f previousViewMatrix = BufferedGuiRenderPrimitives.viewMatrix;
             RenderMatrixStack previousMatrixStack = BufferedGuiRenderPrimitives.matrixStack;
             BufferedGuiRenderPrimitives.projectionMatrix = new RenderMatrix4f().setIdentity().setOrthographic(0.0f, textureWidth, textureHeight, 0.0f, -21000.0f, 21000.0f);
             BufferedGuiRenderPrimitives.viewMatrix = new RenderMatrix4f().setIdentity();
             BufferedGuiRenderPrimitives.matrixStack = new RenderMatrixStack();
-            int textureId = textureObject.h();
+            int textureId = textureObject.getId();
             GL11.glBindTexture((int)3553, (int)textureId);
             int previousMinFilter = GL11.glGetTexParameteri((int)3553, (int)10241);
             int previousMagFilter = GL11.glGetTexParameteri((int)3553, (int)10240);

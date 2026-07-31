@@ -4,20 +4,19 @@ import gg.vape.wrapper.Wrapper;
 
 public class ItemRenderContext
 extends Wrapper {
-    public static ItemRenderContext u(boolean bl, ItemStack itemStack) {
-        return new ItemRenderContext(ItemRenderContext.vapeInstance.getMappingsMapperCompat().J.G(bl, itemStack.getObject()));
+    public static ItemRenderContext create(boolean wasItemInteraction, ItemStack heldItem) {
+        return new ItemRenderContext(ItemRenderContext.vapeInstance.getMappingsMapperCompat().itemRenderContext.create(wasItemInteraction, heldItem.getObject()));
     }
 
-    public static ItemRenderContext M() {
-        return new ItemRenderContext(ItemRenderContext.vapeInstance.getMappingsMapperCompat().J.N());
+    public static ItemRenderContext defaultContext() {
+        return new ItemRenderContext(ItemRenderContext.vapeInstance.getMappingsMapperCompat().itemRenderContext.getDefault());
     }
 
-    public ItemRenderContext(Object object) {
-        super(object);
+    public ItemRenderContext(Object handle) {
+        super(handle);
     }
 
-    public static ItemRenderContext X() {
-        return new ItemRenderContext(ItemRenderContext.vapeInstance.getMappingsMapperCompat().J.q());
+    public static ItemRenderContext none() {
+        return new ItemRenderContext(ItemRenderContext.vapeInstance.getMappingsMapperCompat().itemRenderContext.getNone());
     }
 }
-

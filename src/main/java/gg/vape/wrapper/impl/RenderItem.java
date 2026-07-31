@@ -53,11 +53,11 @@ extends Wrapper {
     public void a(ItemStack itemStack, int n, int n2, MatrixStack matrixStack) {
         boolean bl;
         EntityPlayerSP entityPlayerSP = Minecraft.thePlayer();
-        Channel channel = this.f(itemStack, null, entityPlayerSP.getObject(), 0);
+        Channel bakedModel = this.getBakedModel(itemStack, null, entityPlayerSP.getObject(), 0);
         this.e(this.T() + 50.0f);
-        TextureManager textureManager = Minecraft.Z();
-        textureManager.G(TextureAtlas.m$src$Lgg_vape_wrapper_impl_ResourceLocation_$4fmn0t()).f(false, false);
-        RenderSystem.k(0, textureManager.G(TextureAtlas.m$src$Lgg_vape_wrapper_impl_ResourceLocation_$4fmn0t()).h());
+        TextureManager textureManager = Minecraft.getTextureManager();
+        textureManager.getTexture(TextureAtlas.getBlocksAtlasLocation()).setFilter(false, false);
+        RenderSystem.k(0, textureManager.getTexture(TextureAtlas.getBlocksAtlasLocation()).getId());
         RenderSystem.x();
         RenderSystem.s(770, 771);
         RenderSystem.U(1.0f, 1.0f, 1.0f, 1.0f);
@@ -68,10 +68,10 @@ extends Wrapper {
         matrixStack2.S(16.0f, 16.0f, 16.0f);
         RenderSystem.v();
         RenderItemFontBridge renderItemFontBridge = Minecraft.H$src$Lgg_vape_wrapper_impl_VoxelShape_$1dlcquv().getBufferSource();
-        boolean bl2 = bl = !channel.A();
+        boolean bl2 = bl = !bakedModel.usesBlockLight();
         if (bl) {
             RenderHelper.l();
-            this.I(itemStack, RenderItemContext.gui(), false, matrixStack, renderItemFontBridge, 15728880, 0, channel);
+            this.I(itemStack, RenderItemContext.gui(), false, matrixStack, renderItemFontBridge, 15728880, 0, bakedModel);
             renderItemFontBridge.X();
             RenderSystem.n();
             RenderHelper.e();
@@ -81,7 +81,7 @@ extends Wrapper {
             this.e(this.T() - 50.0f);
             return;
         }
-        this.I(itemStack, RenderItemContext.gui(), false, matrixStack, renderItemFontBridge, 15728880, 0, channel);
+        this.I(itemStack, RenderItemContext.gui(), false, matrixStack, renderItemFontBridge, 15728880, 0, bakedModel);
         renderItemFontBridge.X();
         RenderSystem.n();
         matrixStack2 = RenderSystem.p();
@@ -101,8 +101,8 @@ extends Wrapper {
         d = new Integer[2];
     }
 
-    public void I(ItemStack itemStack, RenderItemContext renderItemContext, boolean bl, MatrixStack matrixStack, RenderItemFontBridge renderItemFontBridge, int n, int n2, Channel channel) {
-        MRenderItem.x(RenderItem.vapeInstance.getMappings().DI, this.I, itemStack.getObject(), renderItemContext.getObject(), bl, matrixStack.getObject(), renderItemFontBridge.getObject(), n, n2, channel.getObject());
+    public void I(ItemStack itemStack, RenderItemContext renderItemContext, boolean bl, MatrixStack matrixStack, RenderItemFontBridge renderItemFontBridge, int n, int n2, Channel bakedModel) {
+        MRenderItem.x(RenderItem.vapeInstance.getMappings().DI, this.I, itemStack.getObject(), renderItemContext.getObject(), bl, matrixStack.getObject(), renderItemFontBridge.getObject(), n, n2, bakedModel.getObject());
     }
 
     public void e(float f) {
@@ -112,9 +112,9 @@ extends Wrapper {
         MRenderItem.G(RenderItem.vapeInstance.getMappings().DI, this.I, f);
     }
 
-    public Channel f(ItemStack itemStack, World world, Object object, int n) {
-        Object object2 = world == null ? null : world.getObject();
-        return new Channel(MRenderItem.A(RenderItem.vapeInstance.getMappings().DI, this.I, itemStack.getObject(), object2, object, n));
+    public Channel getBakedModel(ItemStack itemStack, World world, Object entityHandle, int seed) {
+        Object worldHandle = world == null ? null : world.getObject();
+        return new Channel(MRenderItem.A(RenderItem.vapeInstance.getMappings().DI, this.I, itemStack.getObject(), worldHandle, entityHandle, seed));
     }
 
     public void c(FontRenderer fontRenderer, TextureManager textureManager, ItemStack itemStack, int n, int n2) {

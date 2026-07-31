@@ -8,29 +8,29 @@ import gg.vape.ui.click.component.GuiComponent;
 
 public class MEvent
 extends Mapping {
-    private static final String c = "setCanceled";
-    private final MappingMethod b;
+    private static final String SET_CANCELED_METHOD_NAME = "setCanceled";
+    private final MappingMethod setCanceledMethod;
 
     public MEvent() {
-        this(MLegacyEntityRenderPreHook.N());
+        this(MLegacyEntityRenderPreHook.getControlFlowState());
     }
 
-    private MEvent(String[] stringArray) {
+    private MEvent(String[] controlFlowState) {
         super(MappedClasses.S);
-        String[] stringArray2 = stringArray;
-        Class[] classArray = new Class[]{Boolean.TYPE};
-        Class<Void> clazz = Void.TYPE;
-        boolean bl = false;
-        String string = c;
-        MEvent mEvent = this;
-        this.b = this.Y(string, bl, clazz, classArray);
+        String[] currentControlFlowState = controlFlowState;
+        Class[] parameterTypes = new Class[]{Boolean.TYPE};
+        Class<Void> returnType = Void.TYPE;
+        boolean methodPublic = false;
+        String methodName = SET_CANCELED_METHOD_NAME;
+        MEvent mapping = this;
+        this.setCanceledMethod = mapping.Y(methodName, methodPublic, returnType, parameterTypes);
         if (GuiComponent.getLegacyComponentState() == null) {
-            MLegacyEntityRenderPreHook.Q(new String[5]);
+            MLegacyEntityRenderPreHook.setControlFlowState(new String[5]);
         }
     }
 
-    public void setCanceled(Object object, boolean bl) {
-        this.b.invokeVoid(object, bl);
+    public void setCanceled(Object eventHandle, boolean canceled) {
+        this.setCanceledMethod.invokeVoid(eventHandle, canceled);
     }
 
 }

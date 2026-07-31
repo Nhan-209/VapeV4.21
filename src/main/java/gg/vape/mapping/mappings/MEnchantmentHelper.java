@@ -239,8 +239,8 @@ extends Mapping {
         }
     }
 
-    public static Object z(MEnchantmentHelper mEnchantmentHelper) {
-        return mEnchantmentHelper.K();
+    public static Object getDamageModifier(MEnchantmentHelper mapping) {
+        return mapping.readDamageModifier();
     }
 
     private Object B(Object object) {
@@ -299,7 +299,7 @@ extends Mapping {
         return this.K.invokeInt(null, n, object);
     }
 
-    private Object K() {
+    private Object readDamageModifier() {
         return this.C.getObject(null);
     }
 

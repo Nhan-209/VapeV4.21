@@ -159,11 +159,11 @@ implements EventListener {
     }
 
     private void checkResourceManagerState() {
-        ResourceManager resourceManager = Minecraft.c();
-        if (resourceManager.isNull()) {
+        ResourceManager packRepository = Minecraft.getResourcePackRepository();
+        if (packRepository.isNull()) {
             return;
         }
-        Collection<String> entries = resourceManager.U();
+        Collection<String> entries = packRepository.getSelectedIds();
         if (entries == null) {
             return;
         }

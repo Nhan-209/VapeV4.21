@@ -18,8 +18,8 @@ implements Comparator<Slot> {
 
     @Override
     public int compare(Slot first, Slot second) {
-        ItemStack firstStack = first.I();
-        ItemStack secondStack = second.I();
+        ItemStack firstStack = first.getStack();
+        ItemStack secondStack = second.getStack();
         List<PotionEffect> firstEffects = new ItemSplashPotion(firstStack.getItem()).getPotionEffects(firstStack);
         List<PotionEffect> secondEffects = new ItemSplashPotion(secondStack.getItem()).getPotionEffects(secondStack);
         int result = 0;

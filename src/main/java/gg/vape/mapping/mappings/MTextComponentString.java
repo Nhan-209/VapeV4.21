@@ -7,46 +7,46 @@ import gg.vape.mapping.MappingMethod;
 
 public class MTextComponentString
 extends Mapping {
-    private final MappingField x;
-    private final MappingMethod H;
+    private final MappingField textField;
+    private final MappingMethod constructor;
 
-    public static String E(MTextComponentString mTextComponentString, Object object) {
-        return mTextComponentString.A(object);
+    public static String getText(MTextComponentString mapping, Object componentHandle) {
+        return mapping.readText(componentHandle);
     }
 
     public MTextComponentString() {
         super(MappedClasses.z9);
-        Class[] classArray = new Class[]{String.class};
-        Class<Void> clazz = Void.TYPE;
-        boolean bl = false;
-        String string = "<init>";
-        MTextComponentString mTextComponentString = this;
-        this.H = this.Y(string, bl, clazz, classArray);
-        Class<String> clazz2 = String.class;
-        boolean bl2 = true;
-        String string2 = "text";
-        MTextComponentString mTextComponentString2 = this;
-        this.x = this.J(string2, bl2, clazz2);
+        Class[] constructorParameterTypes = new Class[]{String.class};
+        Class<Void> constructorReturnType = Void.TYPE;
+        boolean constructorPublic = false;
+        String constructorName = "<init>";
+        MTextComponentString mapping = this;
+        this.constructor = mapping.Y(constructorName, constructorPublic, constructorReturnType, constructorParameterTypes);
+        Class<String> textFieldType = String.class;
+        boolean textFieldPublic = true;
+        String textFieldName = "text";
+        MTextComponentString textMapping = this;
+        this.textField = textMapping.J(textFieldName, textFieldPublic, textFieldType);
     }
 
-    public static Object q(MTextComponentString mTextComponentString, String string) {
-        return mTextComponentString.u(string);
+    public static Object create(MTextComponentString mapping, String text) {
+        return mapping.newInstance(text);
     }
 
-    public static void T(MTextComponentString mTextComponentString, Object object, String string) {
-        mTextComponentString.Z(object, string);
+    public static void setText(MTextComponentString mapping, Object componentHandle, String text) {
+        mapping.writeText(componentHandle, text);
     }
 
-    private void Z(Object object, String string) {
-        this.x.setObject(object, string);
+    private void writeText(Object componentHandle, String text) {
+        this.textField.setObject(componentHandle, text);
     }
 
-    private String A(Object object) {
-        return this.x.getObject(object).toString();
+    private String readText(Object componentHandle) {
+        return this.textField.getObject(componentHandle).toString();
     }
 
-    private Object u(String string) {
-        return this.H.newInstance(string);
+    private Object newInstance(String text) {
+        return this.constructor.newInstance(text);
     }
 }
 

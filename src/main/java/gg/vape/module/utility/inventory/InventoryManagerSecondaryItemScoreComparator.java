@@ -18,6 +18,6 @@ implements Comparator<Slot> {
     }
 
     public int compareSecondaryScore(Slot first, Slot second) {
-        return Double.compare(ClientSettings.getHiddenItemScore(first.I()), ClientSettings.getHiddenItemScore(second.I()));
+        return Double.compare(ClientSettings.getHiddenItemScore(first.getStack()), ClientSettings.getHiddenItemScore(second.getStack()));
     }
 }

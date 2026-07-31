@@ -6,40 +6,40 @@ import gg.vape.mapping.MappingField;
 
 public class MGameSettingsGuiScale
 extends Mapping {
-    private static int[] W;
-    private static final String b;
-    private MappingField s;
+    private static int[] controlFlowState;
+    private static final String BASE_FIELD_NAME;
+    private MappingField baseField;
 
     static {
-        MGameSettingsGuiScale.F(new int[1]);
-        b = "base";
+        MGameSettingsGuiScale.setVecDeltaCodecControlFlowState(new int[1]);
+        BASE_FIELD_NAME = "base";
     }
 
-    public static void F(int[] nArray) {
-        W = nArray;
+    public static void setVecDeltaCodecControlFlowState(int[] state) {
+        controlFlowState = state;
     }
 
 
     public MGameSettingsGuiScale() {
         super(MappedClasses.Fg);
-        Class clazz = MappedClasses.qP;
-        boolean bl = true;
-        String string = b;
-        MGameSettingsGuiScale mGameSettingsGuiScale = this;
-        this.s = this.J(string, bl, clazz);
-        int[] nArray = MGameSettingsGuiScale.i();
+        Class baseFieldType = MappedClasses.qP;
+        boolean baseFieldPublic = true;
+        String baseFieldName = BASE_FIELD_NAME;
+        MGameSettingsGuiScale mapping = this;
+        this.baseField = mapping.J(baseFieldName, baseFieldPublic, baseFieldType);
+        int[] currentControlFlowState = MGameSettingsGuiScale.getVecDeltaCodecControlFlowState();
     }
 
-    private Object K(Object object) {
-        return this.s.getObject(object);
+    private Object readBase(Object codecHandle) {
+        return this.baseField.getObject(codecHandle);
     }
 
-    public static int[] i() {
-        return W;
+    public static int[] getVecDeltaCodecControlFlowState() {
+        return controlFlowState;
     }
 
-    public static Object C(MGameSettingsGuiScale mGameSettingsGuiScale, Object object) {
-        return mGameSettingsGuiScale.K(object);
+    public static Object getBase(MGameSettingsGuiScale mapping, Object codecHandle) {
+        return mapping.readBase(codecHandle);
     }
 }
 

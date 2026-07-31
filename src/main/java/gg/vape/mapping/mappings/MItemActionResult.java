@@ -8,112 +8,112 @@ import gg.vape.wrapper.impl.ForgeVersion;
 
 public class MItemActionResult
 extends Mapping {
-    private final MappingMethod V;
-    private final MappingMethod N;
-    private final MappingMethod Z;
-    private final MappingMethod u;
-    private final MappingMethod c;
-    private final MappingMethod K;
+    private final MappingMethod withoutItemMethod;
+    private final MappingMethod heldItemTransformedToGetter;
+    private final MappingMethod wasItemInteractionMethod;
+    private final MappingMethod constructor;
+    private final MappingMethod heldItemTransformedToMethod;
+    private final MappingMethod consumesActionMethod;
 
-    public boolean Z(Object object) {
-        if (this.K == null) {
+    public boolean consumesAction(Object resultHandle) {
+        if (this.consumesActionMethod == null) {
             return true;
         }
-        return this.K.invokeBoolean(object, new Object[0]);
+        return this.consumesActionMethod.invokeBoolean(resultHandle, new Object[0]);
     }
 
     public MItemActionResult() {
         this(BlockData.W());
     }
 
-    private MItemActionResult(String[] stringArray) {
+    private MItemActionResult(String[] controlFlowState) {
         super(MappedClasses.zO);
-        if (stringArray != null) {
-            Class[] classArray = new Class[]{MappedClasses.Zi, MappedClasses.lj};
-            MItemActionResult mItemActionResult = this;
-            this.u = mItemActionResult.registerConstructor(classArray);
+        if (controlFlowState != null) {
+            Class[] constructorParameterTypes = new Class[]{MappedClasses.Zi, MappedClasses.lj};
+            MItemActionResult mapping = this;
+            this.constructor = mapping.registerConstructor(constructorParameterTypes);
             if (ForgeVersion.MC_1_21_10.v()) {
-                Class[] classArray2 = new Class[]{};
-                Class<Boolean> clazz = Boolean.TYPE;
-                boolean bl = true;
-                String string = "consumesAction";
-                MItemActionResult mItemActionResult2 = this;
-                this.K = this.Y(string, bl, clazz, classArray2);
+                Class[] consumesActionParameterTypes = new Class[]{};
+                Class<Boolean> consumesActionReturnType = Boolean.TYPE;
+                boolean consumesActionPublic = true;
+                String consumesActionMethodName = "consumesAction";
+                MItemActionResult consumesActionMapping = this;
+                this.consumesActionMethod = consumesActionMapping.Y(consumesActionMethodName, consumesActionPublic, consumesActionReturnType, consumesActionParameterTypes);
             } else {
-                this.K = null;
+                this.consumesActionMethod = null;
             }
-            Class[] classArray3 = new Class[]{MappedClasses.VK};
-            Class clazz = MappedClasses.zO;
-            boolean bl = true;
-            String string = "heldItemTransformedTo";
-            MItemActionResult mItemActionResult3 = this;
-            this.c = this.Y(string, bl, clazz, classArray3);
-            Class[] classArray4 = new Class[]{};
-            Class clazz2 = MappedClasses.VK;
-            boolean bl2 = true;
-            String string2 = "heldItemTransformedTo";
-            MItemActionResult mItemActionResult4 = this;
-            this.N = this.Y(string2, bl2, clazz2, classArray4);
-            Class[] classArray5 = new Class[]{};
-            Class clazz3 = MappedClasses.zO;
-            boolean bl3 = true;
-            String string3 = "withoutItem";
-            MItemActionResult mItemActionResult5 = this;
-            this.V = this.Y(string3, bl3, clazz3, classArray5);
-            Class[] classArray6 = new Class[]{};
-            Class<Boolean> clazz4 = Boolean.TYPE;
-            boolean bl4 = true;
-            String string4 = "wasItemInteraction";
-            MItemActionResult mItemActionResult6 = this;
-            this.Z = this.Y(string4, bl4, clazz4, classArray6);
+            Class[] transformParameterTypes = new Class[]{MappedClasses.VK};
+            Class transformReturnType = MappedClasses.zO;
+            boolean transformPublic = true;
+            String transformMethodName = "heldItemTransformedTo";
+            MItemActionResult transformMapping = this;
+            this.heldItemTransformedToMethod = transformMapping.Y(transformMethodName, transformPublic, transformReturnType, transformParameterTypes);
+            Class[] transformedItemGetterParameterTypes = new Class[]{};
+            Class transformedItemGetterReturnType = MappedClasses.VK;
+            boolean transformedItemGetterPublic = true;
+            String transformedItemGetterName = "heldItemTransformedTo";
+            MItemActionResult transformedItemGetterMapping = this;
+            this.heldItemTransformedToGetter = transformedItemGetterMapping.Y(transformedItemGetterName, transformedItemGetterPublic, transformedItemGetterReturnType, transformedItemGetterParameterTypes);
+            Class[] withoutItemParameterTypes = new Class[]{};
+            Class withoutItemReturnType = MappedClasses.zO;
+            boolean withoutItemPublic = true;
+            String withoutItemMethodName = "withoutItem";
+            MItemActionResult withoutItemMapping = this;
+            this.withoutItemMethod = withoutItemMapping.Y(withoutItemMethodName, withoutItemPublic, withoutItemReturnType, withoutItemParameterTypes);
+            Class[] wasItemInteractionParameterTypes = new Class[]{};
+            Class<Boolean> wasItemInteractionReturnType = Boolean.TYPE;
+            boolean wasItemInteractionPublic = true;
+            String wasItemInteractionMethodName = "wasItemInteraction";
+            MItemActionResult wasItemInteractionMapping = this;
+            this.wasItemInteractionMethod = wasItemInteractionMapping.Y(wasItemInteractionMethodName, wasItemInteractionPublic, wasItemInteractionReturnType, wasItemInteractionParameterTypes);
             return;
         }
-        this.K = null;
-        Class[] classArray = new Class[]{MappedClasses.VK};
-        Class clazz = MappedClasses.zO;
-        boolean bl = true;
-        String string = "heldItemTransformedTo";
-        MItemActionResult mItemActionResult = this;
-        this.c = mItemActionResult.Y(string, bl, clazz, classArray); 
-        Class[] classArray7 = new Class[]{};
-        Class clazz5 = MappedClasses.VK;
-        boolean bl5 = true;
-        String string5 = "heldItemTransformedTo";
-        MItemActionResult mItemActionResult7 = this;
-        this.N = this.Y(string5, bl5, clazz5, classArray7);
-        Class[] classArray8 = new Class[]{};
-        Class clazz6 = MappedClasses.zO;
-        boolean bl6 = true;
-        String string6 = "withoutItem";
-        MItemActionResult mItemActionResult8 = this;
-        this.V = this.Y(string6, bl6, clazz6, classArray8);
-        Class[] classArray9 = new Class[]{};
-        Class<Boolean> clazz7 = Boolean.TYPE;
-        boolean bl7 = true;
-        String string7 = "wasItemInteraction";
-        MItemActionResult mItemActionResult9 = this;
-        this.Z = this.Y(string7, bl7, clazz7, classArray9);
-        this.u = null;
+        this.consumesActionMethod = null;
+        Class[] transformParameterTypes = new Class[]{MappedClasses.VK};
+        Class transformReturnType = MappedClasses.zO;
+        boolean transformPublic = true;
+        String transformMethodName = "heldItemTransformedTo";
+        MItemActionResult mapping = this;
+        this.heldItemTransformedToMethod = mapping.Y(transformMethodName, transformPublic, transformReturnType, transformParameterTypes);
+        Class[] transformedItemGetterParameterTypes = new Class[]{};
+        Class transformedItemGetterReturnType = MappedClasses.VK;
+        boolean transformedItemGetterPublic = true;
+        String transformedItemGetterName = "heldItemTransformedTo";
+        MItemActionResult transformedItemGetterMapping = this;
+        this.heldItemTransformedToGetter = transformedItemGetterMapping.Y(transformedItemGetterName, transformedItemGetterPublic, transformedItemGetterReturnType, transformedItemGetterParameterTypes);
+        Class[] withoutItemParameterTypes = new Class[]{};
+        Class withoutItemReturnType = MappedClasses.zO;
+        boolean withoutItemPublic = true;
+        String withoutItemMethodName = "withoutItem";
+        MItemActionResult withoutItemMapping = this;
+        this.withoutItemMethod = withoutItemMapping.Y(withoutItemMethodName, withoutItemPublic, withoutItemReturnType, withoutItemParameterTypes);
+        Class[] wasItemInteractionParameterTypes = new Class[]{};
+        Class<Boolean> wasItemInteractionReturnType = Boolean.TYPE;
+        boolean wasItemInteractionPublic = true;
+        String wasItemInteractionMethodName = "wasItemInteraction";
+        MItemActionResult wasItemInteractionMapping = this;
+        this.wasItemInteractionMethod = wasItemInteractionMapping.Y(wasItemInteractionMethodName, wasItemInteractionPublic, wasItemInteractionReturnType, wasItemInteractionParameterTypes);
+        this.constructor = null;
     }
 
-    public Object T(Object object) {
-        return this.N.invokeObject(object, new Object[0]);
+    public Object getHeldItemTransformedTo(Object resultHandle) {
+        return this.heldItemTransformedToGetter.invokeObject(resultHandle, new Object[0]);
     }
 
-    public Object d(Object object, Object object2) {
-        return this.u.invokeObject(null, object, object2);
+    public Object create(Object swingSource, Object itemContext) {
+        return this.constructor.invokeObject(null, swingSource, itemContext);
     }
 
-    public boolean P(Object object) {
-        return this.Z.invokeBoolean(object, new Object[0]);
+    public boolean wasItemInteraction(Object resultHandle) {
+        return this.wasItemInteractionMethod.invokeBoolean(resultHandle, new Object[0]);
     }
 
-    public Object Z(Object object, Object object2) {
-        return this.c.invokeObject(object, object2);
+    public Object heldItemTransformedTo(Object resultHandle, Object itemStack) {
+        return this.heldItemTransformedToMethod.invokeObject(resultHandle, itemStack);
     }
 
-    public Object z(Object object) {
-        return this.V.invokeObject(object, new Object[0]);
+    public Object withoutItem(Object resultHandle) {
+        return this.withoutItemMethod.invokeObject(resultHandle, new Object[0]);
     }
 
 }

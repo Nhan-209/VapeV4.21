@@ -58,7 +58,7 @@ public class RotationUtil {
             return new ItemStack(null);
         }
         if (ForgeVersion.MC_1_20_6.d()) {
-            return entityPlayerSP.F$src$Lgg_vape_wrapper_impl_Container_$152y6lm().M();
+            return entityPlayerSP.F$src$Lgg_vape_wrapper_impl_Container_$152y6lm().getCarried();
         }
         return entityPlayerSP.V$src$Lgg_vape_wrapper_impl_InventoryPlayer_$erqak6().A();
     }
@@ -127,15 +127,15 @@ public class RotationUtil {
         if (ForgeVersion.MC_1_16_5.d()) {
             return EnchantmentHelper.B(itemStackArray, damageSource);
         }
-        EnchantmentHelper.M().o(0);
-        EnchantmentHelper.M().i(damageSource);
-        EnchantmentHelper.J(EnchantmentHelper.M(), itemStackArray);
-        if (EnchantmentHelper.M().E() > 25) {
-            EnchantmentHelper.M().o(25);
-        } else if (EnchantmentHelper.M().E() < 0) {
-            EnchantmentHelper.M().o(0);
+        EnchantmentHelper.getDamageModifier().setDamageModifier(0);
+        EnchantmentHelper.getDamageModifier().setSource(damageSource);
+        EnchantmentHelper.J(EnchantmentHelper.getDamageModifier(), itemStackArray);
+        if (EnchantmentHelper.getDamageModifier().getDamageModifierValue() > 25) {
+            EnchantmentHelper.getDamageModifier().setDamageModifier(25);
+        } else if (EnchantmentHelper.getDamageModifier().getDamageModifierValue() < 0) {
+            EnchantmentHelper.getDamageModifier().setDamageModifier(0);
         }
-        return (EnchantmentHelper.M().E() + 1 >> 1) + ((EnchantmentHelper.M().E() >> 1) + 1) / 2;
+        return (EnchantmentHelper.getDamageModifier().getDamageModifierValue() + 1 >> 1) + ((EnchantmentHelper.getDamageModifier().getDamageModifierValue() >> 1) + 1) / 2;
     }
 
     public static float y(EntityPlayer entityPlayer, DamageSource damageSource, float f, boolean bl, boolean bl2) {

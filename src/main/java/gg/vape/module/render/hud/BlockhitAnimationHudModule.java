@@ -82,7 +82,7 @@ extends HudModule {
         GL11.glPushMatrix();
         this.applyItemTransform(equipProgress, swingProgress);
         this.applyBlockingTransform();
-        itemRenderer.g(entityPlayerSP, itemRenderer.k(), ItemRendererBridge.G());
+        itemRenderer.g(entityPlayerSP, itemRenderer.k(), ItemRendererBridge.firstPerson());
         GL11.glPopMatrix();
         OpenGlBackendHolder.backend.disableCapability(32826);
         RenderHelper.s();

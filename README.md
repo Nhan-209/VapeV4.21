@@ -18,8 +18,9 @@ Vape 4.21 Java 层与 Windows x64 原生桥接层的研究性恢复工程。
 | 原生桥接 | Windows x64 JNI/JVMTI DLL 与 `LoadLibraryW` 注入器 |
 | 运行验证 | 构建与载荷结构已验证；完整的游戏内行为仍需继续测试 |
 
-当前原生测试路径只面向 **Minecraft 1.8.9 + 64 位 JVM**。源码中虽然保留了其他版本的
-wrapper、mapping 和模块约束，但这不代表现有 native bridge 已对这些版本完成验证。
+当前支持 **Minecraft 1.7.10 Forge、1.8.9 Forge 和 1.12.2 Forge**，并支持向启用了 Forge
+的 Lunar Client 实例注入。不支持 Vanilla 或 Fabric。Minecraft 1.16.5 的支持不佳，
+部分映射、渲染和模块功能可能无法正常工作。所有目标实例均须使用 64 位 JVM。
 
 ## 环境要求
 
@@ -34,7 +35,7 @@ wrapper、mapping 和模块约束，但这不代表现有 native bridge 已对�
 - Windows x64
 - Visual Studio 2022 C++ x64 工具链及 Windows SDK
 - CMake 3.21 或更高版本
-- 一套包含 JNI/JVMTI 头文件的 JDK；面向 1.8.9 测试时建议使用 JDK 8
+- 一套包含 JNI/JVMTI 头文件的 JDK；面向 1.7.10、1.8.9 和 1.12.2 测试时建议使用 JDK 8
 
 ## 快速开始
 
@@ -79,7 +80,8 @@ DLL 将 Java injection JAR 作为 `RCDATA` 嵌入，不要求另行放置 payloa
 
 ## 隔离环境运行
 
-启动使用 64 位 JVM 的 Minecraft 1.8.9 测试实例后，在 `build/injection/` 中执行：
+启动使用 64 位 JVM 的受支持 Forge 实例，或启用了 Forge 的 Lunar Client 实例后，在
+`build/injection/` 中执行：
 
 ```powershell
 .\Vape421Injector.exe <pid> .\Vape421Native.dll
@@ -111,4 +113,3 @@ DEB51671044A6EAE4275A61217AF270F9256FD0D96036EF016DE5E9F6BFE42CE
 
 本仓库以 [CC0 1.0 Universal](LICENSE) 方式提供。在适用范围内，CC0 仅覆盖仓库贡献者
 有权作出处分的内容；第三方库、商标、字体、纹理以及其他既有材料仍受其各自权利约束。
-

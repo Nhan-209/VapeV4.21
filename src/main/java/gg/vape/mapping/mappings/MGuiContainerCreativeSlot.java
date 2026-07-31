@@ -11,7 +11,7 @@ extends Mapping {
     private final MappingField wrappedSlotField;
 
     public MGuiContainerCreativeSlot() {
-        this(MSlot.z());
+        this(MSlot.getSlotControlFlowState());
     }
 
     private MGuiContainerCreativeSlot(int[] slotMappingState) {

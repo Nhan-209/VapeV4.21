@@ -5,12 +5,11 @@ import gg.vape.wrapper.Wrapper;
 
 public class Channel
 extends Wrapper {
-    public boolean A() {
-        return MChannel.u(Channel.vapeInstance.getMappingsMapperCompat().hV, this.I);
+    public boolean usesBlockLight() {
+        return MChannel.usesBlockLight(Channel.vapeInstance.getMappingsMapperCompat().bakedModel, this.I);
     }
 
-    public Channel(Object object) {
-        super(object);
+    public Channel(Object handle) {
+        super(handle);
     }
 }
-

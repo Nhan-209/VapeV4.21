@@ -8,7 +8,7 @@ class ScoreboardVisibleScorePredicate
 implements Predicate<Score> {
     @Override
     public boolean apply(Score score) {
-        return score.P() != null && !score.P().startsWith("#");
+        return score.getOwner() != null && !score.getOwner().startsWith("#");
     }
 
     ScoreboardVisibleScorePredicate() {

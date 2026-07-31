@@ -660,7 +660,7 @@ public class GuiRenderPrimitives {
         RenderHelper.l();
         double d4 = 1.0 / d;
         GL11.glScaled((double)d, (double)d, (double)d);
-        renderItem.c(Minecraft.getFontRenderer(), Minecraft.Z(), itemStack, (int)(d2 * d4), (int)(d3 * d4));
+        renderItem.c(Minecraft.getFontRenderer(), Minecraft.getTextureManager(), itemStack, (int)(d2 * d4), (int)(d3 * d4));
         GL11.glScaled((double)d4, (double)d4, (double)d4);
         RenderHelper.s();
         renderItem.z(f);

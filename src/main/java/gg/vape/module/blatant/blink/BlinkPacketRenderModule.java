@@ -180,7 +180,7 @@ extends Mod {
         if (((ModeSelection)this.directionMode.getValue()).equals(this.biDirectionalMode) && this.fakePlayerTimer.hasTimeElapsed(50L) && !this.threadRunning && player.isNotNull()) {
             this.fakePlayerTimer.reset();
             this.threadRunning = true;
-            player.sendQueue().a().B().D().F(this.fakePlayerTask);
+            player.sendQueue().a().getChannel().eventLoop().execute(this.fakePlayerTask);
         }
         int currentChokeCount = this.getChokeCount();
         if (!this.stopped && this.autoSend.getEffectiveValue().booleanValue() && (Double)this.sendThreshold.getValue() > 0.0 && (double)currentChokeCount >= (Double)this.sendThreshold.getValue()) {

@@ -181,7 +181,7 @@ public class ItemStackScoreUtil {
             ItemStack itemStack;
             float f2;
             Slot slot = container.getSlot(i);
-            if (!slot.v() || !((f2 = ItemStackScoreUtil.I$src$F$dh3k81(itemStack = slot.I())) > f)) continue;
+            if (!slot.hasStack() || !((f2 = ItemStackScoreUtil.I$src$F$dh3k81(itemStack = slot.getStack())) > f)) continue;
             f = f2;
         }
         return f;
@@ -228,9 +228,9 @@ public class ItemStackScoreUtil {
             return d;
         }
         ItemAttributeModifiers itemAttributeModifiers = itemStack.o();
-        if (itemAttributeModifiers.i() > 0) {
+        if (itemAttributeModifiers.size() > 0) {
             int n = ForgeVersion.MC_1_12_2.L() ? 1 : 0;
-            AttributeModifier attributeModifier = new AttributeModifier(itemAttributeModifiers.f().toArray()[n]);
+            AttributeModifier attributeModifier = new AttributeModifier(itemAttributeModifiers.values().toArray()[n]);
             d = attributeModifier.getAmount();
         }
         d += (double)EnchantmentHelper.C(itemStack, EnumCreatureAttribute.undefined());
@@ -604,20 +604,29 @@ public class ItemStackScoreUtil {
     }
 
     public static boolean K(ItemStack itemStack) {
-        ItemSword itemSword;
-        ItemCameraTransformLeaf itemCameraTransformLeaf;
-        ItemCameraTransformSubtypeValue itemCameraTransformSubtypeValue;
-        ItemCameraTransformType itemCameraTransformType;
-        ItemCameraTransformBase itemCameraTransformBase;
-        DataComponentMap dataComponentMap;
-        Object object;
         if (itemStack.isNull() || itemStack.getItem().isNull()) {
             return false;
         }
         if (!ItemStackScoreUtil.I(itemStack.getItem())) {
             return false;
         }
-        return ForgeVersion.MC_1_21_4.d() ? (object = (dataComponentMap = itemStack.getItem().g()).E(DataComponents.X())) != null && (itemCameraTransformBase = (itemCameraTransformType = new ItemCameraTransformType(object)).e()).isInstance(MappedClasses.zo) && (itemCameraTransformSubtypeValue = (itemCameraTransformLeaf = new ItemCameraTransformLeaf(itemCameraTransformBase)).getKey()).equals(ChestTypeHolder.goldToolMaterials()) : (itemSword = new ItemSword(itemStack.getItem())).s().equals(ToolMaterial.S());
+        if (ForgeVersion.MC_1_21_4.d()) {
+            DataComponentMap components = itemStack.getItem().g();
+            Object repairableHandle = components.E(DataComponents.X());
+            if (repairableHandle == null) {
+                return false;
+            }
+            ItemCameraTransformType repairable = new ItemCameraTransformType(repairableHandle);
+            ItemCameraTransformBase items = repairable.getItems();
+            if (!items.isInstance(MappedClasses.zo)) {
+                return false;
+            }
+            ItemCameraTransformLeaf namedItems = new ItemCameraTransformLeaf(items);
+            ItemCameraTransformSubtypeValue itemTagKey = namedItems.getKey();
+            return itemTagKey.equals(ChestTypeHolder.goldToolMaterials());
+        }
+        ItemSword itemSword = new ItemSword(itemStack.getItem());
+        return itemSword.s().equals(ToolMaterial.S());
     }
 
     public static double f(ItemStack itemStack) {

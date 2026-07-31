@@ -32,11 +32,11 @@ extends Wrapper {
 
     public ItemStack O(int n, int n2, int n3, int n4, EntityPlayer entityPlayer) {
         if (ForgeVersion.MC_1_17.d()) {
-            PlayerControllerMP.vapeInstance.getMappingsMapperCompat().hj.N(this.I, n, n2, n3, ClickType.b[n4].getObject(), entityPlayer.getObject());
+            PlayerControllerMP.vapeInstance.getMappingsMapperCompat().hj.N(this.I, n, n2, n3, ClickType.VALUES[n4].getObject(), entityPlayer.getObject());
             return null;
         }
         if (ForgeVersion.MC_1_12_2.d()) {
-            return new ItemStack(PlayerControllerMP.vapeInstance.getMappingsMapperCompat().hj.N(this.I, n, n2, n3, ClickType.b[n4].getObject(), entityPlayer.getObject()));
+            return new ItemStack(PlayerControllerMP.vapeInstance.getMappingsMapperCompat().hj.N(this.I, n, n2, n3, ClickType.VALUES[n4].getObject(), entityPlayer.getObject()));
         }
         return new ItemStack(PlayerControllerMP.vapeInstance.getMappingsMapperCompat().hj.S(this.I, n, n2, n3, n4, entityPlayer.getObject()));
     }

@@ -106,11 +106,11 @@ public class BlockInHotbarSlotHelper {
     }
 
     private static boolean isSlotEmpty(Slot slot) {
-        return slot.I().isNull();
+        return slot.getStack().isNull();
     }
 
     private boolean isReplaceableBlock(Slot slot) {
-        return slot.I().isNotNull() && this.MLG.nonRemovableItems.doesNotMatch(slot.I());
+        return slot.getStack().isNotNull() && this.MLG.nonRemovableItems.doesNotMatch(slot.getStack());
     }
 
     @Nullable
@@ -135,7 +135,7 @@ public class BlockInHotbarSlotHelper {
         if (player.isNull()) {
             return result.markPending("Player is unavailable");
         }
-        boolean isHotbarSlot = slot.g() >= 36 && slot.g() <= 44;
+        boolean isHotbarSlot = slot.getSlotNumber() >= 36 && slot.getSlotNumber() <= 44;
         if (isHotbarSlot) {
             HotbarSlotResolution hotbarSlotResolution = this.MLG.closeInventory();
             if (hotbarSlotResolution.isFailure()) {
@@ -144,7 +144,7 @@ public class BlockInHotbarSlotHelper {
             if (hotbarSlotResolution.isPending()) {
                 return result.markPending("Waiting for GUI to close before equipping MLG item");
             }
-            int hotbarIndex = slot.g() - 36;
+            int hotbarIndex = slot.getSlotNumber() - 36;
             player.V$src$Lgg_vape_wrapper_impl_InventoryPlayer_$erqak6().g(hotbarIndex);
             return result.markSuccess("Equipped MLG Item").setValue(slot);
         }
@@ -172,8 +172,8 @@ public class BlockInHotbarSlotHelper {
         }
         int windowId = container.getWindowId();
         if (this.MLG.clickQueue.isEmpty()) {
-            InventoryClick inventoryClick = InventoryClick.builder().window(windowId).slot(slot.g())
-                    .swapWithHotbarSlot(slot2.g() - 36).build();
+            InventoryClick inventoryClick = InventoryClick.builder().window(windowId).slot(slot.getSlotNumber())
+                    .swapWithHotbarSlot(slot2.getSlotNumber() - 36).build();
             this.MLG.clickQueue.add(inventoryClick);
         }
         if (!this.MLG.clickQueue.isEmpty() && this.MLG.isInventoryClickReady()) {

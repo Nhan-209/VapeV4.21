@@ -8,7 +8,7 @@ extends EventEntityRendererMouseUpdateBase {
     private final float partialTicks;
 
     public EventEntityRendererMouseUpdate(Object deltaTrackerHandle) {
-        this.partialTicks = new DeltaTracker(deltaTrackerHandle).b(true);
+        this.partialTicks = new DeltaTracker(deltaTrackerHandle).getGameTimeDeltaPartialTick(true);
     }
 
     public float getPartialTicks() {

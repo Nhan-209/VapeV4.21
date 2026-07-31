@@ -36,7 +36,7 @@ extends EntityLivingBase {
                     arrayList.add(new ItemStack(iterator.next()));
                 }
             } else {
-                for (Object e : InventoryListBridge.u().p()) {
+                for (Object e : InventoryListBridge.armor().getSlots()) {
                     ItemStack itemStack;
                     EquipmentSlotSet equipmentSlotSet = new EquipmentSlotSet(e);
                     if (!equipmentSlotSet.y().equals(MappedFieldSingletonWrapper.humanoidArmor()) || !(itemStack = new ItemStack(MEntityLiving.L(EntityLiving.vapeInstance.getMappings().W, this.I, equipmentSlotSet.getObject()))).isNotNull() || itemStack.r()) continue;

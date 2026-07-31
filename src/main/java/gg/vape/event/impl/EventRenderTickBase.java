@@ -33,7 +33,7 @@ extends Event {
     }
 
     EventRenderTickBase(DeltaTracker deltaTracker) {
-        this.partialTicks = deltaTracker.b(false);
+        this.partialTicks = deltaTracker.getGameTimeDeltaPartialTick(false);
     }
 
     public static void setObfuscationState(String state) {

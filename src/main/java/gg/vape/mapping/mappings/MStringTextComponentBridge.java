@@ -13,14 +13,14 @@ extends Mapping {
     private MappingField itemStackRenderStateField;
 
     public MStringTextComponentBridge() {
-        this(MTextComponentTranslationBridge.C());
+        this(MTextComponentTranslationBridge.isControlFlowStateDisabled());
     }
 
     private MStringTextComponentBridge(boolean controlFlowState) {
         super(MappedClasses.DE);
         if (controlFlowState) {
             if (GuiComponent.getLegacyComponentState() == null) {
-                MTextComponentTranslationBridge.n(false);
+                MTextComponentTranslationBridge.setControlFlowStateEnabled(false);
             }
             return;
         }
@@ -29,7 +29,7 @@ extends Mapping {
         }
         this.itemStackRenderStateField = this.J("itemStackRenderState", true, MappedClasses.zE);
         if (GuiComponent.getLegacyComponentState() == null) {
-            MTextComponentTranslationBridge.n(true);
+            MTextComponentTranslationBridge.setControlFlowStateEnabled(true);
         }
     }
 

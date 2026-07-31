@@ -4,20 +4,20 @@ import gg.vape.wrapper.Wrapper;
 
 public class TextureManagerHandle
 extends Wrapper {
-    public TextureObjectHandle e() {
-        return new TextureObjectHandle(TextureManagerHandle.vapeInstance.getMappingsMapperCompat().hL.A(this.I));
+    public TextureObjectHandle getColorTexture() {
+        return new TextureObjectHandle(TextureManagerHandle.vapeInstance.getMappingsMapperCompat().renderTarget.getColorTexture(this.I));
     }
 
-    public int k() {
-        TextureObjectHandle b5 = this.e();
-        if (b5.isNull()) {
+    public int getColorTextureId() {
+        TextureObjectHandle colorTexture = this.getColorTexture();
+        if (colorTexture.isNull()) {
             return -1;
         }
-        return b5.J();
+        return colorTexture.getId();
     }
 
-    public TextureObjectHandle x() {
-        return new TextureObjectHandle(TextureManagerHandle.vapeInstance.getMappingsMapperCompat().hL.C(this.I));
+    public TextureObjectHandle getDepthTexture() {
+        return new TextureObjectHandle(TextureManagerHandle.vapeInstance.getMappingsMapperCompat().renderTarget.getDepthTexture(this.I));
     }
 
 
@@ -25,12 +25,12 @@ extends Wrapper {
         super(object);
     }
 
-    public int L() {
-        TextureObjectHandle b5 = this.x();
-        if (b5.isNull()) {
+    public int getDepthTextureId() {
+        TextureObjectHandle depthTexture = this.getDepthTexture();
+        if (depthTexture.isNull()) {
             return -1;
         }
-        return b5.J();
+        return depthTexture.getId();
     }
 }
 

@@ -10,13 +10,13 @@ import java.lang.reflect.Method;
 
 public class MTextureObjectHandle
 extends Mapping {
-    private MappingField a;
-    private MappingField F;
-    private MappingField c;
-    private MappingField L;
+    private MappingField textureIdField;
+    private MappingField framebufferCacheOrTextureIdField;
+    private MappingField firstFramebufferDepthIdField;
+    private MappingField firstFramebufferIdField;
 
     public MTextureObjectHandle() {
-        this(MRenderBatchFlushTarget.f());
+        this(MRenderBatchFlushTarget.getGlCommandEncoderControlFlowState());
     }
 
     private MTextureObjectHandle(int n) {
@@ -27,9 +27,9 @@ extends Mapping {
             boolean bl = true;
             String string = "id";
             MTextureObjectHandle mTextureObjectHandle = this;
-            this.F = mTextureObjectHandle.J(string, bl, clazz);
+            this.framebufferCacheOrTextureIdField = mTextureObjectHandle.J(string, bl, clazz);
             if (GuiComponent.getLegacyComponentState() == null) {
-                MRenderBatchFlushTarget.c(++n2);
+                MRenderBatchFlushTarget.setGlCommandEncoderControlFlowState(++n2);
             }
             return;
         }
@@ -37,32 +37,32 @@ extends Mapping {
         boolean bl = true;
         String string = "id";
         MTextureObjectHandle mTextureObjectHandle = this;
-        this.a = mTextureObjectHandle.J(string, bl, clazz);
+        this.textureIdField = mTextureObjectHandle.J(string, bl, clazz);
         if (ForgeVersion.MC_1_21_11.d()) {
             Class<Integer> clazz2 = Integer.TYPE;
             boolean bl2 = true;
             String string2 = "firstFboId";
             MTextureObjectHandle mTextureObjectHandle2 = this;
-            this.L = this.J(string2, bl2, clazz2);
+            this.firstFramebufferIdField = this.J(string2, bl2, clazz2);
             Class<Integer> clazz3 = Integer.TYPE;
             boolean bl3 = true;
             String string3 = "firstFboDepthId";
             MTextureObjectHandle mTextureObjectHandle3 = this;
-            this.c = this.J(string3, bl3, clazz3);
+            this.firstFramebufferDepthIdField = this.J(string3, bl3, clazz3);
             Class clazz4 = MappedClasses.FG;
             boolean bl4 = true;
             String string4 = "fboCache";
             MTextureObjectHandle mTextureObjectHandle4 = this;
-            this.F = this.J(string4, bl4, clazz4);
+            this.framebufferCacheOrTextureIdField = this.J(string4, bl4, clazz4);
         } else {
             Class clazz5 = MappedClasses.FG;
             boolean bl5 = true;
             String string5 = "fboCache";
             MTextureObjectHandle mTextureObjectHandle5 = this;
-            this.F = this.J(string5, bl5, clazz5);
+            this.framebufferCacheOrTextureIdField = this.J(string5, bl5, clazz5);
         }
         if (GuiComponent.getLegacyComponentState() == null) {
-            MRenderBatchFlushTarget.c(++n2);
+            MRenderBatchFlushTarget.setGlCommandEncoderControlFlowState(++n2);
         }
     }
 
@@ -70,34 +70,34 @@ extends Mapping {
         return exception;
     }
 
-    public int H(Object object, int n) {
+    public int resolveFramebufferId(Object texture, int depthTextureId) {
         try {
             if (ForgeVersion.MC_1_21_11.d()) {
-                if (this.L != null && this.c != null) {
+                if (this.firstFramebufferIdField != null && this.firstFramebufferDepthIdField != null) {
                     Method method;
                     Object object2;
                     int n2;
                     Object object3;
                     int n3;
-                    int n4 = this.c.getInt(object);
-                    if (n4 == n && (n3 = this.L.getInt(object)) != -1) {
+                    int n4 = this.firstFramebufferDepthIdField.getInt(texture);
+                    if (n4 == depthTextureId && (n3 = this.firstFramebufferIdField.getInt(texture)) != -1) {
                         return n3;
                     }
-                    if (this.F != null && (object3 = this.F.getObject(object)) != null && (n2 = ((Integer)(object2 = (method = object3.getClass().getMethod("get", Integer.TYPE)).invoke(object3, n))).intValue()) != 0) {
+                    if (this.framebufferCacheOrTextureIdField != null && (object3 = this.framebufferCacheOrTextureIdField.getObject(texture)) != null && (n2 = ((Integer)(object2 = (method = object3.getClass().getMethod("get", Integer.TYPE)).invoke(object3, depthTextureId))).intValue()) != 0) {
                         return n2;
                     }
                 }
                 return -1;
             }
-            if (this.F == null) {
+            if (this.framebufferCacheOrTextureIdField == null) {
                 return -1;
             }
-            Object object4 = this.F.getObject(object);
+            Object object4 = this.framebufferCacheOrTextureIdField.getObject(texture);
             if (object4 == null) {
                 return -1;
             }
             Method method = object4.getClass().getMethod("get", Integer.TYPE);
-            Object object5 = method.invoke(object4, n);
+            Object object5 = method.invoke(object4, depthTextureId);
             return (Integer)object5;
         }
         catch (Exception exception) {
@@ -105,8 +105,8 @@ extends Mapping {
         }
     }
 
-    public int r(Object object) {
-        return this.a.getInt(object);
+    public int getTextureId(Object texture) {
+        return this.textureIdField.getInt(texture);
     }
 }
 

@@ -5,12 +5,11 @@ import gg.vape.wrapper.Wrapper;
 
 public class ResourceKeyEnchantmentBridge
 extends Wrapper {
-    public static ResourceKey h() {
-        return new ResourceKey(MResourceKeyEnchantmentBridge.e(ResourceKeyEnchantmentBridge.vapeInstance.getMappingsMapperCompat().D1));
+    public static ResourceKey enchantment() {
+        return new ResourceKey(MResourceKeyEnchantmentBridge.getEnchantment(ResourceKeyEnchantmentBridge.vapeInstance.getMappingsMapperCompat().enchantmentRegistryKey));
     }
 
-    public ResourceKeyEnchantmentBridge(Object object) {
-        super(object);
+    public ResourceKeyEnchantmentBridge(Object handle) {
+        super(handle);
     }
 }
-

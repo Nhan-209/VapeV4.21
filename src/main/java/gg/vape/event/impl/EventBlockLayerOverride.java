@@ -60,7 +60,7 @@ extends Event {
     }
 
     public Object getBlockLayer() {
-        return this.shouldRender ? EnumWorldBlockLayer.W().getObject() : EnumWorldBlockLayer.v().getObject();
+        return this.shouldRender ? EnumWorldBlockLayer.solid().getObject() : EnumWorldBlockLayer.translucent().getObject();
     }
 
     static {

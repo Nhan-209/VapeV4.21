@@ -385,7 +385,8 @@ extends SmoothFontRenderer {
         catch (Exception exception) {
             Vape.logThrowable(exception);
         }
-        ByteBuffer byteBuffer = BufferUtils.createByteBuffer((int)byArray3.length);
+        // Intel's OpenGL upload path may vector-read past an exact page-aligned buffer.
+        ByteBuffer byteBuffer = BufferUtils.createByteBuffer((int)byArray3.length + 128);
         byteBuffer.put(byArray3);
         byteBuffer.flip();
         int n6 = GlStateManager.p();

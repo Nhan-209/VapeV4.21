@@ -5,12 +5,11 @@ import gg.vape.wrapper.Wrapper;
 
 public class GlyphProvider
 extends Wrapper {
-    public GlyphProvider(Object object) {
-        super(object);
+    public GlyphProvider(Object handle) {
+        super(handle);
     }
 
-    public FontGlyph o(int n) {
-        return new FontGlyph(MGlyphProvider.Q(GlyphProvider.vapeInstance.getMappingsMapperCompat().E, this.I, n));
+    public FontGlyph getGlyph(int codePoint) {
+        return new FontGlyph(MGlyphProvider.getGlyph(GlyphProvider.vapeInstance.getMappingsMapperCompat().glyphSource, this.I, codePoint));
     }
 }
-

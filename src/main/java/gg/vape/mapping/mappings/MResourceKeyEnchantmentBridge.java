@@ -7,48 +7,48 @@ import gg.vape.ui.click.component.GuiComponent;
 
 public class MResourceKeyEnchantmentBridge
 extends Mapping {
-    private MappingField O;
-    private static boolean p;
-    private static final String b;
+    private MappingField enchantmentField;
+    private static boolean enchantmentRegistryControlFlowState;
+    private static final String ENCHANTMENT_FIELD_NAME;
 
-    public static Object e(MResourceKeyEnchantmentBridge mResourceKeyEnchantmentBridge) {
-        return mResourceKeyEnchantmentBridge.a();
+    public static Object getEnchantment(MResourceKeyEnchantmentBridge mapping) {
+        return mapping.readEnchantment();
     }
 
-    public static void o(boolean bl) {
-        p = bl;
+    public static void setEnchantmentRegistryControlFlowState(boolean state) {
+        enchantmentRegistryControlFlowState = state;
     }
 
-    public static boolean Y() {
-        return p;
+    public static boolean getEnchantmentRegistryControlFlowState() {
+        return enchantmentRegistryControlFlowState;
     }
 
     static {
-        MResourceKeyEnchantmentBridge.o(true);
-        b = "ENCHANTMENT";
+        MResourceKeyEnchantmentBridge.setEnchantmentRegistryControlFlowState(true);
+        ENCHANTMENT_FIELD_NAME = "ENCHANTMENT";
     }
 
 
-    public static boolean O() {
-        boolean bl = MResourceKeyEnchantmentBridge.Y();
+    public static boolean shouldUpdateLegacyState() {
+        boolean controlFlowState = MResourceKeyEnchantmentBridge.getEnchantmentRegistryControlFlowState();
         return false;
     }
 
     public MResourceKeyEnchantmentBridge() {
         super(MappedClasses.a);
-        Class clazz = MappedClasses.qB;
-        boolean bl = true;
-        String string = b;
-        MResourceKeyEnchantmentBridge mResourceKeyEnchantmentBridge = this;
-        this.O = this.registerStaticField(string, bl, clazz);
-        if (MResourceKeyEnchantmentBridge.O()) {
+        Class enchantmentFieldType = MappedClasses.qB;
+        boolean enchantmentFieldPublic = true;
+        String enchantmentFieldName = ENCHANTMENT_FIELD_NAME;
+        MResourceKeyEnchantmentBridge mapping = this;
+        this.enchantmentField = mapping.registerStaticField(enchantmentFieldName, enchantmentFieldPublic, enchantmentFieldType);
+        if (MResourceKeyEnchantmentBridge.shouldUpdateLegacyState()) {
             GuiComponent.setLegacyComponentState(new GuiComponent[1]);
             return;
         }
     }
 
-    private Object a() {
-        return this.O.getObject(null);
+    private Object readEnchantment() {
+        return this.enchantmentField.getObject(null);
     }
 }
 

@@ -7,43 +7,43 @@ import gg.vape.ui.click.component.GuiComponent;
 
 public class MITooltipFlagBridge
 extends Mapping {
-    private static final String b;
-    private final MappingField H;
-    private static GuiComponent[] r;
+    private static final String WATER_FIELD_NAME;
+    private final MappingField waterField;
+    private static GuiComponent[] fluidModeControlFlowState;
 
 
-    public static void s(GuiComponent[] guiComponentArray) {
-        r = guiComponentArray;
+    public static void setFluidModeControlFlowState(GuiComponent[] controlFlowState) {
+        fluidModeControlFlowState = controlFlowState;
     }
 
     static {
-        MITooltipFlagBridge.s(new GuiComponent[2]);
-        b = "WATER";
+        MITooltipFlagBridge.setFluidModeControlFlowState(new GuiComponent[2]);
+        WATER_FIELD_NAME = "WATER";
     }
 
-    public Object s() {
-        return this.H.getObject(null);
+    public Object getWater() {
+        return this.waterField.getObject(null);
     }
 
     public MITooltipFlagBridge() {
-        this(MITooltipFlagBridge.D());
+        this(MITooltipFlagBridge.getFluidModeControlFlowState());
     }
 
-    private MITooltipFlagBridge(GuiComponent[] guiComponentArray) {
+    private MITooltipFlagBridge(GuiComponent[] controlFlowState) {
         super(MappedClasses.Y9);
-        GuiComponent[] guiComponentArray2 = guiComponentArray;
-        Class clazz = MappedClasses.Y9;
-        boolean bl = true;
-        String string = b;
-        MITooltipFlagBridge mITooltipFlagBridge = this;
-        this.H = this.registerStaticField(string, bl, clazz);
+        GuiComponent[] currentControlFlowState = controlFlowState;
+        Class waterFieldType = MappedClasses.Y9;
+        boolean waterFieldPublic = true;
+        String waterFieldName = WATER_FIELD_NAME;
+        MITooltipFlagBridge mapping = this;
+        this.waterField = mapping.registerStaticField(waterFieldName, waterFieldPublic, waterFieldType);
         if (GuiComponent.getLegacyComponentState() == null) {
-            MITooltipFlagBridge.s(new GuiComponent[1]);
+            MITooltipFlagBridge.setFluidModeControlFlowState(new GuiComponent[1]);
         }
     }
 
-    public static GuiComponent[] D() {
-        return r;
+    public static GuiComponent[] getFluidModeControlFlowState() {
+        return fluidModeControlFlowState;
     }
 }
 

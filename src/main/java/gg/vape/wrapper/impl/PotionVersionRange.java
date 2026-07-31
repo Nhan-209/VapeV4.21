@@ -6,16 +6,15 @@ import java.util.Set;
 
 public class PotionVersionRange
 extends Wrapper {
-    public Set i() {
-        return (Set)MPotionVersionRange.F(PotionVersionRange.vapeInstance.getMappingsMapperCompat().Cu, this.I);
+    public Set entrySet() {
+        return (Set)MPotionVersionRange.getEntrySet(PotionVersionRange.vapeInstance.getMappingsMapperCompat().itemEnchantments, this.I);
     }
 
-    public static PotionVersionRange W() {
-        return new PotionVersionRange(MPotionVersionRange.h(PotionVersionRange.vapeInstance.getMappingsMapperCompat().Cu));
+    public static PotionVersionRange empty() {
+        return new PotionVersionRange(MPotionVersionRange.getEmpty(PotionVersionRange.vapeInstance.getMappingsMapperCompat().itemEnchantments));
     }
 
-    public PotionVersionRange(Object object) {
-        super(object);
+    public PotionVersionRange(Object handle) {
+        super(handle);
     }
 }
-

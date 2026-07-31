@@ -64,7 +64,7 @@ extends Event {
         }
         PlayerInfo playerInfo = this.getNetworkPlayerInfo();
         ITextComponent customDisplayName = playerInfo.R();
-        this.vanillaDisplayName = customDisplayName.isNotNull() ? customDisplayName.getFormattedText() : ScorePlayerTeam.o(playerInfo.X(), playerInfo.v().getName());
+        this.vanillaDisplayName = customDisplayName.isNotNull() ? customDisplayName.getFormattedText() : ScorePlayerTeam.formatPlayerName(playerInfo.X(), playerInfo.v().getName());
         return this.vanillaDisplayName;
     }
 

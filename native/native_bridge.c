@@ -15,7 +15,39 @@ static unsigned char *g_capture_bytes = NULL;
 static jint g_capture_length = 0;
 static jclass g_bridge_class = NULL;
 static jmethodID g_bridge_om = NULL;
+static jmethodID g_bridge_wh = NULL;
 static volatile LONG g_windows_display_registered = 0;
+static volatile LONG g_lwjgl3_window_registered = 0;
+static HWND g_lwjgl3_window = NULL;
+static WNDPROC g_lwjgl3_original_wndproc = NULL;
+
+static void log_jvmti_failure(const wchar_t *operation, jvmtiError error,
+        jclass target) {
+    char *error_name = NULL;
+    char *class_signature = NULL;
+    const char *resolved_error_name = "unknown";
+    const char *resolved_class_signature = "<unknown>";
+    if (g_jvmti == NULL || error == JVMTI_ERROR_NONE) {
+        return;
+    }
+    if ((*g_jvmti)->GetErrorName(g_jvmti, error, &error_name)
+            == JVMTI_ERROR_NONE && error_name != NULL) {
+        resolved_error_name = error_name;
+    }
+    if (target != NULL && (*g_jvmti)->GetClassSignature(g_jvmti, target,
+            &class_signature, NULL) == JVMTI_ERROR_NONE
+            && class_signature != NULL) {
+        resolved_class_signature = class_signature;
+    }
+    vape_log(L"%ls failed: jvmti=%d (%hs), target=%hs", operation,
+            error, resolved_error_name, resolved_class_signature);
+    if (error_name != NULL) {
+        (*g_jvmti)->Deallocate(g_jvmti, (unsigned char *)error_name);
+    }
+    if (class_signature != NULL) {
+        (*g_jvmti)->Deallocate(g_jvmti, (unsigned char *)class_signature);
+    }
+}
 
 static void throw_new(JNIEnv *env, const char *type, const char *message) {
     jclass exception_class = (*env)->FindClass(env, type);
@@ -129,6 +161,7 @@ static jint JNICALL native_scb(
     definition.class_bytes = (const unsigned char *)bytes;
     error = (*g_jvmti)->RedefineClasses(g_jvmti, 1, &definition);
     (*env)->ReleaseByteArrayElements(env, class_bytes, bytes, JNI_ABORT);
+    log_jvmti_failure(L"scb RedefineClasses", error, target);
     return error;
 }
 
@@ -266,7 +299,8 @@ static jbyteArray JNICALL native_gcb(JNIEnv *env, jclass bridge, jclass target) 
                     (const jbyte *)g_capture_bytes);
         }
     } else {
-        vape_log(L"gcb failed: jvmti=%d captured=%d", error, g_capture_length);
+        log_jvmti_failure(L"gcb RetransformClasses", error, target);
+        vape_log(L"gcb captured byte count: %d", g_capture_length);
     }
 
     (*env)->DeleteGlobalRef(env, g_capture_class);
@@ -401,6 +435,113 @@ static void JNICALL windows_display_update(JNIEnv *env, jclass owner) {
     }
 }
 
+static BOOL is_lwjgl3_window(HWND window) {
+    DWORD process_id = 0;
+    WCHAR class_name[64];
+    if (window == NULL || !IsWindow(window)) {
+        return FALSE;
+    }
+    GetWindowThreadProcessId(window, &process_id);
+    if (process_id != GetCurrentProcessId()
+            || GetClassNameW(window, class_name,
+                    (int)(sizeof(class_name) / sizeof(class_name[0]))) <= 0) {
+        return FALSE;
+    }
+    return wcscmp(class_name, L"GLFW30") == 0
+            || wcscmp(class_name, L"LWJGL3") == 0;
+}
+
+static BOOL CALLBACK find_lwjgl3_window(HWND window, LPARAM result_pointer) {
+    HWND *result = (HWND *)(uintptr_t)result_pointer;
+    if (result != NULL && is_lwjgl3_window(window)) {
+        *result = window;
+        return FALSE;
+    }
+    return TRUE;
+}
+
+static JNIEnv *get_callback_env(BOOL *attached) {
+    JNIEnv *env = NULL;
+    jint result;
+    *attached = FALSE;
+    if (g_vm == NULL) {
+        return NULL;
+    }
+    result = (*g_vm)->GetEnv(g_vm, (void **)&env, JNI_VERSION_1_6);
+    if (result == JNI_EDETACHED) {
+        if ((*g_vm)->AttachCurrentThread(g_vm, (void **)&env, NULL) != JNI_OK) {
+            return NULL;
+        }
+        *attached = TRUE;
+    } else if (result != JNI_OK) {
+        return NULL;
+    }
+    return env;
+}
+
+static LRESULT CALLBACK lwjgl3_window_proc(
+        HWND window, UINT message, WPARAM wparam, LPARAM lparam) {
+    WNDPROC original = g_lwjgl3_original_wndproc;
+    JNIEnv *env;
+    BOOL attached;
+    jboolean handled = JNI_FALSE;
+
+    env = get_callback_env(&attached);
+    if (env != NULL && g_bridge_class != NULL && g_bridge_om != NULL
+            && !(*env)->ExceptionCheck(env)) {
+        handled = (*env)->CallStaticBooleanMethod(env, g_bridge_class, g_bridge_om,
+                (jint)message, (jlong)(uintptr_t)wparam,
+                (jlong)(intptr_t)lparam);
+        if ((*env)->ExceptionCheck(env)) {
+            vape_log_pending_exception(env, L"LWJGL3 window input callback");
+            handled = JNI_FALSE;
+        }
+    }
+    if (attached) {
+        (*g_vm)->DetachCurrentThread(g_vm);
+    }
+    if (handled) {
+        return 0;
+    }
+    return original == NULL
+            ? DefWindowProcW(window, message, wparam, lparam)
+            : CallWindowProcW(original, window, message, wparam, lparam);
+}
+
+static void register_lwjgl3_window(JNIEnv *env) {
+    HWND window = GetForegroundWindow();
+    WNDPROC original;
+    if (InterlockedCompareExchange(&g_lwjgl3_window_registered, 0, 0) != 0) {
+        return;
+    }
+    if (!is_lwjgl3_window(window)) {
+        window = NULL;
+        EnumWindows(find_lwjgl3_window, (LPARAM)(uintptr_t)&window);
+    }
+    if (window == NULL) {
+        vape_log(L"trs step 23: LWJGL3 window was not found");
+        return;
+    }
+    SetLastError(ERROR_SUCCESS);
+    original = (WNDPROC)(LONG_PTR)SetWindowLongPtrW(
+            window, GWLP_WNDPROC, (LONG_PTR)lwjgl3_window_proc);
+    if (original == NULL && GetLastError() != ERROR_SUCCESS) {
+        vape_log(L"failed to subclass LWJGL3 window: %lu", GetLastError());
+        return;
+    }
+    g_lwjgl3_window = window;
+    g_lwjgl3_original_wndproc = original;
+    InterlockedExchange(&g_lwjgl3_window_registered, 1);
+    if (g_bridge_class != NULL && g_bridge_wh != NULL) {
+        (*env)->CallStaticVoidMethod(env, g_bridge_class, g_bridge_wh,
+                (jlong)(uintptr_t)window);
+        if ((*env)->ExceptionCheck(env)) {
+            vape_log_pending_exception(env, L"initialize LWJGL3 window handle");
+        }
+    }
+    vape_log(L"subclassed LWJGL3 window for input notifications");
+}
+
 static void JNICALL native_trs(JNIEnv *env, jclass bridge, jint step) {
     jint class_count = 0;
     jclass *classes = NULL;
@@ -443,7 +584,8 @@ static void JNICALL native_trs(JNIEnv *env, jclass bridge, jint step) {
             vape_log_pending_exception(env, L"RegisterNatives WindowsDisplay.nUpdate");
         }
     } else {
-        vape_log(L"trs step 23: WindowsDisplay is not loaded yet");
+        vape_log(L"trs step 23: WindowsDisplay is not loaded; trying LWJGL3 window");
+        register_lwjgl3_window(env);
     }
     (*g_jvmti)->Deallocate(g_jvmti, (unsigned char *)classes);
 }
@@ -818,8 +960,9 @@ jint vape_register_native_bridge(JNIEnv *env, jclass bridge_class) {
     }
     g_bridge_class = (jclass)(*env)->NewGlobalRef(env, bridge_class);
     g_bridge_om = (*env)->GetStaticMethodID(env, bridge_class, "om", "(IJJ)Z");
-    if (g_bridge_class == NULL || g_bridge_om == NULL) {
-        vape_log_pending_exception(env, L"resolve NativeBridge.om");
+    g_bridge_wh = (*env)->GetStaticMethodID(env, bridge_class, "wh", "(J)V");
+    if (g_bridge_class == NULL || g_bridge_om == NULL || g_bridge_wh == NULL) {
+        vape_log_pending_exception(env, L"resolve NativeBridge input callbacks");
         return JNI_ERR;
     }
     vape_log(L"registered NativeBridge methods (9 sample + gat + cpy + 5 stub)");
@@ -827,10 +970,19 @@ jint vape_register_native_bridge(JNIEnv *env, jclass bridge_class) {
 }
 
 void vape_release_native_bridge(JNIEnv *env) {
+    if (g_lwjgl3_window != NULL && g_lwjgl3_original_wndproc != NULL
+            && IsWindow(g_lwjgl3_window)) {
+        SetWindowLongPtrW(g_lwjgl3_window, GWLP_WNDPROC,
+                (LONG_PTR)g_lwjgl3_original_wndproc);
+    }
     if (env != NULL && g_bridge_class != NULL) {
         (*env)->DeleteGlobalRef(env, g_bridge_class);
     }
     g_bridge_class = NULL;
     g_bridge_om = NULL;
+    g_bridge_wh = NULL;
+    g_lwjgl3_window = NULL;
+    g_lwjgl3_original_wndproc = NULL;
     InterlockedExchange(&g_windows_display_registered, 0);
+    InterlockedExchange(&g_lwjgl3_window_registered, 0);
 }

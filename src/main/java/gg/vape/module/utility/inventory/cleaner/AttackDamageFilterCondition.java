@@ -68,9 +68,9 @@ implements NumericFilterCondition<AttackDamageFilterCondition> {
         }
         float attackDamage = 0.0f;
         ItemAttributeModifiers attributeModifiers = itemStack.o();
-        if (attributeModifiers.i() > 0) {
+        if (attributeModifiers.size() > 0) {
             int attributeIndex = ForgeVersion.MC_1_12_2.L() ? 1 : 0;
-            AttributeModifier attributeModifier = new AttributeModifier(attributeModifiers.f().toArray()[attributeIndex]);
+            AttributeModifier attributeModifier = new AttributeModifier(attributeModifiers.values().toArray()[attributeIndex]);
             attackDamage += (float)attributeModifier.getAmount();
         }
         return this.operator.compare(attackDamage, this.damage);

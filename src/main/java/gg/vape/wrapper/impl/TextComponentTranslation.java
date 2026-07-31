@@ -4,12 +4,11 @@ import gg.vape.wrapper.Wrapper;
 
 public class TextComponentTranslation
 extends Wrapper {
-    public Object m$src$Ljava_lang_Object_$hvczij() {
-        return TextComponentTranslation.vapeInstance.getMappings().Dy.J(this.I);
+    public Object getModelIdentity() {
+        return TextComponentTranslation.vapeInstance.getMappings().trackingItemStackRenderState.getModelIdentity(this.I);
     }
 
-    public TextComponentTranslation(Object object) {
-        super(object);
+    public TextComponentTranslation(Object handle) {
+        super(handle);
     }
 }
-

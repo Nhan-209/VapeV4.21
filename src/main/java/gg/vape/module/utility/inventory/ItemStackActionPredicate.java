@@ -17,7 +17,7 @@ public class ItemStackActionPredicate {
     }
 
     private static boolean isItemClass(Slot slot, Class<?> itemClass) {
-        return slot.isNotNull() && slot.I().isNotNull() && slot.I().getItem().isInstance(itemClass);
+        return slot.isNotNull() && slot.getStack().isNotNull() && slot.getStack().getItem().isInstance(itemClass);
     }
 
     @Nullable
@@ -54,7 +54,7 @@ public class ItemStackActionPredicate {
     @Nullable
     public static Slot findSlot(Container container, Predicate<Slot> predicate, int firstSlot, int lastSlot) {
         for (Slot slot : container.getInventorySlots()) {
-            int slotIndex = slot.g();
+            int slotIndex = slot.getSlotNumber();
             if (slotIndex < firstSlot || slotIndex > lastSlot || !predicate.test(slot)) continue;
             return slot;
         }

@@ -14,7 +14,7 @@ extends JavassistMappingTask {
 
     @Override
     public void transform() {
-        MappingMethod mappingMethod = Vape.INSTANCE.getMappings().hX.i;
+        MappingMethod mappingMethod = Vape.INSTANCE.getMappings().glCommandEncoder.drawFromBuffersMethod;
         CtBehavior ctBehavior = this.F(mappingMethod);
         try {
             ctBehavior.insertBefore("{" + RenderBatchFlushCallbackMarker.class.getName() + c);

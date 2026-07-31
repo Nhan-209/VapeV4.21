@@ -8,38 +8,38 @@ import java.util.Set;
 
 public class MPotionVersionRange
 extends Mapping {
-    private MappingMethod p;
-    private MappingField N;
+    private MappingMethod entrySetMethod;
+    private MappingField emptyField;
 
-    private Object K() {
-        return this.N.getObject(null);
+    private Object readEmpty() {
+        return this.emptyField.getObject(null);
     }
 
     public MPotionVersionRange() {
         super(MappedClasses.VX);
-        Class[] classArray = new Class[]{};
-        Class<Set> clazz = Set.class;
-        boolean bl = true;
-        String string = "entrySet";
-        MPotionVersionRange mPotionVersionRange = this;
-        this.p = this.Y(string, bl, clazz, classArray);
-        Class clazz2 = MappedClasses.VX;
-        boolean bl2 = true;
-        String string2 = "EMPTY";
-        MPotionVersionRange mPotionVersionRange2 = this;
-        this.N = this.registerStaticField(string2, bl2, clazz2);
+        Class[] entrySetParameterTypes = new Class[]{};
+        Class<Set> entrySetReturnType = Set.class;
+        boolean entrySetPublic = true;
+        String entrySetMethodName = "entrySet";
+        MPotionVersionRange mapping = this;
+        this.entrySetMethod = mapping.Y(entrySetMethodName, entrySetPublic, entrySetReturnType, entrySetParameterTypes);
+        Class emptyFieldType = MappedClasses.VX;
+        boolean emptyFieldPublic = true;
+        String emptyFieldName = "EMPTY";
+        MPotionVersionRange emptyMapping = this;
+        this.emptyField = emptyMapping.registerStaticField(emptyFieldName, emptyFieldPublic, emptyFieldType);
     }
 
-    public static Object F(MPotionVersionRange mPotionVersionRange, Object object) {
-        return mPotionVersionRange.B(object);
+    public static Object getEntrySet(MPotionVersionRange mapping, Object enchantmentsHandle) {
+        return mapping.readEntrySet(enchantmentsHandle);
     }
 
-    private Object B(Object object) {
-        return this.p.invokeObject(object, new Object[0]);
+    private Object readEntrySet(Object enchantmentsHandle) {
+        return this.entrySetMethod.invokeObject(enchantmentsHandle, new Object[0]);
     }
 
-    public static Object h(MPotionVersionRange mPotionVersionRange) {
-        return mPotionVersionRange.K();
+    public static Object getEmpty(MPotionVersionRange mapping) {
+        return mapping.readEmpty();
     }
 }
 

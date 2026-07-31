@@ -146,7 +146,7 @@ extends AbstractBlockInMovementController {
                     EnumFacing.w(), EnumFacing.M()};
             for (EnumFacing facing : horizontalFacings) {
                 Direction direction = new Direction(facing.getObject());
-                double axisPosition = direction.n().W(localX, 0.0, localZ);
+                double axisPosition = direction.n().choose(localX, 0.0, localZ);
                 double edgeDistance = direction.Q$src$Lgg_vape_wrapper_impl_DirectionVector_$l2h44r()
                         .equals(DirectionVector.positive())
                         ? 1.0 - axisPosition : axisPosition;
@@ -159,7 +159,7 @@ extends AbstractBlockInMovementController {
             }
             if (nearestDirection != null) {
                 Vec3 motion = this.simulatedPlayer.C$src$Lgg_vape_wrapper_impl_Vec3_$1q93kwi();
-                if (nearestDirection.n().equals(DirectionAxis.j())) {
+                if (nearestDirection.n().equals(DirectionAxis.x())) {
                     this.simulatedPlayer.F(0.1 * nearestDirection.g(), motion.getY(), motion.getZ());
                 } else {
                     this.simulatedPlayer.F(motion.getX(), motion.getY(), 0.1 * nearestDirection.o());

@@ -5,20 +5,19 @@ import java.util.Collection;
 
 public class ItemAttributeModifiers
 extends Wrapper {
-    public int i() {
-        return ItemAttributeModifiers.vapeInstance.getMappingsMapperCompat().Cd.y(this.I);
+    public int size() {
+        return ItemAttributeModifiers.vapeInstance.getMappingsMapperCompat().itemAttributeModifiers.size(this.I);
     }
 
-    public boolean v(Object object, Object object2) {
-        return ItemAttributeModifiers.vapeInstance.getMappingsMapperCompat().Cd.y(this.I, object, object2);
+    public boolean put(Object key, Object value) {
+        return ItemAttributeModifiers.vapeInstance.getMappingsMapperCompat().itemAttributeModifiers.put(this.I, key, value);
     }
 
-    public Collection f() {
-        return ItemAttributeModifiers.vapeInstance.getMappingsMapperCompat().Cd.g(this.I);
+    public Collection values() {
+        return ItemAttributeModifiers.vapeInstance.getMappingsMapperCompat().itemAttributeModifiers.values(this.I);
     }
 
-    public ItemAttributeModifiers(Object object) {
-        super(object);
+    public ItemAttributeModifiers(Object handle) {
+        super(handle);
     }
 }
-

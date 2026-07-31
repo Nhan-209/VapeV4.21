@@ -4,12 +4,11 @@ import gg.vape.wrapper.Wrapper;
 
 public class EnchantmentHelperBridge
 extends Wrapper {
-    public EnchantmentHelperBridge(Object object) {
-        super(object);
+    public EnchantmentHelperBridge(Object handle) {
+        super(handle);
     }
 
-    public static EnchantmentRegistryAccess i() {
-        return new EnchantmentRegistryAccess(EnchantmentHelperBridge.vapeInstance.getMappingsMapperCompat().q4.l());
+    public static EnchantmentRegistryAccess createLookup() {
+        return new EnchantmentRegistryAccess(EnchantmentHelperBridge.vapeInstance.getMappingsMapperCompat().vanillaRegistries.createLookup());
     }
 }
-

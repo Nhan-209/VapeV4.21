@@ -9,16 +9,16 @@ import gg.vape.wrapper.impl.ForgeVersion;
 
 public class MTextureAtlasSpriteInfo
 extends Mapping {
-    private MappingMethod a;
-    private MappingField d;
-    private MappingField j;
+    private MappingMethod getSpriteMethod;
+    private MappingField textureLocationField;
+    private MappingField blocksAtlasLocationField;
 
-    public static Object Y(MTextureAtlasSpriteInfo mTextureAtlasSpriteInfo) {
-        return mTextureAtlasSpriteInfo.d();
+    public static Object getBlocksAtlasLocation(MTextureAtlasSpriteInfo mapping) {
+        return mapping.getBlocksAtlasLocation();
     }
 
     public MTextureAtlasSpriteInfo() {
-        this(MTextureManager.N());
+        this(MTextureManager.getInitialControlFlowState());
     }
 
     private MTextureAtlasSpriteInfo(int n) {
@@ -28,14 +28,14 @@ extends Mapping {
             boolean bl = true;
             String string = "textureLocation";
             MTextureAtlasSpriteInfo mTextureAtlasSpriteInfo = this;
-            this.d = mTextureAtlasSpriteInfo.J(string, bl, clazz);
+            this.textureLocationField = mTextureAtlasSpriteInfo.J(string, bl, clazz);
             if (ForgeVersion.MC_1_17.d()) {
                 Class[] classArray = new Class[]{MappedClasses.zC};
                 Class clazz2 = MappedClasses.Db;
                 boolean bl2 = true;
                 String string2 = "getSprite";
                 MTextureAtlasSpriteInfo mTextureAtlasSpriteInfo2 = this;
-                this.a = this.Y(string2, bl2, clazz2, classArray);
+                this.getSpriteMethod = this.Y(string2, bl2, clazz2, classArray);
             }
             return;
         }
@@ -43,13 +43,13 @@ extends Mapping {
         boolean bl = true;
         String string = "textureLocation";
         MTextureAtlasSpriteInfo mTextureAtlasSpriteInfo = this;
-        this.d = mTextureAtlasSpriteInfo.J(string, bl, clazz);
+        this.textureLocationField = mTextureAtlasSpriteInfo.J(string, bl, clazz);
         if (ForgeVersion.MC_1_17.d()) {
             Class clazz3 = MappedClasses.zC;
             boolean bl3 = true;
             String string3 = "LOCATION_BLOCKS";
             MTextureAtlasSpriteInfo mTextureAtlasSpriteInfo3 = this;
-            this.j = this.registerStaticField(string3, bl3, clazz3);
+            this.blocksAtlasLocationField = this.registerStaticField(string3, bl3, clazz3);
         }
         if (ForgeVersion.MC_1_21_10.d()) {
             Class[] classArray = new Class[]{MappedClasses.zC};
@@ -57,29 +57,29 @@ extends Mapping {
             boolean bl4 = true;
             String string4 = "getSprite";
             MTextureAtlasSpriteInfo mTextureAtlasSpriteInfo4 = this;
-            this.a = this.Y(string4, bl4, clazz4, classArray);
+            this.getSpriteMethod = this.Y(string4, bl4, clazz4, classArray);
         }
     }
 
-    public static Object U(MTextureAtlasSpriteInfo mTextureAtlasSpriteInfo, Object object, Object object2) {
-        return mTextureAtlasSpriteInfo.Y(object, object2);
+    public static Object getSprite(MTextureAtlasSpriteInfo mapping, Object textureAtlas, Object location) {
+        return mapping.getSprite(textureAtlas, location);
     }
 
-    private Object d() {
-        return this.j.getObject(null);
+    private Object getBlocksAtlasLocation() {
+        return this.blocksAtlasLocationField.getObject(null);
     }
 
 
-    private Object h(Object object) {
-        return this.d.getObject(object);
+    private Object getTextureLocation(Object textureAtlas) {
+        return this.textureLocationField.getObject(textureAtlas);
     }
 
-    private Object Y(Object object, Object object2) {
-        return this.a.invokeObject(object, object2);
+    private Object getSprite(Object textureAtlas, Object location) {
+        return this.getSpriteMethod.invokeObject(textureAtlas, location);
     }
 
-    public static Object x(MTextureAtlasSpriteInfo mTextureAtlasSpriteInfo, Object object) {
-        return mTextureAtlasSpriteInfo.h(object);
+    public static Object getTextureLocation(MTextureAtlasSpriteInfo mapping, Object textureAtlas) {
+        return mapping.getTextureLocation(textureAtlas);
     }
 }
 

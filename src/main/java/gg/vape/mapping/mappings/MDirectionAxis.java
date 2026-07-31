@@ -7,49 +7,49 @@ import gg.vape.mapping.MappingMethod;
 
 public class MDirectionAxis
 extends Mapping {
-    private final MappingMethod Q;
-    private final MappingField v;
-    private final MappingField i;
-    private static final String b = "choose";
+    private final MappingMethod chooseMethod;
+    private final MappingField xField;
+    private final MappingField yField;
+    private static final String CHOOSE_METHOD_NAME = "choose";
 
     public MDirectionAxis() {
         super(MappedClasses.u9);
-        Class[] classArray = new Class[]{Double.TYPE, Double.TYPE, Double.TYPE};
-        Class<Double> clazz = Double.TYPE;
-        boolean bl = true;
-        String string = b;
-        MDirectionAxis mDirectionAxis = this;
-        this.Q = this.Y(string, bl, clazz, classArray);
-        Class clazz2 = MappedClasses.u9;
-        boolean bl2 = true;
-        String string2 = "X";
-        MDirectionAxis mDirectionAxis2 = this;
-        this.v = this.registerStaticField(string2, bl2, clazz2);
-        Class clazz3 = MappedClasses.u9;
-        boolean bl3 = true;
-        String string3 = "Y";
-        MDirectionAxis mDirectionAxis3 = this;
-        this.i = this.registerStaticField(string3, bl3, clazz3);
+        Class[] chooseParameterTypes = new Class[]{Double.TYPE, Double.TYPE, Double.TYPE};
+        Class<Double> chooseReturnType = Double.TYPE;
+        boolean choosePublic = true;
+        String chooseMethodName = CHOOSE_METHOD_NAME;
+        MDirectionAxis mapping = this;
+        this.chooseMethod = mapping.Y(chooseMethodName, choosePublic, chooseReturnType, chooseParameterTypes);
+        Class xFieldType = MappedClasses.u9;
+        boolean xFieldPublic = true;
+        String xFieldName = "X";
+        MDirectionAxis xMapping = this;
+        this.xField = xMapping.registerStaticField(xFieldName, xFieldPublic, xFieldType);
+        Class yFieldType = MappedClasses.u9;
+        boolean yFieldPublic = true;
+        String yFieldName = "Y";
+        MDirectionAxis yMapping = this;
+        this.yField = yMapping.registerStaticField(yFieldName, yFieldPublic, yFieldType);
     }
 
-    private Object C() {
-        return this.i.getObject(null);
+    private Object readY() {
+        return this.yField.getObject(null);
     }
 
-    private Object g() {
-        return this.v.getObject(null);
+    private Object readX() {
+        return this.xField.getObject(null);
     }
 
-    public static Object G(MDirectionAxis mDirectionAxis) {
-        return mDirectionAxis.g();
+    public static Object getX(MDirectionAxis mapping) {
+        return mapping.readX();
     }
 
-    public static Object h(MDirectionAxis mDirectionAxis) {
-        return mDirectionAxis.C();
+    public static Object getY(MDirectionAxis mapping) {
+        return mapping.readY();
     }
 
-    public double T(Object object, double d, double d2, double d3) {
-        return this.Q.invokeDouble(object, d, d2, d3);
+    public double choose(Object axisHandle, double x, double y, double z) {
+        return this.chooseMethod.invokeDouble(axisHandle, x, y, z);
     }
 }
 

@@ -6,51 +6,51 @@ import gg.vape.mapping.MappingField;
 
 public class MRayTraceContext_FluidMode
 extends Mapping {
-    private MappingField v;
-    private MappingField S;
-    private MappingField E;
+    private MappingField anyField;
+    private MappingField noneField;
+    private MappingField sourceOnlyField;
 
-    private Object C() {
-        return this.E.getObject(null);
+    private Object readSourceOnly() {
+        return this.sourceOnlyField.getObject(null);
     }
 
-    public static Object D(MRayTraceContext_FluidMode mRayTraceContext_FluidMode) {
-        return mRayTraceContext_FluidMode.R();
+    public static Object getAny(MRayTraceContext_FluidMode mapping) {
+        return mapping.readAny();
     }
 
-    public static Object z(MRayTraceContext_FluidMode mRayTraceContext_FluidMode) {
-        return mRayTraceContext_FluidMode.C();
+    public static Object getSourceOnly(MRayTraceContext_FluidMode mapping) {
+        return mapping.readSourceOnly();
     }
 
-    private Object L() {
-        return this.S.getObject(null);
+    private Object readNone() {
+        return this.noneField.getObject(null);
     }
 
-    private Object R() {
-        return this.v.getObject(null);
+    private Object readAny() {
+        return this.anyField.getObject(null);
     }
 
-    public static Object W(MRayTraceContext_FluidMode mRayTraceContext_FluidMode) {
-        return mRayTraceContext_FluidMode.L();
+    public static Object getNone(MRayTraceContext_FluidMode mapping) {
+        return mapping.readNone();
     }
 
     public MRayTraceContext_FluidMode() {
         super(MappedClasses.Dm);
-        Class clazz = MappedClasses.Dm;
-        boolean bl = true;
-        String string = "NONE";
-        MRayTraceContext_FluidMode mRayTraceContext_FluidMode = this;
-        this.S = this.registerStaticField(string, bl, clazz);
-        Class clazz2 = MappedClasses.Dm;
-        boolean bl2 = true;
-        String string2 = "SOURCE_ONLY";
-        MRayTraceContext_FluidMode mRayTraceContext_FluidMode2 = this;
-        this.E = this.registerStaticField(string2, bl2, clazz2);
-        Class clazz3 = MappedClasses.Dm;
-        boolean bl3 = true;
-        String string3 = "ANY";
-        MRayTraceContext_FluidMode mRayTraceContext_FluidMode3 = this;
-        this.v = this.registerStaticField(string3, bl3, clazz3);
+        Class noneFieldType = MappedClasses.Dm;
+        boolean noneFieldPublic = true;
+        String noneFieldName = "NONE";
+        MRayTraceContext_FluidMode mapping = this;
+        this.noneField = mapping.registerStaticField(noneFieldName, noneFieldPublic, noneFieldType);
+        Class sourceOnlyFieldType = MappedClasses.Dm;
+        boolean sourceOnlyFieldPublic = true;
+        String sourceOnlyFieldName = "SOURCE_ONLY";
+        MRayTraceContext_FluidMode sourceOnlyMapping = this;
+        this.sourceOnlyField = sourceOnlyMapping.registerStaticField(sourceOnlyFieldName, sourceOnlyFieldPublic, sourceOnlyFieldType);
+        Class anyFieldType = MappedClasses.Dm;
+        boolean anyFieldPublic = true;
+        String anyFieldName = "ANY";
+        MRayTraceContext_FluidMode anyMapping = this;
+        this.anyField = anyMapping.registerStaticField(anyFieldName, anyFieldPublic, anyFieldType);
     }
 }
 

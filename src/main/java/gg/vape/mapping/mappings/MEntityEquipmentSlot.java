@@ -22,7 +22,7 @@ extends Mapping {
     }
 
     public MEntityEquipmentSlot() {
-        this(MSlot.z());
+        this(MSlot.getSlotControlFlowState());
     }
 
     private MEntityEquipmentSlot(int[] nArray) {

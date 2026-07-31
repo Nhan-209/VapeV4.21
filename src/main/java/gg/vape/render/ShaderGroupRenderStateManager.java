@@ -97,7 +97,7 @@ public class ShaderGroupRenderStateManager {
     }
 
     private void createShaderGroup(int displayWidth, int displayHeight) {
-        this.activeShaderGroup = ShaderGroup.create(Minecraft.Z(), Minecraft.m$src$Lgg_vape_wrapper_impl_EntityRenderer_$13begmf().K(), Minecraft.getFrameBuffer(), new ResourceLocation(EntityRenderer.getShaderResourceLocations()[18]));
+        this.activeShaderGroup = ShaderGroup.create(Minecraft.getTextureManager(), Minecraft.m$src$Lgg_vape_wrapper_impl_EntityRenderer_$13begmf().K(), Minecraft.getFrameBuffer(), new ResourceLocation(EntityRenderer.getShaderResourceLocations()[18]));
         Minecraft.m$src$Lgg_vape_wrapper_impl_EntityRenderer_$13begmf().J(this.activeShaderGroup);
         this.activeShaderGroup.resize(displayWidth, displayHeight);
         Minecraft.m$src$Lgg_vape_wrapper_impl_EntityRenderer_$13begmf().setUseShader(true);

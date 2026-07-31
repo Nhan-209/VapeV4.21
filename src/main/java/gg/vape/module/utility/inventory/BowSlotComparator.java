@@ -14,7 +14,7 @@ implements Comparator<Slot> {
     final AutoHotbar autoHotbar;
 
     public int compareBowScore(Slot first, Slot second) {
-        return Double.compare(ClientSettings.getToolDamageScore(first.I()), ClientSettings.getToolDamageScore(second.I()));
+        return Double.compare(ClientSettings.getToolDamageScore(first.getStack()), ClientSettings.getToolDamageScore(second.getStack()));
     }
 
     public BowSlotComparator(AutoHotbar autoHotbar) {

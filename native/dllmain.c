@@ -204,7 +204,9 @@ static jobject find_client_class_loader(JNIEnv *env) {
         memset(&info, 0, sizeof(info));
         if ((*g_jvmti)->GetThreadInfo(g_jvmti, threads[index], &info)
                 == JVMTI_ERROR_NONE) {
-            if (info.name != NULL && strcmp(info.name, "Client thread") == 0
+            if (info.name != NULL
+                    && (strcmp(info.name, "Client thread") == 0
+                            || strcmp(info.name, "Render thread") == 0)
                     && info.context_class_loader != NULL) {
                 result = (*env)->NewLocalRef(env, info.context_class_loader);
             }
@@ -228,11 +230,13 @@ static jobject find_client_class_loader(JNIEnv *env) {
 }
 
 static int add_jar_to_loader(
-        JNIEnv *env, jobject loader, const wchar_t *jar_path) {
+        JNIEnv *env, jobject *loader, const wchar_t *jar_path) {
     jclass url_loader_class;
+    jclass url_class;
     jclass file_class;
     jclass uri_class;
     jmethodID add_url;
+    jmethodID url_loader_init;
     jmethodID file_init;
     jmethodID to_uri;
     jmethodID to_url;
@@ -240,15 +244,18 @@ static int add_jar_to_loader(
     jobject file;
     jobject uri;
     jobject url;
+    jobjectArray urls;
+    jobject child_loader;
+    jclass runtime_loader_class;
+    jfieldID delegated_loader_field;
+    jobject delegated_loader;
 
     url_loader_class = (*env)->FindClass(env, "java/net/URLClassLoader");
-    if (url_loader_class == NULL
-            || !(*env)->IsInstanceOf(env, loader, url_loader_class)) {
-        vape_log(L"Client thread ClassLoader is not a URLClassLoader");
+    url_class = (*env)->FindClass(env, "java/net/URL");
+    if (url_loader_class == NULL || url_class == NULL) {
+        vape_log_pending_exception(env, L"resolve URLClassLoader classes");
         return 0;
     }
-    add_url = (*env)->GetMethodID(env, url_loader_class,
-            "addURL", "(Ljava/net/URL;)V");
     file_class = (*env)->FindClass(env, "java/io/File");
     uri_class = (*env)->FindClass(env, "java/net/URI");
     file_init = file_class == NULL ? NULL : (*env)->GetMethodID(
@@ -257,8 +264,8 @@ static int add_jar_to_loader(
             env, file_class, "toURI", "()Ljava/net/URI;");
     to_url = uri_class == NULL ? NULL : (*env)->GetMethodID(
             env, uri_class, "toURL", "()Ljava/net/URL;");
-    if (add_url == NULL || file_init == NULL || to_uri == NULL || to_url == NULL) {
-        vape_log_pending_exception(env, L"resolve URLClassLoader bootstrap methods");
+    if (file_init == NULL || to_uri == NULL || to_url == NULL) {
+        vape_log_pending_exception(env, L"resolve product JAR URL methods");
         return 0;
     }
     path = new_wide_string(env, jar_path);
@@ -269,11 +276,69 @@ static int add_jar_to_loader(
         vape_log_pending_exception(env, L"create product JAR URL");
         return 0;
     }
-    (*env)->CallVoidMethod(env, loader, add_url, url);
-    if ((*env)->ExceptionCheck(env)) {
-        vape_log_pending_exception(env, L"URLClassLoader.addURL");
+    if ((*env)->IsInstanceOf(env, *loader, url_loader_class)) {
+        add_url = (*env)->GetMethodID(env, url_loader_class,
+                "addURL", "(Ljava/net/URL;)V");
+        if (add_url == NULL) {
+            vape_log_pending_exception(env, L"resolve URLClassLoader.addURL");
+            return 0;
+        }
+        (*env)->CallVoidMethod(env, *loader, add_url, url);
+        if ((*env)->ExceptionCheck(env)) {
+            vape_log_pending_exception(env, L"URLClassLoader.addURL");
+            return 0;
+        }
+        return 1;
+    }
+
+    runtime_loader_class = (*env)->GetObjectClass(env, *loader);
+    delegated_loader_field = runtime_loader_class == NULL ? NULL
+            : (*env)->GetFieldID(env, runtime_loader_class,
+                    "delegatedClassLoader",
+                    "Lcpw/mods/modlauncher/TransformingClassLoader$DelegatedClassLoader;");
+    if (delegated_loader_field != NULL) {
+        delegated_loader = (*env)->GetObjectField(
+                env, *loader, delegated_loader_field);
+        if (delegated_loader != NULL
+                && (*env)->IsInstanceOf(env, delegated_loader,
+                        url_loader_class)) {
+            add_url = (*env)->GetMethodID(env, url_loader_class,
+                    "addURL", "(Ljava/net/URL;)V");
+            if (add_url == NULL) {
+                vape_log_pending_exception(env,
+                        L"resolve delegated URLClassLoader.addURL");
+                return 0;
+            }
+            (*env)->CallVoidMethod(env, delegated_loader, add_url, url);
+            if ((*env)->ExceptionCheck(env)) {
+                vape_log_pending_exception(env,
+                        L"delegated URLClassLoader.addURL");
+                return 0;
+            }
+            vape_log(L"appended product JAR to ModLauncher delegated ClassLoader");
+            return 1;
+        }
+    } else if ((*env)->ExceptionCheck(env)) {
+        (*env)->ExceptionClear(env);
+    }
+
+    url_loader_init = (*env)->GetMethodID(env, url_loader_class, "<init>",
+            "([Ljava/net/URL;Ljava/lang/ClassLoader;)V");
+    urls = (*env)->NewObjectArray(env, 1, url_class, NULL);
+    if (url_loader_init == NULL || urls == NULL) {
+        vape_log_pending_exception(env, L"resolve child URLClassLoader constructor");
         return 0;
     }
+    (*env)->SetObjectArrayElement(env, urls, 0, url);
+    child_loader = (*env)->NewObject(env, url_loader_class, url_loader_init,
+            urls, *loader);
+    if (child_loader == NULL || (*env)->ExceptionCheck(env)) {
+        vape_log_pending_exception(env, L"create child product URLClassLoader");
+        return 0;
+    }
+    (*env)->DeleteLocalRef(env, *loader);
+    *loader = child_loader;
+    vape_log(L"created child URLClassLoader for non-URL Minecraft ClassLoader");
     return 1;
 }
 
@@ -428,13 +493,13 @@ static DWORD WINAPI bootstrap_thread(LPVOID parameter) {
         }
     }
     if (loader == NULL) {
-        vape_log(L"Minecraft 1.8.9 Client thread was not found within 60 seconds");
+        vape_log(L"Minecraft client/render thread was not found within 60 seconds");
+        goto cleanup;
+    }
+    if (!add_jar_to_loader(env, &loader, jar_path)) {
         goto cleanup;
     }
     if (!set_current_context_class_loader(env, loader)) {
-        goto cleanup;
-    }
-    if (!add_jar_to_loader(env, loader, jar_path)) {
         goto cleanup;
     }
     bridge_class = load_bridge_class(env, loader);

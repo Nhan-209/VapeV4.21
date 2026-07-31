@@ -7,37 +7,37 @@ import java.util.List;
 
 public class MInventoryListBridge
 extends Mapping {
-    private MappingField c;
-    private MappingField G;
+    private MappingField armorField;
+    private MappingField slotsField;
 
-    public static Object j(MInventoryListBridge mInventoryListBridge) {
-        return mInventoryListBridge.O();
+    public static Object getArmor(MInventoryListBridge mapping) {
+        return mapping.readArmor();
     }
 
-    public static List Y(MInventoryListBridge mInventoryListBridge, Object object) {
-        return mInventoryListBridge.H(object);
+    public static List getSlots(MInventoryListBridge mapping, Object slotGroupHandle) {
+        return mapping.readSlots(slotGroupHandle);
     }
 
-    private List H(Object object) {
-        return (List)this.G.getObject(object);
+    private List readSlots(Object slotGroupHandle) {
+        return (List)this.slotsField.getObject(slotGroupHandle);
     }
 
     public MInventoryListBridge() {
         super(MappedClasses.Y_);
-        Class clazz = MappedClasses.Y_;
-        boolean bl = true;
-        String string = "ARMOR";
-        MInventoryListBridge mInventoryListBridge = this;
-        this.c = this.registerStaticField(string, bl, clazz);
-        Class<List> clazz2 = List.class;
-        boolean bl2 = true;
-        String string2 = "slots";
-        MInventoryListBridge mInventoryListBridge2 = this;
-        this.G = this.J(string2, bl2, clazz2);
+        Class armorFieldType = MappedClasses.Y_;
+        boolean armorFieldPublic = true;
+        String armorFieldName = "ARMOR";
+        MInventoryListBridge mapping = this;
+        this.armorField = mapping.registerStaticField(armorFieldName, armorFieldPublic, armorFieldType);
+        Class<List> slotsFieldType = List.class;
+        boolean slotsFieldPublic = true;
+        String slotsFieldName = "slots";
+        MInventoryListBridge slotsMapping = this;
+        this.slotsField = slotsMapping.J(slotsFieldName, slotsFieldPublic, slotsFieldType);
     }
 
-    private Object O() {
-        return this.c.getObject(null);
+    private Object readArmor() {
+        return this.armorField.getObject(null);
     }
 }
 

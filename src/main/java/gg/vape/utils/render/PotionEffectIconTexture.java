@@ -50,13 +50,13 @@ implements PotionEffectIconRenderBackend {
         TextureAtlasSprite sprite;
         Holder effectHolder = effect.t();
         if (ForgeVersion.MC_1_21_10.d()) {
-            TextureAtlas textureAtlas = Minecraft.x().q(ResourceLocationConstantPair.getGui());
-            sprite = textureAtlas.a(Screen.getMobEffectSprite(effectHolder));
+            TextureAtlas textureAtlas = Minecraft.x().getAtlas(ResourceLocationConstantPair.getGui());
+            sprite = textureAtlas.getSprite(Screen.getMobEffectSprite(effectHolder));
         } else if (ForgeVersion.MC_1_21_6.d()) {
             sprite = Minecraft.T().getSprite(Screen.getMobEffectSprite(effectHolder));
         } else {
-            StatusEffectSpriteUploader spriteUploader = StatusEffectSpriteUploader.c();
-            sprite = spriteUploader.T(effectHolder);
+            StatusEffectSpriteUploader spriteUploader = StatusEffectSpriteUploader.getPotionSprites();
+            sprite = spriteUploader.getSprite(effectHolder);
         }
         return sprite;
     }
@@ -65,13 +65,13 @@ implements PotionEffectIconRenderBackend {
         Wrapper textureManager;
         ResourceLocation textureLocation;
         if (ForgeVersion.MC_1_20_6.d()) {
-            textureLocation = sprite.M();
+            textureLocation = sprite.getAtlasLocation();
         } else {
-            Wrapper textureAtlas = new TextureAtlas(sprite.e());
-            textureLocation = ((TextureAtlas)textureAtlas).K();
+            Wrapper textureAtlas = new TextureAtlas(sprite.getContentsOrAtlasTexture());
+            textureLocation = ((TextureAtlas)textureAtlas).getTextureLocation();
         }
-        textureManager = Minecraft.Z();
-        return ((TextureManager)textureManager).G(textureLocation);
+        textureManager = Minecraft.getTextureManager();
+        return ((TextureManager)textureManager).getTexture(textureLocation);
     }
 
     @Override
@@ -111,10 +111,10 @@ implements PotionEffectIconRenderBackend {
             OpenGlBackendHolder.backend.scale((double)Minecraft.J() / (double)((float)iconWidth * 2.0f), (double)Minecraft.h() / (double)((float)iconWidth * 2.0f), 0.0);
             TextureAtlasSprite sprite = this.resolveEffectSprite(effect);
             TextureObject texture = PotionEffectIconTexture.getSpriteTexture(sprite);
-            float[] textureCoordinates = sprite.j();
+            float[] textureCoordinates = sprite.getTextureCoordinates();
             GlScissorRect previousScissorRect = BufferedGuiRenderPrimitives.scissorRect;
             BufferedGuiRenderPrimitives.scissorRect = null;
-            RenderBatchBuilder batchBuilder = new RenderBatchBuilder().setTexture(new GlImageTexture(texture.h())).addTexturedRect(0.0f, -1.0f, iconWidth, iconHeight, iconWidth, iconHeight, textureCoordinates[0], textureCoordinates[2], textureCoordinates[1], textureCoordinates[3], Color.WHITE);
+            RenderBatchBuilder batchBuilder = new RenderBatchBuilder().setTexture(new GlImageTexture(texture.getId())).addTexturedRect(0.0f, -1.0f, iconWidth, iconHeight, iconWidth, iconHeight, textureCoordinates[0], textureCoordinates[2], textureCoordinates[1], textureCoordinates[3], Color.WHITE);
             RenderBatchManager batchManager = RenderBatchManager.getInstance();
             batchManager.queueGuiBatch(batchBuilder);
             batchManager.setFramebufferOverride(this.framebuffer.framebufferId);
@@ -146,10 +146,10 @@ implements PotionEffectIconRenderBackend {
         OpenGlBackendHolder.backend.scale((double)Minecraft.J() / (double)((float)iconWidth * 2.0f), (double)Minecraft.h() / (double)((float)iconWidth * 2.0f), 0.0);
         TextureAtlasSprite sprite = this.resolveEffectSprite(effect);
         TextureObject texture = PotionEffectIconTexture.getSpriteTexture(sprite);
-        float[] textureCoordinates = sprite.j();
+        float[] textureCoordinates = sprite.getTextureCoordinates();
         GlScissorRect previousScissorRect = BufferedGuiRenderPrimitives.scissorRect;
         BufferedGuiRenderPrimitives.scissorRect = null;
-        RenderBatchBuilder batchBuilder = new RenderBatchBuilder().setTexture(new GlImageTexture(texture.h())).addTexturedRect(0.0f, -1.0f, iconWidth, iconHeight, iconWidth, iconHeight, textureCoordinates[0], textureCoordinates[2], textureCoordinates[1], textureCoordinates[3], Color.WHITE);
+        RenderBatchBuilder batchBuilder = new RenderBatchBuilder().setTexture(new GlImageTexture(texture.getId())).addTexturedRect(0.0f, -1.0f, iconWidth, iconHeight, iconWidth, iconHeight, textureCoordinates[0], textureCoordinates[2], textureCoordinates[1], textureCoordinates[3], Color.WHITE);
         RenderBatchManager batchManager = RenderBatchManager.getInstance();
         batchManager.queueGuiBatch(batchBuilder);
         batchManager.setFramebufferOverride(this.framebuffer.framebufferId);

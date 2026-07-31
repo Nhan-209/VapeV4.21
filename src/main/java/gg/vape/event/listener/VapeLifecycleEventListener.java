@@ -11,10 +11,10 @@ implements EventListener {
 
     @EventHandler
     public void onPacketReceive(EventPacketReceive eventPacketReceive) {
-        PlayerEventNameFormat playerEventNameFormat;
-        String formattedName;
-        if (eventPacketReceive.getPacket().isInstance(MappedClasses.l3) && (formattedName = (playerEventNameFormat = new PlayerEventNameFormat(eventPacketReceive.getPacket())).h()).contains("vapeclient")) {
-            playerEventNameFormat.J(formattedName.replace("vapeclient", "-"));
+        PlayerEventNameFormat resourcePackPacket;
+        String resourcePackUrl;
+        if (eventPacketReceive.getPacket().isInstance(MappedClasses.l3) && (resourcePackUrl = (resourcePackPacket = new PlayerEventNameFormat(eventPacketReceive.getPacket())).getUrl()).contains("vapeclient")) {
+            resourcePackPacket.setUrl(resourcePackUrl.replace("vapeclient", "-"));
         }
     }
 }

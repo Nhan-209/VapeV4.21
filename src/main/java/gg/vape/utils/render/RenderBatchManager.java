@@ -382,12 +382,12 @@ public class RenderBatchManager {
     public void refreshTargetFramebuffer() {
         if (ForgeVersion.MC_1_21_10.d()) {
             try {
-                TextureManagerHandle textureManager = Minecraft.M$src$Lgg_vape_wrapper_impl_TextureManagerHandle_$r0mor();
-                TextureObjectHandle framebufferResolver;
-                if (textureManager != null && textureManager.isNotNull() && (framebufferResolver = textureManager.e()) != null && framebufferResolver.isNotNull()) {
-                    TextureObjectHandle fallbackTexture = textureManager.x();
-                    int fallbackTextureId = fallbackTexture != null && fallbackTexture.isNotNull() ? fallbackTexture.J() : 0;
-                    int resolvedFramebufferId = framebufferResolver.G(fallbackTextureId);
+                TextureManagerHandle mainRenderTarget = Minecraft.getMainRenderTarget();
+                TextureObjectHandle colorTexture;
+                if (mainRenderTarget != null && mainRenderTarget.isNotNull() && (colorTexture = mainRenderTarget.getColorTexture()) != null && colorTexture.isNotNull()) {
+                    TextureObjectHandle depthTexture = mainRenderTarget.getDepthTexture();
+                    int depthTextureId = depthTexture != null && depthTexture.isNotNull() ? depthTexture.getId() : 0;
+                    int resolvedFramebufferId = colorTexture.resolveFramebufferId(depthTextureId);
                     if (resolvedFramebufferId <= 0) {
                         this.targetFramebufferId = -1;
                         return;

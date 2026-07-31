@@ -105,7 +105,7 @@ implements InventoryActionModule {
         ArrayList<ItemStack> matchingItems = new ArrayList<ItemStack>();
         for (Slot slot : list) {
             ItemStack itemStack;
-            if (!slot.v() || (itemStack = slot.I()).isNull() || !itemStack.getItem().isInstance(clazz)) continue;
+            if (!slot.hasStack() || (itemStack = slot.getStack()).isNull() || !itemStack.getItem().isInstance(clazz)) continue;
             matchingItems.add(itemStack);
         }
         Collections.reverse(matchingItems);
@@ -199,12 +199,12 @@ implements InventoryActionModule {
         this.bestItemD = this.findBestByComparator(inventorySlots, MappedClasses.YP, Comparator.comparingDouble(ClientSettings::getWeaponDamageScore));
         slotLoop: for (Slot slot : localPlayer.F$src$Lgg_vape_wrapper_impl_Container_$152y6lm().getInventorySlots()) {
             try {
-                if (!slot.v() || slot.I().isNull()) continue;
+                if (!slot.hasStack() || slot.getStack().isNull()) continue;
                 for (Object armorStack : localPlayer.V$src$Lgg_vape_wrapper_impl_InventoryPlayer_$erqak6().i()) {
-                    if (armorStack != null && armorStack.equals(slot.I())) continue slotLoop;
+                    if (armorStack != null && armorStack.equals(slot.getStack())) continue slotLoop;
                 }
-                if (!this.shouldRemove(slot.I())) continue;
-                this.queueSlot(slot.g());
+                if (!this.shouldRemove(slot.getStack())) continue;
+                this.queueSlot(slot.getSlotNumber());
             }
             catch (Exception exception) {
                 Vape.logThrowable(exception);
@@ -214,7 +214,7 @@ implements InventoryActionModule {
     }
 
     private int hotbarRegionOf(Slot slot) {
-        int slotIndex = slot.g();
+        int slotIndex = slot.getSlotNumber();
         if (slotIndex >= 36 && slotIndex <= 44) {
             return 0;
         }
@@ -232,8 +232,8 @@ implements InventoryActionModule {
         ArrayList<ItemStack> armorItems = new ArrayList<ItemStack>();
         List<Slot> list = Minecraft.thePlayer().F$src$Lgg_vape_wrapper_impl_Container_$152y6lm().getInventorySlots();
         for (Slot wrapper : list) {
-            if (!wrapper.v() || !ItemStackScoreUtil.R(wrapper.I().getItem())) continue;
-            armorItems.add(wrapper.I());
+            if (!wrapper.hasStack() || !ItemStackScoreUtil.R(wrapper.getStack().getItem())) continue;
+            armorItems.add(wrapper.getStack());
         }
         for (ItemStack itemStack : armorItems) {
             int armorType = ItemStackScoreUtil.t(itemStack);

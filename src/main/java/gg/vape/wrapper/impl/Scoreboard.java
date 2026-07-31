@@ -9,21 +9,20 @@ import java.util.Collection;
 
 public class Scoreboard
 extends Wrapper {
-    public Collection<Score> p(ScoreObjective scoreObjective) {
-        Collection collection = MScoreboard.u(Scoreboard.vapeInstance.getMappings().Dz, this.I, scoreObjective.getObject());
-        ArrayList arrayList = Lists.newArrayList();
-        for (Object e : collection) {
-            arrayList.add(new Score(e));
+    public Collection<Score> getPlayerScores(ScoreObjective objective) {
+        Collection scoreHandles = MScoreboard.getPlayerScores(Scoreboard.vapeInstance.getMappings().scoreboard, this.I, objective.getObject());
+        ArrayList scores = Lists.newArrayList();
+        for (Object scoreHandle : scoreHandles) {
+            scores.add(new Score(scoreHandle));
         }
-        return arrayList;
+        return scores;
     }
 
     public Scoreboard(Object object) {
         super(object);
     }
 
-    public ScorePlayerTeam l(String string) {
-        return new ScorePlayerTeam(MScoreboard.R(Scoreboard.vapeInstance.getMappings().Dz, this.I, string));
+    public ScorePlayerTeam getPlayersTeam(String playerName) {
+        return new ScorePlayerTeam(MScoreboard.getPlayersTeam(Scoreboard.vapeInstance.getMappings().scoreboard, this.I, playerName));
     }
 }
-

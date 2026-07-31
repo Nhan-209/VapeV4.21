@@ -5,38 +5,37 @@ import gg.vape.wrapper.Wrapper;
 
 public class ClickType
 extends Wrapper {
-    public static ClickType[] b = new ClickType[]{ClickType.O(), ClickType.v(), ClickType.P(), ClickType.G(), ClickType.n(), ClickType.I(), ClickType.f()};
+    public static ClickType[] VALUES = new ClickType[]{ClickType.pickup(), ClickType.quickMove(), ClickType.swap(), ClickType.cloneStack(), ClickType.throwStack(), ClickType.quickCraft(), ClickType.pickupAll()};
 
-    public static ClickType I() {
-        return new ClickType(MClickType.T(ClickType.vapeInstance.getMappingsMapperCompat().qN));
+    public static ClickType quickCraft() {
+        return new ClickType(MClickType.getQuickCraft(ClickType.vapeInstance.getMappingsMapperCompat().clickType));
     }
 
     public ClickType(Object object) {
         super(object);
     }
 
-    public static ClickType O() {
-        return new ClickType(MClickType.x(ClickType.vapeInstance.getMappingsMapperCompat().qN));
+    public static ClickType pickup() {
+        return new ClickType(MClickType.getPickup(ClickType.vapeInstance.getMappingsMapperCompat().clickType));
     }
 
-    public static ClickType G() {
-        return new ClickType(MClickType.y(ClickType.vapeInstance.getMappingsMapperCompat().qN));
+    public static ClickType cloneStack() {
+        return new ClickType(MClickType.getClone(ClickType.vapeInstance.getMappingsMapperCompat().clickType));
     }
 
-    public static ClickType v() {
-        return new ClickType(MClickType.f(ClickType.vapeInstance.getMappingsMapperCompat().qN));
+    public static ClickType quickMove() {
+        return new ClickType(MClickType.getQuickMove(ClickType.vapeInstance.getMappingsMapperCompat().clickType));
     }
 
-    public static ClickType f() {
-        return new ClickType(MClickType.K(ClickType.vapeInstance.getMappingsMapperCompat().qN));
+    public static ClickType pickupAll() {
+        return new ClickType(MClickType.getPickupAll(ClickType.vapeInstance.getMappingsMapperCompat().clickType));
     }
 
-    public static ClickType n() {
-        return new ClickType(MClickType.J(ClickType.vapeInstance.getMappingsMapperCompat().qN));
+    public static ClickType throwStack() {
+        return new ClickType(MClickType.getThrow(ClickType.vapeInstance.getMappingsMapperCompat().clickType));
     }
 
-    public static ClickType P() {
-        return new ClickType(MClickType.a(ClickType.vapeInstance.getMappingsMapperCompat().qN));
+    public static ClickType swap() {
+        return new ClickType(MClickType.getSwap(ClickType.vapeInstance.getMappingsMapperCompat().clickType));
     }
 }
-

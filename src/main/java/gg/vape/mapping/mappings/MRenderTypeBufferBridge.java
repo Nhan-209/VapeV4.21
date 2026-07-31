@@ -6,41 +6,41 @@ import gg.vape.mapping.MappingMethod;
 
 public class MRenderTypeBufferBridge
 extends Mapping {
-    private static String D;
-    private static final String c;
-    private final MappingMethod S;
+    private static String controlFlowMarker;
+    private static final String ON_INPUT_RECEIVED_METHOD_NAME;
+    private final MappingMethod onInputReceivedMethod;
 
     public MRenderTypeBufferBridge() {
-        this(MRenderTypeBufferBridge.e());
+        this(MRenderTypeBufferBridge.getControlFlowMarker());
     }
 
-    private MRenderTypeBufferBridge(String string) {
+    private MRenderTypeBufferBridge(String marker) {
         super(MappedClasses.lC);
-        Class[] classArray = new Class[]{};
-        Class<Void> clazz = Void.TYPE;
-        boolean bl = true;
-        String string2 = c;
-        MRenderTypeBufferBridge mRenderTypeBufferBridge = this;
-        this.S = this.Y(string2, bl, clazz, classArray);
-        String string3 = string;
+        Class[] parameterTypes = new Class[]{};
+        Class<Void> returnType = Void.TYPE;
+        boolean methodPublic = true;
+        String methodName = ON_INPUT_RECEIVED_METHOD_NAME;
+        MRenderTypeBufferBridge mapping = this;
+        this.onInputReceivedMethod = mapping.Y(methodName, methodPublic, returnType, parameterTypes);
+        String currentControlFlowMarker = marker;
     }
 
     static {
-        MRenderTypeBufferBridge.L("bZI7xb");
-        c = "onInputReceived";
+        MRenderTypeBufferBridge.setControlFlowMarker("bZI7xb");
+        ON_INPUT_RECEIVED_METHOD_NAME = "onInputReceived";
     }
 
-    public static MappingMethod d(MRenderTypeBufferBridge mRenderTypeBufferBridge) {
-        return mRenderTypeBufferBridge.S;
+    public static void onInputReceived(MRenderTypeBufferBridge mapping, Object trackerHandle) {
+        mapping.onInputReceivedMethod.invokeVoidNoArgs(trackerHandle);
     }
 
 
-    public static String e() {
-        return D;
+    public static String getControlFlowMarker() {
+        return controlFlowMarker;
     }
 
-    public static void L(String string) {
-        D = string;
+    public static void setControlFlowMarker(String marker) {
+        controlFlowMarker = marker;
     }
 }
 

@@ -409,7 +409,7 @@ extends Mod {
         } else {
             int firstSlot = inventorySection == 1 ? 36 : 9;
             for (int slot = firstSlot; slot < 45; ++slot) {
-                ItemStack itemStack = Minecraft.thePlayer().F$src$Lgg_vape_wrapper_impl_Container_$152y6lm().getSlot(slot).I();
+                ItemStack itemStack = Minecraft.thePlayer().F$src$Lgg_vape_wrapper_impl_Container_$152y6lm().getSlot(slot).getStack();
                 if (this.isUsableBlockStack(itemStack)) {
                     blockCount += creativeMode && !exactCount ? 64 : itemStack.t();
                 }

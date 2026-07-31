@@ -5,24 +5,23 @@ import gg.vape.wrapper.Wrapper;
 
 public class PlayerInput
 extends Wrapper {
-    public PlayerInput(Object object) {
-        super(object);
+    public PlayerInput(Object handle) {
+        super(handle);
     }
 
-    public void A(float f) {
-        MPlayerInput.K(PlayerInput.vapeInstance.getMappingsMapperCompat().RI, this.I, f);
+    public void setForwardImpulse(float forwardImpulse) {
+        MPlayerInput.setY(PlayerInput.vapeInstance.getMappingsMapperCompat().playerInputVector, this.I, forwardImpulse);
     }
 
-    public float Z() {
-        return MPlayerInput.e(PlayerInput.vapeInstance.getMappingsMapperCompat().RI, this.I);
+    public float getForwardImpulse() {
+        return MPlayerInput.getY(PlayerInput.vapeInstance.getMappingsMapperCompat().playerInputVector, this.I);
     }
 
-    public float P() {
-        return MPlayerInput.B(PlayerInput.vapeInstance.getMappingsMapperCompat().RI, this.I);
+    public float getLeftImpulse() {
+        return MPlayerInput.getX(PlayerInput.vapeInstance.getMappingsMapperCompat().playerInputVector, this.I);
     }
 
-    public void N(float f) {
-        MPlayerInput.s(PlayerInput.vapeInstance.getMappingsMapperCompat().RI, this.I, f);
+    public void setLeftImpulse(float leftImpulse) {
+        MPlayerInput.setX(PlayerInput.vapeInstance.getMappingsMapperCompat().playerInputVector, this.I, leftImpulse);
     }
 }
-

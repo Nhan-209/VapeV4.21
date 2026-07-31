@@ -21,8 +21,7 @@ extends ITextComponent {
         return new Style(MTextComponent.B(TextComponent.vapeInstance.getMappingsMapperCompat().RA, this.I));
     }
 
-    public TextComponent(ScorePlayerTeam tg_12, String string) {
-        super(new TextComponent(Vape.INSTANCE.getMappingsMapperCompat().Rh.I(tg_12.getObject(), ScorePlayerTeamTextComponent.B(string).getObject())).getObject());
+    public TextComponent(ScorePlayerTeam team, String playerName) {
+        super(new TextComponent(Vape.INSTANCE.getMappingsMapperCompat().scorePlayerTeam.formatPlayerNameComponent(team.getObject(), ScorePlayerTeamTextComponent.B(playerName).getObject())).getObject());
     }
 }
-

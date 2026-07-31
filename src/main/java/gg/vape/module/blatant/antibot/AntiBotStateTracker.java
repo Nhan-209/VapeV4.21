@@ -53,7 +53,7 @@ public class AntiBotStateTracker {
             if (!profile.getUUID().equals(playerId) || !team.isNotNull()) {
                 continue;
             }
-            String teamPrefix = team.A();
+            String teamPrefix = team.getPrefix();
             if (!teamPrefix.contains(ClientSettings.FORMAT_CODE)) {
                 continue;
             }

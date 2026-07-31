@@ -16,8 +16,8 @@ implements Comparator<Slot> {
     }
 
     public int compareNutritionScore(Slot first, Slot second) {
-        ItemStack firstStack = first.I();
-        ItemStack secondStack = second.I();
+        ItemStack firstStack = first.getStack();
+        ItemStack secondStack = second.getStack();
         ItemFood firstFood = new ItemFood(firstStack.getItem());
         ItemFood secondFood = new ItemFood(secondStack.getItem());
         float firstScore = (float)firstFood.getNutrition() * firstFood.getSaturation();

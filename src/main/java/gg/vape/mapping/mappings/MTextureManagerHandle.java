@@ -6,38 +6,38 @@ import gg.vape.mapping.MappingMethod;
 
 public class MTextureManagerHandle
 extends Mapping {
-    private final MappingMethod j;
-    private final MappingMethod z;
-    private static boolean f;
+    private final MappingMethod getDepthTextureMethod;
+    private final MappingMethod getColorTextureMethod;
+    private static boolean renderTargetControlFlowState;
 
 
-    public static boolean t() {
-        return f;
+    public static boolean getRenderTargetControlFlowState() {
+        return renderTargetControlFlowState;
     }
 
-    public Object C(Object object) {
-        return this.j.invokeObject(object, new Object[0]);
+    public Object getDepthTexture(Object renderTarget) {
+        return this.getDepthTextureMethod.invokeObject(renderTarget, new Object[0]);
     }
 
-    public static void W(boolean bl) {
-        f = bl;
+    public static void setRenderTargetControlFlowState(boolean state) {
+        renderTargetControlFlowState = state;
     }
 
     static {
-        MTextureManagerHandle.W(true);
+        MTextureManagerHandle.setRenderTargetControlFlowState(true);
     }
 
-    public static boolean K() {
-        boolean bl = MTextureManagerHandle.t();
+    public static boolean getDisabledControlFlowState() {
+        boolean bl = MTextureManagerHandle.getRenderTargetControlFlowState();
         return false;
     }
 
-    public Object A(Object object) {
-        return this.z.invokeObject(object, new Object[0]);
+    public Object getColorTexture(Object renderTarget) {
+        return this.getColorTextureMethod.invokeObject(renderTarget, new Object[0]);
     }
 
     public MTextureManagerHandle() {
-        this(MTextureManagerHandle.t());
+        this(MTextureManagerHandle.getRenderTargetControlFlowState());
     }
 
     private MTextureManagerHandle(boolean bl) {
@@ -47,14 +47,14 @@ extends Mapping {
         boolean bl2 = true;
         String string = "getColorTexture";
         MTextureManagerHandle mTextureManagerHandle = this;
-        this.z = this.Y(string, bl2, clazz, classArray);
+        this.getColorTextureMethod = this.Y(string, bl2, clazz, classArray);
         boolean bl3 = bl;
         Class[] classArray2 = new Class[]{};
         Class clazz2 = MappedClasses.GPU_TEXTURE;
         boolean bl4 = true;
         String string2 = "getDepthTexture";
         MTextureManagerHandle mTextureManagerHandle2 = this;
-        this.j = this.Y(string2, bl4, clazz2, classArray2);
+        this.getDepthTextureMethod = this.Y(string2, bl4, clazz2, classArray2);
     }
 }
 

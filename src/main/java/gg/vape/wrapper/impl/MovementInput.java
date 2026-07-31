@@ -9,7 +9,7 @@ extends Wrapper {
     public void B(float f) {
         if (ForgeVersion.MC_1_21_6.d()) {
             PlayerInput playerInput = new PlayerInput(MMovementInput.W(MovementInput.vapeInstance.getMappings().h7, this.I));
-            playerInput.A(f);
+            playerInput.setForwardImpulse(f);
             return;
         }
         MMovementInput.p(MovementInput.vapeInstance.getMappings().h7, this.I, f);
@@ -26,7 +26,7 @@ extends Wrapper {
     public void M(float f) {
         if (ForgeVersion.MC_1_21_6.d()) {
             PlayerInput playerInput = new PlayerInput(MMovementInput.W(MovementInput.vapeInstance.getMappings().h7, this.I));
-            playerInput.N(f);
+            playerInput.setLeftImpulse(f);
             return;
         }
         MMovementInput.j(MovementInput.vapeInstance.getMappings().h7, this.I, f);
@@ -39,7 +39,7 @@ extends Wrapper {
     public float T() {
         if (ForgeVersion.MC_1_21_6.d()) {
             PlayerInput playerInput = new PlayerInput(MMovementInput.W(MovementInput.vapeInstance.getMappings().h7, this.I));
-            return playerInput.P();
+            return playerInput.getLeftImpulse();
         }
         return MMovementInput.b(MovementInput.vapeInstance.getMappings().h7, this.I);
     }
@@ -55,7 +55,7 @@ extends Wrapper {
     public float D() {
         if (ForgeVersion.MC_1_21_6.d()) {
             PlayerInput playerInput = new PlayerInput(MMovementInput.W(MovementInput.vapeInstance.getMappings().h7, this.I));
-            return playerInput.Z();
+            return playerInput.getForwardImpulse();
         }
         return MMovementInput.f(MovementInput.vapeInstance.getMappings().h7, this.I);
     }

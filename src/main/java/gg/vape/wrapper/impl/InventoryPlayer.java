@@ -19,7 +19,7 @@ extends Wrapper {
     public Object[] i() {
         if (ForgeVersion.MC_1_21_6.d()) {
             ArrayList<ItemStack> arrayList = new ArrayList<ItemStack>();
-            for (Object e : InventoryListBridge.u().p()) {
+            for (Object e : InventoryListBridge.armor().getSlots()) {
                 EquipmentSlotSet equipmentSlotSet = new EquipmentSlotSet(e);
                 arrayList.add(this.c(equipmentSlotSet.d()));
             }
@@ -52,4 +52,3 @@ extends Wrapper {
         return InventoryPlayer.vapeInstance.getMappings().v.s(this.I);
     }
 }
-

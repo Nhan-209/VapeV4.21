@@ -385,7 +385,7 @@ extends Mod {
             int n6 = -(list.size() * 10) - 5;
             for (PotionEffect potionEffect : list) {
                 GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
-                Minecraft.Z().g(GuiContainer.m$src$Lgg_vape_wrapper_impl_ResourceLocation_$1fc62cj());
+                Minecraft.getTextureManager().bindTexture(GuiContainer.m$src$Lgg_vape_wrapper_impl_ResourceLocation_$1fc62cj());
                 OpenGlBackendHolder.backend.scale(0.5, 0.5, 0.5);
                 if (ForgeVersion.MC_1_16_5.d()) {
                     matrixStack.H();

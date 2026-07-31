@@ -177,4 +177,3 @@ extends Mod {
         return (float)Math.toDegrees(Math.atan2(y - centerY, x - centerX));
     }
 }
-

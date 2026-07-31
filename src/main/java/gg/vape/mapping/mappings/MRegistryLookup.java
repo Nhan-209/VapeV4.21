@@ -9,47 +9,47 @@ import java.util.Optional;
 
 public class MRegistryLookup
 extends Mapping {
-    private final MappingMethod T;
-    private final MappingMethod e;
-    private final MappingMethod u;
+    private final MappingMethod lookupOrThrowMethod;
+    private final MappingMethod getMethod;
+    private final MappingMethod lookupMethod;
 
     public MRegistryLookup() {
         super(MappedClasses.A);
-        Class[] classArray = new Class[]{MappedClasses.qB};
-        Class clazz = MappedClasses.u2;
-        boolean bl = true;
-        String string = "lookupOrThrow";
-        MRegistryLookup mRegistryLookup = this;
-        this.T = this.Y(string, bl, clazz, classArray);
-        Class[] classArray2 = new Class[]{MappedClasses.qB};
-        Class<Optional> clazz2 = Optional.class;
-        boolean bl2 = true;
-        String string2 = "lookup";
-        MRegistryLookup mRegistryLookup2 = this;
-        this.u = this.Y(string2, bl2, clazz2, classArray2);
-        Class[] classArray3 = new Class[]{MappedClasses.qB};
-        Class<Optional> clazz3 = Optional.class;
-        boolean bl3 = true;
-        String string3 = "get";
-        MRegistryLookup mRegistryLookup3 = this;
-        this.e = this.Y(string3, bl3, clazz3, classArray3);
+        Class[] lookupOrThrowParameterTypes = new Class[]{MappedClasses.qB};
+        Class lookupOrThrowReturnType = MappedClasses.u2;
+        boolean lookupOrThrowPublic = true;
+        String lookupOrThrowMethodName = "lookupOrThrow";
+        MRegistryLookup mapping = this;
+        this.lookupOrThrowMethod = mapping.Y(lookupOrThrowMethodName, lookupOrThrowPublic, lookupOrThrowReturnType, lookupOrThrowParameterTypes);
+        Class[] lookupParameterTypes = new Class[]{MappedClasses.qB};
+        Class<Optional> lookupReturnType = Optional.class;
+        boolean lookupPublic = true;
+        String lookupMethodName = "lookup";
+        MRegistryLookup lookupMapping = this;
+        this.lookupMethod = lookupMapping.Y(lookupMethodName, lookupPublic, lookupReturnType, lookupParameterTypes);
+        Class[] getParameterTypes = new Class[]{MappedClasses.qB};
+        Class<Optional> getReturnType = Optional.class;
+        boolean getPublic = true;
+        String getMethodName = "get";
+        MRegistryLookup getMapping = this;
+        this.getMethod = getMapping.Y(getMethodName, getPublic, getReturnType, getParameterTypes);
         if (MRegistryAccess.getControlFlowMarker() != null) {
             return;
         }
         GuiComponent.setLegacyComponentState(new GuiComponent[3]);
     }
 
-    public Optional<Object> f(Object object, Object object2) {
-        return (Optional)this.u.invokeObject(object, object2);
+    public Optional<Object> lookup(Object providerHandle, Object resourceKeyHandle) {
+        return (Optional)this.lookupMethod.invokeObject(providerHandle, resourceKeyHandle);
     }
 
 
-    public Optional<Object> W(Object object, Object object2) {
-        return (Optional)this.e.invokeObject(object, object2);
+    public Optional<Object> get(Object providerHandle, Object resourceKeyHandle) {
+        return (Optional)this.getMethod.invokeObject(providerHandle, resourceKeyHandle);
     }
 
-    public Object Y(Object object, Object object2) {
-        return this.T.invokeObject(object, object2);
+    public Object lookupOrThrow(Object providerHandle, Object resourceKeyHandle) {
+        return this.lookupOrThrowMethod.invokeObject(providerHandle, resourceKeyHandle);
     }
 }
 

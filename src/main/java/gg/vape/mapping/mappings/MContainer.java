@@ -10,38 +10,38 @@ import java.util.List;
 
 public class MContainer
 extends Mapping {
-    private MappingMethod I;
-    private final MappingField w;
-    private final MappingMethod o;
-    private final MappingField L;
+    private MappingMethod getCarriedMethod;
+    private final MappingField windowIdField;
+    private final MappingMethod getSlotMethod;
+    private final MappingField slotsField;
 
-    private Object n(Object object) {
-        return this.I.invokeObject(object, new Object[0]);
+    private Object getCarried(Object container) {
+        return this.getCarriedMethod.invokeObject(container, new Object[0]);
     }
 
-    public static Object R(MContainer mContainer, Object object) {
-        return mContainer.n(object);
+    public static Object getCarried(MContainer mapping, Object container) {
+        return mapping.getCarried(container);
     }
 
-    public List i(Object object) {
-        return (List)this.L.getObject(object);
+    public List getSlots(Object container) {
+        return (List)this.slotsField.getObject(container);
     }
 
-    private Object J(Object object, int n) {
-        return this.o.invokeObject(object, n);
+    private Object getSlot(Object container, int slotIndex) {
+        return this.getSlotMethod.invokeObject(container, slotIndex);
     }
 
 
-    public int s(Object object) {
-        return this.w.getInt(object);
+    public int getWindowId(Object container) {
+        return this.windowIdField.getInt(container);
     }
 
-    public static Object c(MContainer mContainer, Object object, int n) {
-        return mContainer.J(object, n);
+    public static Object getSlot(MContainer mapping, Object container, int slotIndex) {
+        return mapping.getSlot(container, slotIndex);
     }
 
     public MContainer() {
-        this(MSlot.z());
+        this(MSlot.getSlotControlFlowState());
     }
 
     private MContainer(int[] nArray) {
@@ -51,18 +51,18 @@ extends Mapping {
             boolean bl = true;
             String string = "inventorySlots";
             MContainer mContainer = this;
-            this.L = mContainer.J(string, bl, clazz);
+            this.slotsField = mContainer.J(string, bl, clazz);
             Class<Integer> clazz2 = Integer.TYPE;
             boolean bl2 = true;
             String string2 = "windowId";
             MContainer mContainer2 = this;
-            this.w = this.J(string2, bl2, clazz2);
+            this.windowIdField = this.J(string2, bl2, clazz2);
             Class[] classArray = new Class[]{Integer.TYPE};
             Class clazz3 = MappedClasses.YQ;
             boolean bl3 = true;
             String string3 = "getSlot";
             MContainer mContainer3 = this;
-            this.o = this.Y(string3, bl3, clazz3, classArray);
+            this.getSlotMethod = this.Y(string3, bl3, clazz3, classArray);
             return;
         }
         if (ForgeVersion.MC_1_17.d()) {
@@ -70,31 +70,31 @@ extends Mapping {
             boolean bl = true;
             String string = "slots";
             MContainer mContainer = this;
-            this.L = mContainer.J(string, bl, clazz);
+            this.slotsField = mContainer.J(string, bl, clazz);
             Class[] classArray = new Class[]{};
             Class clazz4 = MappedClasses.VK;
             boolean bl4 = true;
             String string4 = "getCarried";
             MContainer mContainer4 = this;
-            this.I = this.Y(string4, bl4, clazz4, classArray);
+            this.getCarriedMethod = this.Y(string4, bl4, clazz4, classArray);
         } else {
             Class<List> clazz = List.class;
             boolean bl = true;
             String string = "inventorySlots";
             MContainer mContainer = this;
-            this.L = mContainer.J(string, bl, clazz);
+            this.slotsField = mContainer.J(string, bl, clazz);
         }
         Class<Integer> clazz = Integer.TYPE;
         boolean bl = true;
         String string = "windowId";
         MContainer mContainer = this;
-        this.w = mContainer.J(string, bl, clazz); 
+        this.windowIdField = mContainer.J(string, bl, clazz);
         Class[] classArray = new Class[]{Integer.TYPE};
         Class clazz5 = MappedClasses.YQ;
         boolean bl5 = true;
         String string5 = "getSlot";
         MContainer mContainer5 = this;
-        this.o = this.Y(string5, bl5, clazz5, classArray);
+        this.getSlotMethod = this.Y(string5, bl5, clazz5, classArray);
     }
 }
 

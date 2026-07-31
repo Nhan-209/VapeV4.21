@@ -15,13 +15,13 @@ extends Wrapper {
         z = bl;
     }
 
-    public Packet(Object object) {
-        super(object);
+    public Packet(Object handle) {
+        super(handle);
     }
 
 
     public boolean hasPriority() {
-        return MPacket.hasPriority(Packet.vapeInstance.getMappings().Cx, this.I);
+        return MPacket.hasPriority(Packet.vapeInstance.getMappings().packet, this.I);
     }
 
     public static void n(Packet packet, Consumer<Packet> consumer) {
@@ -40,7 +40,7 @@ extends Wrapper {
     }
 
     public void processPacket(NetworkPacketHandle networkPacketHandle) {
-        MPacket.processPacket(Packet.vapeInstance.getMappings().Cx, this.I, networkPacketHandle.getObject());
+        MPacket.processPacket(Packet.vapeInstance.getMappings().packet, this.I, networkPacketHandle.getObject());
     }
 
     public static boolean h() {

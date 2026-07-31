@@ -7,47 +7,47 @@ import gg.vape.ui.click.component.GuiComponent;
 
 public class MRenderWorldLastEvent
 extends Mapping {
-    private final MappingField d;
-    private static boolean A;
-    private static final String b;
+    private final MappingField renderResolutionMultiplierField;
+    private static boolean shadersControlFlowState;
+    private static final String RENDER_RESOLUTION_MULTIPLIER_FIELD_NAME;
 
     public MRenderWorldLastEvent() {
         super(MappedClasses.lO);
-        Class<Float> clazz = Float.TYPE;
-        boolean bl = false;
-        String string = b;
-        MRenderWorldLastEvent mRenderWorldLastEvent = this;
-        this.d = this.registerStaticField(string, bl, clazz);
-        if (MRenderWorldLastEvent.g()) {
+        Class<Float> fieldType = Float.TYPE;
+        boolean fieldPublic = false;
+        String fieldName = RENDER_RESOLUTION_MULTIPLIER_FIELD_NAME;
+        MRenderWorldLastEvent mapping = this;
+        this.renderResolutionMultiplierField = mapping.registerStaticField(fieldName, fieldPublic, fieldType);
+        if (MRenderWorldLastEvent.shouldSkipLegacyStateUpdate()) {
             return;
         }
         GuiComponent.setLegacyComponentState(new GuiComponent[5]);
     }
 
-    private float U() {
-        return this.d.getFloat(null);
+    private float readRenderResolutionMultiplier() {
+        return this.renderResolutionMultiplierField.getFloat(null);
     }
 
 
-    public static boolean L() {
-        return A;
+    public static boolean getShadersControlFlowState() {
+        return shadersControlFlowState;
     }
 
     static {
-        MRenderWorldLastEvent.j(false);
-        b = "configRenderResMul";
+        MRenderWorldLastEvent.setShadersControlFlowState(false);
+        RENDER_RESOLUTION_MULTIPLIER_FIELD_NAME = "configRenderResMul";
     }
 
-    public static void j(boolean bl) {
-        A = bl;
+    public static void setShadersControlFlowState(boolean state) {
+        shadersControlFlowState = state;
     }
 
-    public static float o(MRenderWorldLastEvent mRenderWorldLastEvent) {
-        return mRenderWorldLastEvent.U();
+    public static float getRenderResolutionMultiplier(MRenderWorldLastEvent mapping) {
+        return mapping.readRenderResolutionMultiplier();
     }
 
-    public static boolean g() {
-        boolean bl = MRenderWorldLastEvent.L();
+    public static boolean shouldSkipLegacyStateUpdate() {
+        boolean controlFlowState = MRenderWorldLastEvent.getShadersControlFlowState();
         return true;
     }
 }

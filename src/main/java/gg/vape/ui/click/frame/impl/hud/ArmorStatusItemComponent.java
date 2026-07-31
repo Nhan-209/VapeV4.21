@@ -122,7 +122,7 @@ extends GuiComponent {
     }
 
     public ItemStack getEquippedItem() {
-        return this.getSlot().I();
+        return this.getSlot().getStack();
     }
 
     @Override

@@ -9,12 +9,11 @@ extends Wrapper {
         super(object);
     }
 
-    public boolean G() {
-        return MCaughtEntityActionBridge.g(CaughtEntity.vapeInstance.getMappingsMapperCompat().hC, this.I);
+    public boolean inEventLoop() {
+        return MCaughtEntityActionBridge.inEventLoop(CaughtEntity.vapeInstance.getMappingsMapperCompat().eventLoop, this.I);
     }
 
-    public void F(Runnable runnable) {
-        MCaughtEntityActionBridge.H(CaughtEntity.vapeInstance.getMappingsMapperCompat().hC, this.I, runnable);
+    public void execute(Runnable runnable) {
+        MCaughtEntityActionBridge.execute(CaughtEntity.vapeInstance.getMappingsMapperCompat().eventLoop, this.I, runnable);
     }
 }
-

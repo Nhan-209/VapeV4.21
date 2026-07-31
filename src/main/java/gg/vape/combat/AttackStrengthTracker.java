@@ -43,10 +43,10 @@ implements EventListener {
         float baseDamage = 1.0f;
         if (itemStack.isNotNull()) {
             ItemAttributeModifiers modifiers = itemStack.o();
-            if (modifiers.i() > 0) {
+            if (modifiers.size() > 0) {
                 int attackDamageModifierIndex = ForgeVersion.MC_1_12_2.L() ? 1 : 0;
                 AttributeModifier attackDamageModifier = new AttributeModifier(
-                        modifiers.f().toArray()[attackDamageModifierIndex]);
+                        modifiers.values().toArray()[attackDamageModifierIndex]);
                 baseDamage += (float)attackDamageModifier.getAmount();
             }
         }

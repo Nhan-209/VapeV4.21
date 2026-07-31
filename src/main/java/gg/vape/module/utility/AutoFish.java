@@ -127,7 +127,7 @@ extends Mod {
                 if (inventoryPlayer.isNull()) {
                     return;
                 }
-                int rodHotbarIndex = hotbarRodSlot.g() - 36;
+                int rodHotbarIndex = hotbarRodSlot.getSlotNumber() - 36;
                 int selectedHotbarSlot = inventoryPlayer.v();
                 if (selectedHotbarSlot == rodHotbarIndex) {
                     return;
@@ -144,7 +144,7 @@ extends Mod {
                 this.setEnabled(false);
                 return;
             }
-            int inventorySlot = inventoryRodSlot.g();
+            int inventorySlot = inventoryRodSlot.getSlotNumber();
             if (!ItemStackActionPredicate.isInventoryScreenOpen()) {
                 if (ItemStackActionPredicate.isAnyScreenOpen()) {
                     if (this.refillPending) {

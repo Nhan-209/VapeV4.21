@@ -8,23 +8,23 @@ import gg.vape.wrapper.impl.ForgeVersion;
 
 public class MNetHandlerPlayClient
 extends Mapping {
-    private final MappingMethod Q;
+    private final MappingMethod handleEntityTeleportMethod;
 
-    public static void sendPacket(MNetHandlerPlayClient mNetHandlerPlayClient, Object object, Object object2) {
-        mNetHandlerPlayClient.sendPacket(object, object2);
+    public static void handleEntityTeleport(MNetHandlerPlayClient mapping, Object packetListenerHandle, Object teleportPacketHandle) {
+        mapping.invokeHandleEntityTeleport(packetListenerHandle, teleportPacketHandle);
     }
 
     public MNetHandlerPlayClient() {
         super(MappedClasses.Df);
-        Class[] classArray = new Class[]{MappedClasses.s};
-        Class<Void> clazz = Void.TYPE;
-        String string = "handleEntityTeleport";
-        MNetHandlerPlayClient mNetHandlerPlayClient = this;
-        this.Q = ((MappingMethodBuilder)((MappingMethodBuilder)this.methodBuilder(string, clazz, classArray).setNameForVersion(ForgeVersion.MC_1_16_5.n(), "handleTeleportEntity")).setOwnerClassForVersion(ForgeVersion.MC_1_21_4.n(), MappedClasses.z2)).buildMethod();
+        Class[] parameterTypes = new Class[]{MappedClasses.s};
+        Class<Void> returnType = Void.TYPE;
+        String methodName = "handleEntityTeleport";
+        MNetHandlerPlayClient mapping = this;
+        this.handleEntityTeleportMethod = ((MappingMethodBuilder)((MappingMethodBuilder)mapping.methodBuilder(methodName, returnType, parameterTypes).setNameForVersion(ForgeVersion.MC_1_16_5.n(), "handleTeleportEntity")).setOwnerClassForVersion(ForgeVersion.MC_1_21_4.n(), MappedClasses.z2)).buildMethod();
     }
 
-    private void sendPacket(Object object, Object object2) {
-        this.Q.invokeVoid(object, object2);
+    private void invokeHandleEntityTeleport(Object packetListenerHandle, Object teleportPacketHandle) {
+        this.handleEntityTeleportMethod.invokeVoid(packetListenerHandle, teleportPacketHandle);
     }
 }
 

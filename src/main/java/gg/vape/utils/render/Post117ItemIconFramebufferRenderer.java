@@ -100,8 +100,8 @@ implements ItemIconRenderBackend {
                         renderTargetTextureId = renderTargetHandle.isNull() ? -1 : ((BlockStateContainerBridge)renderTargetHandle).getTextureId();
                     } else {
                         renderTarget = renderBuffer.p().get(
-                                renderTargetName.getItemStackRenderState().m$src$Ljava_lang_Object_$hvczij());
-                        int resolvedTextureId = renderTargetTextureId = renderBuffer.F().isNull() ? -1 : renderBuffer.F().J();
+                                renderTargetName.getItemStackRenderState().getModelIdentity());
+                        int resolvedTextureId = renderTargetTextureId = renderBuffer.F().isNull() ? -1 : renderBuffer.F().getId();
                     }
                     if (renderTarget == null || renderTargetTextureId == -1) {
                         OpenGlBackendHolder.backend.popMatrix();
@@ -199,8 +199,8 @@ implements ItemIconRenderBackend {
                     renderTargetTextureId = renderTargetHandle.isNull() ? -1 : ((BlockStateContainerBridge)renderTargetHandle).getTextureId();
                 } else {
                     renderTarget = renderBuffer.p().get(
-                            renderTargetName.getItemStackRenderState().m$src$Ljava_lang_Object_$hvczij());
-                    int resolvedTextureId = renderTargetTextureId = renderBuffer.F().isNull() ? -1 : renderBuffer.F().J();
+                            renderTargetName.getItemStackRenderState().getModelIdentity());
+                    int resolvedTextureId = renderTargetTextureId = renderBuffer.F().isNull() ? -1 : renderBuffer.F().getId();
                 }
                 if (renderTarget == null || renderTargetTextureId == -1) {
                     OpenGlBackendHolder.backend.popMatrix();

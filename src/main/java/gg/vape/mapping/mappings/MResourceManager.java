@@ -7,46 +7,46 @@ import java.util.Collection;
 
 public class MResourceManager
 extends Mapping {
-    private static final String b;
-    private final MappingMethod S;
-    private static int G;
+    private static final String GET_SELECTED_IDS_METHOD_NAME;
+    private final MappingMethod getSelectedIdsMethod;
+    private static int packRepositoryControlFlowState;
 
     public MResourceManager() {
-        this(MResourceManager.E$src$I$1yt3vs5());
+        this(MResourceManager.getPackRepositoryControlFlowState());
     }
 
-    private MResourceManager(int n) {
+    private MResourceManager(int controlFlowState) {
         super(MappedClasses.FF);
-        int n2 = n;
-        Class[] classArray = new Class[]{};
-        Class<Collection> clazz = Collection.class;
-        boolean bl = true;
-        String string = b;
-        MResourceManager mResourceManager = this;
-        this.S = this.Y(string, bl, clazz, classArray);
+        int currentControlFlowState = controlFlowState;
+        Class[] parameterTypes = new Class[]{};
+        Class<Collection> returnType = Collection.class;
+        boolean methodPublic = true;
+        String methodName = GET_SELECTED_IDS_METHOD_NAME;
+        MResourceManager mapping = this;
+        this.getSelectedIdsMethod = mapping.Y(methodName, methodPublic, returnType, parameterTypes);
     }
 
-    public static int E$src$I$1yt3vs5() {
-        return G;
+    public static int getPackRepositoryControlFlowState() {
+        return packRepositoryControlFlowState;
     }
 
     static {
-        MResourceManager.T(0);
-        b = "getSelectedIds";
+        MResourceManager.setPackRepositoryControlFlowState(0);
+        GET_SELECTED_IDS_METHOD_NAME = "getSelectedIds";
     }
 
-    public Object e(Object object) {
-        return this.S.invokeObject(object, new Object[0]);
+    public Object getSelectedIds(Object repositoryHandle) {
+        return this.getSelectedIdsMethod.invokeObject(repositoryHandle, new Object[0]);
     }
 
-    public static int j() {
-        int n = MResourceManager.E$src$I$1yt3vs5();
+    public static int getControlFlowConstant() {
+        int controlFlowState = MResourceManager.getPackRepositoryControlFlowState();
         return 59;
     }
 
 
-    public static void T(int n) {
-        G = n;
+    public static void setPackRepositoryControlFlowState(int state) {
+        packRepositoryControlFlowState = state;
     }
 }
 

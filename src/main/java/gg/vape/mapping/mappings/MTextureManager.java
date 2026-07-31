@@ -7,29 +7,29 @@ import gg.vape.wrapper.impl.ForgeVersion;
 
 public class MTextureManager
 extends Mapping {
-    private static int r;
-    public MappingMethod L;
-    private final MappingMethod U;
+    private static int textureManagerControlFlowState;
+    public MappingMethod bindTextureOrFallbackGetTextureMethod;
+    private final MappingMethod getTextureMethod;
 
-    private void k(Object object, Object object2) {
-        this.L.invokeVoid(object, object2);
+    private void bindTexture(Object textureManager, Object location) {
+        this.bindTextureOrFallbackGetTextureMethod.invokeVoid(textureManager, location);
     }
 
-    public static int W() {
-        return r;
+    public static int getTextureManagerControlFlowState() {
+        return textureManagerControlFlowState;
     }
 
 
     static {
-        MTextureManager.T(69);
+        MTextureManager.setTextureManagerControlFlowState(69);
     }
 
-    public static void Y(MTextureManager mTextureManager, Object object, Object object2) {
-        mTextureManager.k(object, object2);
+    public static void bindTexture(MTextureManager mapping, Object textureManager, Object location) {
+        mapping.bindTexture(textureManager, location);
     }
 
     public MTextureManager() {
-        this(MTextureManager.N());
+        this(MTextureManager.getInitialControlFlowState());
     }
 
     private MTextureManager(int n) {
@@ -40,8 +40,8 @@ extends Mapping {
             boolean bl = true;
             String string = "getTexture";
             MTextureManager mTextureManager = this;
-            this.L = mTextureManager.Y(string, bl, clazz, classArray);
-            this.U = null;
+            this.bindTextureOrFallbackGetTextureMethod = mTextureManager.Y(string, bl, clazz, classArray);
+            this.getTextureMethod = null;
             return;
         }
         Class[] classArray = new Class[]{MappedClasses.zC};
@@ -49,35 +49,35 @@ extends Mapping {
         boolean bl = true;
         String string = "getTexture";
         MTextureManager mTextureManager = this;
-        this.U = mTextureManager.Y(string, bl, clazz, classArray);
+        this.getTextureMethod = mTextureManager.Y(string, bl, clazz, classArray);
         if (ForgeVersion.MC_1_21_0.v()) {
             Class[] classArray2 = new Class[]{MappedClasses.zC};
             Class<Void> clazz2 = Void.TYPE;
             boolean bl2 = true;
             String string2 = "bindTexture";
             MTextureManager mTextureManager2 = this;
-            this.L = this.Y(string2, bl2, clazz2, classArray2);
+            this.bindTextureOrFallbackGetTextureMethod = this.Y(string2, bl2, clazz2, classArray2);
         }
     }
 
-    public static int N() {
-        int n = MTextureManager.W();
+    public static int getInitialControlFlowState() {
+        int n = MTextureManager.getTextureManagerControlFlowState();
         if (n == 0) {
             return 90;
         }
         return 0;
     }
 
-    private Object C(Object object, Object object2) {
-        return this.U.invokeObject(object, object2);
+    private Object getTexture(Object textureManager, Object location) {
+        return this.getTextureMethod.invokeObject(textureManager, location);
     }
 
-    public static void T(int n) {
-        r = n;
+    public static void setTextureManagerControlFlowState(int state) {
+        textureManagerControlFlowState = state;
     }
 
-    public static Object a(MTextureManager mTextureManager, Object object, Object object2) {
-        return mTextureManager.C(object, object2);
+    public static Object getTexture(MTextureManager mapping, Object textureManager, Object location) {
+        return mapping.getTexture(textureManager, location);
     }
 }
 

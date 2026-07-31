@@ -7,47 +7,47 @@ import gg.vape.wrapper.Wrapper;
 
 public class MRayTraceResult_Type
 extends Mapping {
-    public final MappingField j;
-    public final MappingField e;
-    public final MappingField a;
+    public final MappingField blockField;
+    public final MappingField entityField;
+    public final MappingField missField;
 
     public MRayTraceResult_Type() {
         super(MappedClasses.lk);
-        Class clazz = MappedClasses.lk;
-        boolean bl = Wrapper.isNativeAvailable;
-        String string = "MISS";
-        MRayTraceResult_Type mRayTraceResult_Type = this;
-        this.a = this.registerStaticField(string, bl, clazz);
-        Class clazz2 = MappedClasses.lk;
-        boolean bl2 = Wrapper.isNativeAvailable;
-        String string2 = "BLOCK";
-        MRayTraceResult_Type mRayTraceResult_Type2 = this;
-        this.j = this.registerStaticField(string2, bl2, clazz2);
-        Class clazz3 = MappedClasses.lk;
-        boolean bl3 = Wrapper.isNativeAvailable;
-        String string3 = "ENTITY";
-        MRayTraceResult_Type mRayTraceResult_Type3 = this;
-        this.e = this.registerStaticField(string3, bl3, clazz3);
+        Class missFieldType = MappedClasses.lk;
+        boolean missFieldPublic = Wrapper.isNativeAvailable;
+        String missFieldName = "MISS";
+        MRayTraceResult_Type mapping = this;
+        this.missField = mapping.registerStaticField(missFieldName, missFieldPublic, missFieldType);
+        Class blockFieldType = MappedClasses.lk;
+        boolean blockFieldPublic = Wrapper.isNativeAvailable;
+        String blockFieldName = "BLOCK";
+        MRayTraceResult_Type blockMapping = this;
+        this.blockField = blockMapping.registerStaticField(blockFieldName, blockFieldPublic, blockFieldType);
+        Class entityFieldType = MappedClasses.lk;
+        boolean entityFieldPublic = Wrapper.isNativeAvailable;
+        String entityFieldName = "ENTITY";
+        MRayTraceResult_Type entityMapping = this;
+        this.entityField = entityMapping.registerStaticField(entityFieldName, entityFieldPublic, entityFieldType);
     }
 
-    public static Object b(MRayTraceResult_Type mRayTraceResult_Type) {
-        return mRayTraceResult_Type.getBlock();
+    public static Object getBlock(MRayTraceResult_Type mapping) {
+        return mapping.readBlock();
     }
 
-    private Object getEntity() {
-        return this.e.getObject(null);
+    private Object readEntity() {
+        return this.entityField.getObject(null);
     }
 
-    public Object c() {
-        return this.a.getObject(null);
+    public Object getMiss() {
+        return this.missField.getObject(null);
     }
 
-    private Object getBlock() {
-        return this.j.getObject(null);
+    private Object readBlock() {
+        return this.blockField.getObject(null);
     }
 
-    public static Object G(MRayTraceResult_Type mRayTraceResult_Type) {
-        return mRayTraceResult_Type.getEntity();
+    public static Object getEntity(MRayTraceResult_Type mapping) {
+        return mapping.readEntity();
     }
 }
 

@@ -501,9 +501,9 @@ extends Wrapper {
         return j;
     }
 
-    private Vec3 w() {
+    private Vec3 getPositionCodecBase() {
         if (ForgeVersion.MC_1_20_6.d()) {
-            return new GameSettingsGuiScale(MEntity.U$src$Ljava_lang_Object_$1vzpu7o(Entity.vapeInstance.getMappings().Rr, this.I)).n();
+            return new GameSettingsGuiScale(MEntity.U$src$Ljava_lang_Object_$1vzpu7o(Entity.vapeInstance.getMappings().Rr, this.I)).getBase();
         }
         return new Vec3(MEntity.U$src$Ljava_lang_Object_$1vzpu7o(Entity.vapeInstance.getMappings().Rr, this.I));
     }
@@ -649,7 +649,7 @@ extends Wrapper {
 
     public long E$src$J$fanvsv() {
         if (ForgeVersion.MC_1_16_5.d()) {
-            return (long)this.w().getY();
+            return (long)this.getPositionCodecBase().getY();
         }
         return MEntity.R(Entity.vapeInstance.getMappings().Rr, this.I);
     }

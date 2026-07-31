@@ -5,44 +5,43 @@ import gg.vape.wrapper.Wrapper;
 
 public class TextureAtlasSprite
 extends Wrapper {
-    public ResourceLocation M() {
-        return new ResourceLocation(MTextureAtlasSprite.F(TextureAtlasSprite.vapeInstance.getMappingsMapperCompat().CO, this.I));
+    public ResourceLocation getAtlasLocation() {
+        return new ResourceLocation(MTextureAtlasSprite.getAtlasLocation(TextureAtlasSprite.vapeInstance.getMappingsMapperCompat().textureAtlasSprite, this.I));
     }
 
-    public void g(float f) {
-        MTextureAtlasSprite.d(TextureAtlasSprite.vapeInstance.getMappingsMapperCompat().CO, this.I, f);
+    public void setU0(float u0) {
+        MTextureAtlasSprite.setU0(TextureAtlasSprite.vapeInstance.getMappingsMapperCompat().textureAtlasSprite, this.I, u0);
     }
 
-    public void l(float f) {
-        MTextureAtlasSprite.x(TextureAtlasSprite.vapeInstance.getMappingsMapperCompat().CO, this.I, f);
+    public void setU1(float u1) {
+        MTextureAtlasSprite.setU1(TextureAtlasSprite.vapeInstance.getMappingsMapperCompat().textureAtlasSprite, this.I, u1);
     }
 
     public TextureAtlasSprite(Object object) {
         super(object);
     }
 
-    public void o(int n) {
-        MTextureAtlasSprite.r(TextureAtlasSprite.vapeInstance.getMappingsMapperCompat().CO, this.I, n);
+    public void setSecondaryPosition(int position) {
+        MTextureAtlasSprite.setSecondaryPosition(TextureAtlasSprite.vapeInstance.getMappingsMapperCompat().textureAtlasSprite, this.I, position);
     }
 
-    public void K(float f) {
-        MTextureAtlasSprite.t(TextureAtlasSprite.vapeInstance.getMappingsMapperCompat().CO, this.I, f);
+    public void setV0(float v0) {
+        MTextureAtlasSprite.setV0(TextureAtlasSprite.vapeInstance.getMappingsMapperCompat().textureAtlasSprite, this.I, v0);
     }
 
-    public void X(float f) {
-        MTextureAtlasSprite.I(TextureAtlasSprite.vapeInstance.getMappingsMapperCompat().CO, this.I, f);
+    public void setV1(float v1) {
+        MTextureAtlasSprite.setV1(TextureAtlasSprite.vapeInstance.getMappingsMapperCompat().textureAtlasSprite, this.I, v1);
     }
 
-    public float[] j() {
-        return MTextureAtlasSprite.n(TextureAtlasSprite.vapeInstance.getMappingsMapperCompat().CO, this.I);
+    public float[] getTextureCoordinates() {
+        return MTextureAtlasSprite.getTextureCoordinates(TextureAtlasSprite.vapeInstance.getMappingsMapperCompat().textureAtlasSprite, this.I);
     }
 
-    public Object e() {
-        return MTextureAtlasSprite.L(TextureAtlasSprite.vapeInstance.getMappingsMapperCompat().CO, this.I);
+    public Object getContentsOrAtlasTexture() {
+        return MTextureAtlasSprite.getContentsOrAtlasTexture(TextureAtlasSprite.vapeInstance.getMappingsMapperCompat().textureAtlasSprite, this.I);
     }
 
-    public void b(int n) {
-        MTextureAtlasSprite.I(TextureAtlasSprite.vapeInstance.getMappingsMapperCompat().CO, this.I, n);
+    public void setPrimaryPosition(int position) {
+        MTextureAtlasSprite.setPrimaryPosition(TextureAtlasSprite.vapeInstance.getMappingsMapperCompat().textureAtlasSprite, this.I, position);
     }
 }
-

@@ -7,44 +7,44 @@ import gg.vape.ui.click.component.GuiComponent;
 
 public class MItemCameraTransformType
 extends Mapping {
-    private static final String b;
-    private MappingField S;
-    private static boolean D;
+    private static final String ITEMS_FIELD_NAME;
+    private MappingField itemsField;
+    private static boolean repairableControlFlowState;
 
 
-    public static boolean x() {
-        return D;
+    public static boolean getRepairableControlFlowState() {
+        return repairableControlFlowState;
     }
 
-    public static boolean A() {
-        boolean bl = MItemCameraTransformType.x();
+    public static boolean shouldSkipLegacyStateUpdate() {
+        boolean controlFlowState = MItemCameraTransformType.getRepairableControlFlowState();
         return true;
     }
 
     public MItemCameraTransformType() {
         super(MappedClasses.Z4);
-        Class clazz = MappedClasses.u_;
-        boolean bl = true;
-        String string = b;
-        MItemCameraTransformType mItemCameraTransformType = this;
-        this.S = this.J(string, bl, clazz);
-        if (MItemCameraTransformType.A()) {
+        Class itemsFieldType = MappedClasses.u_;
+        boolean itemsFieldPublic = true;
+        String itemsFieldName = ITEMS_FIELD_NAME;
+        MItemCameraTransformType mapping = this;
+        this.itemsField = mapping.J(itemsFieldName, itemsFieldPublic, itemsFieldType);
+        if (MItemCameraTransformType.shouldSkipLegacyStateUpdate()) {
             return;
         }
         GuiComponent.setLegacyComponentState(new GuiComponent[2]);
     }
 
-    public Object z(Object object) {
-        return this.S.getObject(object);
+    public Object getItems(Object repairableHandle) {
+        return this.itemsField.getObject(repairableHandle);
     }
 
     static {
-        MItemCameraTransformType.Z(false);
-        b = "items";
+        MItemCameraTransformType.setRepairableControlFlowState(false);
+        ITEMS_FIELD_NAME = "items";
     }
 
-    public static void Z(boolean bl) {
-        D = bl;
+    public static void setRepairableControlFlowState(boolean state) {
+        repairableControlFlowState = state;
     }
 }
 

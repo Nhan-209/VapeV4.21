@@ -5,20 +5,19 @@ import gg.vape.wrapper.Wrapper;
 
 public class RayTraceContext$FluidMode
 extends Wrapper {
-    public static RayTraceContext$FluidMode n() {
-        return new RayTraceContext$FluidMode(MRayTraceContext_BlockMode.P(RayTraceContext$FluidMode.vapeInstance.getMappingsMapperCompat().R3));
+    public static RayTraceContext$FluidMode visual() {
+        return new RayTraceContext$FluidMode(MRayTraceContext_BlockMode.getVisual(RayTraceContext$FluidMode.vapeInstance.getMappingsMapperCompat().rayTraceBlockMode));
     }
 
-    public RayTraceContext$FluidMode(Object object) {
-        super(object);
+    public RayTraceContext$FluidMode(Object handle) {
+        super(handle);
     }
 
-    public static RayTraceContext$FluidMode S() {
-        return new RayTraceContext$FluidMode(MRayTraceContext_BlockMode.J(RayTraceContext$FluidMode.vapeInstance.getMappingsMapperCompat().R3));
+    public static RayTraceContext$FluidMode outline() {
+        return new RayTraceContext$FluidMode(MRayTraceContext_BlockMode.getOutline(RayTraceContext$FluidMode.vapeInstance.getMappingsMapperCompat().rayTraceBlockMode));
     }
 
-    public static RayTraceContext$FluidMode I() {
-        return new RayTraceContext$FluidMode(MRayTraceContext_BlockMode.T(RayTraceContext$FluidMode.vapeInstance.getMappingsMapperCompat().R3));
+    public static RayTraceContext$FluidMode collider() {
+        return new RayTraceContext$FluidMode(MRayTraceContext_BlockMode.getCollider(RayTraceContext$FluidMode.vapeInstance.getMappingsMapperCompat().rayTraceBlockMode));
     }
 }
-

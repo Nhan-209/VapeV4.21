@@ -14,7 +14,7 @@ implements Comparator<Slot> {
     final AutoHotbar autoHotbar;
 
     public int comparePrimaryScore(Slot first, Slot second) {
-        return Double.compare(ClientSettings.getWeaponDamageScore(first.I()), ClientSettings.getWeaponDamageScore(second.I()));
+        return Double.compare(ClientSettings.getWeaponDamageScore(first.getStack()), ClientSettings.getWeaponDamageScore(second.getStack()));
     }
 
     public InventoryManagerPrimaryItemScoreComparator(AutoHotbar autoHotbar) {

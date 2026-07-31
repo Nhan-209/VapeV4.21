@@ -11,15 +11,15 @@ public class ChatMessageRenderMappingTask
 extends JavassistMappingTask {
     @Override
     public void transform() {
-        this.H();
+        this.registerChatMessageRenderEvent();
     }
 
     public ChatMessageRenderMappingTask() {
         super(MappedClasses.d);
     }
 
-    private void H() {
-        MappingMethod mappingMethod = Vape.INSTANCE.getMappings().qd.T;
+    private void registerChatMessageRenderEvent() {
+        MappingMethod mappingMethod = Vape.INSTANCE.getMappings().chatMessageRenderTarget.addMessageMethod;
         if (mappingMethod != null && !mappingMethod.hasResolutionFailed()) {
             EventInjectionSpec eventInjectionSpec = new EventInjectionSpec(mappingMethod, EventChatMessageRender.class);
             eventInjectionSpec.setConstructorArguments("$0, $1, $2, $3");

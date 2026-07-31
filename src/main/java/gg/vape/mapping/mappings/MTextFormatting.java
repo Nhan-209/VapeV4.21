@@ -8,15 +8,15 @@ import gg.vape.wrapper.impl.ForgeVersion;
 
 public class MTextFormatting
 extends Mapping {
-    private MappingMethod P;
-    private MappingMethod O;
-    private MappingMethod j;
+    private MappingMethod getColorMethod;
+    private MappingMethod getNameMethod;
+    private MappingMethod getByNameMethod;
 
-    public Integer e(Object object) {
-        if (object == null) {
+    public Integer getColor(Object formatting) {
+        if (formatting == null) {
             return null;
         }
-        return (Integer)this.P.invokeObject(object, new Object[0]);
+        return (Integer)this.getColorMethod.invokeObject(formatting, new Object[0]);
     }
 
     public MTextFormatting() {
@@ -32,19 +32,19 @@ extends Mapping {
                 boolean bl = true;
                 String string = "getName";
                 MTextFormatting mTextFormatting = this;
-                this.O = mTextFormatting.Y(string, bl, clazz, classArray);
+                this.getNameMethod = mTextFormatting.Y(string, bl, clazz, classArray);
                 Class[] classArray2 = new Class[]{};
                 Class<Integer> clazz2 = Integer.class;
                 boolean bl2 = true;
                 String string2 = "getColor";
                 MTextFormatting mTextFormatting2 = this;
-                this.P = this.Y(string2, bl2, clazz2, classArray2);
+                this.getColorMethod = this.Y(string2, bl2, clazz2, classArray2);
                 Class[] classArray3 = new Class[]{String.class};
                 Class clazz3 = MappedClasses.l5;
                 boolean bl3 = true;
                 String string3 = "getByName";
                 MTextFormatting mTextFormatting3 = this;
-                this.j = this.registerStaticMethod(string3, bl3, clazz3, classArray3);
+                this.getByNameMethod = this.registerStaticMethod(string3, bl3, clazz3, classArray3);
             }
             return;
         }
@@ -53,22 +53,22 @@ extends Mapping {
         boolean bl = true;
         String string = "getByName";
         MTextFormatting mTextFormatting = this;
-        this.j = mTextFormatting.registerStaticMethod(string, bl, clazz, classArray);
+        this.getByNameMethod = mTextFormatting.registerStaticMethod(string, bl, clazz, classArray);
     }
 
 
-    public Object h(String string) {
-        if (string == null) {
+    public Object getByName(String name) {
+        if (name == null) {
             return null;
         }
-        return this.j.invokeObject(null, string);
+        return this.getByNameMethod.invokeObject(null, name);
     }
 
-    public String m(Object object) {
-        if (object == null) {
+    public String getName(Object formatting) {
+        if (formatting == null) {
             return null;
         }
-        return (String)this.O.invokeObject(object, new Object[0]);
+        return (String)this.getNameMethod.invokeObject(formatting, new Object[0]);
     }
 }
 

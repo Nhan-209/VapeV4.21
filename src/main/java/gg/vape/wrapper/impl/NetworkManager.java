@@ -14,12 +14,8 @@ extends Wrapper {
         MNetworkManager.B(NetworkManager.vapeInstance.getMappingsMapperCompat().Do, this.I, packet.getObject());
     }
 
-    public EntityFishHookState w() {
-        return new EntityFishHookState(MNetworkManager.T(NetworkManager.vapeInstance.getMappingsMapperCompat().Do, this.I));
-    }
-
-    public EntityFishHookState B() {
-        return this.w();
+    public EntityFishHookState getChannel() {
+        return new EntityFishHookState(MNetworkManager.getChannel(NetworkManager.vapeInstance.getMappingsMapperCompat().Do, this.I));
     }
 
     public NetworkPacketHandle c() {

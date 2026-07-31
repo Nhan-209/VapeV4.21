@@ -178,7 +178,7 @@ extends Mod {
     public void onBlockRenderLayer(EventBlockLayerRender eventBlockLayerRender) {
         if (this.isTargetBlock(eventBlockLayerRender.getBlock())) {
             eventBlockLayerRender.setCancelled(true);
-            if (eventBlockLayerRender.getEnumWorldBlockLayer().equals(EnumWorldBlockLayer.v())) {
+            if (eventBlockLayerRender.getEnumWorldBlockLayer().equals(EnumWorldBlockLayer.translucent())) {
                 eventBlockLayerRender.setShouldRender(true);
             } else {
                 eventBlockLayerRender.setShouldRender(false);

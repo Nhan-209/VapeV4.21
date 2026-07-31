@@ -6,51 +6,51 @@ import gg.vape.mapping.MappingField;
 
 public class MRayTraceContext_BlockMode
 extends Mapping {
-    private MappingField w;
-    private MappingField A;
-    private MappingField Y;
+    private MappingField visualField;
+    private MappingField outlineField;
+    private MappingField colliderField;
 
-    public static Object P(MRayTraceContext_BlockMode mRayTraceContext_BlockMode) {
-        return mRayTraceContext_BlockMode.t();
+    public static Object getVisual(MRayTraceContext_BlockMode mapping) {
+        return mapping.readVisual();
     }
 
-    private Object s() {
-        return this.Y.getObject(null);
+    private Object readCollider() {
+        return this.colliderField.getObject(null);
     }
 
-    public static Object T(MRayTraceContext_BlockMode mRayTraceContext_BlockMode) {
-        return mRayTraceContext_BlockMode.s();
+    public static Object getCollider(MRayTraceContext_BlockMode mapping) {
+        return mapping.readCollider();
     }
 
     public MRayTraceContext_BlockMode() {
         super(MappedClasses.DS);
-        Class clazz = MappedClasses.DS;
-        boolean bl = true;
-        String string = "COLLIDER";
-        MRayTraceContext_BlockMode mRayTraceContext_BlockMode = this;
-        this.Y = this.registerStaticField(string, bl, clazz);
-        Class clazz2 = MappedClasses.DS;
-        boolean bl2 = true;
-        String string2 = "OUTLINE";
-        MRayTraceContext_BlockMode mRayTraceContext_BlockMode2 = this;
-        this.A = this.registerStaticField(string2, bl2, clazz2);
-        Class clazz3 = MappedClasses.DS;
-        boolean bl3 = true;
-        String string3 = "VISUAL";
-        MRayTraceContext_BlockMode mRayTraceContext_BlockMode3 = this;
-        this.w = this.registerStaticField(string3, bl3, clazz3);
+        Class colliderFieldType = MappedClasses.DS;
+        boolean colliderFieldPublic = true;
+        String colliderFieldName = "COLLIDER";
+        MRayTraceContext_BlockMode mapping = this;
+        this.colliderField = mapping.registerStaticField(colliderFieldName, colliderFieldPublic, colliderFieldType);
+        Class outlineFieldType = MappedClasses.DS;
+        boolean outlineFieldPublic = true;
+        String outlineFieldName = "OUTLINE";
+        MRayTraceContext_BlockMode outlineMapping = this;
+        this.outlineField = outlineMapping.registerStaticField(outlineFieldName, outlineFieldPublic, outlineFieldType);
+        Class visualFieldType = MappedClasses.DS;
+        boolean visualFieldPublic = true;
+        String visualFieldName = "VISUAL";
+        MRayTraceContext_BlockMode visualMapping = this;
+        this.visualField = visualMapping.registerStaticField(visualFieldName, visualFieldPublic, visualFieldType);
     }
 
-    private Object j() {
-        return this.A.getObject(null);
+    private Object readOutline() {
+        return this.outlineField.getObject(null);
     }
 
-    private Object t() {
-        return this.w.getObject(null);
+    private Object readVisual() {
+        return this.visualField.getObject(null);
     }
 
-    public static Object J(MRayTraceContext_BlockMode mRayTraceContext_BlockMode) {
-        return mRayTraceContext_BlockMode.j();
+    public static Object getOutline(MRayTraceContext_BlockMode mapping) {
+        return mapping.readOutline();
     }
 }
 

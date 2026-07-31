@@ -111,7 +111,7 @@ implements InventoryActionModule {
                 }
                 return;
             }
-            if (localPlayer.F$src$Lgg_vape_wrapper_impl_Container_$152y6lm().getSlot(armorSlot).I().isNotNull()) {
+            if (localPlayer.F$src$Lgg_vape_wrapper_impl_Container_$152y6lm().getSlot(armorSlot).getStack().isNotNull()) {
                 if (this.dropEquipped.getEffectiveValue().booleanValue()) {
                     this.queueClick(localPlayer.F$src$Lgg_vape_wrapper_impl_Container_$152y6lm().getWindowId(), armorSlot, 0, 0);
                     this.queueClick(localPlayer.F$src$Lgg_vape_wrapper_impl_Container_$152y6lm().getWindowId(), -999, 0, 0);
@@ -137,7 +137,7 @@ implements InventoryActionModule {
     private int findBestArmorSlot(int armorSlot, boolean compareDurability) {
         int bestSlot = -1;
         EntityPlayerSP localPlayer = Minecraft.thePlayer();
-        ItemStack equippedArmor = localPlayer.F$src$Lgg_vape_wrapper_impl_Container_$152y6lm().getSlot(armorSlot).I();
+        ItemStack equippedArmor = localPlayer.F$src$Lgg_vape_wrapper_impl_Container_$152y6lm().getSlot(armorSlot).getStack();
         double equippedScore = 0.0;
         double equippedDamage = 999.0;
         if (equippedArmor.isNotNull()) {
@@ -147,7 +147,7 @@ implements InventoryActionModule {
         double bestScore = equippedScore;
         double bestDamage = equippedDamage;
         for (int inventorySlot = 9; inventorySlot < 45; ++inventorySlot) {
-            ItemStack candidateArmor = localPlayer.F$src$Lgg_vape_wrapper_impl_Container_$152y6lm().getSlot(inventorySlot).I();
+            ItemStack candidateArmor = localPlayer.F$src$Lgg_vape_wrapper_impl_Container_$152y6lm().getSlot(inventorySlot).getStack();
             if (!candidateArmor.isNotNull() || this.armorSlotFor(candidateArmor) != armorSlot) continue;
             double candidateScore = this.scoreItem(candidateArmor);
             double candidateDamage = this.getItemDamage(inventorySlot);
@@ -166,7 +166,7 @@ implements InventoryActionModule {
 
     private int getItemDamage(int slot) {
         EntityPlayerSP localPlayer = Minecraft.thePlayer();
-        ItemStack itemStack = localPlayer.F$src$Lgg_vape_wrapper_impl_Container_$152y6lm().getSlot(slot).I();
+        ItemStack itemStack = localPlayer.F$src$Lgg_vape_wrapper_impl_Container_$152y6lm().getSlot(slot).getStack();
         return itemStack.isNotNull() ? itemStack.L() : 999;
     }
 

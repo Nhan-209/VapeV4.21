@@ -69,7 +69,7 @@ extends Mod {
         int guiTop = guiContainer.v();
         boolean outside = outsideBounds = mouseX < guiLeft || mouseY < guiTop || mouseX >= guiLeft + guiContainer.x() || mouseY >= guiTop + guiContainer.b();
         if (slot.isNotNull()) {
-            hoveredSlotIndex = slot.g();
+            hoveredSlotIndex = slot.getSlotNumber();
         }
         if (outsideBounds) {
             hoveredSlotIndex = -1;

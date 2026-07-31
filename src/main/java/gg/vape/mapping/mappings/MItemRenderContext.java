@@ -7,37 +7,37 @@ import gg.vape.mapping.MappingMethod;
 
 public class MItemRenderContext
 extends Mapping {
-    private final MappingField r;
-    private final MappingField X;
-    private final MappingMethod Y;
+    private final MappingField defaultField;
+    private final MappingField noneField;
+    private final MappingMethod constructor;
 
-    public Object G(boolean bl, Object object) {
-        return this.Y.invokeObject(null, bl, object);
+    public Object create(boolean wasItemInteraction, Object heldItem) {
+        return this.constructor.invokeObject(null, wasItemInteraction, heldItem);
     }
 
-    public Object q() {
-        return this.X.getObject(null);
+    public Object getNone() {
+        return this.noneField.getObject(null);
     }
 
     public MItemRenderContext() {
         super(MappedClasses.lj);
-        Class[] classArray = new Class[]{Boolean.TYPE, MappedClasses.VK};
-        MItemRenderContext mItemRenderContext = this;
-        this.Y = this.registerConstructor(classArray);
-        Class clazz = MappedClasses.lj;
-        boolean bl = true;
-        String string = "NONE";
-        MItemRenderContext mItemRenderContext2 = this;
-        this.X = this.registerStaticField(string, bl, clazz);
-        Class clazz2 = MappedClasses.lj;
-        boolean bl2 = true;
-        String string2 = "DEFAULT";
-        MItemRenderContext mItemRenderContext3 = this;
-        this.r = this.registerStaticField(string2, bl2, clazz2);
+        Class[] constructorParameterTypes = new Class[]{Boolean.TYPE, MappedClasses.VK};
+        MItemRenderContext mapping = this;
+        this.constructor = mapping.registerConstructor(constructorParameterTypes);
+        Class noneFieldType = MappedClasses.lj;
+        boolean noneFieldPublic = true;
+        String noneFieldName = "NONE";
+        MItemRenderContext noneMapping = this;
+        this.noneField = noneMapping.registerStaticField(noneFieldName, noneFieldPublic, noneFieldType);
+        Class defaultFieldType = MappedClasses.lj;
+        boolean defaultFieldPublic = true;
+        String defaultFieldName = "DEFAULT";
+        MItemRenderContext defaultMapping = this;
+        this.defaultField = defaultMapping.registerStaticField(defaultFieldName, defaultFieldPublic, defaultFieldType);
     }
 
-    public Object N() {
-        return this.r.getObject(null);
+    public Object getDefault() {
+        return this.defaultField.getObject(null);
     }
 }
 

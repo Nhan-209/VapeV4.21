@@ -59,7 +59,7 @@ implements InventoryActionModule {
     private final Queue<InventoryClick> clickQueue = new ConcurrentLinkedQueue<InventoryClick>();
 
     private boolean hasItem(Slot slot) {
-        ItemStack itemStack = slot.I();
+        ItemStack itemStack = slot.getStack();
         if (itemStack.isNotNull()) {
             Item item = itemStack.getItem();
             return item.isNotNull();
@@ -91,7 +91,7 @@ implements InventoryActionModule {
         Container container = guiContainer.getInventorySlots();
         for (int inventorySlot = 9; inventorySlot < 36; ++inventorySlot) {
             Slot slot = container.getSlot(inventorySlot);
-            ItemStack itemStack = slot.I();
+            ItemStack itemStack = slot.getStack();
             if (!itemStack.isNull()) continue;
             new InventoryClickQueue(InventoryClickAction.CLICK, inventorySlot, 0).appendTo(container.getWindowId(), this.clickQueue);
             return true;
@@ -139,11 +139,11 @@ implements InventoryActionModule {
             container = Minecraft.thePlayer().F$src$Lgg_vape_wrapper_impl_Container_$152y6lm();
         }
         List<Slot> matchingSlots = new ArrayList<Slot>();
-        if (hotbarSlotRule.matches(targetSlot.I())) {
+        if (hotbarSlotRule.matches(targetSlot.getStack())) {
             matchingSlots.add(targetSlot);
         }
         for (Slot candidateSlot : container.getInventorySlots()) {
-            if (!hotbarSlotRule.matches(candidateSlot.I()) || this.touchedSlots.contains(candidateSlot.g()) || matchingSlots.contains(candidateSlot)) continue;
+            if (!hotbarSlotRule.matches(candidateSlot.getStack()) || this.touchedSlots.contains(candidateSlot.getSlotNumber()) || matchingSlots.contains(candidateSlot)) continue;
             matchingSlots.add(candidateSlot);
         }
         if (!matchingSlots.isEmpty()) {
@@ -154,7 +154,7 @@ implements InventoryActionModule {
                     Comparator<Slot> comparator = this.comparators.get(itemClass);
                     matchingSlots.sort(comparator);
                     Collections.reverse(matchingSlots);
-                    if (hotbarSlotRule.matches(targetSlot.I()) && comparator.compare(matchingSlots.get(0), targetSlot) == 0) {
+                    if (hotbarSlotRule.matches(targetSlot.getStack()) && comparator.compare(matchingSlots.get(0), targetSlot) == 0) {
                         return null;
                     }
                 }
@@ -175,7 +175,7 @@ implements InventoryActionModule {
         }
         for (int candidateIndex = 0; candidateIndex < 9; ++candidateIndex) {
             Slot slot = container.getSlot(36 + candidateIndex);
-            if (!slot.I().isNull()) continue;
+            if (!slot.getStack().isNull()) continue;
             return candidateIndex == hotbarIndex;
         }
         return false;
@@ -258,8 +258,8 @@ implements InventoryActionModule {
                 Slot targetSlot = container.getSlot(targetSlotIndex);
                 Slot sourceSlot = this.findBestMatchingSlot(targetSlot, hotbarSlotRule);
                 if (sourceSlot == null) continue;
-                ItemStack targetStack = targetSlot.I();
-                ItemStack sourceStack = sourceSlot.I();
+                ItemStack targetStack = targetSlot.getStack();
+                ItemStack sourceStack = sourceSlot.getStack();
                 if (sourceSlot.equals(targetSlot)) {
                     this.touchedSlots.add(targetSlotIndex);
                     if (targetStack.isNotNull() && targetStack.t() < targetStack.P()) {
@@ -276,16 +276,16 @@ implements InventoryActionModule {
                     return;
                 }
                 this.touchedSlots.add(targetSlotIndex);
-                this.touchedSlots.add(sourceSlot.g());
+                this.touchedSlots.add(sourceSlot.getSlotNumber());
                 int combinedStackSize = 0;
                 if (targetStack.isNotNull()) {
                     combinedStackSize += targetStack.P();
                 }
                 boolean targetEmpty = !this.hasItem(targetSlot);
-                boolean canShiftClick = this.isFirstEmptyHotbarSlot(hotbarIndex) && sourceSlot.g() < 36;
-                new InventoryClickQueue(canShiftClick ? InventoryClickAction.SHIFT_CLICK : (targetEmpty ? InventoryClickAction.SWAP : InventoryClickAction.MOVE), sourceSlot.g(), targetSlotIndex).appendTo(container.getWindowId(), this.clickQueue);
+                boolean canShiftClick = this.isFirstEmptyHotbarSlot(hotbarIndex) && sourceSlot.getSlotNumber() < 36;
+                new InventoryClickQueue(canShiftClick ? InventoryClickAction.SHIFT_CLICK : (targetEmpty ? InventoryClickAction.SWAP : InventoryClickAction.MOVE), sourceSlot.getSlotNumber(), targetSlotIndex).appendTo(container.getWindowId(), this.clickQueue);
                 if ((combinedStackSize += sourceStack.t()) > sourceStack.P()) {
-                    new InventoryClickQueue(InventoryClickAction.CLICK, sourceSlot.g(), targetSlotIndex).appendTo(container.getWindowId(), this.clickQueue);
+                    new InventoryClickQueue(InventoryClickAction.CLICK, sourceSlot.getSlotNumber(), targetSlotIndex).appendTo(container.getWindowId(), this.clickQueue);
                 }
                 queuedAction = true;
                 break;
@@ -324,11 +324,11 @@ implements InventoryActionModule {
     private List<Slot> findOverflowSlots(Container container, Slot targetSlot, HotbarSlotRule hotbarSlotRule) {
         List<Slot> inventorySlots = container.getInventorySlots();
         ArrayList<Slot> overflowSlots = new ArrayList<Slot>();
-        ItemStack targetStack = targetSlot.I();
+        ItemStack targetStack = targetSlot.getStack();
         if (targetStack.isNotNull()) {
             for (int slotIndex = 9; slotIndex < inventorySlots.size(); ++slotIndex) {
                 Slot candidateSlot = container.getSlot(slotIndex);
-                ItemStack candidateStack = candidateSlot.I();
+                ItemStack candidateStack = candidateSlot.getStack();
                 if (!candidateStack.isNotNull() || !hotbarSlotRule.matches(candidateStack) || this.touchedSlots.contains(slotIndex)) continue;
                 overflowSlots.add(candidateSlot);
             }

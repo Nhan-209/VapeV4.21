@@ -97,11 +97,12 @@ public class ClientSettings {
 
     public static boolean isKeyBindingDown(KeyBinding keyBinding) {
         int keyCode = ClientSettings.getPlatformKeyCode(keyBinding);
-        int mouseButtonThreshold = ForgeVersion.MC_1_21_4.d() ? 4 : 0;
+        boolean usesModernInputCodes = ForgeVersion.MC_1_16_5.d();
+        int mouseButtonThreshold = usesModernInputCodes ? 4 : 0;
         if (keyCode > mouseButtonThreshold) {
             return KeyBoardUtil.m(keyCode);
         }
-        if (ForgeVersion.MC_1_21_4.v()) {
+        if (!usesModernInputCodes) {
             keyCode += 100;
         }
         return KeyBindingInputState.isMouseButtonDown(keyCode);
@@ -110,9 +111,9 @@ public class ClientSettings {
     public static double getToolDamageScore(ItemStack itemStack) {
         double damage = 0.0;
         ItemAttributeModifiers attributeModifiers = itemStack.o();
-        if (attributeModifiers.i() > 0) {
+        if (attributeModifiers.size() > 0) {
             int modifierIndex = ForgeVersion.MC_1_12_2.L() ? 1 : 0;
-            AttributeModifier attributeModifier = new AttributeModifier(attributeModifiers.f().toArray()[modifierIndex]);
+            AttributeModifier attributeModifier = new AttributeModifier(attributeModifiers.values().toArray()[modifierIndex]);
             damage = attributeModifier.getAmount();
         }
         return damage += (double)EnchantmentHelper.C(itemStack, EnumCreatureAttribute.undefined());

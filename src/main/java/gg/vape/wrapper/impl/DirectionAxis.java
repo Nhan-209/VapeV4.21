@@ -5,20 +5,19 @@ import gg.vape.wrapper.Wrapper;
 
 public class DirectionAxis
 extends Wrapper {
-    public static DirectionAxis j() {
-        return new DirectionAxis(MDirectionAxis.G(DirectionAxis.vapeInstance.getMappingsMapperCompat().p));
+    public static DirectionAxis x() {
+        return new DirectionAxis(MDirectionAxis.getX(DirectionAxis.vapeInstance.getMappingsMapperCompat().directionAxis));
     }
 
-    public static DirectionAxis T() {
-        return new DirectionAxis(MDirectionAxis.h(DirectionAxis.vapeInstance.getMappingsMapperCompat().p));
+    public static DirectionAxis y() {
+        return new DirectionAxis(MDirectionAxis.getY(DirectionAxis.vapeInstance.getMappingsMapperCompat().directionAxis));
     }
 
-    public DirectionAxis(Object object) {
-        super(object);
+    public DirectionAxis(Object handle) {
+        super(handle);
     }
 
-    public double W(double d, double d2, double d3) {
-        return DirectionAxis.vapeInstance.getMappingsMapperCompat().p.T(this.I, d, d2, d3);
+    public double choose(double x, double y, double z) {
+        return DirectionAxis.vapeInstance.getMappingsMapperCompat().directionAxis.choose(this.I, x, y, z);
     }
 }
-

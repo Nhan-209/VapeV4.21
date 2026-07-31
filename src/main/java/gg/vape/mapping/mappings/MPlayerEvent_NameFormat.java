@@ -6,33 +6,33 @@ import gg.vape.mapping.MappingField;
 
 public class MPlayerEvent_NameFormat
 extends Mapping {
-    private MappingField Q;
-    private MappingField a;
+    private MappingField hashField;
+    private MappingField urlField;
 
-    public String u(Object object) {
-        return (String)this.a.getObject(object);
+    public String getUrl(Object packetHandle) {
+        return (String)this.urlField.getObject(packetHandle);
     }
 
     public MPlayerEvent_NameFormat() {
         super(MappedClasses.l3);
-        Class<String> clazz = String.class;
-        boolean bl = true;
-        String string = "url";
-        MPlayerEvent_NameFormat mPlayerEvent_NameFormat = this;
-        this.a = this.J(string, bl, clazz);
-        Class<String> clazz2 = String.class;
-        boolean bl2 = true;
-        String string2 = "hash";
-        MPlayerEvent_NameFormat mPlayerEvent_NameFormat2 = this;
-        this.Q = this.J(string2, bl2, clazz2);
+        Class<String> urlFieldType = String.class;
+        boolean urlFieldPublic = true;
+        String urlFieldName = "url";
+        MPlayerEvent_NameFormat mapping = this;
+        this.urlField = mapping.J(urlFieldName, urlFieldPublic, urlFieldType);
+        Class<String> hashFieldType = String.class;
+        boolean hashFieldPublic = true;
+        String hashFieldName = "hash";
+        MPlayerEvent_NameFormat hashMapping = this;
+        this.hashField = hashMapping.J(hashFieldName, hashFieldPublic, hashFieldType);
     }
 
-    public void c(Object object, String string) {
-        this.a.setObject(object, string);
+    public void setUrl(Object packetHandle, String url) {
+        this.urlField.setObject(packetHandle, url);
     }
 
-    public String I(Object object) {
-        return (String)this.Q.getObject(object);
+    public String getHash(Object packetHandle) {
+        return (String)this.hashField.getObject(packetHandle);
     }
 }
 

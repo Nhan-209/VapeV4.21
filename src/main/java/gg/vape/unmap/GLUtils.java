@@ -1,5 +1,6 @@
 package gg.vape.unmap;
 
+import gg.vape.runtime.NativeBridge;
 import java.nio.FloatBuffer;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
@@ -31,7 +32,7 @@ public class GLUtils {
         }
         gg.vape.wrapper.impl.GL11.f(this.componentsPerVertex, 0, this.vertexBuffer);
         if (this.textureCoordinateData != null) {
-            GL11.glTexCoordPointer((int)2, (int)0, (FloatBuffer)this.textureCoordinateBuffer);
+            NativeBridge.texCoordPointer(2, 0, this.textureCoordinateBuffer);
         }
         GL11.glDrawArrays((int)this.primitiveMode, (int)0, (int)this.vertexCount);
         if (this.textureCoordinateData != null) {

@@ -6,20 +6,19 @@ import java.util.Optional;
 
 public class RegistryLookup
 extends Wrapper {
-    public Optional<Object> C(ResourceKey jy_12) {
-        return RegistryLookup.vapeInstance.getMappingsMapperCompat().DO.W(this.getObject(), jy_12.getObject());
+    public Optional<Object> get(ResourceKey resourceKey) {
+        return RegistryLookup.vapeInstance.getMappingsMapperCompat().holderGetterProvider.get(this.getObject(), resourceKey.getObject());
     }
 
-    public Optional<Object> B(ResourceKey jy_12) {
-        return RegistryLookup.vapeInstance.getMappingsMapperCompat().DO.f(this.getObject(), jy_12.getObject());
+    public Optional<Object> lookup(ResourceKey resourceKey) {
+        return RegistryLookup.vapeInstance.getMappingsMapperCompat().holderGetterProvider.lookup(this.getObject(), resourceKey.getObject());
     }
 
-    public Object w(ResourceKey jy_12) {
-        return RegistryLookup.vapeInstance.getMappingsMapperCompat().DO.Y(this.getObject(), jy_12.getObject());
+    public Object lookupOrThrow(ResourceKey resourceKey) {
+        return RegistryLookup.vapeInstance.getMappingsMapperCompat().holderGetterProvider.lookupOrThrow(this.getObject(), resourceKey.getObject());
     }
 
-    public RegistryLookup(Object object) {
-        super(object);
+    public RegistryLookup(Object handle) {
+        super(handle);
     }
 }
-

@@ -5,16 +5,15 @@ import gg.vape.wrapper.Wrapper;
 
 public class EntityFishHookState
 extends Wrapper {
-    public boolean z() {
-        return MEntityFishHook.isInGround(EntityFishHookState.vapeInstance.getMappingsMapperCompat().CX, this.I);
+    public boolean isOpen() {
+        return MEntityFishHook.isOpen(EntityFishHookState.vapeInstance.getMappingsMapperCompat().nettyChannel, this.I);
     }
 
-    public CaughtEntity D() {
-        return new CaughtEntity(MEntityFishHook.getCaughtEntity(EntityFishHookState.vapeInstance.getMappingsMapperCompat().CX, this.I));
+    public CaughtEntity eventLoop() {
+        return new CaughtEntity(MEntityFishHook.eventLoop(EntityFishHookState.vapeInstance.getMappingsMapperCompat().nettyChannel, this.I));
     }
 
     public EntityFishHookState(Object object) {
         super(object);
     }
 }
-

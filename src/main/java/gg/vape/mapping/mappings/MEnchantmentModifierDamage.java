@@ -6,37 +6,37 @@ import gg.vape.mapping.MappingField;
 
 public class MEnchantmentModifierDamage
 extends Mapping {
-    private final MappingField X;
-    private final MappingField B;
+    private final MappingField sourceField;
+    private final MappingField damageModifierField;
 
-    public void W(Object object, int n) {
-        this.B.setInt(object, n);
+    public void setDamageModifier(Object modifierHandle, int damageModifier) {
+        this.damageModifierField.setInt(modifierHandle, damageModifier);
     }
 
-    public Object Q(Object object) {
-        return this.X.getObject(object);
+    public Object getSource(Object modifierHandle) {
+        return this.sourceField.getObject(modifierHandle);
     }
 
-    public int U(Object object) {
-        return this.B.getInt(object);
+    public int getDamageModifier(Object modifierHandle) {
+        return this.damageModifierField.getInt(modifierHandle);
     }
 
-    public void P(Object object, Object object2) {
-        this.X.setObject(object, object2);
+    public void setSource(Object modifierHandle, Object damageSourceHandle) {
+        this.sourceField.setObject(modifierHandle, damageSourceHandle);
     }
 
     public MEnchantmentModifierDamage() {
         super(MappedClasses.l8);
-        Class<Integer> clazz = Integer.TYPE;
-        boolean bl = true;
-        String string = "damageModifier";
-        MEnchantmentModifierDamage mEnchantmentModifierDamage = this;
-        this.B = this.J(string, bl, clazz);
-        Class clazz2 = MappedClasses.uB;
-        boolean bl2 = true;
-        String string2 = "source";
-        MEnchantmentModifierDamage mEnchantmentModifierDamage2 = this;
-        this.X = this.J(string2, bl2, clazz2);
+        Class<Integer> damageModifierFieldType = Integer.TYPE;
+        boolean damageModifierFieldPublic = true;
+        String damageModifierFieldName = "damageModifier";
+        MEnchantmentModifierDamage mapping = this;
+        this.damageModifierField = mapping.J(damageModifierFieldName, damageModifierFieldPublic, damageModifierFieldType);
+        Class sourceFieldType = MappedClasses.uB;
+        boolean sourceFieldPublic = true;
+        String sourceFieldName = "source";
+        MEnchantmentModifierDamage sourceMapping = this;
+        this.sourceField = sourceMapping.J(sourceFieldName, sourceFieldPublic, sourceFieldType);
     }
 }
 

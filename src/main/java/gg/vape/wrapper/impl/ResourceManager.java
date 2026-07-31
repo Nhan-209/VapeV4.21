@@ -5,12 +5,11 @@ import java.util.Collection;
 
 public class ResourceManager
 extends Wrapper {
-    public Collection<String> U() {
-        return (Collection)ResourceManager.vapeInstance.getMappingsMapperCompat().C2.e(this.I);
+    public Collection<String> getSelectedIds() {
+        return (Collection)ResourceManager.vapeInstance.getMappingsMapperCompat().packRepository.getSelectedIds(this.I);
     }
 
-    public ResourceManager(Object object) {
-        super(object);
+    public ResourceManager(Object handle) {
+        super(handle);
     }
 }
-

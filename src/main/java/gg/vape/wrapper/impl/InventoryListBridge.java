@@ -6,16 +6,15 @@ import java.util.List;
 
 public class InventoryListBridge
 extends Wrapper {
-    public List p() {
-        return MInventoryListBridge.Y(InventoryListBridge.vapeInstance.getMappingsMapperCompat().DL, this.I);
+    public List getSlots() {
+        return MInventoryListBridge.getSlots(InventoryListBridge.vapeInstance.getMappingsMapperCompat().equipmentSlotGroup, this.I);
     }
 
-    public InventoryListBridge(Object object) {
-        super(object);
+    public InventoryListBridge(Object handle) {
+        super(handle);
     }
 
-    public static InventoryListBridge u() {
-        return new InventoryListBridge(MInventoryListBridge.j(InventoryListBridge.vapeInstance.getMappingsMapperCompat().DL));
+    public static InventoryListBridge armor() {
+        return new InventoryListBridge(MInventoryListBridge.getArmor(InventoryListBridge.vapeInstance.getMappingsMapperCompat().equipmentSlotGroup));
     }
 }
-

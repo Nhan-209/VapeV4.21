@@ -5,20 +5,19 @@ import gg.vape.wrapper.Wrapper;
 
 public class TextureObject
 extends Wrapper {
-    public void f(boolean bl, boolean bl2) {
-        MTextureObject.k(TextureObject.vapeInstance.getMappingsMapperCompat().hG, this.I, bl, bl2);
+    public void setFilter(boolean blur, boolean mipmap) {
+        MTextureObject.setFilter(TextureObject.vapeInstance.getMappingsMapperCompat().textureObject, this.I, blur, mipmap);
     }
 
     public TextureObject(Object object) {
         super(object);
     }
 
-    public int h() {
+    public int getId() {
         if (ForgeVersion.MC_1_21_6.d()) {
-            TextureObjectHandle b5 = new TextureObjectHandle(MTextureObject.B(TextureObject.vapeInstance.getMappingsMapperCompat().hG, this.I));
-            return b5.J();
+            TextureObjectHandle textureHandle = new TextureObjectHandle(MTextureObject.getTexture(TextureObject.vapeInstance.getMappingsMapperCompat().textureObject, this.I));
+            return textureHandle.getId();
         }
-        return MTextureObject.m(TextureObject.vapeInstance.getMappingsMapperCompat().hG, this.I);
+        return MTextureObject.getGlTextureId(TextureObject.vapeInstance.getMappingsMapperCompat().textureObject, this.I);
     }
 }
-

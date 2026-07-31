@@ -2,24 +2,23 @@ package gg.vape.wrapper.impl;
 
 public class EnchantmentModifierDamage
 extends EnchantmentModifier {
-    public DamageSource n() {
-        return new DamageSource(EnchantmentModifierDamage.vapeInstance.getMappingsMapperCompat().t.Q(this.I));
+    public DamageSource getSource() {
+        return new DamageSource(EnchantmentModifierDamage.vapeInstance.getMappingsMapperCompat().enchantmentDamageModifier.getSource(this.I));
     }
 
-    public void i(DamageSource ti_12) {
-        EnchantmentModifierDamage.vapeInstance.getMappingsMapperCompat().t.P(this.I, ti_12.getObject());
+    public void setSource(DamageSource damageSource) {
+        EnchantmentModifierDamage.vapeInstance.getMappingsMapperCompat().enchantmentDamageModifier.setSource(this.I, damageSource.getObject());
     }
 
-    public int E() {
-        return EnchantmentModifierDamage.vapeInstance.getMappingsMapperCompat().t.U(this.I);
+    public int getDamageModifierValue() {
+        return EnchantmentModifierDamage.vapeInstance.getMappingsMapperCompat().enchantmentDamageModifier.getDamageModifier(this.I);
     }
 
-    public void o(int n) {
-        EnchantmentModifierDamage.vapeInstance.getMappingsMapperCompat().t.W(this.I, n);
+    public void setDamageModifier(int damageModifier) {
+        EnchantmentModifierDamage.vapeInstance.getMappingsMapperCompat().enchantmentDamageModifier.setDamageModifier(this.I, damageModifier);
     }
 
-    public EnchantmentModifierDamage(Object object) {
-        super(object);
+    public EnchantmentModifierDamage(Object handle) {
+        super(handle);
     }
 }
-

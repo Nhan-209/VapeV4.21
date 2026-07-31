@@ -78,7 +78,7 @@ extends Wrapper {
         MMinecraft.u(Minecraft.vapeInstance.getMappings().U, Minecraft.i(), bl);
     }
 
-    public static TextureManagerHandle M$src$Lgg_vape_wrapper_impl_TextureManagerHandle_$r0mor() {
+    public static TextureManagerHandle getMainRenderTarget() {
         if (!ForgeVersion.MC_1_21_10.d()) {
             return null;
         }
@@ -174,7 +174,7 @@ extends Wrapper {
         return new RenderItem(MMinecraft.k(Minecraft.vapeInstance.getMappings().U, Minecraft.i()));
     }
 
-    public static ResourceManager c() {
+    public static ResourceManager getResourcePackRepository() {
         return new ResourceManager(Minecraft.vapeInstance.getMappings().U.X(Minecraft.i()));
     }
 
@@ -226,7 +226,7 @@ extends Wrapper {
         return new TitledScreen(Minecraft.vapeInstance.getMappings().U.A(Minecraft.i()));
     }
 
-    public static RenderTypeBuffer K() {
+    public static RenderTypeBuffer getFramerateLimitTracker() {
         return new RenderTypeBuffer(Minecraft.vapeInstance.getMappings().U.S(Minecraft.i()));
     }
 
@@ -253,7 +253,7 @@ extends Wrapper {
         MMinecraft.Y(Minecraft.vapeInstance.getMappings().U, Minecraft.i());
     }
 
-    public static TextureManager Z() {
+    public static TextureManager getTextureManager() {
         return new TextureManager(Minecraft.vapeInstance.getMappings().U.c(Minecraft.i()));
     }
 

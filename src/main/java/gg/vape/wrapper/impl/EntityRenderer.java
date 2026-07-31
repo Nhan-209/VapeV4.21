@@ -140,7 +140,7 @@ extends Wrapper {
 
     public void setShaderGroup(Matrix4f matrix4f) {
         if (ForgeVersion.MC_1_21_0.d()) {
-            RenderSystem.L(matrix4f, Items.I());
+            RenderSystem.L(matrix4f, Items.perspective());
             return;
         }
         MEntityRenderer.o(EntityRenderer.vapeInstance.getMappings().RY, this.I, matrix4f.getObject());

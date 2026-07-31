@@ -4,12 +4,11 @@ import gg.vape.wrapper.Wrapper;
 
 public class SelectionContext
 extends Wrapper {
-    public SelectionContext(Object object) {
-        super(object);
+    public SelectionContext(Object handle) {
+        super(handle);
     }
 
-    public static SelectionContext P(Entity entity) {
-        return new SelectionContext(SelectionContext.vapeInstance.getMappingsMapperCompat().RR.v(entity.getObject()));
+    public static SelectionContext forEntity(Entity entity) {
+        return new SelectionContext(SelectionContext.vapeInstance.getMappingsMapperCompat().selectionContext.forEntity(entity.getObject()));
     }
 }
-

@@ -36,13 +36,13 @@ public class BedTargetRenderState {
     public void renderIndicator(RectData rectData, boolean selected, float breakProgress) {
         Vec3 playerView = Minecraft.F().O(1.0f);
         double targetDistance = playerView.distanceTo(new Vec3d((double)this.targetPosition.getBlockX() + 0.5, (double)this.targetPosition.getBlockY() + 0.5, (double)this.targetPosition.getBlockZ() + 0.5).toVec3());
-        float partialTicks = RenderWorldLastEvent.getPartialTicks();
+        float renderResolutionMultiplier = RenderWorldLastEvent.getRenderResolutionMultiplier();
         float screenHeight = Minecraft.h();
         ProjectedEntityBounds bounds = this.projectedBounds;
-        double left = bounds.minX / (double)partialTicks;
-        double right = bounds.maxX / (double)partialTicks;
-        double top = (double)screenHeight - bounds.maxY / (double)partialTicks;
-        double bottom = (double)screenHeight - bounds.minY / (double)partialTicks;
+        double left = bounds.minX / (double)renderResolutionMultiplier;
+        double right = bounds.maxX / (double)renderResolutionMultiplier;
+        double top = (double)screenHeight - bounds.maxY / (double)renderResolutionMultiplier;
+        double bottom = (double)screenHeight - bounds.minY / (double)renderResolutionMultiplier;
         double projectedWidth = right - left;
         double projectedHeight = bottom - top;
         float indicatorSize = (float)Math.min(projectedWidth, projectedHeight);

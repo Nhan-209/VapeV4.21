@@ -8,58 +8,58 @@ import gg.vape.ui.click.component.GuiComponent;
 
 public class MFontSet
 extends Mapping {
-    private MappingMethod W;
-    private MappingField f;
-    private static String c;
+    private MappingMethod sourceMethod;
+    private MappingField missingGlyphField;
+    private static String fontSetControlFlowMarker;
 
-    public static void c(String string) {
-        c = string;
+    public static void setFontSetControlFlowMarker(String marker) {
+        fontSetControlFlowMarker = marker;
     }
 
-    public Object v(Object object) {
-        return this.f.getObject(object);
+    public Object getMissingGlyph(Object fontSetHandle) {
+        return this.missingGlyphField.getObject(fontSetHandle);
     }
 
     static {
-        MFontSet.c("A5Xu0b");
+        MFontSet.setFontSetControlFlowMarker("A5Xu0b");
     }
 
 
     public MFontSet() {
-        this(MFontSet.A());
+        this(MFontSet.getFontSetControlFlowMarker());
     }
 
-    private MFontSet(String string) {
+    private MFontSet(String controlFlowMarker) {
         super(MappedClasses.D9);
-        Class clazz = MappedClasses.qd;
-        boolean bl = true;
-        String string2 = "missingGlyph";
-        MFontSet mFontSet = this;
-        this.f = this.J(string2, bl, clazz);
-        if (string != null) {
-            Class[] classArray = new Class[]{Boolean.TYPE};
-            Class clazz2 = MappedClasses.Yx;
-            boolean bl2 = true;
-            String string3 = "source";
-            MFontSet mFontSet2 = this;
-            this.W = this.Y(string3, bl2, clazz2, classArray);
+        Class missingGlyphFieldType = MappedClasses.qd;
+        boolean missingGlyphFieldPublic = true;
+        String missingGlyphFieldName = "missingGlyph";
+        MFontSet mapping = this;
+        this.missingGlyphField = mapping.J(missingGlyphFieldName, missingGlyphFieldPublic, missingGlyphFieldType);
+        if (controlFlowMarker != null) {
+            Class[] sourceParameterTypes = new Class[]{Boolean.TYPE};
+            Class sourceReturnType = MappedClasses.Yx;
+            boolean sourcePublic = true;
+            String sourceMethodName = "source";
+            MFontSet sourceMapping = this;
+            this.sourceMethod = sourceMapping.Y(sourceMethodName, sourcePublic, sourceReturnType, sourceParameterTypes);
             return;
         }
-        Class[] classArray = new Class[]{Boolean.TYPE};
-        Class clazz3 = MappedClasses.Yx;
-        boolean bl3 = true;
-        String string4 = "source";
-        MFontSet mFontSet3 = this;
-        this.W = this.Y(string4, bl3, clazz3, classArray);
+        Class[] sourceParameterTypes = new Class[]{Boolean.TYPE};
+        Class sourceReturnType = MappedClasses.Yx;
+        boolean sourcePublic = true;
+        String sourceMethodName = "source";
+        MFontSet sourceMapping = this;
+        this.sourceMethod = sourceMapping.Y(sourceMethodName, sourcePublic, sourceReturnType, sourceParameterTypes);
         GuiComponent.setLegacyComponentState(new GuiComponent[5]);
     }
 
-    public static String A() {
-        return c;
+    public static String getFontSetControlFlowMarker() {
+        return fontSetControlFlowMarker;
     }
 
-    public Object t(Object object, boolean bl) {
-        return this.W.invokeObject(object, bl);
+    public Object getSource(Object fontSetHandle, boolean filterFishyGlyphs) {
+        return this.sourceMethod.invokeObject(fontSetHandle, filterFishyGlyphs);
     }
 }
 

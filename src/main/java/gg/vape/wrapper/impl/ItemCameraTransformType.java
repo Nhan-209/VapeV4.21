@@ -4,12 +4,11 @@ import gg.vape.wrapper.Wrapper;
 
 public class ItemCameraTransformType
 extends Wrapper {
-    public ItemCameraTransformBase e() {
-        return new ItemCameraTransformBase(ItemCameraTransformType.vapeInstance.getMappingsMapperCompat().qu.z(this.I));
+    public ItemCameraTransformBase getItems() {
+        return new ItemCameraTransformBase(ItemCameraTransformType.vapeInstance.getMappingsMapperCompat().repairable.getItems(this.I));
     }
 
-    public ItemCameraTransformType(Object object) {
-        super(object);
+    public ItemCameraTransformType(Object handle) {
+        super(handle);
     }
 }
-

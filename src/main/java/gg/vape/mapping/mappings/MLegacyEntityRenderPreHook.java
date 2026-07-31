@@ -7,36 +7,36 @@ import gg.vape.ui.click.component.GuiComponent;
 
 public class MLegacyEntityRenderPreHook
 extends Mapping {
-    private static final String b;
-    private static String[] w;
-    public final MappingMethod v;
+    private static final String CONSTRUCTOR_NAME;
+    private static String[] controlFlowState;
+    public final MappingMethod constructorMethod;
 
-    public static String[] N() {
-        return w;
+    public static String[] getControlFlowState() {
+        return controlFlowState;
     }
 
 
-    public static void Q(String[] stringArray) {
-        w = stringArray;
+    public static void setControlFlowState(String[] state) {
+        controlFlowState = state;
     }
 
     public MLegacyEntityRenderPreHook() {
         super(MappedClasses.x);
-        Class[] classArray = new Class[]{MappedClasses.zm, MappedClasses.Fq, Double.TYPE, Double.TYPE, Double.TYPE};
-        Class<Void> clazz = Void.TYPE;
-        boolean bl = false;
-        String string = b;
-        MLegacyEntityRenderPreHook mLegacyEntityRenderPreHook = this;
-        this.v = this.Y(string, bl, clazz, classArray);
-        if (MLegacyEntityRenderPreHook.N() != null) {
+        Class[] parameterTypes = new Class[]{MappedClasses.zm, MappedClasses.Fq, Double.TYPE, Double.TYPE, Double.TYPE};
+        Class<Void> returnType = Void.TYPE;
+        boolean methodPublic = false;
+        String methodName = CONSTRUCTOR_NAME;
+        MLegacyEntityRenderPreHook mapping = this;
+        this.constructorMethod = mapping.Y(methodName, methodPublic, returnType, parameterTypes);
+        if (MLegacyEntityRenderPreHook.getControlFlowState() != null) {
             GuiComponent.setLegacyComponentState(new GuiComponent[4]);
             return;
         }
     }
 
     static {
-        MLegacyEntityRenderPreHook.Q(null);
-        b = "<init>";
+        MLegacyEntityRenderPreHook.setControlFlowState(null);
+        CONSTRUCTOR_NAME = "<init>";
     }
 }
 

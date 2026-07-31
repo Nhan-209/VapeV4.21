@@ -82,19 +82,19 @@ implements PotionEffectIconRenderBackend {
 
     private void drawEffectSprite(PotionEffect effect, int width, int height) {
         if (ForgeVersion.MC_1_16_5.d()) {
-            StatusEffectSpriteUploader spriteUploader = StatusEffectSpriteUploader.c();
+            StatusEffectSpriteUploader spriteUploader = StatusEffectSpriteUploader.getPotionSprites();
             StatusEffect statusEffect = effect.i();
-            TextureAtlasSprite sprite = spriteUploader.l(statusEffect);
-            TextureAtlas textureAtlas = new TextureAtlas(sprite.e());
-            Minecraft.Z().g(textureAtlas.K());
+            TextureAtlasSprite sprite = spriteUploader.getSprite(statusEffect);
+            TextureAtlas textureAtlas = new TextureAtlas(sprite.getContentsOrAtlasTexture());
+            Minecraft.getTextureManager().bindTexture(textureAtlas.getTextureLocation());
             GL11.glPushMatrix();
             GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
             GlStateManager.disableDepth();
-            RenderItemTextBridge.x(MatrixStack.A(), 0, 0, 0, width, height, sprite);
+            RenderItemTextBridge.drawSprite(MatrixStack.A(), 0, 0, 0, width, height, sprite);
             GL11.glPopMatrix();
             return;
         }
-        Minecraft.Z().g(GuiContainer.m$src$Lgg_vape_wrapper_impl_ResourceLocation_$1fc62cj());
+        Minecraft.getTextureManager().bindTexture(GuiContainer.m$src$Lgg_vape_wrapper_impl_ResourceLocation_$1fc62cj());
         Potion potion = Potion.getPotionById(effect.C());
         if (potion.isBadEffect()) {
             int iconIndex = potion.y();

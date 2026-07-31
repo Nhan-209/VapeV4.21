@@ -9,12 +9,11 @@ extends Wrapper {
         super(object);
     }
 
-    public String P() {
-        return MScore.n(Score.vapeInstance.getMappingsMapperCompat().Cm, this.I);
+    public String getOwner() {
+        return MScore.getOwner(Score.vapeInstance.getMappingsMapperCompat().score, this.I);
     }
 
-    public int j() {
-        return MScore.t(Score.vapeInstance.getMappingsMapperCompat().Cm, this.I);
+    public int getScore() {
+        return MScore.getScore(Score.vapeInstance.getMappingsMapperCompat().score, this.I);
     }
 }
-

@@ -8,52 +8,52 @@ import gg.vape.wrapper.impl.ForgeVersion;
 
 public class MITooltipFlag
 extends Mapping {
-    private static GuiComponent[] p;
-    private final MappingField x;
+    private static GuiComponent[] creativeTabsControlFlowState;
+    private final MappingField searchTabField;
 
     public MITooltipFlag() {
-        this(MITooltipFlag.B());
+        this(MITooltipFlag.getCreativeTabsControlFlowState());
     }
 
-    private MITooltipFlag(GuiComponent[] guiComponentArray) {
+    private MITooltipFlag(GuiComponent[] controlFlowState) {
         super(MappedClasses.zX);
-        GuiComponent[] guiComponentArray2 = guiComponentArray;
+        GuiComponent[] currentControlFlowState = controlFlowState;
         if (ForgeVersion.MC_1_20_6.d()) {
-            Class clazz = MappedClasses.qB;
-            boolean bl = true;
-            String string = "SEARCH";
-            Class clazz2 = MappedClasses.qj;
-            MITooltipFlag mITooltipFlag = this;
-            this.x = mITooltipFlag.registerStaticFieldForOwner(clazz2, string, bl, clazz);
+            Class searchTabFieldType = MappedClasses.qB;
+            boolean searchTabFieldPublic = true;
+            String searchTabFieldName = "SEARCH";
+            Class creativeModeTabsClass = MappedClasses.qj;
+            MITooltipFlag mapping = this;
+            this.searchTabField = mapping.registerStaticFieldForOwner(creativeModeTabsClass, searchTabFieldName, searchTabFieldPublic, searchTabFieldType);
         } else if (ForgeVersion.MC_1_12_2.d()) {
-            Class clazz = MappedClasses.zX;
-            boolean bl = true;
-            String string = "SEARCH";
-            MITooltipFlag mITooltipFlag = this;
-            this.x = mITooltipFlag.registerStaticField(string, bl, clazz);
+            Class searchTabFieldType = MappedClasses.zX;
+            boolean searchTabFieldPublic = true;
+            String searchTabFieldName = "SEARCH";
+            MITooltipFlag mapping = this;
+            this.searchTabField = mapping.registerStaticField(searchTabFieldName, searchTabFieldPublic, searchTabFieldType);
         } else {
-            Class clazz = MappedClasses.zX;
-            boolean bl = true;
-            String string = "tabAllSearch";
-            MITooltipFlag mITooltipFlag = this;
-            this.x = mITooltipFlag.registerStaticField(string, bl, clazz);
+            Class searchTabFieldType = MappedClasses.zX;
+            boolean searchTabFieldPublic = true;
+            String searchTabFieldName = "tabAllSearch";
+            MITooltipFlag mapping = this;
+            this.searchTabField = mapping.registerStaticField(searchTabFieldName, searchTabFieldPublic, searchTabFieldType);
         }
     }
 
-    public static void j(GuiComponent[] guiComponentArray) {
-        p = guiComponentArray;
+    public static void setCreativeTabsControlFlowState(GuiComponent[] controlFlowState) {
+        creativeTabsControlFlowState = controlFlowState;
     }
 
 
-    public Object h() {
-        return this.x.getObject(null);
+    public Object getSearchTab() {
+        return this.searchTabField.getObject(null);
     }
 
-    public static GuiComponent[] B() {
-        return p;
+    public static GuiComponent[] getCreativeTabsControlFlowState() {
+        return creativeTabsControlFlowState;
     }
 
     static {
-        MITooltipFlag.j(new GuiComponent[2]);
+        MITooltipFlag.setCreativeTabsControlFlowState(new GuiComponent[2]);
     }
 }

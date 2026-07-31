@@ -23,7 +23,7 @@ extends Mapping {
     }
 
     public MIInventory() {
-        this(MSlot.z());
+        this(MSlot.getSlotControlFlowState());
     }
 
     private MIInventory(int[] nArray) {

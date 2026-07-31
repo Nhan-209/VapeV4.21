@@ -28,6 +28,115 @@ public class NativeBridge {
             + "]}]}";
     private static boolean forgeAbsent = true;
     static boolean alphaTestWasEnabled;
+    private static Method glGetFloatMethod;
+    private static Method glGetIntegerVectorMethod;
+    private static Method glVertexPointerMethod;
+    private static Method glColorPointerMethod;
+    private static Method glTexCoordPointerMethod;
+
+    private static void resolveGlGetFloatMethod() {
+        if (glGetFloatMethod != null) {
+            return;
+        }
+        try {
+            glGetFloatMethod = GL11.class.getMethod("glGetFloatv", Integer.TYPE, FloatBuffer.class);
+        }
+        catch (NoSuchMethodException modernNameMissing) {
+            try {
+                glGetFloatMethod = GL11.class.getMethod("glGetFloat", Integer.TYPE, FloatBuffer.class);
+            }
+            catch (NoSuchMethodException legacyNameMissing) {
+                throw new IllegalStateException("Unable to resolve OpenGL float state method", legacyNameMissing);
+            }
+        }
+    }
+
+    private static void readGlFloats(int state, FloatBuffer destination) {
+        NativeBridge.resolveGlGetFloatMethod();
+        try {
+            glGetFloatMethod.invoke(null, state, destination);
+        }
+        catch (ReflectiveOperationException exception) {
+            throw new IllegalStateException("Unable to read OpenGL state " + state, exception);
+        }
+    }
+
+    private static void readGlIntegers(int state, IntBuffer destination) {
+        if (glGetIntegerVectorMethod == null) {
+            try {
+                glGetIntegerVectorMethod = GL11.class.getMethod(
+                        "glGetIntegerv", Integer.TYPE, IntBuffer.class);
+            }
+            catch (NoSuchMethodException modernNameMissing) {
+                try {
+                    glGetIntegerVectorMethod = GL11.class.getMethod(
+                            "glGetInteger", Integer.TYPE, IntBuffer.class);
+                }
+                catch (NoSuchMethodException legacyNameMissing) {
+                    throw new IllegalStateException(
+                            "Unable to resolve OpenGL integer state method", legacyNameMissing);
+                }
+            }
+        }
+        try {
+            glGetIntegerVectorMethod.invoke(null, state, destination);
+        }
+        catch (ReflectiveOperationException exception) {
+            throw new IllegalStateException("Unable to read OpenGL integer state " + state, exception);
+        }
+    }
+
+    private static Method resolveFloatPointerMethod(String name) {
+        try {
+            return GL11.class.getMethod(
+                    name, Integer.TYPE, Integer.TYPE, Integer.TYPE, FloatBuffer.class);
+        }
+        catch (NoSuchMethodException modernSignatureMissing) {
+            try {
+                return GL11.class.getMethod(
+                        name, Integer.TYPE, Integer.TYPE, FloatBuffer.class);
+            }
+            catch (NoSuchMethodException legacySignatureMissing) {
+                throw new IllegalStateException("Unable to resolve OpenGL pointer method " + name,
+                        legacySignatureMissing);
+            }
+        }
+    }
+
+    private static void invokeFloatPointer(Method method, int size, int stride,
+                                           FloatBuffer buffer, String name) {
+        try {
+            if (method.getParameterCount() == 4) {
+                method.invoke(null, size, 5126, stride, buffer);
+            } else {
+                method.invoke(null, size, stride, buffer);
+            }
+        }
+        catch (ReflectiveOperationException exception) {
+            throw new IllegalStateException("Unable to invoke OpenGL pointer method " + name, exception);
+        }
+    }
+
+    public static void vertexPointer(int size, int stride, FloatBuffer buffer) {
+        if (glVertexPointerMethod == null) {
+            glVertexPointerMethod = NativeBridge.resolveFloatPointerMethod("glVertexPointer");
+        }
+        NativeBridge.invokeFloatPointer(glVertexPointerMethod, size, stride, buffer, "glVertexPointer");
+    }
+
+    public static void colorPointer(int size, int stride, FloatBuffer buffer) {
+        if (glColorPointerMethod == null) {
+            glColorPointerMethod = NativeBridge.resolveFloatPointerMethod("glColorPointer");
+        }
+        NativeBridge.invokeFloatPointer(glColorPointerMethod, size, stride, buffer, "glColorPointer");
+    }
+
+    public static void texCoordPointer(int size, int stride, FloatBuffer buffer) {
+        if (glTexCoordPointerMethod == null) {
+            glTexCoordPointerMethod = NativeBridge.resolveFloatPointerMethod("glTexCoordPointer");
+        }
+        NativeBridge.invokeFloatPointer(glTexCoordPointerMethod, size, stride, buffer, "glTexCoordPointer");
+    }
 
     public static int ss_3(String value) {
         return 0;
@@ -96,9 +205,9 @@ public class NativeBridge {
         FloatBuffer modelViewMatrix = BufferUtils.createFloatBuffer(16);
         FloatBuffer projectionMatrix = BufferUtils.createFloatBuffer(16);
         IntBuffer viewport = BufferUtils.createIntBuffer(16);
-        GL11.glGetFloat(2982, modelViewMatrix);
-        GL11.glGetFloat(2983, projectionMatrix);
-        GL11.glGetInteger(2978, viewport);
+        NativeBridge.readGlFloats(2982, modelViewMatrix);
+        NativeBridge.readGlFloats(2983, projectionMatrix);
+        NativeBridge.readGlIntegers(2978, viewport);
         FloatBuffer screenPosition = BufferUtils.createFloatBuffer(3);
         GLU.gluProject((float)worldX, (float)worldY, (float)worldZ,
                 modelViewMatrix, projectionMatrix, viewport, screenPosition);
@@ -497,5 +606,9 @@ public class NativeBridge {
 
     public static boolean om(int eventId, long firstArgument, long secondArgument) {
         return GuiScreenNativeCallbackBridge.onNotification(eventId, firstArgument, secondArgument);
+    }
+
+    public static void wh(long windowHandle) {
+        GuiScreenNativeCallbackBridge.h(windowHandle);
     }
 }

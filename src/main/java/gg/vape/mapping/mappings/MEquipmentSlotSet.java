@@ -98,7 +98,7 @@ extends Mapping {
         String string5 = "CHEST";
         MEquipmentSlotSet mEquipmentSlotSet5 = this;
         this.b = this.registerStaticField(string5, bl5, clazz5);
-        if (MSlot.z() != null) {
+        if (MSlot.getSlotControlFlowState() != null) {
             Class clazz6 = MappedClasses.um;
             boolean bl6 = true;
             String string6 = "HEAD";
@@ -110,7 +110,7 @@ extends Mapping {
             MEquipmentSlotSet mEquipmentSlotSet7 = this;
             this.a = this.J(string7, bl7, clazz7);
             if (GuiComponent.getLegacyComponentState() == null) {
-                MSlot.w(new int[5]);
+                MSlot.setSlotControlFlowState(new int[5]);
             }
             return;
         }
@@ -132,7 +132,7 @@ extends Mapping {
             this.a = this.J(string10, bl10, clazz10);
         }
         if (GuiComponent.getLegacyComponentState() == null) {
-            MSlot.w(new int[5]);
+            MSlot.setSlotControlFlowState(new int[5]);
         }
     }
 

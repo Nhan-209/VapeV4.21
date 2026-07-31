@@ -4,38 +4,38 @@ import gg.vape.wrapper.Wrapper;
 
 public class FontSet
 extends Wrapper {
-    public FontGlyph W(int n, boolean bl) {
-        GlyphProvider pf_22 = this.v(bl);
-        if (pf_22.isNull()) {
+    public FontGlyph getGlyph(int codePoint, boolean filterFishyGlyphs) {
+        GlyphProvider glyphSource = this.getGlyphSource(filterFishyGlyphs);
+        if (glyphSource.isNull()) {
             return null;
         }
-        FontGlyph p4_03 = pf_22.o(n);
-        FontGlyph fontGlyph = p4_03 != null ? p4_03 : this.P();
+        FontGlyph resolvedGlyph = glyphSource.getGlyph(codePoint);
+        FontGlyph fontGlyph = resolvedGlyph != null ? resolvedGlyph : this.getMissingGlyph();
         return fontGlyph;
     }
 
-    public FontGlyph P() {
-        Object object = FontSet.vapeInstance.getMappingsMapperCompat().Z.v(this.I);
-        FontGlyph fontGlyph = object != null ? new FontGlyph(object) : null;
+    public FontGlyph getMissingGlyph() {
+        Object glyphHandle = FontSet.vapeInstance.getMappingsMapperCompat().fontSet.getMissingGlyph(this.I);
+        FontGlyph fontGlyph = glyphHandle != null ? new FontGlyph(glyphHandle) : null;
         return fontGlyph;
     }
 
-    public FontGlyph G(char c2) {
-        return this.W(c2, false);
+    public FontGlyph getGlyph(char character) {
+        return this.getGlyph(character, false);
     }
 
-    public GlyphProvider v(boolean bl) {
-        return new GlyphProvider(FontSet.vapeInstance.getMappingsMapperCompat().Z.t(this.I, bl));
+    public GlyphProvider getGlyphSource(boolean filterFishyGlyphs) {
+        return new GlyphProvider(FontSet.vapeInstance.getMappingsMapperCompat().fontSet.getSource(this.I, filterFishyGlyphs));
     }
 
-    public GlyphInfo T(char c2) {
-        FontGlyph p4_02 = this.G(c2);
-        GlyphInfo glyphInfo = p4_02 != null ? p4_02.asGlyphInfo() : null;
+    public GlyphInfo getGlyphInfo(char character) {
+        FontGlyph fontGlyph = this.getGlyph(character);
+        GlyphInfo glyphInfo = fontGlyph != null ? fontGlyph.asGlyphInfo() : null;
         return glyphInfo;
     }
 
-    public FontSet(Object object) {
-        super(object);
+    public FontSet(Object handle) {
+        super(handle);
     }
 
 }

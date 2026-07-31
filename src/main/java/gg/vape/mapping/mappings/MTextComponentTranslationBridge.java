@@ -6,41 +6,41 @@ import gg.vape.mapping.MappingMethod;
 
 public class MTextComponentTranslationBridge
 extends Mapping {
-    private MappingMethod K;
-    private static final String b;
-    private static boolean n;
+    private MappingMethod getModelIdentityMethod;
+    private static final String GET_MODEL_IDENTITY_METHOD_NAME;
+    private static boolean controlFlowStateEnabled;
 
 
     static {
-        MTextComponentTranslationBridge.n(true);
-        b = "getModelIdentity";
+        MTextComponentTranslationBridge.setControlFlowStateEnabled(true);
+        GET_MODEL_IDENTITY_METHOD_NAME = "getModelIdentity";
     }
 
     public MTextComponentTranslationBridge() {
         super(MappedClasses.zE);
-        Class[] classArray = new Class[]{};
-        Class<Object> clazz = Object.class;
-        boolean bl = true;
-        String string = b;
-        MTextComponentTranslationBridge mTextComponentTranslationBridge = this;
-        this.K = this.Y(string, bl, clazz, classArray);
+        Class[] parameterTypes = new Class[]{};
+        Class<Object> returnType = Object.class;
+        boolean methodPublic = true;
+        String methodName = GET_MODEL_IDENTITY_METHOD_NAME;
+        MTextComponentTranslationBridge mapping = this;
+        this.getModelIdentityMethod = mapping.Y(methodName, methodPublic, returnType, parameterTypes);
     }
 
-    public Object J(Object object) {
-        return this.K.invokeObject(object, new Object[0]);
+    public Object getModelIdentity(Object renderStateHandle) {
+        return this.getModelIdentityMethod.invokeObject(renderStateHandle, new Object[0]);
     }
 
-    public static boolean C() {
-        boolean bl = MTextComponentTranslationBridge.I();
-        return !bl;
+    public static boolean isControlFlowStateDisabled() {
+        boolean enabled = MTextComponentTranslationBridge.isControlFlowStateEnabled();
+        return !enabled;
     }
 
-    public static boolean I() {
-        return n;
+    public static boolean isControlFlowStateEnabled() {
+        return controlFlowStateEnabled;
     }
 
-    public static void n(boolean bl) {
-        n = bl;
+    public static void setControlFlowStateEnabled(boolean enabled) {
+        controlFlowStateEnabled = enabled;
     }
 }
 

@@ -99,7 +99,7 @@ public class StbGlyphCache {
 
     private StbGlyphCacheEntry B(int n) {
         try {
-            GlyphInfo glyphInfo = this.V.T((char)n);
+            GlyphInfo glyphInfo = this.V.getGlyphInfo((char)n);
             if (glyphInfo == null || glyphInfo.getObject() == null) {
                 if (n != 32) {
                     return this.K(32);
@@ -164,4 +164,3 @@ public class StbGlyphCache {
         return this.U && this.V != null;
     }
 }
-

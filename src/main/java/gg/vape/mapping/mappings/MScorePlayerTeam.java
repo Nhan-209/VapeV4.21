@@ -11,43 +11,43 @@ import gg.vape.wrapper.impl.ForgeVersion;
 
 public class MScorePlayerTeam
 extends Mapping {
-    private MappingField q;
-    private MappingMethod B;
-    private MappingMethod r;
-    private MappingField F;
-    private MappingField e;
+    private MappingField prefixField;
+    private MappingMethod formatPlayerNameMethod;
+    private MappingMethod formatNameForTeamMethod;
+    private MappingField playerPrefixField;
+    private MappingField colorField;
 
-    private String k(Object object, String string) {
-        return (String)this.B.invokeObject(null, object, string);
+    private String formatPlayerName(Object team, String playerName) {
+        return (String)this.formatPlayerNameMethod.invokeObject(null, team, playerName);
     }
 
-    public static Object H(MScorePlayerTeam mScorePlayerTeam, Object object, Object object2) {
-        return mScorePlayerTeam.j(object, object2);
+    public static Object formatNameForTeam(MScorePlayerTeam mapping, Object team, Object playerName) {
+        return mapping.formatNameForTeam(team, playerName);
     }
 
-    public Object z(Object object) {
-        return this.F.getObject(object);
+    public Object getPlayerPrefix(Object team) {
+        return this.playerPrefixField.getObject(team);
     }
 
-    public Object b(Object object) {
-        return this.e.getObject(object);
+    public Object getColor(Object team) {
+        return this.colorField.getObject(team);
     }
 
-    public static String L(MScorePlayerTeam mScorePlayerTeam, Object object) {
-        return mScorePlayerTeam.a(object);
+    public static String getPrefix(MScorePlayerTeam mapping, Object team) {
+        return mapping.getPrefix(team);
     }
 
-    private String a(Object object) {
-        return (String)this.q.getObject(object);
+    private String getPrefix(Object team) {
+        return (String)this.prefixField.getObject(team);
     }
 
 
-    public static String M(MScorePlayerTeam mScorePlayerTeam, Object object, String string) {
-        return mScorePlayerTeam.k(object, string);
+    public static String formatPlayerName(MScorePlayerTeam mapping, Object team, String playerName) {
+        return mapping.formatPlayerName(team, playerName);
     }
 
     public MScorePlayerTeam() {
-        this(MScoreboard.X());
+        this(MScoreboard.getScoreboardControlFlowState());
     }
 
     private MScorePlayerTeam(int[] nArray) {
@@ -59,42 +59,42 @@ extends Mapping {
                 boolean bl = Wrapper.isNativeAvailable;
                 String string = "func_237500_a_";
                 MScorePlayerTeam mScorePlayerTeam = this;
-                this.B = mScorePlayerTeam.registerStaticMethod(string, bl, clazz, classArray);
+                this.formatPlayerNameMethod = mScorePlayerTeam.registerStaticMethod(string, bl, clazz, classArray);
             } else {
                 Class[] classArray = new Class[]{MappedClasses.Yh, String.class};
                 Class<String> clazz = String.class;
                 boolean bl = true;
                 String string = "formatPlayerName";
                 MScorePlayerTeam mScorePlayerTeam = this;
-                this.B = mScorePlayerTeam.registerStaticMethod(string, bl, clazz, classArray);
+                this.formatPlayerNameMethod = mScorePlayerTeam.registerStaticMethod(string, bl, clazz, classArray);
             }
             if (ForgeVersion.MC_1_20_6.d()) {
                 Class clazz = MappedClasses.Yr;
                 boolean bl = true;
                 String string = "playerPrefix";
                 MScorePlayerTeam mScorePlayerTeam = this;
-                this.F = mScorePlayerTeam.J(string, bl, clazz);
+                this.playerPrefixField = mScorePlayerTeam.J(string, bl, clazz);
                 Class clazz2 = MappedClasses.l5;
                 boolean bl2 = true;
                 String string2 = "color";
                 MScorePlayerTeam mScorePlayerTeam2 = this;
-                this.e = this.J(string2, bl2, clazz2);
+                this.colorField = this.J(string2, bl2, clazz2);
             } else {
                 Class<String> clazz = String.class;
                 boolean bl = true;
                 String string = ForgeVersion.c() >= 23 ? "prefix" : "namePrefixSPT";
                 MScorePlayerTeam mScorePlayerTeam = this;
-                this.q = mScorePlayerTeam.J(string, bl, clazz);
+                this.prefixField = mScorePlayerTeam.J(string, bl, clazz);
             }
             if (ForgeVersion.MC_1_16_5.d()) {
                 Class[] classArray = new Class[]{MappedClasses.Yh, MappedClasses.Yr};
                 Class clazz = MappedClasses.YO;
                 String string = "formatNameForTeam";
                 MScorePlayerTeam mScorePlayerTeam = this;
-                this.r = ((MappingMethodBuilder)((MappingMethodBuilder)mScorePlayerTeam.methodBuilder(string, clazz, classArray).setTypeForVersion(ForgeVersion.MC_1_20_6.n(), MappedClasses.uM)).setStaticMember(true)).buildMethod();
+                this.formatNameForTeamMethod = ((MappingMethodBuilder)((MappingMethodBuilder)mScorePlayerTeam.methodBuilder(string, clazz, classArray).setTypeForVersion(ForgeVersion.MC_1_20_6.n(), MappedClasses.uM)).setStaticMember(true)).buildMethod();
             }
             if (GuiComponent.getLegacyComponentState() == null) {
-                MScoreboard.c(new int[4]);
+                MScoreboard.setScoreboardControlFlowState(new int[4]);
             }
             return;
         }
@@ -103,42 +103,42 @@ extends Mapping {
         boolean bl = true;
         String string = "formatPlayerName";
         MScorePlayerTeam mScorePlayerTeam = this;
-        this.B = mScorePlayerTeam.registerStaticMethod(string, bl, clazz, classArray);
+        this.formatPlayerNameMethod = mScorePlayerTeam.registerStaticMethod(string, bl, clazz, classArray);
         if (ForgeVersion.MC_1_20_6.d()) {
             Class clazz3 = MappedClasses.Yr;
             boolean bl3 = true;
             String string3 = "playerPrefix";
             MScorePlayerTeam mScorePlayerTeam3 = this;
-            this.F = this.J(string3, bl3, clazz3);
+            this.playerPrefixField = this.J(string3, bl3, clazz3);
             Class clazz4 = MappedClasses.l5;
             boolean bl4 = true;
             String string4 = "color";
             MScorePlayerTeam mScorePlayerTeam4 = this;
-            this.e = this.J(string4, bl4, clazz4);
+            this.colorField = this.J(string4, bl4, clazz4);
         }
         Class<String> clazz5 = String.class;
         boolean bl5 = true;
         String string5 = ForgeVersion.c() >= 23 ? "prefix" : "namePrefixSPT";
         MScorePlayerTeam mScorePlayerTeam5 = this;
-        this.q = this.J(string5, bl5, clazz5);
+        this.prefixField = this.J(string5, bl5, clazz5);
         if (ForgeVersion.MC_1_16_5.d()) {
             Class[] classArray2 = new Class[]{MappedClasses.Yh, MappedClasses.Yr};
             Class clazz6 = MappedClasses.YO;
             String string6 = "formatNameForTeam";
             MScorePlayerTeam mScorePlayerTeam6 = this;
-            this.r = ((MappingMethodBuilder)((MappingMethodBuilder)this.methodBuilder(string6, clazz6, classArray2).setTypeForVersion(ForgeVersion.MC_1_20_6.n(), MappedClasses.uM)).setStaticMember(true)).buildMethod();
+            this.formatNameForTeamMethod = ((MappingMethodBuilder)((MappingMethodBuilder)this.methodBuilder(string6, clazz6, classArray2).setTypeForVersion(ForgeVersion.MC_1_20_6.n(), MappedClasses.uM)).setStaticMember(true)).buildMethod();
         }
         if (GuiComponent.getLegacyComponentState() == null) {
-            MScoreboard.c(new int[4]);
+            MScoreboard.setScoreboardControlFlowState(new int[4]);
         }
     }
 
-    private Object j(Object object, Object object2) {
-        return this.r.invokeObject(null, object, object2);
+    private Object formatNameForTeam(Object team, Object playerName) {
+        return this.formatNameForTeamMethod.invokeObject(null, team, playerName);
     }
 
-    public Object I(Object object, Object object2) {
-        return this.B.invokeObject(null, object, object2);
+    public Object formatPlayerNameComponent(Object team, Object playerName) {
+        return this.formatPlayerNameMethod.invokeObject(null, team, playerName);
     }
 }
 

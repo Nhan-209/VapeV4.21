@@ -73,8 +73,8 @@ extends Mod {
         EntityPlayerSP player = Minecraft.thePlayer();
         int potionSlot = -1;
         for (int slot = 0; slot < 45; ++slot) {
-            ItemStack stack = player.F$src$Lgg_vape_wrapper_impl_Container_$152y6lm().getSlot(slot).I();
-            if (!player.F$src$Lgg_vape_wrapper_impl_Container_$152y6lm().getSlot(slot).v()
+            ItemStack stack = player.F$src$Lgg_vape_wrapper_impl_Container_$152y6lm().getSlot(slot).getStack();
+            if (!player.F$src$Lgg_vape_wrapper_impl_Container_$152y6lm().getSlot(slot).hasStack()
                     || !this.isHealingPotion(stack)) {
                 continue;
             }
@@ -125,8 +125,8 @@ extends Mod {
         if (shouldHeal) {
             for (int containerSlot = 36; containerSlot < 45; ++containerSlot) {
                 ItemStack stack = player.F$src$Lgg_vape_wrapper_impl_Container_$152y6lm()
-                        .getSlot(containerSlot).I();
-                if (!player.F$src$Lgg_vape_wrapper_impl_Container_$152y6lm().getSlot(containerSlot).v()
+                        .getSlot(containerSlot).getStack();
+                if (!player.F$src$Lgg_vape_wrapper_impl_Container_$152y6lm().getSlot(containerSlot).hasStack()
                         || !this.isHealingItem(stack)) {
                     continue;
                 }
@@ -159,7 +159,7 @@ extends Mod {
         if (this.potionUsePending && this.pendingPotionSlot != -1
                 && this.useTimer.hasTimeElapsed(((Double)this.useDelay.getValue()).intValue())) {
             ItemStack potionStack = player.F$src$Lgg_vape_wrapper_impl_Container_$152y6lm()
-                    .getSlot(36 + this.pendingPotionSlot).I();
+                    .getSlot(36 + this.pendingPotionSlot).getStack();
             if (potionStack.isNotNull()) {
                 int selectedSlot = player.V$src$Lgg_vape_wrapper_impl_InventoryPlayer_$erqak6().v();
                 player.V$src$Lgg_vape_wrapper_impl_InventoryPlayer_$erqak6().g(this.pendingPotionSlot);
@@ -355,8 +355,8 @@ extends Mod {
             for (int slot = 9; slot < 45; ++slot) {
                 boolean inHotbar = slot >= 36;
                 ItemStack stack = player.F$src$Lgg_vape_wrapper_impl_Container_$152y6lm()
-                        .getSlot(slot).I();
-                if (!player.F$src$Lgg_vape_wrapper_impl_Container_$152y6lm().getSlot(slot).v()
+                        .getSlot(slot).getStack();
+                if (!player.F$src$Lgg_vape_wrapper_impl_Container_$152y6lm().getSlot(slot).hasStack()
                         || stack.getItem().isNull() || stack.getItem().P() != this.bowlItemId) {
                     continue;
                 }
@@ -369,9 +369,9 @@ extends Mod {
                     continue;
                 }
                 boolean bowlStackSlotEmpty = !player.F$src$Lgg_vape_wrapper_impl_Container_$152y6lm()
-                        .getSlot(17).v();
+                        .getSlot(17).hasStack();
                 if (bowlStackSlotEmpty || player.F$src$Lgg_vape_wrapper_impl_Container_$152y6lm()
-                        .getSlot(17).I().getItem().P() != this.bowlItemId) {
+                        .getSlot(17).getStack().getItem().P() != this.bowlItemId) {
                     if (inHotbar) {
                         this.moveInventoryItem(17, slot);
                     } else {
@@ -391,14 +391,14 @@ extends Mod {
         if (this.replaceItems.getEffectiveValue()) {
             for (int inventorySlot = 9; inventorySlot < 36; ++inventorySlot) {
                 ItemStack healingStack = player.F$src$Lgg_vape_wrapper_impl_Container_$152y6lm()
-                        .getSlot(inventorySlot).I();
+                        .getSlot(inventorySlot).getStack();
                 if (!player.F$src$Lgg_vape_wrapper_impl_Container_$152y6lm()
-                        .getSlot(inventorySlot).v() || !this.isHealingItem(healingStack)) {
+                        .getSlot(inventorySlot).hasStack() || !this.isHealingItem(healingStack)) {
                     continue;
                 }
                 for (int hotbarContainerSlot = 36; hotbarContainerSlot < 45; ++hotbarContainerSlot) {
                     ItemStack hotbarStack = player.F$src$Lgg_vape_wrapper_impl_Container_$152y6lm()
-                            .getSlot(hotbarContainerSlot).I();
+                            .getSlot(hotbarContainerSlot).getStack();
                     if (hotbarStack.isNotNull() && hotbarStack.getItem().isNotNull()) {
                         continue;
                     }

@@ -25,10 +25,10 @@ public class ItemStackRenderUtils {
             ItemStackRenderUtils.renderItemOverlay(renderItemTextBridge, itemStack, x, y);
         } else if (ForgeVersion.MC_1_7_10.L()) {
             RenderItem renderItem = RenderItem.d();
-            renderItem.c(Minecraft.getFontRenderer(), Minecraft.Z(), itemStack, x, y);
+            renderItem.c(Minecraft.getFontRenderer(), Minecraft.getTextureManager(), itemStack, x, y);
         } else {
             RenderItem renderItem = Minecraft.v();
-            renderItem.c(Minecraft.getFontRenderer(), Minecraft.Z(), itemStack, x, y);
+            renderItem.c(Minecraft.getFontRenderer(), Minecraft.getTextureManager(), itemStack, x, y);
         }
     }
 

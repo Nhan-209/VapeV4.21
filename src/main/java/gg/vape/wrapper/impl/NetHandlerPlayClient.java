@@ -4,12 +4,11 @@ import gg.vape.mapping.mappings.MNetHandlerPlayClient;
 
 public class NetHandlerPlayClient
 extends NetworkPacketHandle {
-    public void sendPacket(SPacketEntity sPacketEntity) {
-        MNetHandlerPlayClient.sendPacket(NetHandlerPlayClient.vapeInstance.getMappingsMapperCompat().DY, this.I, sPacketEntity.getObject());
+    public void handleEntityTeleport(SPacketEntity teleportPacket) {
+        MNetHandlerPlayClient.handleEntityTeleport(NetHandlerPlayClient.vapeInstance.getMappingsMapperCompat().netHandlerPlayClient, this.I, teleportPacket.getObject());
     }
 
-    public NetHandlerPlayClient(Object object) {
-        super(object);
+    public NetHandlerPlayClient(Object handle) {
+        super(handle);
     }
 }
-

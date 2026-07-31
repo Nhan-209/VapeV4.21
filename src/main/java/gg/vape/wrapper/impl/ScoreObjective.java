@@ -5,24 +5,24 @@ import gg.vape.wrapper.Wrapper;
 
 public class ScoreObjective
 extends Wrapper {
-    public TextComponent K() {
-        return new TextComponent(MScoreObjective.B(ScoreObjective.vapeInstance.getMappingsMapperCompat().qL, this.I));
+    public TextComponent getFormattedDisplayName() {
+        return new TextComponent(MScoreObjective.getFormattedDisplayName(ScoreObjective.vapeInstance.getMappingsMapperCompat().scoreObjective, this.I));
     }
 
-    public ITextComponent i() {
-        ITextComponent iTextComponent = new ITextComponent(MScoreObjective.g(ScoreObjective.vapeInstance.getMappingsMapperCompat().qL, this.I));
-        return iTextComponent;
+    public ITextComponent getDisplayNameComponent() {
+        ITextComponent displayName = new ITextComponent(MScoreObjective.getDisplayNameComponent(ScoreObjective.vapeInstance.getMappingsMapperCompat().scoreObjective, this.I));
+        return displayName;
     }
 
-    public Scoreboard P() {
-        return new Scoreboard(MScoreObjective.r(ScoreObjective.vapeInstance.getMappingsMapperCompat().qL, this.I));
+    public Scoreboard getScoreboard() {
+        return new Scoreboard(MScoreObjective.getScoreboard(ScoreObjective.vapeInstance.getMappingsMapperCompat().scoreObjective, this.I));
     }
 
-    public String h() {
+    public String getDisplayNameText() {
         if (ForgeVersion.MC_1_16_5.d()) {
-            return this.i().getFormattedText();
+            return this.getDisplayNameComponent().getFormattedText();
         }
-        return MScoreObjective.O(ScoreObjective.vapeInstance.getMappingsMapperCompat().qL, this.I);
+        return MScoreObjective.getDisplayNameText(ScoreObjective.vapeInstance.getMappingsMapperCompat().scoreObjective, this.I);
     }
 
     public ScoreObjective(Object object) {
