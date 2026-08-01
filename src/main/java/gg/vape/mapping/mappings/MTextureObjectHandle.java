@@ -39,21 +39,23 @@ extends Mapping {
         MTextureObjectHandle mTextureObjectHandle = this;
         this.textureIdField = mTextureObjectHandle.J(string, bl, clazz);
         if (ForgeVersion.MC_1_21_11.d()) {
-            Class<Integer> clazz2 = Integer.TYPE;
-            boolean bl2 = true;
-            String string2 = "firstFboId";
-            MTextureObjectHandle mTextureObjectHandle2 = this;
-            this.firstFramebufferIdField = this.J(string2, bl2, clazz2);
-            Class<Integer> clazz3 = Integer.TYPE;
-            boolean bl3 = true;
-            String string3 = "firstFboDepthId";
-            MTextureObjectHandle mTextureObjectHandle3 = this;
-            this.firstFramebufferDepthIdField = this.J(string3, bl3, clazz3);
-            Class clazz4 = MappedClasses.FG;
-            boolean bl4 = true;
-            String string4 = "fboCache";
-            MTextureObjectHandle mTextureObjectHandle4 = this;
-            this.framebufferCacheOrTextureIdField = this.J(string4, bl4, clazz4);
+            if (ForgeVersion.MC_26_2.v()) {
+                Class<Integer> clazz2 = Integer.TYPE;
+                boolean bl2 = true;
+                String string2 = "firstFboId";
+                MTextureObjectHandle mTextureObjectHandle2 = this;
+                this.firstFramebufferIdField = this.J(string2, bl2, clazz2);
+                Class<Integer> clazz3 = Integer.TYPE;
+                boolean bl3 = true;
+                String string3 = "firstFboDepthId";
+                MTextureObjectHandle mTextureObjectHandle3 = this;
+                this.firstFramebufferDepthIdField = this.J(string3, bl3, clazz3);
+                Class clazz4 = MappedClasses.FG;
+                boolean bl4 = true;
+                String string4 = "fboCache";
+                MTextureObjectHandle mTextureObjectHandle4 = this;
+                this.framebufferCacheOrTextureIdField = this.J(string4, bl4, clazz4);
+            }
         } else {
             Class clazz5 = MappedClasses.FG;
             boolean bl5 = true;

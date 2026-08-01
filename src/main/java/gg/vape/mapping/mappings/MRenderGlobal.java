@@ -18,17 +18,27 @@ extends Mapping {
 
     public MRenderGlobal() {
         super(MappedClasses.zs);
-        this.loadRenderersMethod = this.Y("loadRenderers", true, Void.TYPE);
+        this.loadRenderersMethod = ForgeVersion.MC_26_2.d()
+                ? this.registerInstanceMethodForOwner(
+                        MappedClasses.LEVEL_EXTRACTOR, "loadRenderers", true, Void.TYPE)
+                : this.Y("loadRenderers", true, Void.TYPE);
         int rendererControlFlowState = MEntityRenderer.X();
         if (ForgeVersion.MC_1_7_10.L()) {
             this.updateRenderersMethod = this.Y(
                     "updateRenderers", true, Boolean.TYPE, MappedClasses.zm, Boolean.TYPE);
+        } else if (ForgeVersion.MC_26_2.d()) {
+            this.updateChunksMethod = this.Y(
+                    "compileSections", true, Void.TYPE, MappedClasses.zf);
         } else if (ForgeVersion.MC_1_20_6.d()) {
             this.updateChunksMethod = this.Y("compileSections", true, Void.TYPE, MappedClasses.lt);
         } else {
             this.updateChunksMethod = this.Y("updateChunks", true, Void.TYPE, Long.TYPE);
         }
-        if (ForgeVersion.MC_1_21_10.d()) {
+        if (ForgeVersion.MC_26_2.d()) {
+            this.extractVisibleEntitiesMethod = this.registerInstanceMethodForOwner(
+                    MappedClasses.LEVEL_EXTRACTOR, "extractVisibleEntities", true, Void.TYPE,
+                    MappedClasses.lt, MappedClasses.qh, MappedClasses.uy, MappedClasses.z6);
+        } else if (ForgeVersion.MC_1_21_10.d()) {
             this.extractVisibleEntitiesMethod = this.Y("extractVisibleEntities", true, Void.TYPE,
                     MappedClasses.lt, MappedClasses.qh, MappedClasses.uy, MappedClasses.z6);
         } else if (ForgeVersion.MC_1_21_4.d()) {
@@ -36,7 +46,11 @@ extends Mapping {
                     MappedClasses.DQ, MappedClasses.lp, MappedClasses.lt, MappedClasses.uy, List.class);
         }
         if (ForgeVersion.MC_1_20_6.d()) {
-            if (ForgeVersion.MC_26_1.d()) {
+            if (ForgeVersion.MC_26_2.d()) {
+                this.renderLevelMethod = this.Y("renderLevel", true, Void.TYPE,
+                        MappedClasses.Ds, MappedClasses.uy, Boolean.TYPE, MappedClasses.zf,
+                        MappedClasses.ZA, MappedClasses.qk, MappedClasses.FC, Boolean.TYPE);
+            } else if (ForgeVersion.MC_26_1.d()) {
                 this.renderLevelMethod = this.Y("renderLevel", true, Void.TYPE,
                         MappedClasses.Ds, MappedClasses.uy, Boolean.TYPE, MappedClasses.zf,
                         MappedClasses.ZA, MappedClasses.qk, MappedClasses.FC, Boolean.TYPE, MappedClasses.VY);

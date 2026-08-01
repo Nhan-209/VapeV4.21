@@ -9,5 +9,6 @@ extends ClassNameRemapTableV100 {
         this.Q("com/mojang/blaze3d/vertex/VertexFormat$Mode", "com/mojang/blaze3d/PrimitiveTopology");
         this.Q("com/mojang/blaze3d/vertex/VertexFormat$IndexType", "com/mojang/blaze3d/IndexType");
         this.Q("net/minecraft/client/gui/Hud", "net/minecraft/client/gui/Hud");
+        this.Q("net/minecraft/client/renderer/LevelExtractor", "net/minecraft/client/renderer/extract/LevelExtractor");
     }
 }

@@ -63,7 +63,9 @@ extends Mapping {
 
     private void u(Object object, Object object2) {
         if (this.C != null) {
-            if (ForgeVersion.MC_26_1.d()) {
+            if (ForgeVersion.MC_26_2.d()) {
+                this.C.invokeVoid(object, object2);
+            } else if (ForgeVersion.MC_26_1.d()) {
                 this.C.invokeVoid(object, object2, false);
             } else {
                 this.C.invokeVoid(object, object2);

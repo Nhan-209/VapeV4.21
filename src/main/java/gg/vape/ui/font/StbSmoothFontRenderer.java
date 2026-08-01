@@ -33,27 +33,13 @@ import org.lwjgl.opengl.GL11;
 public class StbSmoothFontRenderer
 extends SmoothFontRenderer {
     private boolean R;
-    private static final float S = 1.0f;
-    private static final Map i;
     private int L;
     private static final String c;
     private long A;
     private final StbGlyphCache w;
     private int V;
-    private static final Integer[] e;
     private Object P;
-    private static final long[] d;
 
-    private static CallSite a(MethodHandles.Lookup lookup, String string, MethodType methodType) {
-        MutableCallSite mutableCallSite = new MutableCallSite(methodType);
-        try {
-            mutableCallSite.setTarget(MethodHandles.explicitCastArguments(MethodHandles.insertArguments(cfr_ldc_0().asCollector(Object[].class, methodType.parameterCount()), 0, lookup, mutableCallSite, string), methodType));
-        }
-        catch (Exception exception) {
-            throw new RuntimeException("a/oB" + " : " + string + " : " + methodType.toString(), exception);
-        }
-        return mutableCallSite;
-    }
 
     public StbSmoothFontRenderer(int n) {
         this.P = null;
@@ -144,15 +130,6 @@ extends SmoothFontRenderer {
         } else {
             BufferedGuiRenderPrimitives.drawMinecraftIntensityFontGlyph(f, f2, smoothFontGlyph, n, color, f3);
         }
-    }
-
-    private static int a(MethodHandles.Lookup lookup, MutableCallSite mutableCallSite, String string, Object[] objectArray) {
-        int n = (Integer)objectArray[0];
-        long l = (Long)objectArray[1];
-        int n2 = StbSmoothFontRenderer.a(n, l);
-        MethodHandle methodHandle = MethodHandles.constant(Integer.TYPE, n2);
-        mutableCallSite.setTarget(MethodHandles.dropArguments(methodHandle, 0, Integer.TYPE, Long.TYPE));
-        return n2;
     }
 
     private void A() {
@@ -284,7 +261,7 @@ extends SmoothFontRenderer {
         char[] cArray = string.toCharArray();
         for (int i = 0; i < cArray.length; ++i) {
             char c = cArray[i];
-            if (c == '\u00a7' && i + 1 < cArray.length) {
+            if (c == '§' && i + 1 < cArray.length) {
                 ++i;
                 continue;
             }
@@ -295,10 +272,6 @@ extends SmoothFontRenderer {
 
     static {
         c = "[MCFontRenderer] Using legacy Minecraft font renderer fallback";
-        i = new HashMap(13);
-        long[] lArray = new long[]{-5498596787052345311L, 2953177498732805952L, 8091771335247660952L};
-        d = lArray;
-        e = new Integer[3];
     }
 
     public void R(String string, double d, double d2, Color color, boolean bl, boolean bl2) {
@@ -366,45 +339,12 @@ extends SmoothFontRenderer {
         }
     }
 
-    private static Exception a(Exception exception) {
-        return exception;
-    }
-
     public boolean z() {
         return this.w.u$src$Z$1yysxfx();
     }
 
     private boolean u() {
         return ForgeVersion.MC_1_21_10.v();
-    }
-
-    private static String a(byte[] byArray) {
-        int n = 0;
-        int n2 = byArray.length;
-        char[] cArray = new char[n2];
-        for (int i = 0; i < n2; ++i) {
-            char c;
-            int n3 = 0xFF & byArray[i];
-            if (n3 < 192) {
-                cArray[n++] = (char)n3;
-                continue;
-            }
-            if (n3 < 224) {
-                c = (char)((char)(n3 & 0x1F) << 6);
-                n3 = byArray[++i];
-                c = (char)(c | (char)(n3 & 0x3F));
-                cArray[n++] = c;
-                continue;
-            }
-            if (i >= n2 - 2) continue;
-            c = (char)((char)(n3 & 0xF) << 12);
-            n3 = byArray[++i];
-            c = (char)(c | (char)(n3 & 0x3F) << 6);
-            n3 = byArray[++i];
-            c = (char)(c | (char)(n3 & 0x3F));
-            cArray[n++] = c;
-        }
-        return new String(cArray, 0, n);
     }
 
     public void U(String string, double d, double d2, int n, boolean bl, boolean bl2) {
@@ -418,7 +358,7 @@ extends SmoothFontRenderer {
         int n = 0;
         for (int i = 0; i < cArray2.length; ++i) {
             char c = cArray2[i];
-            if (c == '\u00a7' && i + 1 < cArray2.length) {
+            if (c == '§' && i + 1 < cArray2.length) {
                 char c2;
                 cArray[n] = c2 = cArray2[++i];
                 continue;
@@ -458,46 +398,5 @@ extends SmoothFontRenderer {
     @Override
     public void V(String string, double d, double d2, Color color, boolean bl) {
         this.R(string, d, d2, color, bl, false);
-    }
-
-    private static int a(int n, long l) {
-        int n2 = n ^ (int)(l & 0x7FFFL) ^ 0x2CC3;
-        if (e[n2] == null) {
-            byte[] byArray;
-            byte[] byArray2 = new byte[]{(byte)(l >>> 56), (byte)(l >>> 48), (byte)(l >>> 40), (byte)(l >>> 32), (byte)(l >>> 24), (byte)(l >>> 16), (byte)(l >>> 8), (byte)l};
-            long l2 = d[n2];
-            byte[] byArray3 = new byte[]{(byte)(l2 >>> 56), (byte)(l2 >>> 48), (byte)(l2 >>> 40), (byte)(l2 >>> 32), (byte)(l2 >>> 24), (byte)(l2 >>> 16), (byte)(l2 >>> 8), (byte)l2};
-            Long l3 = Thread.currentThread().getId();
-            Object[] objectArray = (Object[])i.get(l3);
-            try {
-                if (objectArray == null) {
-                    objectArray = new Object[]{Cipher.getInstance("DES/CBC/NoPadding"), SecretKeyFactory.getInstance("DES"), new IvParameterSpec(new byte[8])};
-                    i.put(l3, objectArray);
-                }
-                DESKeySpec dESKeySpec = new DESKeySpec(byArray2);
-                SecretKey secretKey = ((SecretKeyFactory)objectArray[1]).generateSecret(dESKeySpec);
-                Cipher cipher = (Cipher)objectArray[0];
-                cipher.init(2, (Key)secretKey, (IvParameterSpec)objectArray[2]);
-                byArray = cipher.doFinal(byArray3);
-            }
-            catch (Exception exception) {
-                throw new RuntimeException("a/oB", exception);
-            }
-            int n3 = (byArray[4] & 0xFF) << 24 | (byArray[5] & 0xFF) << 16 | (byArray[6] & 0xFF) << 8 | byArray[7] & 0xFF;
-            StbSmoothFontRenderer.e[n2] = n3;
-        }
-        return e[n2];
-    }
-
-    /*
-     * Works around MethodHandle LDC.
-     */
-    static MethodHandle cfr_ldc_0() {
-        try {
-            return MethodHandles.lookup().findStatic(StbSmoothFontRenderer.class, "a", MethodType.fromMethodDescriptorString("(Ljava/lang/invoke/MethodHandles$Lookup;Ljava/lang/invoke/MutableCallSite;Ljava/lang/String;[Ljava/lang/Object;)I", null));
-        }
-        catch (NoSuchMethodException | IllegalAccessException except) {
-            throw new IllegalArgumentException(except);
-        }
     }
 }

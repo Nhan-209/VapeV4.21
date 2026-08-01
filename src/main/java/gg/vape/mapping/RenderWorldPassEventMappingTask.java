@@ -11,7 +11,7 @@ import gg.vape.wrapper.impl.ForgeVersion;
 public class RenderWorldPassEventMappingTask
 extends JavassistMappingTask {
     public RenderWorldPassEventMappingTask() {
-        super(MappedClasses.zs);
+        super(ForgeVersion.MC_26_2.d() ? MappedClasses.LEVEL_EXTRACTOR : MappedClasses.zs);
     }
 
     @Override

@@ -17,8 +17,8 @@ Vape 4.21 Java 层与 Windows x64 原生桥接层的研究性恢复工程。
 | 原生桥接 | Windows x64 JNI/JVMTI DLL 与 `LoadLibraryW` 注入器 |
 | 运行验证 | 构建与载荷结构已验证；完整的游戏内行为仍需继续测试 |
 
-当前支持 **Minecraft 1.7.10 Forge、1.8.9 Forge、1.12.2 Forge 和 1.21.11 Forge**；
-其中 1.21.11 已在 Forge 61.0.8 上验证。也支持向启用了 Forge 的 Lunar Client 实例注入。
+当前支持 **Minecraft 1.7.10 Forge、1.8.9 Forge、1.12.2 Forge、1.21.11 Forge 和 26.2 Forge**；
+其中 1.21.11 已在 Forge 61.0.8 上验证，26.2 已在 Forge 65.1.0 上验证。也支持向启用了 Forge 的 Lunar Client 实例注入。
 不支持 Vanilla 或 Fabric。Minecraft 1.16.5 的支持不佳，部分映射、渲染和模块功能可能
 无法正常工作。所有目标实例均须使用 64 位 JVM。
 

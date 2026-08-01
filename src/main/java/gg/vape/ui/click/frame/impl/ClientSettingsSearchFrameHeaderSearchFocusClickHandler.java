@@ -9,7 +9,7 @@ implements GuiClickListener {
 
     @Override
     public void onPrimaryClick() {
-        this.q.V$src$V$enocyv();
+        this.q.focusSearchInput();
     }
 
     ClientSettingsSearchFrameHeaderSearchFocusClickHandler(ClientSettingsSearchFrameHeader clientSettingsSearchFrameHeader) {

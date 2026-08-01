@@ -3,8 +3,11 @@ package gg.vape.ui.click;
 import gg.vape.Vape;
 import gg.vape.input.InputEventDispatcher;
 import gg.vape.module.none.ClientSettings;
+import gg.vape.utils.render.RenderBatchManager;
+import gg.vape.wrapper.impl.ForgeVersion;
 
 public class GuiScreenNativeCallbackBridge {
+    private static boolean clickGuiRenderLogged;
     public static void keyTyped(Object screen, char typedChar, int keyCode) {
     }
 
@@ -24,6 +27,18 @@ public class GuiScreenNativeCallbackBridge {
         ClientSettings clientSettings = Vape.INSTANCE.getModManager().getMod(ClientSettings.class);
         if (!clientSettings.inputEnabled) {
             clientSettings.renderGui();
+            if (ForgeVersion.MC_26_2.d() && !clickGuiRenderLogged) {
+                clickGuiRenderLogged = true;
+                try {
+                    RenderBatchManager batchManager = RenderBatchManager.getInstance();
+                    Vape.debugLog("ClickGUI 26.2: render callback queued "
+                            + batchManager.guiBatches.size() + " batch group(s), framebuffer="
+                            + batchManager.getTargetFramebufferId());
+                }
+                catch (Exception exception) {
+                    Vape.logThrowable(exception);
+                }
+            }
         }
     }
 

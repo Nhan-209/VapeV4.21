@@ -70,7 +70,7 @@ extends FrameHeaderComponent {
         return clientSettingsSearchFrameHeader.G;
     }
 
-    public ModuleSearchInputComponent O$src$Lgg_vape_ui_click_component_input_ModuleSearchIn$1smhagf() {
+    public ModuleSearchInputComponent getSearchInput() {
         return this.o;
     }
 
@@ -78,9 +78,9 @@ extends FrameHeaderComponent {
         this.i = bl;
     }
 
-    public void V$src$V$enocyv() {
+    public void focusSearchInput() {
         this.i = true;
-        this.O$src$Lgg_vape_ui_click_component_input_ModuleSearchIn$1smhagf().requestFocus();
+        this.getSearchInput().requestFocus();
     }
 
     @Override

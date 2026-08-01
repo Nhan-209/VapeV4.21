@@ -10,6 +10,7 @@ import gg.vape.wrapper.impl.EntityRenderer;
 import gg.vape.wrapper.impl.ForgeVersion;
 import gg.vape.wrapper.impl.GameSettings;
 import gg.vape.wrapper.impl.GlStateManager;
+import gg.vape.wrapper.impl.Matrix4f;
 import gg.vape.wrapper.impl.MatrixStack;
 import gg.vape.wrapper.impl.Minecraft;
 import gg.vape.wrapper.impl.RenderManager;
@@ -68,7 +69,12 @@ implements InsertedEventCallback {
     }
 
     public EventRender3DCallback(Object object) {
-        this.y = new MatrixStack(object);
+        if (ForgeVersion.MC_26_2.d()) {
+            this.y = MatrixStack.A();
+            this.y.i(new Matrix4f(object));
+        } else {
+            this.y = new MatrixStack(object);
+        }
         this.N = Minecraft.getTimer().renderPartialTicks();
     }
 
@@ -81,4 +87,3 @@ implements InsertedEventCallback {
         this.N = f;
     }
 }
-

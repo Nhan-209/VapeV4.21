@@ -325,7 +325,8 @@ extends Mapping {
             String string34 = "f_84076_";
             MGlStateManager mGlStateManager34 = this;
             this.s = this.registerStaticField(string34, bl34, clazz34);
-            Class clazz35 = MappedClasses.Yk;
+            Class clazz35 = ForgeVersion.MC_26_2.d()
+                    ? DescUtils.getArrayType(MappedClasses.Yk) : MappedClasses.Yk;
             boolean bl35 = false;
             String string35 = "f_84066_";
             MGlStateManager mGlStateManager35 = this;
@@ -766,7 +767,21 @@ extends Mapping {
     }
 
     private Object K() {
-        return this.X.getObject(null);
+        return selectPrimaryBlendState(this.X.getObject(null), ForgeVersion.MC_26_2.d());
+    }
+
+    static Object selectPrimaryBlendState(Object blendState, boolean indexedBlendStates) {
+        if (!indexedBlendStates) {
+            return blendState;
+        }
+        if (!(blendState instanceof Object[])) {
+            throw new IllegalStateException("GlStateManager.BLEND is not a state array");
+        }
+        Object[] blendStates = (Object[])blendState;
+        if (blendStates.length == 0) {
+            throw new IllegalStateException("GlStateManager.BLEND has no draw-buffer states");
+        }
+        return blendStates[0];
     }
 
     public static void Z(MGlStateManager mGlStateManager, boolean bl, boolean bl2, boolean bl3, boolean bl4) {

@@ -23,7 +23,13 @@ extends ClassTransformer {
         if (ForgeVersion.MC_1_20_6.v()) {
             this.injectEventAtEntry(Vape.INSTANCE.getMappings().U.q, EventClickMouse.class, new ITramsformNode[0]);
         }
-        this.injectEventAtEntry(Vape.INSTANCE.getMappings().U.OS, EventGuiOpen.class, new TypedIndexedLocal(1, DescUtils.getDescriptor(MappedClasses.VW)).setDescriptorClass(Object.class));
+        if (ForgeVersion.MC_26_2.v()) {
+            this.injectEventAtEntry(
+                    Vape.INSTANCE.getMappings().U.OS,
+                    EventGuiOpen.class,
+                    new TypedIndexedLocal(1, DescUtils.getDescriptor(MappedClasses.VW))
+                            .setDescriptorClass(Object.class));
+        }
         this.injectEventAtEntry(Vape.INSTANCE.getMappings().U.g, EventRightClickMouse.class, new ITramsformNode[0]);
         this.injectEventAtEntry(Vape.INSTANCE.getMappings().U.Of, EventSendClickBlockToController.class, new ITramsformNode[0]);
     }

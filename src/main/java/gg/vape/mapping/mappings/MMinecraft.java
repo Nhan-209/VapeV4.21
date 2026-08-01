@@ -116,6 +116,9 @@ extends Mapping {
     }
 
     public Object V(Object object) {
+        if (ForgeVersion.MC_26_2.d()) {
+            return this.D.invokeObject(this.H.getObject(object), new Object[0]);
+        }
         if (this.f == null) {
             return null;
         }
@@ -330,6 +333,9 @@ extends Mapping {
 
 
     public Object u(Object object) {
+        if (ForgeVersion.MC_26_2.d()) {
+            return this.D.invokeObject(this.H.getObject(object), new Object[0]);
+        }
         return this.D.invokeObject(object, new Object[0]);
     }
 
@@ -460,6 +466,10 @@ extends Mapping {
 
     private void y(Object object) {
         this.g.invokeVoidNoArgs(object);
+    }
+
+    public MappingMethod getGuiSetScreenMethod() {
+        return this.Q;
     }
 
     public MMinecraft() {
@@ -630,9 +640,10 @@ extends Mapping {
             String string20 = "gameRenderer";
             MMinecraft mMinecraft20 = this;
             this.H = this.J(string20, bl, clazz20);
-            Class clazz21 = MappedClasses.zs;
+            Class clazz21 = ForgeVersion.MC_26_2.d()
+                    ? MappedClasses.LEVEL_EXTRACTOR : MappedClasses.zs;
             boolean bl17 = true;
-            String string21 = "worldRenderer";
+            String string21 = ForgeVersion.MC_26_2.d() ? "levelExtractor" : "worldRenderer";
             MMinecraft mMinecraft21 = this;
             this.X = this.J(string21, bl17, clazz21);
             Class clazz22 = MappedClasses.Fi;
@@ -893,12 +904,22 @@ extends Mapping {
         String string64 = "getSkinManager";
         MMinecraft mMinecraft64 = this;
         this.Oq = this.Y(string64, bl57, clazz68, classArray24);
-        Class[] classArray25 = new Class[]{};
-        Class clazz69 = MappedClasses.ll;
-        boolean bl58 = true;
-        String string65 = "getFramebuffer";
-        MMinecraft mMinecraft65 = this;
-        this.D = this.Y(string65, bl58, clazz69, classArray25);
+        if (ForgeVersion.MC_26_2.d()) {
+            Class[] classArray25 = new Class[]{};
+            Class clazz69 = MappedClasses.DA;
+            boolean bl58 = true;
+            String string65 = "getFramebuffer";
+            MMinecraft mMinecraft65 = this;
+            this.D = this.registerInstanceMethodForOwner(
+                    MappedClasses.FW, string65, bl58, clazz69, classArray25);
+        } else {
+            Class[] classArray25 = new Class[]{};
+            Class clazz69 = MappedClasses.ll;
+            boolean bl58 = true;
+            String string65 = "getFramebuffer";
+            MMinecraft mMinecraft65 = this;
+            this.D = this.Y(string65, bl58, clazz69, classArray25);
+        }
         Class[] classArray26 = new Class[]{};
         Class clazz70 = MappedClasses.FI;
         boolean bl59 = true;
@@ -970,7 +991,7 @@ extends Mapping {
                 boolean bl68 = true;
                 String string75 = "mainRenderTarget";
                 MMinecraft mMinecraft75 = this;
-                this.f = this.J(string75, bl68, clazz79);
+                this.f = ForgeVersion.MC_26_2.d() ? null : this.J(string75, bl68, clazz79);
                 Class clazz80 = MappedClasses.lr;
                 boolean bl69 = true;
                 String string76 = "fontManager";

@@ -35,6 +35,7 @@ public class ClickGuiMacrosController {
         this.rebuildMacroCards();
     }
 
+    //safe exec
     private static void openMacroDocumentation() {
         try {
             Runtime.getRuntime().exec(new String[]{"cmd", "/c", "start", "https://docs.vape.gg/features/misc/Macros"});

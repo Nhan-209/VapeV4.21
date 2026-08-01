@@ -74,7 +74,7 @@ extends TextInputComponentBase {
         if (bl) {
             if (guiMouseEvent.getAction().equals((Object)MouseButton.RIGHT_CLICK)) {
                 this.setText("");
-                ((ClientSettingsSearchFrame)this.clientSettingsHeader.w$src$Lgg_vape_ui_click_frame_Frame_$y4htd0()).K$src$V$1nbah4f();
+                ((ClientSettingsSearchFrame)this.clientSettingsHeader.w$src$Lgg_vape_ui_click_frame_Frame_$y4htd0()).rebuildContent();
             }
             if (ClientSettings.activeComponent != null) {
                 // empty if block

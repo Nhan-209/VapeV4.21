@@ -4,6 +4,7 @@ import gg.vape.mapping.MappedClasses;
 import gg.vape.mapping.Mapping;
 import gg.vape.mapping.MappingMethod;
 import gg.vape.ui.click.component.GuiComponent;
+import gg.vape.wrapper.impl.ForgeVersion;
 
 public class MRenderBatchFlushTarget
 extends Mapping {
@@ -30,7 +31,11 @@ extends Mapping {
     private MRenderBatchFlushTarget(int n) {
         super(MappedClasses.zg);
         if (n != 0) {
-            Class[] classArray = new Class[]{MappedClasses.uq, Integer.TYPE, Integer.TYPE, Integer.TYPE, MappedClasses.Yz, MappedClasses.FA, Integer.TYPE};
+            Class[] classArray = ForgeVersion.MC_26_2.d()
+                    ? new Class[]{MappedClasses.uq, Integer.TYPE, Integer.TYPE, Integer.TYPE,
+                            MappedClasses.Yz, MappedClasses.FA, Integer.TYPE, Integer.TYPE}
+                    : new Class[]{MappedClasses.uq, Integer.TYPE, Integer.TYPE, Integer.TYPE,
+                            MappedClasses.Yz, MappedClasses.FA, Integer.TYPE};
             Class<Void> clazz = Void.TYPE;
             boolean bl = true;
             String string = DRAW_FROM_BUFFERS_METHOD_NAME;
@@ -38,7 +43,11 @@ extends Mapping {
             this.drawFromBuffersMethod = mRenderBatchFlushTarget.Y(string, bl, clazz, classArray);
             return;
         }
-        Class[] classArray = new Class[]{MappedClasses.uq, Integer.TYPE, Integer.TYPE, Integer.TYPE, MappedClasses.Yz, MappedClasses.FA, Integer.TYPE};
+        Class[] classArray = ForgeVersion.MC_26_2.d()
+                ? new Class[]{MappedClasses.uq, Integer.TYPE, Integer.TYPE, Integer.TYPE,
+                        MappedClasses.Yz, MappedClasses.FA, Integer.TYPE, Integer.TYPE}
+                : new Class[]{MappedClasses.uq, Integer.TYPE, Integer.TYPE, Integer.TYPE,
+                        MappedClasses.Yz, MappedClasses.FA, Integer.TYPE};
         Class<Void> clazz = Void.TYPE;
         boolean bl = true;
         String string = DRAW_FROM_BUFFERS_METHOD_NAME;

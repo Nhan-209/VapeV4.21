@@ -28,7 +28,7 @@ implements EventListener {
                 }
             }
         }
-        ClientSettings.getFrame(ClientSettingsSearchFrame.class).N$src$V$1ncxuwi();
+        ClientSettings.getFrame(ClientSettingsSearchFrame.class).resetSearchAsync();
     }
 
 }

@@ -14,7 +14,7 @@ implements GuiKeyTypedListener {
     @Override
     public void onKeyTyped(char c, int n) {
         if (ClientSettingsSearchFrameHeader.b(this.W) != ClientSettingsSearchFrameHeader.j(this.W).getText().length()) {
-            this.y.K$src$V$1nbah4f();
+            this.y.rebuildContent();
             ClientSettings.activeTooltips = null;
         }
         ClientSettingsSearchFrameHeader.L(this.W, ClientSettingsSearchFrameHeader.j(this.W).getText().length());

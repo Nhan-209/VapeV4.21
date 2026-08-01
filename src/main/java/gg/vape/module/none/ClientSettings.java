@@ -256,9 +256,9 @@ extends Mod {
                     moduleSearchFrame.n$src$Lgg_vape_ui_click_frame_impl_ModuleSearchFrameHe$xia8v2().s();
                     moduleSearchFrame.n$src$Lgg_vape_ui_click_frame_impl_ModuleSearchFrameHe$xia8v2().A$src$Lgg_vape_ui_click_component_input_ModuleSearchIn$1efzz7n().requestFocus();
                 } else if (this.integratedSearchBarMode.isSelected()) {
-                    settingsSearchFrame.o$src$Lgg_vape_ui_click_frame_impl_ClientSettingsSearc$hz70uz().O$src$Lgg_vape_ui_click_component_input_ModuleSearchIn$1smhagf().setText("");
-                    settingsSearchFrame.K$src$V$1nbah4f();
-                    settingsSearchFrame.o$src$Lgg_vape_ui_click_frame_impl_ClientSettingsSearc$hz70uz().V$src$V$enocyv();
+                    settingsSearchFrame.getHeader().getSearchInput().setText("");
+                    settingsSearchFrame.rebuildContent();
+                    settingsSearchFrame.getHeader().focusSearchInput();
                 }
             }
             return true;
@@ -292,7 +292,7 @@ extends Mod {
     }
 
     private static void onSearchBarStyleChanged(ModeValue ignoredValue) {
-        settingsSearchFrame.N$src$V$1ncxuwi();
+        settingsSearchFrame.resetSearchAsync();
     }
 
     public void renderFramesAndNotifications() {

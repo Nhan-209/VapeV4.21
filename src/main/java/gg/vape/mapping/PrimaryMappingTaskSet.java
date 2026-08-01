@@ -1,6 +1,7 @@
 package gg.vape.mapping;
 
 import gg.vape.Vape;
+import gg.vape.asm.transform.impl.GuiScreenOpenTransformer;
 import gg.vape.asm.transform.impl.MinecraftMouseActionTransformer;
 import gg.vape.asm.transform.impl.PlayerControllerMPTransformer;
 import gg.vape.event.impl.EventChatMessageRender;
@@ -45,6 +46,9 @@ extends MappingTaskSet {
 
     public void X() {
         this.D.add(new MinecraftMouseActionTransformer());
+        if (ForgeVersion.MC_26_2.d()) {
+            this.D.add(new GuiScreenOpenTransformer());
+        }
         this.D.add(new MinecraftTickEventMappingTask());
         this.D.add(new EntityRendererEventMappingTask());
         if (ForgeVersion.MC_1_21_4.d()) {

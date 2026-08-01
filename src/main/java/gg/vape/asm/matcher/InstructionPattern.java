@@ -61,15 +61,14 @@ public abstract class InstructionPattern {
         if (InstructionPattern.getOpaqueMarker() != null) {
             InstructionPattern.setOpaqueMarker("jHaNE");
         }
-        long[] lArray = new long[]{-2327468895398526791L, -1358600573514940234L, -8503526305340325708L, -3693968536541069129L, 7643330736333783224L, -1797710973226712907L, 6908187125879931058L, -9093027909794266957L};
-        GETSTATIC = (int)lArray[6];
-        PUTFIELD = (int)lArray[5];
-        INVOKEINTERFACE = (int)lArray[0];
-        INVOKEVIRTUAL = (int)lArray[1];
-        INVOKESTATIC = (int)lArray[4];
-        INVOKESPECIAL = (int)lArray[3];
-        PUTSTATIC = (int)lArray[7];
-        GETFIELD = (int)lArray[2];
+        GETSTATIC = 178;
+        PUTFIELD = 181;
+        INVOKEINTERFACE = 185;
+        INVOKEVIRTUAL = 182;
+        INVOKESTATIC = 184;
+        INVOKESPECIAL = 183;
+        PUTSTATIC = 179;
+        GETFIELD = 180;
     }
 }
 

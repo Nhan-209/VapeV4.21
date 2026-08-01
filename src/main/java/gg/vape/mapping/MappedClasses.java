@@ -456,6 +456,7 @@ public class MappedClasses {
     public static Class Ft;
     public static Class z6;
     public static Class zf;
+    public static Class LEVEL_EXTRACTOR;
     public static Class Z_;
     public static Class VH;
     public static Class lv;
@@ -1361,6 +1362,9 @@ public class MappedClasses {
             zT = MappedClasses.m("net/minecraft/client/entity/ClientAvatarState");
             zI = MappedClasses.m("net/minecraft/core/ClientAsset$Texture");
             z6 = MappedClasses.m("net/minecraft/client/renderer/state/LevelRenderState");
+            if (ForgeVersion.MC_26_2.d()) {
+                LEVEL_EXTRACTOR = MappedClasses.m("net/minecraft/client/renderer/LevelExtractor");
+            }
             YM = MappedClasses.m("net/minecraft/client/input/KeyEvent");
             Fu = MappedClasses.m("net/minecraft/client/input/MouseButtonInfo");
             VM = MappedClasses.m("net/minecraft/world/level/entity/UniquelyIdentifyable");
