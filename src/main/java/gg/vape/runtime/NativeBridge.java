@@ -2,6 +2,7 @@ package gg.vape.runtime;
 
 import gg.vape.Vape;
 import gg.vape.reflect.Type;
+import gg.vape.reflect.Vanilla189Mappings;
 import gg.vape.ui.click.GuiScreenNativeCallbackBridge;
 import gg.vape.utils.Base64Util;
 import java.lang.reflect.Field;
@@ -509,8 +510,14 @@ public class NativeBridge {
             lastFailure = throwable;
         }
 
+        if (Vanilla189Mappings.isRuntimePresent(
+                Thread.currentThread().getContextClassLoader(),
+                NativeBridge.class.getClassLoader())) {
+            return 15;
+        }
+
         IllegalStateException failure = new IllegalStateException(
-                "Unable to determine Forge minor version");
+                "Unable to determine Minecraft/Forge version");
         if (lastFailure != null) {
             failure.initCause(lastFailure);
         }
@@ -612,12 +619,9 @@ public class NativeBridge {
 
     //GetVanillaClas
     public static Class<?> gvc(String internalName) {
-        try {
-            return Class.forName(internalName.replace("/", "."));
-        }
-        catch (Throwable throwable) {
-            return null;
-        }
+        return Vanilla189Mappings.resolveClass(internalName,
+                Thread.currentThread().getContextClassLoader(),
+                NativeBridge.class.getClassLoader());
     }
 
     //SendClientError

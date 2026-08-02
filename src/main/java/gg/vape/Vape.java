@@ -451,7 +451,7 @@ public class Vape {
             return false;
         }
         String vanillaMinecraftClass = "net/minecraft/client/Minecraft";
-        this.vanillaMinecraftPresentCache = NativeBridge.gc(vanillaMinecraftClass) != null;
+        this.vanillaMinecraftPresentCache = NativeBridge.gvc(vanillaMinecraftClass) != null;
         return this.vanillaMinecraftPresentCache;
     }
 

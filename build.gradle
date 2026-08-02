@@ -167,6 +167,7 @@ tasks.register('verifyInjectionPayload') {
             def requiredClasses = [
                     'gg/vape/runtime/NativeBridge.class',
                     'gg/vape/runtime/ForgePayloadClassLoader.class',
+                    'gg/vape/reflect/Vanilla189Mappings.class',
                     'gg/vape/event/impl/EventRenderWorldPassExecutorDrain.class'
             ]
             def missingClasses = requiredClasses.findAll {

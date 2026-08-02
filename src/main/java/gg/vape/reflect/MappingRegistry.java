@@ -1,6 +1,7 @@
 package gg.vape.reflect;
 
 import gg.vape.wrapper.impl.ForgeVersion;
+import gg.vape.runtime.NativeBridge;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -22,6 +23,8 @@ public final class MappingRegistry {
     private static final String RESOURCE_DIRECTORY = getResourceDirectory();
     private static final String METHODS_RESOURCE = RESOURCE_DIRECTORY + "/methods.csv";
     private static final String FIELDS_RESOURCE = RESOURCE_DIRECTORY + "/fields.csv";
+    private static final boolean USE_VANILLA_189_MAPPINGS =
+            ForgeVersion.c() == 15 && NativeBridge.isForgeAbsent();
 
     private MappingRegistry() {
     }
@@ -57,11 +60,25 @@ public final class MappingRegistry {
     }
 
     public static boolean matches(Method method, String requestedName) {
-        return MappingRegistry.matches(method.getName(), requestedName, METHODS, METHODS_REVERSED);
+        if (MappingRegistry.matches(
+                method.getName(), requestedName, METHODS, METHODS_REVERSED)) {
+            return true;
+        }
+        String srgName = USE_VANILLA_189_MAPPINGS
+                ? Vanilla189Mappings.lookupMethodSrgName(method) : null;
+        return srgName != null && MappingRegistry.matches(
+                srgName, requestedName, METHODS, METHODS_REVERSED);
     }
 
     public static boolean matches(Field field, String requestedName) {
-        return MappingRegistry.matches(field.getName(), requestedName, FIELDS, FIELDS_REVERSED);
+        if (MappingRegistry.matches(
+                field.getName(), requestedName, FIELDS, FIELDS_REVERSED)) {
+            return true;
+        }
+        String srgName = USE_VANILLA_189_MAPPINGS
+                ? Vanilla189Mappings.lookupFieldSrgName(field) : null;
+        return srgName != null && MappingRegistry.matches(
+                srgName, requestedName, FIELDS, FIELDS_REVERSED);
     }
 
     private static boolean matches(String actualName, String requestedName, Map<String, Set<String>> namesToSrg, Map<String, Set<String>> srgToNames) {
