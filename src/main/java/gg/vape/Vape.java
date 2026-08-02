@@ -447,9 +447,6 @@ public class Vape {
         if (!this.forgeAbsent) {
             return false;
         }
-        if (ForgeVersion.MC_26_1.d()) {
-            return false;
-        }
         String vanillaMinecraftClass = "net/minecraft/client/Minecraft";
         this.vanillaMinecraftPresentCache = NativeBridge.gvc(vanillaMinecraftClass) != null;
         return this.vanillaMinecraftPresentCache;

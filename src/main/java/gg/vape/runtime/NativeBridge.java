@@ -6,6 +6,7 @@ import gg.vape.reflect.Vanilla1122Mappings;
 import gg.vape.reflect.Vanilla12111Mappings;
 import gg.vape.reflect.Vanilla1710Mappings;
 import gg.vape.reflect.Vanilla189Mappings;
+import gg.vape.reflect.Vanilla262Mappings;
 import gg.vape.ui.click.GuiScreenNativeCallbackBridge;
 import gg.vape.utils.Base64Util;
 import java.lang.reflect.Field;
@@ -549,9 +550,10 @@ public class NativeBridge {
         boolean vanilla189 = Vanilla189Mappings.isRuntimePresent(preferredLoaders);
         boolean vanilla1122 = Vanilla1122Mappings.isRuntimePresent(preferredLoaders);
         boolean vanilla12111 = Vanilla12111Mappings.isRuntimePresent(preferredLoaders);
+        boolean vanilla262 = Vanilla262Mappings.isRuntimePresent(preferredLoaders);
         int matchingVersions = (vanilla1710 ? 1 : 0)
                 + (vanilla189 ? 1 : 0) + (vanilla1122 ? 1 : 0)
-                + (vanilla12111 ? 1 : 0);
+                + (vanilla12111 ? 1 : 0) + (vanilla262 ? 1 : 0);
         if (matchingVersions == 1) {
             if (vanilla1710) {
                 detectedVersion = 13;
@@ -559,8 +561,10 @@ public class NativeBridge {
                 detectedVersion = 15;
             } else if (vanilla1122) {
                 detectedVersion = 23;
-            } else {
+            } else if (vanilla12111) {
                 detectedVersion = 61;
+            } else {
+                detectedVersion = 110;
             }
         }
         if (detectedVersion != 0) {
@@ -672,6 +676,10 @@ public class NativeBridge {
         }
         if (mappingVersion == 61) {
             return Vanilla12111Mappings.resolveClass(
+                    internalName, contextLoader, bridgeLoader);
+        }
+        if (mappingVersion == 110) {
+            return Vanilla262Mappings.resolveClass(
                     internalName, contextLoader, bridgeLoader);
         }
         return gc(internalName);

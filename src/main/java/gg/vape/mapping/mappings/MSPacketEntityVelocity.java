@@ -25,7 +25,9 @@ extends Mapping {
 
     private MSPacketEntityVelocity(int[] controlFlowState) {
         super(MappedClasses.YX);
-        if (Vape.INSTANCE.isVanillaMinecraftPresent() && ForgeVersion.MC_1_7_10.Y()) {
+        if (Vape.INSTANCE.isVanillaMinecraftPresent()
+                && ForgeVersion.MC_1_7_10.Y()
+                && ForgeVersion.MC_1_21_10.v()) {
             this.entityIdField = this.J("entityID", true, Integer.TYPE);
             this.motionXField = this.J("motionX", true, Integer.TYPE);
             this.motionYField = this.J("motionY", true, Integer.TYPE);

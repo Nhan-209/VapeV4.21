@@ -3,7 +3,7 @@
 This directory contains an x64 Windows JNI/JVMTI bridge reconstructed from
 the nine-method `RegisterNatives` table in `sample.dll`. It supports isolated
 Minecraft 1.7.10 Forge/Vanilla, 1.8.9 Forge/Vanilla, 1.12.2
-Forge/Vanilla, 1.21.11 Forge/Vanilla, and 26.2 Forge test instances,
+Forge/Vanilla, 1.21.11 Forge/Vanilla, and 26.2 Forge/Vanilla test instances,
 including Forge-enabled Lunar Client injection.
 Fabric is not supported.
 Minecraft 1.16.5 support is incomplete and may have mapping, rendering, and

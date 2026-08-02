@@ -44,7 +44,7 @@ extends Event {
     }
 
     public Object getPacketInstance() {
-        return this.packetHandle;
+        return this.packet == null ? this.packetHandle : this.packet.getObject();
     }
 
     public NetworkManager getNetworkManager() {

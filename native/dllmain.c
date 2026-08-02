@@ -379,6 +379,83 @@ static int install_modular_payload_loader(
     return 1;
 }
 
+/*
+ * Java 9+ no longer implements the application ClassLoader as a
+ * URLClassLoader. A child loader can start the payload, but transformed game
+ * classes in the parent cannot resolve callbacks from that child. Append the
+ * payload to the system loader search path when it is the game's loader so
+ * both sides use the same class identity.
+ *
+ * Returns 1 when installed, 0 when the client loader is not the system loader,
+ * and -1 when the system loader was detected but setup failed.
+ */
+static int install_system_payload_search(
+        JNIEnv *env, jobject loader, const wchar_t *jar_path) {
+    jclass loader_class;
+    jmethodID get_system_loader;
+    jmethodID load_class;
+    jobject system_loader;
+    jstring event_name;
+    jstring path;
+    jclass event_class;
+    const char *segment;
+    jvmtiError error;
+
+    if (g_jvmti == NULL) {
+        vape_log(L"JVMTI is unavailable for system ClassLoader search");
+        return -1;
+    }
+    loader_class = (*env)->FindClass(env, "java/lang/ClassLoader");
+    get_system_loader = loader_class == NULL ? NULL
+            : (*env)->GetStaticMethodID(env, loader_class,
+                    "getSystemClassLoader", "()Ljava/lang/ClassLoader;");
+    load_class = loader_class == NULL ? NULL : (*env)->GetMethodID(
+            env, loader_class, "loadClass",
+            "(Ljava/lang/String;)Ljava/lang/Class;");
+    if (get_system_loader == NULL || load_class == NULL) {
+        vape_log_pending_exception(env,
+                L"resolve system ClassLoader methods");
+        return -1;
+    }
+    system_loader = (*env)->CallStaticObjectMethod(
+            env, loader_class, get_system_loader);
+    if (system_loader == NULL || (*env)->ExceptionCheck(env)) {
+        vape_log_pending_exception(env, L"ClassLoader.getSystemClassLoader");
+        return -1;
+    }
+    if (!(*env)->IsSameObject(env, loader, system_loader)) {
+        return 0;
+    }
+
+    path = new_wide_string(env, jar_path);
+    segment = path == NULL ? NULL
+            : (*env)->GetStringUTFChars(env, path, NULL);
+    if (segment == NULL || (*env)->ExceptionCheck(env)) {
+        vape_log_pending_exception(env,
+                L"convert product JAR path to modified UTF-8");
+        return -1;
+    }
+    error = (*g_jvmti)->AddToSystemClassLoaderSearch(g_jvmti, segment);
+    (*env)->ReleaseStringUTFChars(env, path, segment);
+    if (error != JVMTI_ERROR_NONE) {
+        vape_log(L"AddToSystemClassLoaderSearch failed: %d", error);
+        return -1;
+    }
+
+    event_name = (*env)->NewStringUTF(env,
+            "gg.vape.event.impl.EventRenderWorldPassExecutorDrain");
+    event_class = event_name == NULL ? NULL
+            : (jclass)(*env)->CallObjectMethod(
+                    env, loader, load_class, event_name);
+    if (event_class == NULL || (*env)->ExceptionCheck(env)) {
+        vape_log_pending_exception(env,
+                L"resolve payload event from system ClassLoader");
+        return -1;
+    }
+    vape_log(L"appended product JAR to system ClassLoader search");
+    return 1;
+}
+
 static int add_jar_to_loader(
         JNIEnv *env, jobject *loader, const wchar_t *jar_path) {
     jclass url_loader_class;
@@ -400,6 +477,7 @@ static int add_jar_to_loader(
     jfieldID delegated_loader_field;
     jobject delegated_loader;
     int modular_result;
+    int system_result;
 
     url_loader_class = (*env)->FindClass(env, "java/net/URLClassLoader");
     url_class = (*env)->FindClass(env, "java/net/URL");
@@ -477,6 +555,11 @@ static int add_jar_to_loader(
             env, loader, url_loader_class, url_class, url);
     if (modular_result != 0) {
         return modular_result > 0;
+    }
+
+    system_result = install_system_payload_search(env, *loader, jar_path);
+    if (system_result != 0) {
+        return system_result > 0;
     }
 
     url_loader_init = (*env)->GetMethodID(env, url_loader_class, "<init>",
