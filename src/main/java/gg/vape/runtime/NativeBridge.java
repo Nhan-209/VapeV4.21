@@ -2,6 +2,8 @@ package gg.vape.runtime;
 
 import gg.vape.Vape;
 import gg.vape.reflect.Type;
+import gg.vape.reflect.Vanilla1122Mappings;
+import gg.vape.reflect.Vanilla1710Mappings;
 import gg.vape.reflect.Vanilla189Mappings;
 import gg.vape.ui.click.GuiScreenNativeCallbackBridge;
 import gg.vape.utils.Base64Util;
@@ -28,6 +30,7 @@ public class NativeBridge {
             + "{\"title\":\"ModuleSearch\",\"x\":32,\"y\":32,\"visible\":false,\"pinned\":false}"
             + "]}]}";
     private static boolean forgeAbsent = true;
+    private static volatile int vanillaMappingVersion;
     static boolean alphaTestWasEnabled;
     private static Method glGetFloatMethod;
     private static Method glGetIntegerVectorMethod;
@@ -510,10 +513,11 @@ public class NativeBridge {
             lastFailure = throwable;
         }
 
-        if (Vanilla189Mappings.isRuntimePresent(
+        int vanillaVersion = detectVanillaMappingVersion(
                 Thread.currentThread().getContextClassLoader(),
-                NativeBridge.class.getClassLoader())) {
-            return 15;
+                NativeBridge.class.getClassLoader());
+        if (vanillaVersion != 0) {
+            return vanillaVersion;
         }
 
         IllegalStateException failure = new IllegalStateException(
@@ -532,6 +536,26 @@ public class NativeBridge {
         catch (ClassNotFoundException ignored) {
             return false;
         }
+    }
+
+    private static int detectVanillaMappingVersion(
+            ClassLoader... preferredLoaders) {
+        int detectedVersion = vanillaMappingVersion;
+        if (detectedVersion != 0) {
+            return detectedVersion;
+        }
+        boolean vanilla1710 = Vanilla1710Mappings.isRuntimePresent(preferredLoaders);
+        boolean vanilla189 = Vanilla189Mappings.isRuntimePresent(preferredLoaders);
+        boolean vanilla1122 = Vanilla1122Mappings.isRuntimePresent(preferredLoaders);
+        int matchingVersions = (vanilla1710 ? 1 : 0)
+                + (vanilla189 ? 1 : 0) + (vanilla1122 ? 1 : 0);
+        if (matchingVersions == 1) {
+            detectedVersion = vanilla1710 ? 13 : vanilla189 ? 15 : 23;
+        }
+        if (detectedVersion != 0) {
+            vanillaMappingVersion = detectedVersion;
+        }
+        return detectedVersion;
     }
 
     private static Object readStaticField(String className, String fieldName) throws Exception {
@@ -617,11 +641,25 @@ public class NativeBridge {
         return new boolean[0];
     }
 
-    //GetVanillaClas
+    //GetVanillaClass
     public static Class<?> gvc(String internalName) {
-        return Vanilla189Mappings.resolveClass(internalName,
-                Thread.currentThread().getContextClassLoader(),
-                NativeBridge.class.getClassLoader());
+        ClassLoader contextLoader = Thread.currentThread().getContextClassLoader();
+        ClassLoader bridgeLoader = NativeBridge.class.getClassLoader();
+        int mappingVersion = detectVanillaMappingVersion(
+                contextLoader, bridgeLoader);
+        if (mappingVersion == 13) {
+            return Vanilla1710Mappings.resolveClass(
+                    internalName, contextLoader, bridgeLoader);
+        }
+        if (mappingVersion == 15) {
+            return Vanilla189Mappings.resolveClass(
+                    internalName, contextLoader, bridgeLoader);
+        }
+        if (mappingVersion == 23) {
+            return Vanilla1122Mappings.resolveClass(
+                    internalName, contextLoader, bridgeLoader);
+        }
+        return gc(internalName);
     }
 
     //SendClientError

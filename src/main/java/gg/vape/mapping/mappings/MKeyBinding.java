@@ -94,7 +94,8 @@ extends Mapping {
             Class[] classArray4 = new Class[]{};
             Class<Boolean> clazz7 = Boolean.TYPE;
             boolean bl7 = true;
-            String string7 = ForgeVersion.MC_1_8_9.L() ? "isKeyDown" : "getIsKeyPressed";
+            String string7 = ForgeVersion.MC_1_7_10.L()
+                    ? "getIsKeyPressed" : "isKeyDown";
             MKeyBinding mKeyBinding7 = this;
             this.c = this.Y(string7, bl7, clazz7, classArray4);
         } else {

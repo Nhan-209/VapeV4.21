@@ -3,18 +3,18 @@ package gg.vape.reflect;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
-/** Resolves MCP/SRG names against the obfuscated Minecraft 1.8.9 runtime. */
-public final class Vanilla189Mappings {
+/** Resolves MCP/SRG names against the obfuscated Minecraft 1.12.2 runtime. */
+public final class Vanilla1122Mappings {
     private static final VanillaSrgMappings MAPPINGS = new VanillaSrgMappings(
-            "Minecraft 1.8.9",
-            "/mappings/vanilla189/joined.srg",
-            "ave",
-            "A",
-            "S",
-            "bew",
-            "adm");
+            "Minecraft 1.12.2",
+            "/mappings/vanilla1122/joined.srg",
+            "bib",
+            "z",
+            "R",
+            "bud",
+            "amu");
 
-    private Vanilla189Mappings() {
+    private Vanilla1122Mappings() {
     }
 
     public static String remapClassName(String sourceClassName) {

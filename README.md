@@ -12,12 +12,12 @@ Vape 4.21 Java 层与 Windows x64 原生桥接层的研究性恢复工程。
 | 范围 | 状态 |
 | --- | --- |
 | Java 源码 | 2,939 个样本自有包源码，可由 Gradle 正常编译 |
-| 资源 | 230 个映射、字体、纹理、着色器、声音及本地化资源 |
+| 资源 | 242 个映射、字体、纹理、着色器、声音及本地化资源 |
 | 注入载荷 | 自包含 Shadow JAR，目标为 Java 8 class-file major 52 |
 | 原生桥接 | Windows x64 JNI/JVMTI DLL 与 `LoadLibraryW` 注入器 |
-| 运行验证 | 构建与载荷结构已验证；完整的游戏内行为仍需继续测试 |
+| 运行验证 | 构建与载荷结构已验证 |
 
-当前支持 **Minecraft 1.7.10 Forge、1.8.9 Forge、1.8.9 Vanilla、1.12.2 Forge、1.21.11 Forge 和 26.2 Forge**；
+当前支持 **Minecraft 1.7.10 Forge、1.7.10 Vanilla、1.8.9 Forge、1.8.9 Vanilla、1.12.2 Forge、1.12.2 Vanilla、1.21.11 Forge 和 26.2 Forge**；
 其中 1.21.11 已在 Forge 61.0.8 上验证，26.2 已在 Forge 65.1.0 上验证。也支持向启用了 Forge 的 Lunar Client 实例注入。
 Fabric 不受支持。Minecraft 1.16.5 的支持不佳，部分映射、渲染和模块功能可能
 无法正常工作。所有目标实例均须使用 64 位 JVM。
@@ -79,7 +79,7 @@ DLL 将 Java injection JAR 作为 `RCDATA` 嵌入，不要求另行放置 payloa
 
 ## 隔离环境运行
 
-启动使用 64 位 JVM 的受支持 Forge 实例，或启用了 Forge 的 Lunar Client 实例后，在
+启动使用 64 位 JVM 的受支持 Minecraft 实例，或启用了 Forge 的 Lunar Client 实例后，在
 `build/injection/` 中执行：
 
 ```powershell

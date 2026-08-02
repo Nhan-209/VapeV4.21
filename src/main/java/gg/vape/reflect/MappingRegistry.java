@@ -23,8 +23,8 @@ public final class MappingRegistry {
     private static final String RESOURCE_DIRECTORY = getResourceDirectory();
     private static final String METHODS_RESOURCE = RESOURCE_DIRECTORY + "/methods.csv";
     private static final String FIELDS_RESOURCE = RESOURCE_DIRECTORY + "/fields.csv";
-    private static final boolean USE_VANILLA_189_MAPPINGS =
-            ForgeVersion.c() == 15 && NativeBridge.isForgeAbsent();
+    private static final int VANILLA_MAPPING_VERSION =
+            NativeBridge.isForgeAbsent() ? ForgeVersion.c() : 0;
 
     private MappingRegistry() {
     }
@@ -64,8 +64,7 @@ public final class MappingRegistry {
                 method.getName(), requestedName, METHODS, METHODS_REVERSED)) {
             return true;
         }
-        String srgName = USE_VANILLA_189_MAPPINGS
-                ? Vanilla189Mappings.lookupMethodSrgName(method) : null;
+        String srgName = lookupVanillaMethodSrgName(method);
         return srgName != null && MappingRegistry.matches(
                 srgName, requestedName, METHODS, METHODS_REVERSED);
     }
@@ -75,14 +74,39 @@ public final class MappingRegistry {
                 field.getName(), requestedName, FIELDS, FIELDS_REVERSED)) {
             return true;
         }
-        String srgName = USE_VANILLA_189_MAPPINGS
-                ? Vanilla189Mappings.lookupFieldSrgName(field) : null;
+        String srgName = lookupVanillaFieldSrgName(field);
         return srgName != null && MappingRegistry.matches(
                 srgName, requestedName, FIELDS, FIELDS_REVERSED);
     }
 
     private static boolean matches(String actualName, String requestedName, Map<String, Set<String>> namesToSrg, Map<String, Set<String>> srgToNames) {
         return actualName.equals(requestedName) || namesToSrg.getOrDefault(requestedName, Collections.emptySet()).contains(actualName) || srgToNames.getOrDefault(requestedName, Collections.emptySet()).contains(actualName);
+    }
+
+    private static String lookupVanillaMethodSrgName(Method method) {
+        if (VANILLA_MAPPING_VERSION == 13) {
+            return Vanilla1710Mappings.lookupMethodSrgName(method);
+        }
+        if (VANILLA_MAPPING_VERSION == 15) {
+            return Vanilla189Mappings.lookupMethodSrgName(method);
+        }
+        if (VANILLA_MAPPING_VERSION == 23) {
+            return Vanilla1122Mappings.lookupMethodSrgName(method);
+        }
+        return null;
+    }
+
+    private static String lookupVanillaFieldSrgName(Field field) {
+        if (VANILLA_MAPPING_VERSION == 13) {
+            return Vanilla1710Mappings.lookupFieldSrgName(field);
+        }
+        if (VANILLA_MAPPING_VERSION == 15) {
+            return Vanilla189Mappings.lookupFieldSrgName(field);
+        }
+        if (VANILLA_MAPPING_VERSION == 23) {
+            return Vanilla1122Mappings.lookupFieldSrgName(field);
+        }
+        return null;
     }
 
     private static InputStream openRequiredResource(String resourcePath) throws IOException {
