@@ -3,9 +3,9 @@
 This directory contains an x64 Windows JNI/JVMTI bridge reconstructed from
 the nine-method `RegisterNatives` table in `sample.dll`. It supports isolated
 Minecraft 1.7.10 Forge/Vanilla, 1.8.9 Forge/Vanilla, 1.12.2
-Forge/Vanilla, 1.21.11 Forge/Vanilla/Fabric, and 26.2 Forge/Vanilla test
+Forge/Vanilla, 1.21.11 Forge/Vanilla/Fabric, and 26.2 Forge/Vanilla/Fabric test
 instances, including Forge-enabled Lunar Client
-injection. Minecraft 1.21.11 Fabric targets Fabric Loader 0.19.3; other Fabric
+injection. Minecraft 1.21.11 and 26.2 Fabric target Fabric Loader 0.19.3; other Fabric
 versions are outside the current support scope.
 Minecraft 1.16.5 support is incomplete and may have mapping, rendering, and
 module compatibility problems.
@@ -90,7 +90,7 @@ Outputs are written to `build/dist`:
 
 `Vape421Native.dll` contains the recovered Java product as an `RCDATA`
 resource. Start a supported Minecraft instance (including Minecraft 1.21.11
-Fabric), or a Forge-enabled Lunar Client instance, with a 64-bit JVM,
+or 26.2 Fabric), or a Forge-enabled Lunar Client instance, with a 64-bit JVM,
 then run the injector from the bundle directory:
 
 ```powershell

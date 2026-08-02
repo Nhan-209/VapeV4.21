@@ -168,6 +168,7 @@ tasks.register('verifyInjectionPayload') {
                     'gg/vape/runtime/NativeBridge.class',
                     'gg/vape/runtime/ForgePayloadClassLoader.class',
                     'gg/vape/reflect/Fabric12111Mappings.class',
+                    'gg/vape/reflect/Fabric262Mappings.class',
                     'gg/vape/reflect/Vanilla1122Mappings.class',
                     'gg/vape/reflect/Vanilla12111Mappings.class',
                     'gg/vape/reflect/Vanilla1710Mappings.class',

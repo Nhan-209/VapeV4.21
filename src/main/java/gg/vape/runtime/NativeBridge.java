@@ -2,6 +2,7 @@ package gg.vape.runtime;
 
 import gg.vape.Vape;
 import gg.vape.reflect.Fabric12111Mappings;
+import gg.vape.reflect.Fabric262Mappings;
 import gg.vape.reflect.Type;
 import gg.vape.reflect.Vanilla1122Mappings;
 import gg.vape.reflect.Vanilla12111Mappings;
@@ -35,6 +36,7 @@ public class NativeBridge {
     private static boolean forgeAbsent = true;
     private static volatile int vanillaMappingVersion;
     private static volatile boolean fabric12111Runtime;
+    private static volatile boolean fabric262Runtime;
     static boolean alphaTestWasEnabled;
     private static Method glGetFloatMethod;
     private static Method glGetIntegerVectorMethod;
@@ -554,12 +556,14 @@ public class NativeBridge {
         boolean vanilla12111 = Vanilla12111Mappings.isRuntimePresent(preferredLoaders);
         boolean fabric12111 = Fabric12111Mappings.isRuntimePresent(preferredLoaders);
         boolean vanilla262 = Vanilla262Mappings.isRuntimePresent(preferredLoaders);
+        boolean fabric262 = Fabric262Mappings.isRuntimePresent(preferredLoaders);
         int matchingVersions = (vanilla1710 ? 1 : 0)
                 + (vanilla189 ? 1 : 0) + (vanilla1122 ? 1 : 0)
                 + (vanilla12111 || fabric12111 ? 1 : 0)
-                + (vanilla262 ? 1 : 0);
+                + (vanilla262 || fabric262 ? 1 : 0);
         if (matchingVersions == 1) {
             fabric12111Runtime = fabric12111;
+            fabric262Runtime = fabric262;
             if (vanilla1710) {
                 detectedVersion = 13;
             } else if (vanilla189) {
@@ -688,6 +692,10 @@ public class NativeBridge {
                     internalName, contextLoader, bridgeLoader);
         }
         if (mappingVersion == 110) {
+            if (fabric262Runtime) {
+                return Fabric262Mappings.resolveClass(
+                        internalName, contextLoader, bridgeLoader);
+            }
             return Vanilla262Mappings.resolveClass(
                     internalName, contextLoader, bridgeLoader);
         }

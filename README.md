@@ -16,7 +16,7 @@ Vape 4.21 Java 层与 Windows x64 原生桥接层的研究性恢复工程。
 | 1.12.2 | ✓ | ✓ | |
 | 1.16.5 | | | |
 | 1.21.11 | ✓ | ✓ | ✓ |
-| 26.2 | ✓ | ✓ | |
+| 26.2 | ✓ | ✓ | ✓ |
 
 也支持向启用了 Forge 的 Lunar Client 实例注入。
 
@@ -81,7 +81,7 @@ DLL 将 Java injection JAR 作为 `RCDATA` 嵌入，不要求另行放置 payloa
 
 ## 隔离环境运行
 
-启动使用 64 位 JVM 的受支持 Minecraft 实例（包括 1.21.11 Fabric），或启用了 Forge 的 Lunar Client 实例后，在
+启动使用 64 位 JVM 的受支持 Minecraft 实例（包括 1.21.11/26.2 Fabric），或启用了 Forge 的 Lunar Client 实例后，在
 `build/injection/` 中执行：
 
 ```powershell
