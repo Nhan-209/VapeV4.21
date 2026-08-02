@@ -1,6 +1,7 @@
 package gg.vape.runtime;
 
 import gg.vape.Vape;
+import gg.vape.reflect.Fabric12111Mappings;
 import gg.vape.reflect.Type;
 import gg.vape.reflect.Vanilla1122Mappings;
 import gg.vape.reflect.Vanilla12111Mappings;
@@ -33,6 +34,7 @@ public class NativeBridge {
             + "]}]}";
     private static boolean forgeAbsent = true;
     private static volatile int vanillaMappingVersion;
+    private static volatile boolean fabric12111Runtime;
     static boolean alphaTestWasEnabled;
     private static Method glGetFloatMethod;
     private static Method glGetIntegerVectorMethod;
@@ -550,18 +552,21 @@ public class NativeBridge {
         boolean vanilla189 = Vanilla189Mappings.isRuntimePresent(preferredLoaders);
         boolean vanilla1122 = Vanilla1122Mappings.isRuntimePresent(preferredLoaders);
         boolean vanilla12111 = Vanilla12111Mappings.isRuntimePresent(preferredLoaders);
+        boolean fabric12111 = Fabric12111Mappings.isRuntimePresent(preferredLoaders);
         boolean vanilla262 = Vanilla262Mappings.isRuntimePresent(preferredLoaders);
         int matchingVersions = (vanilla1710 ? 1 : 0)
                 + (vanilla189 ? 1 : 0) + (vanilla1122 ? 1 : 0)
-                + (vanilla12111 ? 1 : 0) + (vanilla262 ? 1 : 0);
+                + (vanilla12111 || fabric12111 ? 1 : 0)
+                + (vanilla262 ? 1 : 0);
         if (matchingVersions == 1) {
+            fabric12111Runtime = fabric12111;
             if (vanilla1710) {
                 detectedVersion = 13;
             } else if (vanilla189) {
                 detectedVersion = 15;
             } else if (vanilla1122) {
                 detectedVersion = 23;
-            } else if (vanilla12111) {
+            } else if (vanilla12111 || fabric12111) {
                 detectedVersion = 61;
             } else {
                 detectedVersion = 110;
@@ -675,6 +680,10 @@ public class NativeBridge {
                     internalName, contextLoader, bridgeLoader);
         }
         if (mappingVersion == 61) {
+            if (fabric12111Runtime) {
+                return Fabric12111Mappings.resolveClass(
+                        internalName, contextLoader, bridgeLoader);
+            }
             return Vanilla12111Mappings.resolveClass(
                     internalName, contextLoader, bridgeLoader);
         }

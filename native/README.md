@@ -3,9 +3,10 @@
 This directory contains an x64 Windows JNI/JVMTI bridge reconstructed from
 the nine-method `RegisterNatives` table in `sample.dll`. It supports isolated
 Minecraft 1.7.10 Forge/Vanilla, 1.8.9 Forge/Vanilla, 1.12.2
-Forge/Vanilla, 1.21.11 Forge/Vanilla, and 26.2 Forge/Vanilla test instances,
-including Forge-enabled Lunar Client injection.
-Fabric is not supported.
+Forge/Vanilla, 1.21.11 Forge/Vanilla/Fabric, and 26.2 Forge/Vanilla test
+instances, including Forge-enabled Lunar Client
+injection. Minecraft 1.21.11 Fabric targets Fabric Loader 0.19.3; other Fabric
+versions are outside the current support scope.
 Minecraft 1.16.5 support is incomplete and may have mapping, rendering, and
 module compatibility problems.
 
@@ -88,8 +89,9 @@ Outputs are written to `build/dist`:
 ## Direct injection
 
 `Vape421Native.dll` contains the recovered Java product as an `RCDATA`
-resource. Start a supported Minecraft instance, or a Forge-enabled Lunar Client
-instance, with a 64-bit JVM, then run the injector from the bundle directory:
+resource. Start a supported Minecraft instance (including Minecraft 1.21.11
+Fabric), or a Forge-enabled Lunar Client instance, with a 64-bit JVM,
+then run the injector from the bundle directory:
 
 ```powershell
 Vape421Injector.exe
@@ -107,7 +109,10 @@ Vape421Injector.exe <pid> Vape421Native.dll
 
 The injector only performs `LoadLibraryW`. Once loaded, the DLL worker waits
 for the JVM and Minecraft `Client thread`, materializes its embedded product
-JAR into the process temp directory, loads it through the context ClassLoader,
+JAR into the process temp directory, and loads it through the context
+ClassLoader. On Fabric, the worker uses the Fabric Launcher API to add the JAR
+to the Knot target ClassLoader so transformed game classes and payload callbacks
+share one class identity. It then
 registers the nine authoritative methods plus the Product `gat()` compatibility
 native, and calls
 `NativeBridge.start()` automatically. No second command or start flag is

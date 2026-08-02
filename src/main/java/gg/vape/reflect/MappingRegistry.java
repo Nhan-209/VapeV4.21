@@ -25,6 +25,9 @@ public final class MappingRegistry {
     private static final String FIELDS_RESOURCE = RESOURCE_DIRECTORY + "/fields.csv";
     private static final int VANILLA_MAPPING_VERSION =
             NativeBridge.isForgeAbsent() ? ForgeVersion.c() : 0;
+    private static final boolean FABRIC_12111_RUNTIME =
+            VANILLA_MAPPING_VERSION == 61
+                    && Fabric12111Mappings.isRuntimePresent();
 
     private MappingRegistry() {
     }
@@ -96,6 +99,9 @@ public final class MappingRegistry {
             return Vanilla1122Mappings.lookupMethodSrgName(method);
         }
         if (VANILLA_MAPPING_VERSION == 61) {
+            if (FABRIC_12111_RUNTIME) {
+                return Fabric12111Mappings.lookupMethodSrgName(method);
+            }
             return Vanilla12111Mappings.lookupMethodSrgName(method);
         }
         return null;
@@ -112,6 +118,9 @@ public final class MappingRegistry {
             return Vanilla1122Mappings.lookupFieldSrgName(field);
         }
         if (VANILLA_MAPPING_VERSION == 61) {
+            if (FABRIC_12111_RUNTIME) {
+                return Fabric12111Mappings.lookupFieldSrgName(field);
+            }
             return Vanilla12111Mappings.lookupFieldSrgName(field);
         }
         return null;
