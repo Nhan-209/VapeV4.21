@@ -16,6 +16,7 @@ import gg.vape.utils.BlockUtil;
 import gg.vape.utils.MathUtil;
 import gg.vape.utils.RotationUtil;
 import gg.vape.utils.TimerUtil;
+import gg.vape.utils.render.BufferedGuiRenderPrimitives;
 import gg.vape.utils.render.BufferedRenderPrimitives;
 import gg.vape.utils.render.GlFramebuffer;
 import gg.vape.utils.render.GuiRenderPrimitives;
@@ -86,8 +87,26 @@ extends Mod {
                 this.updateCountStates();
             }
             if (GuiRenderPrimitives.d()) {
-                for (BedPlateCountState countState : this.countStates.values()) {
-                    this.renderPlate(event, countState);
+                boolean depthTestEnabled = BufferedGuiRenderPrimitives.capabilityState.depthTestEnabled;
+                boolean depthWriteEnabled = BufferedGuiRenderPrimitives.capabilityState.depthWriteEnabled;
+                if (ForgeVersion.MC_26_2.d()) {
+                    OpenGlBackendHolder.backend.disableCapability(2929);
+                    OpenGlBackendHolder.backend.setDepthMask(false);
+                }
+                try {
+                    for (BedPlateCountState countState : this.countStates.values()) {
+                        this.renderPlate(event, countState);
+                    }
+                }
+                finally {
+                    if (ForgeVersion.MC_26_2.d()) {
+                        if (depthTestEnabled) {
+                            OpenGlBackendHolder.backend.enableCapability(2929);
+                        } else {
+                            OpenGlBackendHolder.backend.disableCapability(2929);
+                        }
+                        OpenGlBackendHolder.backend.setDepthMask(depthWriteEnabled);
+                    }
                 }
             } else {
                 for (BedPlateCountState countState : this.countStates.values()) {

@@ -24,6 +24,9 @@ extends Mapping {
     private MappingMethod g;
 
     private int D(Object object, String string, float f, float f2, int n, boolean bl, Object object2, Object object3, Object object4, int n2, int n3) {
+        if (this.P == null) {
+            return 0;
+        }
         if (ForgeVersion.MC_1_21_6.d()) {
             this.P.invokeVoid(object, string, Float.valueOf(f), Float.valueOf(f2), n, bl, object2, object3, object4, n2, n3);
             return 0;
@@ -81,12 +84,14 @@ extends Mapping {
             MFontRenderer mFontRenderer = this;
             this.T = mFontRenderer.Y(string, bl, clazz, classArray);
             if (ForgeVersion.MC_26_1.d()) {
-                Class[] classArray2 = new Class[]{String.class, Float.TYPE, Float.TYPE, Integer.TYPE, Boolean.TYPE, MappedClasses.ZA, MappedClasses.ZK, MappedClasses.Y8, Integer.TYPE, Integer.TYPE};
-                Class<Void> clazz2 = Void.TYPE;
-                boolean bl2 = true;
-                String string2 = "drawInBatch";
-                MFontRenderer mFontRenderer2 = this;
-                this.P = this.Y(string2, bl2, clazz2, classArray2);
+                if (ForgeVersion.MC_26_2.v()) {
+                    Class[] classArray2 = new Class[]{String.class, Float.TYPE, Float.TYPE, Integer.TYPE, Boolean.TYPE, MappedClasses.ZA, MappedClasses.ZK, MappedClasses.Y8, Integer.TYPE, Integer.TYPE};
+                    Class<Void> clazz2 = Void.TYPE;
+                    boolean bl2 = true;
+                    String string2 = "drawInBatch";
+                    MFontRenderer mFontRenderer2 = this;
+                    this.P = this.Y(string2, bl2, clazz2, classArray2);
+                }
                 Class[] classArray3 = new Class[]{MappedClasses.uQ, String.class, Integer.TYPE, Integer.TYPE, Integer.TYPE, Boolean.TYPE};
                 Class<Void> clazz3 = Void.TYPE;
                 boolean bl3 = true;

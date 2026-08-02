@@ -56,11 +56,10 @@ extends Wrapper {
         }
         if (ForgeVersion.MC_26_1.d()) {
             try {
-                Holder holder = Holder.A(item.getObject());
+                Holder holder = item.Q();
                 if (holder.isNotNull()) {
-                    Object object = ItemStack.vapeInstance.getMappings().q8.j(
-                            holder.getObject(), 1, EmptyDataComponentMap.create().getObject());
-                    return new ItemStack(object);
+                    return new ItemStack(ItemStack.vapeInstance.getMappings().q8.O(
+                            holder.getObject(), 1));
                 }
             }
             catch (Throwable throwable) {

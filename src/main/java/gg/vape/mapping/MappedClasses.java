@@ -1346,7 +1346,8 @@ public class MappedClasses {
                 uF = MappedClasses.m("net/minecraft/client/gui/render/GuiItemAtlas");
                 uC = MappedClasses.m("net/minecraft/client/gui/render/GuiItemAtlas$SlotView");
             }
-            Yc = MappedClasses.m("net/minecraft/client/gui/render/GuiRenderer$AtlasPosition");
+            Yc = ForgeVersion.MC_26_1.d()
+                    ? uC : MappedClasses.m("net/minecraft/client/gui/render/GuiRenderer$AtlasPosition");
         } else {
             V5 = MappedClasses.m("net/minecraft/item/ItemSword");
             Ye = MappedClasses.m("net/minecraft/item/ItemTool");

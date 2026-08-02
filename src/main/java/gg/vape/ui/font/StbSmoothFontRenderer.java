@@ -7,6 +7,7 @@ import gg.vape.ui.font.stb.StbGlyphCache;
 import gg.vape.ui.font.stb.StbGlyphCacheEntry;
 import gg.vape.utils.MutableColor;
 import gg.vape.utils.render.BufferedGuiRenderPrimitives;
+import gg.vape.utils.render.BufferedRenderPrimitives;
 import gg.vape.wrapper.impl.EntityPlayerSP;
 import gg.vape.wrapper.impl.FontManager;
 import gg.vape.wrapper.impl.FontSet;
@@ -123,9 +124,15 @@ extends SmoothFontRenderer {
         return 8.0f * f;
     }
 
-    private void E(float f, float f2, SmoothFontGlyph smoothFontGlyph, int n, boolean bl, Color color, float f3) {
+    private void E(float f, float f2, SmoothFontGlyph smoothFontGlyph, int n, boolean bl, Color color, float f3, boolean worldSpace) {
         this.L(n);
-        if (bl) {
+        if (worldSpace) {
+            if (bl) {
+                BufferedRenderPrimitives.drawMinecraftColorFontGlyph(f, f2, smoothFontGlyph, n, color, f3);
+            } else {
+                BufferedRenderPrimitives.drawMinecraftIntensityFontGlyph(f, f2, smoothFontGlyph, n, color, f3);
+            }
+        } else if (bl) {
             BufferedGuiRenderPrimitives.drawMinecraftColorFontGlyph(f, f2, smoothFontGlyph, n, color, f3);
         } else {
             BufferedGuiRenderPrimitives.drawMinecraftIntensityFontGlyph(f, f2, smoothFontGlyph, n, color, f3);
@@ -329,12 +336,16 @@ extends SmoothFontRenderer {
             }
             StbGlyphCacheEntry stbGlyphCacheEntry2 = this.w.R(c);
             if (stbGlyphCacheEntry2 == null) {
+                if (ForgeVersion.MC_26_2.d() && c == ' ') {
+                    f2 += this.w.H(c) * f;
+                    continue;
+                }
                 StbGlyphCacheEntry stbGlyphCacheEntry = this.w.R(' ');
                 if (stbGlyphCacheEntry == null) continue;
                 f2 += stbGlyphCacheEntry.i * f;
                 continue;
             }
-            this.E(f2, (float)d2, stbGlyphCacheEntry2.d, stbGlyphCacheEntry2.y, stbGlyphCacheEntry2.u, color, f);
+            this.E(f2, (float)d2, stbGlyphCacheEntry2.d, stbGlyphCacheEntry2.y, stbGlyphCacheEntry2.u, color, f, bl2);
             f2 += stbGlyphCacheEntry2.i * f;
         }
     }

@@ -41,6 +41,18 @@ public class BufferedRenderPrimitives {
         RenderBatchManager.getInstance().queueWorldBatch(renderBatchBuilder);
     }
 
+    public static void drawMinecraftColorFontGlyph(float x, float y, SmoothFontGlyph glyph, int textureId, Color color, float scale) {
+        RenderBatchBuilder renderBatchBuilder = new RenderBatchBuilder(4, VertexCoordinateMode.DEFAULT, true)
+                .addMinecraftColorFontGlyph(x, y, glyph, textureId, color, scale);
+        RenderBatchManager.getInstance().queueWorldBatch(renderBatchBuilder);
+    }
+
+    public static void drawMinecraftIntensityFontGlyph(float x, float y, SmoothFontGlyph glyph, int textureId, Color color, float scale) {
+        RenderBatchBuilder renderBatchBuilder = new RenderBatchBuilder(4, VertexCoordinateMode.DEFAULT, true)
+                .addMinecraftIntensityFontGlyph(x, y, glyph, textureId, color, scale);
+        RenderBatchManager.getInstance().queueWorldBatch(renderBatchBuilder);
+    }
+
     public static void fillRect(double x, double y, double width, double height, Color color) {
         BufferedRenderPrimitives.fillRect((float)x, (float)y, (float)width, (float)height, color);
     }

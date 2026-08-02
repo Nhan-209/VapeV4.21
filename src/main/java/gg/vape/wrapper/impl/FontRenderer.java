@@ -1,6 +1,9 @@
 package gg.vape.wrapper.impl;
 
+import gg.vape.Vape;
 import gg.vape.mapping.mappings.MFontRenderer;
+import gg.vape.ui.font.SmoothFontRenderer;
+import gg.vape.ui.font.StbSmoothFontRenderer;
 import gg.vape.utils.render.BufferedGuiRenderPrimitives;
 import gg.vape.utils.render.GlScissorRect;
 import gg.vape.utils.render.OpenGlBackendHolder;
@@ -243,6 +246,14 @@ extends Wrapper {
     }
 
     public int h(String string, double d, double d2, int n, boolean bl, RenderMatrix4f renderMatrix4f, SharedMonsterAttributes sharedMonsterAttributes) {
+        // Font.drawInBatch was removed in 26.2, so preserve the world transform in Vape's glyph batch.
+        if (ForgeVersion.MC_26_2.d()) {
+            SmoothFontRenderer smoothFontRenderer = Vape.INSTANCE.getFontManager().p(1.0);
+            if (smoothFontRenderer instanceof StbSmoothFontRenderer) {
+                ((StbSmoothFontRenderer)smoothFontRenderer).c(string, d, d2, n, bl, true);
+                return 0;
+            }
+        }
         if (renderMatrix4f == null) {
             renderMatrix4f = new RenderMatrix4f().setIdentity();
             renderMatrix4f.multiply(BufferedGuiRenderPrimitives.viewMatrix);

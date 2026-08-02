@@ -22,7 +22,14 @@ public class StbGlyphCache {
 
     public float H(char c) {
         StbGlyphCacheEntry stbGlyphCacheEntry = this.R(c);
-        return stbGlyphCacheEntry != null ? stbGlyphCacheEntry.i : 0.0f;
+        if (stbGlyphCacheEntry != null) {
+            return stbGlyphCacheEntry.i;
+        }
+        // 26.2 represents spaces without a textured sheet glyph, but they still have advance.
+        if (ForgeVersion.MC_26_2.d() && c == ' ') {
+            return Minecraft.getFontRenderer().getStringWidth(" ");
+        }
+        return 0.0f;
     }
 
     public void u() {
