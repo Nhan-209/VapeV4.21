@@ -15,6 +15,7 @@ import io.netty.util.concurrent.Future;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
+import java.util.concurrent.TimeUnit;
 
 public class ZeusConnectionManager {
     private static final ZeusConnectionManager i;
@@ -27,9 +28,11 @@ public class ZeusConnectionManager {
         return this.t;
     }
 
-    private void lambda$start$2(Thread thread, Runnable runnable, Future future) throws Exception {
+    private void lambda$start$2(Thread thread, Runnable runnable,
+            EventLoopGroup eventLoopGroup, Future future) throws Exception {
         thread.interrupt();
         this.c = false;
+        shutdownEventLoopGroup(eventLoopGroup);
         runnable.run();
     }
 
@@ -38,26 +41,43 @@ public class ZeusConnectionManager {
     }
 
     public void V(Runnable runnable, Runnable runnable2) throws InterruptedException, IOException {
+        this.connect(b, runnable, runnable2);
+    }
+
+    void connect(String address, Runnable runnable, Runnable runnable2)
+            throws InterruptedException, IOException {
         if (this.c) {
             return;
         }
         this.c = true;
+        EventLoopGroup eventLoopGroup = null;
         try {
-            String[] stringArray = b.split(":");
+            String[] stringArray = address.split(":");
             String string = stringArray[0];
             int n = Integer.parseInt(stringArray[1]);
             InetSocketAddress inetSocketAddress = new InetSocketAddress(string, n);
-            Bootstrap bootstrap = (Bootstrap)((Bootstrap)((Bootstrap)new Bootstrap().group((EventLoopGroup)new NioEventLoopGroup())).channel(NioSocketChannel.class)).remoteAddress((SocketAddress)inetSocketAddress).handler((ChannelHandler)new ZeusClientChannelInitializer(this));
+            eventLoopGroup = new NioEventLoopGroup(1);
+            Bootstrap bootstrap = (Bootstrap)((Bootstrap)((Bootstrap)new Bootstrap().group(eventLoopGroup)).channel(NioSocketChannel.class)).remoteAddress((SocketAddress)inetSocketAddress).handler((ChannelHandler)new ZeusClientChannelInitializer(this));
             Channel channel = bootstrap.connect().sync().channel();
             Thread thread = new Thread(this::lambda$start$0);
             if (channel.isActive()) {
                 this.t.N(arg_0 -> ZeusConnectionManager.lambda$start$1(channel, runnable, thread, arg_0));
             }
-            channel.closeFuture().addListener(arg_0 -> this.lambda$start$2(thread, runnable2, arg_0));
+            EventLoopGroup connectionEventLoopGroup = eventLoopGroup;
+            channel.closeFuture().addListener(arg_0 -> this.lambda$start$2(
+                    thread, runnable2, connectionEventLoopGroup, arg_0));
+            eventLoopGroup = null;
         }
         catch (Throwable throwable) {
             this.c = false;
+            shutdownEventLoopGroup(eventLoopGroup);
             runnable2.run();
+        }
+    }
+
+    private static void shutdownEventLoopGroup(EventLoopGroup eventLoopGroup) {
+        if (eventLoopGroup != null) {
+            eventLoopGroup.shutdownGracefully(0L, 5L, TimeUnit.SECONDS);
         }
     }
 
