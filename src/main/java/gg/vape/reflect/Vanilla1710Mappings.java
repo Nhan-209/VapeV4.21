@@ -27,7 +27,9 @@ public final class Vanilla1710Mappings {
     }
 
     public static boolean isRuntimePresent(ClassLoader... preferredLoaders) {
-        return MAPPINGS.isRuntimePresent(preferredLoaders);
+        return MAPPINGS.isRuntimePresent(preferredLoaders)
+                || NamedLegacyRuntimeDetector.is1710Runtime(
+                        MAPPINGS, preferredLoaders);
     }
 
     static String lookupFieldSrgName(Field field) {
