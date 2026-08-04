@@ -3,6 +3,8 @@ package gg.vape.reflect;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import org.junit.Test;
@@ -21,6 +23,22 @@ public class LegacyRuntimeMappingsTest {
     public void detectsOriginal189ObfuscatedRuntime() {
         assertDetectedOnly(15, obfuscatedRuntime(
                 "ave", "A", "S", "bew", "adm"));
+    }
+
+    @Test
+    public void detectsBadlion189Runtime() {
+        FixtureClassLoader loader = new FixtureClassLoader(obfuscatedRuntime(
+                "ave", "A", "S", "bew", "adm"), true);
+
+        assertTrue(Badlion189Mappings.isRuntimePresent(loader));
+    }
+
+    @Test
+    public void doesNotClassifyPlain189AsBadlion() {
+        FixtureClassLoader loader = new FixtureClassLoader(obfuscatedRuntime(
+                "ave", "A", "S", "bew", "adm"));
+
+        assertFalse(Badlion189Mappings.isRuntimePresent(loader));
     }
 
     @Test
@@ -144,10 +162,17 @@ public class LegacyRuntimeMappingsTest {
 
     private static final class FixtureClassLoader extends ClassLoader {
         private final Map<String, byte[]> classes;
+        private final boolean badlionMarkers;
 
         FixtureClassLoader(Map<String, byte[]> classes) {
+            this(classes, false);
+        }
+
+        FixtureClassLoader(Map<String, byte[]> classes,
+                           boolean badlionMarkers) {
             super(LegacyRuntimeMappingsTest.class.getClassLoader());
             this.classes = classes;
+            this.badlionMarkers = badlionMarkers;
         }
 
         @Override
@@ -157,6 +182,20 @@ public class LegacyRuntimeMappingsTest {
                 throw new ClassNotFoundException(name);
             }
             return this.defineClass(name, bytecode, 0, bytecode.length);
+        }
+
+        @Override
+        protected URL findResource(String name) {
+            if (!this.badlionMarkers
+                    || !"net/badlion/client/Wrapper.class".equals(name)) {
+                return null;
+            }
+            try {
+                return new URL("file", "", "/" + name);
+            }
+            catch (MalformedURLException ignored) {
+                return null;
+            }
         }
     }
 }

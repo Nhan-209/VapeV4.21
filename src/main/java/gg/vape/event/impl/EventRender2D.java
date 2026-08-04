@@ -4,6 +4,8 @@ import gg.vape.Vape;
 import gg.vape.event.Event;
 import gg.vape.event.EventListeners;
 import gg.vape.module.none.ClientSettings;
+import gg.vape.runtime.NativeBridge;
+import gg.vape.ui.click.GuiScreenNativeCallbackBridge;
 import gg.vape.utils.render.GuiRenderPrimitives;
 import gg.vape.wrapper.impl.ForgeVersion;
 import gg.vape.wrapper.impl.GlStateManager;
@@ -12,6 +14,7 @@ import gg.vape.wrapper.impl.Minecraft;
 public class EventRender2D
 extends Event {
     private static final EventListeners EVENT_LISTENERS = new EventListeners();
+    private static long lastBadlionGuiTickNanos;
     private static int displayHeight;
     private static int displayWidth;
 
@@ -27,12 +30,23 @@ extends Event {
         displayHeight = Minecraft.h();
         GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
         GuiRenderPrimitives.o(displayWidth, displayHeight);
-        Vape.INSTANCE.getModManager().getMod(ClientSettings.class).renderHudOverlay();
+        ClientSettings clientSettings = Vape.INSTANCE.getModManager()
+                .getMod(ClientSettings.class);
+        clientSettings.renderHudOverlay();
         EventRender2D eventRender2D = new EventRender2D();
         eventRender2D.fire();
         GuiRenderPrimitives.L(displayWidth, displayHeight);
+        if (NativeBridge.isBadlion189Runtime()) {
+            long now = System.nanoTime();
+            if (!clientSettings.isInputEnabled()
+                    && now - lastBadlionGuiTickNanos >= 50000000L) {
+                lastBadlionGuiTickNanos = now;
+                clientSettings.onTick();
+            }
+            GuiScreenNativeCallbackBridge.drawScreen(
+                    null, 0, 0, 0.0f);
+        }
     }
-
 
     @Override
     public EventListeners getListeners() {

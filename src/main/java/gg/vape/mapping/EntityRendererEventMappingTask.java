@@ -17,6 +17,7 @@ import gg.vape.mapping.MappingMethod;
 import gg.vape.mapping.expr.EventFogDensityInjectionExprEditor;
 import gg.vape.mapping.expr.EventRender2DInjectionExprEditor;
 import gg.vape.mapping.expr.EventRender2DStaticCallbackExprEditor;
+import gg.vape.runtime.NativeBridge;
 import gg.vape.wrapper.impl.ForgeVersion;
 import java.util.concurrent.atomic.AtomicBoolean;
 import javassist.CannotCompileException;
@@ -58,7 +59,8 @@ extends JavassistMappingTask {
     }
 
     private void J$src$V$f5bloi() throws CannotCompileException {
-        if (ForgeVersion.MC_1_20_6.d()) {
+        if (ForgeVersion.MC_1_20_6.d()
+                || NativeBridge.isBadlion189Runtime()) {
             return;
         }
         String string = ForgeVersion.MC_1_17.d() ? "(IIF)V" : (ForgeVersion.MC_1_16_5.d() ? "()V" : "(IF)V");

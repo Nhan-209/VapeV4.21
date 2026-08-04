@@ -1,6 +1,7 @@
 package gg.vape.runtime;
 
 import gg.vape.Vape;
+import gg.vape.reflect.Badlion189Mappings;
 import gg.vape.reflect.Fabric12111Mappings;
 import gg.vape.reflect.Fabric262Mappings;
 import gg.vape.reflect.Type;
@@ -35,6 +36,7 @@ public class NativeBridge {
             + "]}]}";
     private static boolean forgeAbsent = true;
     private static volatile int vanillaMappingVersion;
+    private static volatile boolean badlion189Runtime;
     private static volatile boolean fabric12111Runtime;
     private static volatile boolean fabric262Runtime;
     static boolean alphaTestWasEnabled;
@@ -347,6 +349,9 @@ public class NativeBridge {
                 && !isClassPresent("net.minecraftforge.fml.loading.FMLLoader");
         Vape vape = new Vape();
         NativeBridge.invokeVoidInit(vape, "loadMappings");
+        if (badlion189Runtime) {
+            NativeBridge.sce("Runtime profile: Badlion Client 1.8.9 (vanilla SRG namespace)");
+        }
         NativeBridge.sce("LOAD initAccountInfo");
         if (!vape.initAccountInfo()) {
             NativeBridge.sce("WARN initAccountInfo; continuing without account information");
@@ -551,7 +556,9 @@ public class NativeBridge {
             return detectedVersion;
         }
         boolean vanilla1710 = Vanilla1710Mappings.isRuntimePresent(preferredLoaders);
-        boolean vanilla189 = Vanilla189Mappings.isRuntimePresent(preferredLoaders);
+        boolean badlion189 = Badlion189Mappings.isRuntimePresent(preferredLoaders);
+        boolean vanilla189 = badlion189
+                || Vanilla189Mappings.isRuntimePresent(preferredLoaders);
         boolean vanilla1122 = Vanilla1122Mappings.isRuntimePresent(preferredLoaders);
         boolean vanilla12111 = Vanilla12111Mappings.isRuntimePresent(preferredLoaders);
         boolean fabric12111 = Fabric12111Mappings.isRuntimePresent(preferredLoaders);
@@ -562,6 +569,7 @@ public class NativeBridge {
                 + (vanilla12111 || fabric12111 ? 1 : 0)
                 + (vanilla262 || fabric262 ? 1 : 0);
         if (matchingVersions == 1) {
+            badlion189Runtime = badlion189;
             fabric12111Runtime = fabric12111;
             fabric262Runtime = fabric262;
             if (vanilla1710) {
@@ -700,6 +708,10 @@ public class NativeBridge {
                     internalName, contextLoader, bridgeLoader);
         }
         return gc(internalName);
+    }
+
+    public static boolean isBadlion189Runtime() {
+        return badlion189Runtime;
     }
 
     //SendClientError

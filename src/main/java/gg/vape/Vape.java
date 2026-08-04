@@ -92,6 +92,10 @@ import java.lang.reflect.Array;
 import java.util.Date;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.CompletionException;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.FutureTask;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.function.Predicate;
 
 public class Vape {
@@ -705,6 +709,31 @@ public class Vape {
     private void initPrimaryMappingTasks() {
         int opaqueSeed = Vape.opaquePredicate();
         this.primaryMappingTaskSet = new PrimaryMappingTaskSet();
+        if (NativeBridge.isBadlion189Runtime()) {
+            FutureTask<Void> initializationTask = new FutureTask<Void>(() -> {
+                ClientSettings.initializeFrames();
+                return null;
+            });
+            Minecraft.v(initializationTask);
+            try {
+                initializationTask.get(30L, TimeUnit.SECONDS);
+            }
+            catch (InterruptedException interrupted) {
+                Thread.currentThread().interrupt();
+                initializationTask.cancel(false);
+                throw new CompletionException(interrupted);
+            }
+            catch (ExecutionException execution) {
+                Throwable cause = execution.getCause();
+                throw new CompletionException(
+                        cause == null ? execution : cause);
+            }
+            catch (TimeoutException timeout) {
+                initializationTask.cancel(false);
+                throw new CompletionException(timeout);
+            }
+            return;
+        }
         this.primaryMappingTaskSet.L();
         this.primaryMappingTaskSet.d();
         int opaqueBranch = opaqueSeed;

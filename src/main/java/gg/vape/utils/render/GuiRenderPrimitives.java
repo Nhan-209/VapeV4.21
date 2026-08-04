@@ -246,8 +246,22 @@ public class GuiRenderPrimitives {
     public static void o(int n, int n2) {
         if (!GuiRenderPrimitives.d()) {
             NativeBridge.rs(0, n, n2);
+            GuiRenderPrimitives.prepareLegacyHudRendering();
         }
         OpenGlBackendHolder.backend.scale(2.0f, 2.0f, 2.0f);
+    }
+
+    private static void prepareLegacyHudRendering() {
+        if (!ForgeVersion.MC_1_8_9.L()) {
+            return;
+        }
+        // rs() uses raw GL, so normalize the actual state at every GUI scope.
+        GL11.glEnable(GL11.GL_TEXTURE_2D);
+        GL11.glEnable(GL11.GL_ALPHA_TEST);
+        GL11.glAlphaFunc(GL11.GL_GREATER, 0.1f);
+        GL11.glEnable(GL11.GL_BLEND);
+        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+        GL11.glDisable(GL11.GL_LIGHTING);
     }
 
     static {

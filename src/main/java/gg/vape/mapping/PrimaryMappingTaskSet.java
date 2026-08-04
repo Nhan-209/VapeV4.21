@@ -8,6 +8,7 @@ import gg.vape.event.impl.EventChatMessageRender;
 import gg.vape.event.impl.EventFogDensity;
 import gg.vape.event.impl.EventPreRenderLivingSpecials;
 import gg.vape.event.impl.EventRender2D;
+import gg.vape.runtime.NativeBridge;
 import gg.vape.wrapper.impl.ForgeVersion;
 
 public class PrimaryMappingTaskSet
@@ -120,6 +121,9 @@ extends MappingTaskSet {
         }
         if (ForgeVersion.MC_1_21_11.d()) {
             this.D.add(new KeyBindingStateEventMappingTask());
+        }
+        if (NativeBridge.isBadlion189Runtime()) {
+            this.D.add(new Badlion189Render2DMappingTask());
         }
     }
 
