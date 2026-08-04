@@ -13,6 +13,21 @@ static SRWLOCK g_capture_lock = SRWLOCK_INIT;
 static jclass g_capture_class = NULL;
 static unsigned char *g_capture_bytes = NULL;
 static jint g_capture_length = 0;
+typedef struct PersistedClassDefinition {
+    jclass target;
+    unsigned char *bytes;
+    jint length;
+    struct PersistedClassDefinition *next;
+} PersistedClassDefinition;
+
+static SRWLOCK g_persisted_class_lock = SRWLOCK_INIT;
+static PersistedClassDefinition *g_persisted_classes = NULL;
+static volatile LONG g_retain_class_transforms = 0;
+static SRWLOCK g_redefinition_lock = SRWLOCK_INIT;
+static volatile LONG g_redefinition_active = 0;
+static jclass g_redefinition_class = NULL;
+static const unsigned char *g_redefinition_bytes = NULL;
+static jint g_redefinition_length = 0;
 static jclass g_bridge_class = NULL;
 static jmethodID g_bridge_om = NULL;
 static jmethodID g_bridge_wh = NULL;
@@ -57,6 +72,192 @@ static void throw_new(JNIEnv *env, const char *type, const char *message) {
     }
 }
 
+static int contains_bytes(const unsigned char *haystack, jint haystack_length,
+        const char *needle) {
+    size_t needle_length;
+    jint offset;
+    if (haystack == NULL || haystack_length <= 0 || needle == NULL) {
+        return 0;
+    }
+    needle_length = strlen(needle);
+    if (needle_length == 0 || needle_length > (size_t)haystack_length) {
+        return 0;
+    }
+    for (offset = 0;
+            offset <= haystack_length - (jint)needle_length; ++offset) {
+        if (memcmp(haystack + offset, needle, needle_length) == 0) {
+            return 1;
+        }
+    }
+    return 0;
+}
+
+static int contains_vape_callback(const unsigned char *bytes, jint length) {
+    return contains_bytes(bytes, length, "gg/vape/")
+            || contains_bytes(bytes, length, "gg.vape.");
+}
+
+static int supply_hook_bytes(jvmtiEnv *jvmti_env,
+        const unsigned char *bytes, jint length,
+        jint *new_class_data_len, unsigned char **new_class_data) {
+    unsigned char *copy = NULL;
+    if (jvmti_env == NULL || bytes == NULL || length <= 0
+            || new_class_data_len == NULL || new_class_data == NULL
+            || (*jvmti_env)->Allocate(jvmti_env, length, &copy)
+                    != JVMTI_ERROR_NONE
+            || copy == NULL) {
+        return 0;
+    }
+    memcpy(copy, bytes, (size_t)length);
+    *new_class_data_len = length;
+    *new_class_data = copy;
+    return 1;
+}
+
+static void capture_class_bytes(JNIEnv *env, jclass target,
+        const unsigned char *bytes, jint length) {
+    unsigned char *copy;
+    if (env == NULL || target == NULL || g_capture_class == NULL
+            || bytes == NULL || length <= 0
+            || !(*env)->IsSameObject(env, target, g_capture_class)) {
+        return;
+    }
+    copy = (unsigned char *)HeapAlloc(
+            GetProcessHeap(), 0, (SIZE_T)length);
+    if (copy == NULL) {
+        return;
+    }
+    memcpy(copy, bytes, (size_t)length);
+    if (g_capture_bytes != NULL) {
+        HeapFree(GetProcessHeap(), 0, g_capture_bytes);
+    }
+    g_capture_bytes = copy;
+    g_capture_length = length;
+}
+
+static void update_persisted_class(JNIEnv *env, jclass target,
+        const unsigned char *bytes, jint length) {
+    PersistedClassDefinition *entry;
+    PersistedClassDefinition *previous = NULL;
+    unsigned char *copy = NULL;
+    int should_persist = contains_vape_callback(bytes, length);
+
+    if (should_persist) {
+        copy = (unsigned char *)HeapAlloc(
+                GetProcessHeap(), 0, (SIZE_T)length);
+        if (copy == NULL) {
+            vape_log(L"unable to retain transformed class bytecode");
+            return;
+        }
+        memcpy(copy, bytes, (size_t)length);
+    }
+
+    AcquireSRWLockExclusive(&g_persisted_class_lock);
+    entry = g_persisted_classes;
+    while (entry != NULL
+            && !(*env)->IsSameObject(env, entry->target, target)) {
+        previous = entry;
+        entry = entry->next;
+    }
+    if (!should_persist) {
+        if (entry != NULL) {
+            if (previous == NULL) {
+                g_persisted_classes = entry->next;
+            } else {
+                previous->next = entry->next;
+            }
+            (*env)->DeleteGlobalRef(env, entry->target);
+            HeapFree(GetProcessHeap(), 0, entry->bytes);
+            HeapFree(GetProcessHeap(), 0, entry);
+        }
+        ReleaseSRWLockExclusive(&g_persisted_class_lock);
+        return;
+    }
+    if (entry != NULL) {
+        HeapFree(GetProcessHeap(), 0, entry->bytes);
+        entry->bytes = copy;
+        entry->length = length;
+        ReleaseSRWLockExclusive(&g_persisted_class_lock);
+        return;
+    }
+
+    entry = (PersistedClassDefinition *)HeapAlloc(
+            GetProcessHeap(), HEAP_ZERO_MEMORY, sizeof(*entry));
+    if (entry != NULL) {
+        entry->target = (jclass)(*env)->NewGlobalRef(env, target);
+    }
+    if (entry == NULL || entry->target == NULL) {
+        if (entry != NULL) {
+            HeapFree(GetProcessHeap(), 0, entry);
+        }
+        HeapFree(GetProcessHeap(), 0, copy);
+        ReleaseSRWLockExclusive(&g_persisted_class_lock);
+        vape_log(L"unable to retain transformed class identity");
+        return;
+    }
+    entry->bytes = copy;
+    entry->length = length;
+    entry->next = g_persisted_classes;
+    g_persisted_classes = entry;
+    ReleaseSRWLockExclusive(&g_persisted_class_lock);
+}
+
+static void clear_persisted_classes(JNIEnv *env) {
+    PersistedClassDefinition *entry;
+    AcquireSRWLockExclusive(&g_persisted_class_lock);
+    entry = g_persisted_classes;
+    g_persisted_classes = NULL;
+    ReleaseSRWLockExclusive(&g_persisted_class_lock);
+    while (entry != NULL) {
+        PersistedClassDefinition *next = entry->next;
+        if (env != NULL && entry->target != NULL) {
+            (*env)->DeleteGlobalRef(env, entry->target);
+        }
+        if (entry->bytes != NULL) {
+            HeapFree(GetProcessHeap(), 0, entry->bytes);
+        }
+        HeapFree(GetProcessHeap(), 0, entry);
+        entry = next;
+    }
+}
+
+static int detect_badlion_189_runtime(void) {
+    jint class_count = 0;
+    jclass *classes = NULL;
+    jvmtiError error;
+    jint index;
+    int has_minecraft_189 = 0;
+    int has_badlion_class = 0;
+
+    if (g_jvmti == NULL) {
+        return 0;
+    }
+    error = (*g_jvmti)->GetLoadedClasses(
+            g_jvmti, &class_count, &classes);
+    if (error != JVMTI_ERROR_NONE || classes == NULL) {
+        return 0;
+    }
+    for (index = 0; index < class_count; ++index) {
+        char *signature = NULL;
+        if ((*g_jvmti)->GetClassSignature(g_jvmti, classes[index],
+                &signature, NULL) != JVMTI_ERROR_NONE
+                || signature == NULL) {
+            continue;
+        }
+        if (strcmp(signature, "Lave;") == 0) {
+            has_minecraft_189 = 1;
+        } else if (strncmp(signature, "Lnet/badlion/", 13) == 0) {
+            has_badlion_class = 1;
+        }
+        (*g_jvmti)->Deallocate(g_jvmti, (unsigned char *)signature);
+        if (has_minecraft_189 && has_badlion_class) {
+            break;
+        }
+    }
+    (*g_jvmti)->Deallocate(g_jvmti, (unsigned char *)classes);
+    return has_minecraft_189 && has_badlion_class;
+}
+
 static void JNICALL class_file_load_hook(
         jvmtiEnv *jvmti_env,
         JNIEnv *env,
@@ -68,7 +269,6 @@ static void JNICALL class_file_load_hook(
         const unsigned char *class_data,
         jint *new_class_data_len,
         unsigned char **new_class_data) {
-    unsigned char *copy;
     (void)jvmti_env;
     (void)loader;
     (void)name;
@@ -79,21 +279,42 @@ static void JNICALL class_file_load_hook(
     if (new_class_data != NULL) {
         *new_class_data = NULL;
     }
-    if (env == NULL || class_being_redefined == NULL || g_capture_class == NULL
-            || class_data == NULL || class_data_len <= 0
-            || !(*env)->IsSameObject(env, class_being_redefined, g_capture_class)) {
+    if (env == NULL || class_being_redefined == NULL
+            || class_data == NULL || class_data_len <= 0) {
         return;
     }
-    copy = (unsigned char *)HeapAlloc(GetProcessHeap(), 0, (SIZE_T)class_data_len);
-    if (copy == NULL) {
+
+    if (InterlockedCompareExchange(&g_redefinition_active, 0, 0) != 0
+            && g_redefinition_class != NULL
+            && (*env)->IsSameObject(env, class_being_redefined,
+                    g_redefinition_class)) {
+        capture_class_bytes(env, class_being_redefined,
+                g_redefinition_bytes, g_redefinition_length);
+        supply_hook_bytes(jvmti_env, g_redefinition_bytes,
+                g_redefinition_length, new_class_data_len, new_class_data);
         return;
     }
-    memcpy(copy, class_data, (size_t)class_data_len);
-    if (g_capture_bytes != NULL) {
-        HeapFree(GetProcessHeap(), 0, g_capture_bytes);
+
+    AcquireSRWLockShared(&g_persisted_class_lock);
+    {
+        PersistedClassDefinition *entry = g_persisted_classes;
+        while (entry != NULL
+                && !(*env)->IsSameObject(env, entry->target,
+                        class_being_redefined)) {
+            entry = entry->next;
+        }
+        if (entry != NULL) {
+            capture_class_bytes(env, class_being_redefined,
+                    entry->bytes, entry->length);
+            supply_hook_bytes(jvmti_env, entry->bytes, entry->length,
+                    new_class_data_len, new_class_data);
+            ReleaseSRWLockShared(&g_persisted_class_lock);
+            return;
+        }
     }
-    g_capture_bytes = copy;
-    g_capture_length = class_data_len;
+    ReleaseSRWLockShared(&g_persisted_class_lock);
+    capture_class_bytes(env, class_being_redefined,
+            class_data, class_data_len);
 }
 
 jint vape_initialize_jvmti(JavaVM *vm) {
@@ -138,6 +359,14 @@ jint vape_initialize_jvmti(JavaVM *vm) {
         vape_log(L"SetEventCallbacks failed: %d", error);
         return JNI_ERR;
     }
+    error = (*g_jvmti)->SetEventNotificationMode(g_jvmti, JVMTI_ENABLE,
+            JVMTI_EVENT_CLASS_FILE_LOAD_HOOK, NULL);
+    if (error != JVMTI_ERROR_NONE) {
+        vape_log(L"Enable ClassFileLoadHook failed: %d", error);
+        return JNI_ERR;
+    }
+    InterlockedExchange(&g_retain_class_transforms,
+            detect_badlion_189_runtime() ? 1 : 0);
     return JNI_OK;
 }
 
@@ -147,6 +376,7 @@ static jint JNICALL native_scb(
     jbyte *bytes;
     jsize length;
     jvmtiError error;
+    int retain_transforms;
     (void)bridge;
     if (g_jvmti == NULL || target == NULL || class_bytes == NULL) {
         return JVMTI_ERROR_INVALID_ENVIRONMENT;
@@ -159,7 +389,27 @@ static jint JNICALL native_scb(
     definition.klass = target;
     definition.class_byte_count = length;
     definition.class_bytes = (const unsigned char *)bytes;
+    AcquireSRWLockExclusive(&g_redefinition_lock);
+    retain_transforms = InterlockedCompareExchange(
+            &g_retain_class_transforms, 0, 0) != 0;
+    if (retain_transforms) {
+        g_redefinition_class = target;
+        g_redefinition_bytes = (const unsigned char *)bytes;
+        g_redefinition_length = length;
+        InterlockedExchange(&g_redefinition_active, 1);
+    }
     error = (*g_jvmti)->RedefineClasses(g_jvmti, 1, &definition);
+    if (retain_transforms) {
+        InterlockedExchange(&g_redefinition_active, 0);
+        g_redefinition_class = NULL;
+        g_redefinition_bytes = NULL;
+        g_redefinition_length = 0;
+    }
+    if (error == JVMTI_ERROR_NONE && retain_transforms) {
+        update_persisted_class(env, target,
+                (const unsigned char *)bytes, length);
+    }
+    ReleaseSRWLockExclusive(&g_redefinition_lock);
     (*env)->ReleaseByteArrayElements(env, class_bytes, bytes, JNI_ABORT);
     log_jvmti_failure(L"scb RedefineClasses", error, target);
     return error;
@@ -289,13 +539,7 @@ static jbyteArray JNICALL native_gcb(JNIEnv *env, jclass bridge, jclass target) 
         return NULL;
     }
 
-    error = (*g_jvmti)->SetEventNotificationMode(g_jvmti, JVMTI_ENABLE,
-            JVMTI_EVENT_CLASS_FILE_LOAD_HOOK, NULL);
-    if (error == JVMTI_ERROR_NONE) {
-        error = (*g_jvmti)->RetransformClasses(g_jvmti, 1, &target);
-        (*g_jvmti)->SetEventNotificationMode(g_jvmti, JVMTI_DISABLE,
-                JVMTI_EVENT_CLASS_FILE_LOAD_HOOK, NULL);
-    }
+    error = (*g_jvmti)->RetransformClasses(g_jvmti, 1, &target);
     if (error == JVMTI_ERROR_NONE && g_capture_bytes != NULL
             && g_capture_length > 0) {
         result = (*env)->NewByteArray(env, g_capture_length);
@@ -975,6 +1219,12 @@ jint vape_register_native_bridge(JNIEnv *env, jclass bridge_class) {
 }
 
 void vape_release_native_bridge(JNIEnv *env) {
+    if (g_jvmti != NULL) {
+        (*g_jvmti)->SetEventNotificationMode(g_jvmti, JVMTI_DISABLE,
+                JVMTI_EVENT_CLASS_FILE_LOAD_HOOK, NULL);
+    }
+    clear_persisted_classes(env);
+    InterlockedExchange(&g_retain_class_transforms, 0);
     if (g_lwjgl3_window != NULL && g_lwjgl3_original_wndproc != NULL
             && IsWindow(g_lwjgl3_window)) {
         SetWindowLongPtrW(g_lwjgl3_window, GWLP_WNDPROC,

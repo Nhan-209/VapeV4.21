@@ -18,7 +18,7 @@ Vape 4.21 Java 层与 Windows x64 原生桥接层的研究性恢复工程。
 | 1.21.11 | ✓ | ✓ | ✓ |
 | 26.2 | ✓ | ✓ | ✓ |
 
-也支持 Lunar Client 实例注入。
+也支持 Lunar Client 与 Badlion Client 1.8.9 实例注入。
 
 Minecraft 1.16.5 的支持不佳，部分映射、渲染和模块功能可能无法正常工作。
 

@@ -10,6 +10,15 @@ versions are outside the current support scope.
 Minecraft 1.16.5 support is incomplete and may have mapping, rendering, and
 module compatibility problems.
 
+Badlion Client 1.8.9 can rerun its runtime transformer after a JVMTI class
+redefinition. During JVMTI initialization, the bridge identifies that runtime
+from the loaded `ave` Minecraft class and `net/badlion` classes. It then
+retains successful class definitions containing `gg/vape` callbacks and
+supplies them again from the final `ClassFileLoadHook` when the same class is
+retransformed. Redefining a class with callback-free original bytecode removes
+its retained definition, so normal rollback still works. `trs(int)` remains
+dedicated to loader progress reporting and window integration.
+
 The authoritative bridge surface is:
 
 ```text
