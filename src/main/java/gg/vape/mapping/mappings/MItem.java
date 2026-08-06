@@ -411,7 +411,7 @@ extends Mapping {
             MItem mItem30 = this;
             this.M = this.J(string30, bl29, clazz34);
         }
-        if (ForgeVersion.MC_1_21_0.d()) {
+        if (ForgeVersion.MC_1_20_6.d()) {
             Class[] classArray23 = new Class[]{};
             Class clazz35 = MappedClasses.zD;
             boolean bl30 = true;

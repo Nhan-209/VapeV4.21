@@ -116,18 +116,23 @@ extends Mapping {
                 String string5 = "getValue";
                 MIAttributeInstance mIAttributeInstance4 = this;
                 this.Z = this.Y(string5, bl4, clazz4, classArray4);
-                Class[] classArray5 = new Class[]{};
-                Class<Set> clazz5 = Set.class;
-                boolean bl5 = Wrapper.isNativeAvailable;
-                String string6 = "func_225505_c_";
-                MIAttributeInstance mIAttributeInstance5 = this;
-                this.g = this.Y(string6, bl5, clazz5, classArray5);
-                Class[] classArray6 = new Class[]{};
-                Class<Void> clazz6 = Void.TYPE;
-                boolean bl6 = Wrapper.isNativeAvailable;
-                String string7 = "func_142049_d";
-                MIAttributeInstance mIAttributeInstance6 = this;
-                this.Q = this.Y(string7, bl6, clazz6, classArray6);
+                if (ForgeVersion.MC_1_20_6.d()) {
+                    this.g = this.Y("getModifiers", true, Set.class, new Class[]{});
+                    this.Q = this.Y("removeModifiers", true, Void.TYPE, new Class[]{});
+                } else {
+                    Class[] classArray5 = new Class[]{};
+                    Class<Set> clazz5 = Set.class;
+                    boolean bl5 = Wrapper.isNativeAvailable;
+                    String string6 = "func_225505_c_";
+                    MIAttributeInstance mIAttributeInstance5 = this;
+                    this.g = this.Y(string6, bl5, clazz5, classArray5);
+                    Class[] classArray6 = new Class[]{};
+                    Class<Void> clazz6 = Void.TYPE;
+                    boolean bl6 = Wrapper.isNativeAvailable;
+                    String string7 = "func_142049_d";
+                    MIAttributeInstance mIAttributeInstance6 = this;
+                    this.Q = this.Y(string7, bl6, clazz6, classArray6);
+                }
             } else {
                 Class[] classArray7 = new Class[]{};
                 Class<Double> clazz7 = Double.TYPE;

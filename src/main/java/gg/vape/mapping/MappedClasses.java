@@ -1229,7 +1229,9 @@ public class MappedClasses {
             ua = MappedClasses.m("net/minecraft/core/IdMap");
             Zr = MappedClasses.m("net/minecraft/core/component/DataComponents");
             Fz = MappedClasses.m("net/minecraft/core/component/DataComponentType");
+            zD = MappedClasses.m("net/minecraft/core/component/DataComponentMap");
             qu = MappedClasses.m("net/minecraft/core/component/DataComponentHolder");
+            z7 = MappedClasses.m("net/minecraft/world/level/EntityGetter");
             uY = MappedClasses.m("net/minecraft/world/level/block/AirBlock");
             lm = MappedClasses.m("net/minecraft/world/level/block/BaseFireBlock");
             VT = MappedClasses.m("com/mojang/blaze3d/vertex/VertexSorting");
@@ -1250,7 +1252,6 @@ public class MappedClasses {
             Fx = MappedClasses.m("com/mojang/blaze3d/vertex/ByteBufferBuilder");
             Dv = MappedClasses.m("com/mojang/blaze3d/vertex/ByteBufferBuilder$Result");
             V2 = MappedClasses.m("net/minecraft/world/item/enchantment/Enchantments");
-            zD = MappedClasses.m("net/minecraft/core/component/DataComponentMap");
         }
         if (ForgeVersion.MC_1_21_11.d()) {
             Dr = MappedClasses.m("net/minecraft/world/item/component/AttackRange");
@@ -1300,7 +1301,6 @@ public class MappedClasses {
             Dg = MappedClasses.m("net/minecraft/network/protocol/game/ServerboundUseItemPacket");
             YV = MappedClasses.m("net/minecraft/world/entity/TraceableEntity");
             lD = MappedClasses.m("net/minecraft/world/level/entity/EntityAccess");
-            z7 = MappedClasses.m("net/minecraft/world/level/EntityGetter");
             z2 = MappedClasses.m("net/minecraft/network/protocol/game/ClientGamePacketListener");
             Y4 = MappedClasses.m("net/minecraft/world/entity/projectile/ItemSupplier");
             Fs = MappedClasses.m("net/minecraft/world/level/block/entity/LidBlockEntity");

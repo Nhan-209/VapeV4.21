@@ -74,7 +74,8 @@ extends ClickerMod {
         this.startDelay = NumberValue.create(this, "Start Delay", "#.#", "", 0.0, 0.0, 1000.0);
         this.useItemWhitelist.addDependentValues(this.itemWhitelist);
         this.addValue(this.cps, this.startDelay, this.randomization, this.jitter, this.useItemWhitelist, this.itemWhitelist);
-        ClickEngine clickEngine = new ClickEngine(ClickButton.RIGHT, this.cps, this.useItemWhitelist, this.itemWhitelist, this.holdToClick, this.randomization, this.jitter);
+        ClickEngine clickEngine = new ClickEngine(ClickButton.RIGHT, this.cps, this.useItemWhitelist,
+                this.itemWhitelist, this.holdToClick, this.randomization, this.jitter, this);
         this.setClickEngine(clickEngine);
         this.cps.setMaximumFractionDigits(0);
     }

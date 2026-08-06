@@ -11,7 +11,6 @@ import gg.vape.event.impl.EventPrePlayerTick;
 import gg.vape.mapping.MappedClasses;
 import gg.vape.module.Category;
 import gg.vape.module.Mod;
-import gg.vape.module.combat.velocity.VelocityPacketMode;
 import gg.vape.notification.NotificationType;
 import gg.vape.unmap.NumberFormat;
 import gg.vape.utils.MathUtil;
@@ -259,9 +258,9 @@ extends Mod {
                 if (this.isEnabled()) {
                     this.setEnabled(false);
                 }
-                VelocityPacketMode velocityPacketMode = Vape.INSTANCE.getModManager().getMod(VelocityPacketMode.class);
-                if (velocityPacketMode != null) {
-                    velocityPacketMode.setEnabled(true);
+                KnockbackDelay knockbackDelay = Vape.INSTANCE.getModManager().getMod(KnockbackDelay.class);
+                if (knockbackDelay != null) {
+                    knockbackDelay.setEnabled(true);
                 }
                 Vape.INSTANCE.getNotificationManager().show("Velocity disabled", "Velocity Lag mode is now KnockbackDelay under Network.\nKnockbackDelay has been enabled.", NotificationType.WARNING, 10000L);
             }

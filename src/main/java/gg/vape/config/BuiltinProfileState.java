@@ -4,7 +4,7 @@ import gg.vape.module.blatant.Backtrack;
 import gg.vape.module.combat.AimAssist;
 import gg.vape.module.combat.LeftClicker;
 import gg.vape.module.combat.Sprint;
-import gg.vape.module.combat.velocity.VelocityPacketReceiveMode;
+import gg.vape.module.combat.JumpReset;
 import gg.vape.module.combat.HitSelect;
 import gg.vape.wrapper.impl.ForgeVersion;
 
@@ -16,7 +16,7 @@ extends BuiltinProfile {
     protected void configureModules() {
         this.selectModule(AimAssist.class);
         this.selectModule(LeftClicker.class);
-        this.selectModule(VelocityPacketReceiveMode.class);
+        this.selectModule(JumpReset.class);
         this.selectModule(HitSelect.class);
         this.selectModule(Sprint.class);
         this.selectModule(Backtrack.class);

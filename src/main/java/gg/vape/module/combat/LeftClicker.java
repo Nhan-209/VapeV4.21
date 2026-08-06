@@ -162,7 +162,8 @@ extends ClickerMod {
         this.breakBlocksWhitelist.setCompactListValue(this.blockBreakItems);
         this.breakBlocksWhitelist.addDependentValues(this.blockBreakItems);
         this.addValue(this.holdToClick, this.triggerMode, this.breakBlocks, this.breakBlocksDelay, this.breakBlocksWhitelist, this.blockBreakItems, this.cps, this.randomization, this.jitter, this.limitItems, this.itemWhitelist);
-        ClickEngine clickEngine = new ClickEngine(ClickButton.LEFT, this.cps, this.limitItems, this.itemWhitelist, this.holdToClick, this.randomization, this.jitter);
+        ClickEngine clickEngine = new ClickEngine(ClickButton.LEFT, this.cps, this.limitItems,
+                this.itemWhitelist, this.holdToClick, this.randomization, this.jitter, this);
         this.setClickEngine(clickEngine);
         this.cps.setMaximumFractionDigits(0);
     }

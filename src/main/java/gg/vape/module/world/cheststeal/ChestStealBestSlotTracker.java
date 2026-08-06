@@ -52,15 +52,15 @@ public class ChestStealBestSlotTracker {
             this.pickaxe.updateIfHigher(slotIndex, ItemStackScoreUtil.T(itemStack));
             return true;
         }
-        if (item.isInstance(MappedClasses.YP)) {
+        if (ItemStackScoreUtil.T(item)) {
             this.axe.updateIfHigher(slotIndex, ItemStackScoreUtil.V(itemStack));
             return true;
         }
-        if (item.isInstance(MappedClasses.FM)) {
+        if (ItemStackScoreUtil.g(item)) {
             this.shovel.updateIfHigher(slotIndex, ItemStackScoreUtil.g(itemStack));
             return true;
         }
-        if (item.isInstance(MappedClasses.Ff)) {
+        if (ItemStackScoreUtil.k(item)) {
             this.hoe.updateIfHigher(slotIndex, ItemStackScoreUtil.u(itemStack));
             return true;
         }
@@ -105,4 +105,3 @@ public class ChestStealBestSlotTracker {
         }
     }
 }
-

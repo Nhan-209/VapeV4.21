@@ -75,7 +75,7 @@ extends Wrapper {
         if (super.isNull()) {
             return true;
         }
-        if (ForgeVersion.MC_26_1.d()) {
+        if (ForgeVersion.MC_1_21_11.d()) {
             return ItemStack.vapeInstance.getMappings().q8.j(this.getObject());
         }
         if (this.toString().contains("tile.air")) {

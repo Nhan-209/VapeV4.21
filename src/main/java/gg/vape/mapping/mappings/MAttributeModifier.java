@@ -14,6 +14,7 @@ extends Mapping {
     private MappingField idField;
     private MappingMethod getIdMethod;
     private final MappingMethod getAmountMethod;
+    private final MappingField amountField;
 
     public static UUID getUuid(MAttributeModifier mapping, Object attributeModifier) {
         return mapping.readUuid(attributeModifier);
@@ -29,6 +30,9 @@ extends Mapping {
     }
 
     public double getAmount(Object attributeModifier) {
+        if (this.amountField != null) {
+            return this.amountField.getDouble(attributeModifier);
+        }
         return this.getAmountMethod.invokeDouble(attributeModifier, new Object[0]);
     }
 
@@ -47,7 +51,13 @@ extends Mapping {
         } else {
             this.getIdMethod = this.Y("getID", true, UUID.class, new Class[]{});
         }
-        this.getAmountMethod = this.Y("getAmount", true, Double.TYPE, new Class[]{});
+        if (ForgeVersion.MC_1_21_0.d()) {
+            this.amountField = this.J("amount", true, Double.TYPE);
+            this.getAmountMethod = null;
+        } else {
+            this.amountField = null;
+            this.getAmountMethod = this.Y("getAmount", true, Double.TYPE, new Class[]{});
+        }
         if (GuiComponent.getLegacyComponentState() == null) {
             MIAttributeInstance.k("QRcZV");
         }

@@ -142,7 +142,7 @@ public class ItemStackScoreUtil {
         if (d == 0.0) {
             return d;
         }
-        if (!itemStack.getItem().isInstance(MappedClasses.DU)) {
+        if (!ItemStackScoreUtil.m(itemStack.getItem())) {
             return d;
         }
         int n = EnchantmentHelper.q(Enchantment.efficiency().getId(), itemStack);
@@ -192,7 +192,7 @@ public class ItemStackScoreUtil {
         if (d == 0.0) {
             return d;
         }
-        if (!itemStack.getItem().isInstance(MappedClasses.Ff)) {
+        if (!ItemStackScoreUtil.k(itemStack.getItem())) {
             return d;
         }
         d += 0.1 * (double)Math.max(0, EnchantmentHelper.q(Enchantment.unbreaking().getId(), itemStack));
@@ -227,14 +227,18 @@ public class ItemStackScoreUtil {
         if (itemStack.isNull() || itemStack.getItem().isNull() || !ItemStackScoreUtil.I(itemStack.getItem())) {
             return d;
         }
-        ItemAttributeModifiers itemAttributeModifiers = itemStack.o();
-        if (itemAttributeModifiers.size() > 0) {
-            int n = ForgeVersion.MC_1_12_2.L() ? 1 : 0;
-            AttributeModifier attributeModifier = new AttributeModifier(itemAttributeModifiers.values().toArray()[n]);
-            d = attributeModifier.getAmount();
+        if (ForgeVersion.MC_1_21_4.d()) {
+            d = ItemStackScoreUtil.a$src$F$2aw1mh(itemStack);
+        } else {
+            ItemAttributeModifiers itemAttributeModifiers = itemStack.o();
+            if (itemAttributeModifiers.size() > 0) {
+                int n = ForgeVersion.MC_1_12_2.L() ? 1 : 0;
+                AttributeModifier attributeModifier = new AttributeModifier(itemAttributeModifiers.values().toArray()[n]);
+                d = attributeModifier.getAmount();
+            }
         }
         d += (double)EnchantmentHelper.C(itemStack, EnumCreatureAttribute.undefined());
-        if (!itemStack.getItem().isInstance(MappedClasses.YP)) {
+        if (!ItemStackScoreUtil.T(itemStack.getItem())) {
             return d;
         }
         d += 0.1 * (double)Math.max(0, EnchantmentHelper.q(Enchantment.efficiency().getId(), itemStack));
@@ -556,7 +560,7 @@ public class ItemStackScoreUtil {
         if (d == 0.0) {
             return d;
         }
-        if (!itemStack.getItem().isInstance(MappedClasses.FM)) {
+        if (!ItemStackScoreUtil.g(itemStack.getItem())) {
             return d;
         }
         int n = EnchantmentHelper.q(Enchantment.efficiency().getId(), itemStack);
@@ -641,6 +645,9 @@ public class ItemStackScoreUtil {
     public static double p(ItemStack itemStack) {
         if (itemStack.isNull() || itemStack.getItem().isNull() || !ItemStackScoreUtil.I(itemStack.getItem())) {
             return 0.0;
+        }
+        if (ForgeVersion.MC_1_21_4.d()) {
+            return ItemStackScoreUtil.a$src$F$2aw1mh(itemStack);
         }
         return new ItemSword(itemStack.getItem().getObject()).Q$src$F$vp4c40();
     }

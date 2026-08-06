@@ -1,4 +1,4 @@
-package gg.vape.module.combat.velocity;
+package gg.vape.module.combat;
 
 import gg.vape.event.EventHandler;
 import gg.vape.event.EventPriority;
@@ -25,7 +25,7 @@ import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Random;
 
-public class VelocityPacketMode
+public class KnockbackDelay
 extends Mod {
     private static final long MODULE_ID = 6243151782707490976L;
     private long delayMillis;
@@ -46,7 +46,7 @@ extends Mod {
         return (double)roll >= 100.0 - (Double)this.chance.getValue();
     }
 
-    public VelocityPacketMode() {
+    public KnockbackDelay() {
         super("KnockbackDelay", (int)MODULE_ID, Category.UTILITY, "Delays incoming knockback packets");
         this.heldPackets = new LinkedList<EventPacketReceive>();
         this.chance = NumberValue.createWithDescription(this, "Chance", "#", "%", 0.0, 40.0, 100.0, "Chance of delaying knockback");

@@ -1,13 +1,15 @@
-package gg.vape.module.combat.silentaura;
+package gg.vape.module.combat.hitflick;
 
+import gg.vape.module.combat.HitFlick;
+import gg.vape.module.combat.silentaura.SilentAuraAdaptiveRotationEntry;
 import gg.vape.rotation.AdaptiveRotationController;
 
-public class SilentAuraAdaptiveRotationController
+public class HitFlickAdaptiveRotationController
 extends AdaptiveRotationController {
-    private final SilentAuraTargetingModule targetingModule;
+    private final HitFlick targetingModule;
 
 
-    public SilentAuraAdaptiveRotationController(SilentAuraTargetingModule targetingModule) {
+    public HitFlickAdaptiveRotationController(HitFlick targetingModule) {
         this.targetingModule = targetingModule;
     }
 

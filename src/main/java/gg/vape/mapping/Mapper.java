@@ -1101,6 +1101,7 @@ public class Mapper {
             if (ForgeVersion.MC_1_21_6.v()) {
                 this.hR = new MEnumHandBridge();
             }
+            this.qk = new MDataComponentMap();
             this.emptyDataComponentMap = new MEmptyDataComponentMap();
             this.itemEnchantments = new MPotionVersionRange();
             this.objectToIntMapEntry = new MObjectToIntMapEntry();
@@ -1124,7 +1125,6 @@ public class Mapper {
             this.Cc = new MFreecamMovementInputBridge();
             this.projectionType = new MItems();
             this.q3 = new MRenderStateBridge();
-            this.qk = new MDataComponentMap();
             this.D5 = new MDirectionBridge();
             this.r = new MItemAttributeModifiersComponent();
             this.DN = new MItemAttributeModifiersComponent$Entry();

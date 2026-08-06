@@ -1,4 +1,4 @@
-package gg.vape.module.combat.velocity;
+package gg.vape.module.combat;
 
 import gg.vape.config.ClientSettings;
 import gg.vape.event.EventHandler;
@@ -23,7 +23,7 @@ import gg.vape.wrapper.impl.PotionRegistry;
 import gg.vape.wrapper.impl.SPacketEntityVelocity;
 import java.util.Random;
 
-public class VelocityPacketReceiveMode
+public class JumpReset
 extends Mod {
     private final RandomValue accuracy;
     public final NumberValue chance;
@@ -158,7 +158,7 @@ extends Mod {
         return this.chance.getDisplayValue() + "%";
     }
 
-    public VelocityPacketReceiveMode() {
+    public JumpReset() {
         super("JumpReset", (int)MODULE_ID, Category.COMBAT, "Reduces knockback taken by jumping when hit");
         this.onlyWhenTargeting = BooleanValue.create(this, "Only when targeting", false, "Only reduce knockback while being face to face with opponent");
         this.accuracy = RandomValue.createWithDescription(this, "Accuracy", "#", "%", 0.0, 40.0, 60.0, 100.0, 1.0, "If you will jump, this is the chance that you will actually land a perfect jump reset on time");

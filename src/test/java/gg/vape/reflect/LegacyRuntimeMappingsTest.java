@@ -1,8 +1,12 @@
 package gg.vape.reflect;
 
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import gg.vape.runtime.NativeBridge;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.LinkedHashMap;
@@ -48,6 +52,64 @@ public class LegacyRuntimeMappingsTest {
     }
 
     @Test
+    public void detectsOriginal1206ObfuscatedRuntime() throws Exception {
+        Map<String, byte[]> classes = obfuscatedRuntime(
+                "ffh", "Q", "E", "fxx", "gcs", "gcp", "dca");
+        assertDetectedOnly(50, classes);
+
+        FixtureClassLoader loader = new FixtureClassLoader(classes);
+        Class<?> minecraftClass = loader.loadClass("ffh");
+        assertEquals("ffh", Vanilla1206Mappings.remapClassName(
+                "net/minecraft/client/Minecraft"));
+        assertEquals("f_90981_", Vanilla1206Mappings.lookupFieldSrgName(
+                minecraftClass.getDeclaredField("E")));
+        assertEquals("m_91087_", Vanilla1206Mappings.lookupMethodSrgName(
+                minecraftClass.getDeclaredMethod("Q")));
+        Thread thread = Thread.currentThread();
+        ClassLoader previousLoader = thread.getContextClassLoader();
+        Field cachedVersion = NativeBridge.class.getDeclaredField(
+                "vanillaMappingVersion");
+        cachedVersion.setAccessible(true);
+        cachedVersion.setInt(null, 0);
+        try {
+            thread.setContextClassLoader(loader);
+            assertEquals(50, NativeBridge.gmv());
+        }
+        finally {
+            thread.setContextClassLoader(previousLoader);
+            cachedVersion.setInt(null, 0);
+        }
+    }
+
+    @Test
+    public void resolvesOriginal1206TickHookMethods() throws Exception {
+        Map<String, byte[]> classes = new LinkedHashMap<String, byte[]>();
+        classes.put("dca", emptyClass("dca"));
+        classes.put("cmz", emptyClass("cmz"));
+        classes.put("bqv", emptyClass("bqv"));
+        classes.put("bqx", emptyClass("bqx"));
+        classes.put("dbj$b", emptyClass("dbj$b"));
+        classes.put("evp", emptyClass("evp"));
+        classes.put("csx", methodFixture("csx", "a",
+                "(Ldca;Lcmz;Lbqv;)Lbqx;"));
+        classes.put("cum", methodFixture("cum", "a",
+                "(Ldca;Lcmz;Ldbj$b;)Levp;"));
+
+        FixtureClassLoader loader = new FixtureClassLoader(classes);
+        Class<?> level = loader.loadClass("dca");
+        Class<?> player = loader.loadClass("cmz");
+        Method bucketUse = loader.loadClass("csx").getDeclaredMethod("a",
+                level, player, loader.loadClass("bqv"));
+        Method playerPovHitResult = loader.loadClass("cum").getDeclaredMethod(
+                "a", level, player, loader.loadClass("dbj$b"));
+
+        assertEquals("m_7203_",
+                Vanilla1206Mappings.lookupMethodSrgName(bucketUse));
+        assertEquals("m_41435_",
+                Vanilla1206Mappings.lookupMethodSrgName(playerPovHitResult));
+    }
+
+    @Test
     public void detectsOnlyNamed1710Runtime() {
         Map<String, byte[]> classes = namedMinecraftRuntime();
         addEmptyClass(classes, "net/minecraft/client/renderer/WorldRenderer");
@@ -90,12 +152,13 @@ public class LegacyRuntimeMappingsTest {
 
     private static Map<String, byte[]> obfuscatedRuntime(
             String minecraftName, String getterName, String instanceFieldName,
-            String firstAnchor, String secondAnchor) {
+            String... anchors) {
         Map<String, byte[]> classes = new LinkedHashMap<String, byte[]>();
         classes.put(minecraftName, minecraftClass(
                 minecraftName, getterName, instanceFieldName));
-        addEmptyClass(classes, firstAnchor);
-        addEmptyClass(classes, secondAnchor);
+        for (String anchor : anchors) {
+            addEmptyClass(classes, anchor);
+        }
         return classes;
     }
 
@@ -124,6 +187,9 @@ public class LegacyRuntimeMappingsTest {
         assertTrue(expectedVersion == 23
                 ? Vanilla1122Mappings.isRuntimePresent(loader)
                 : !Vanilla1122Mappings.isRuntimePresent(loader));
+        assertTrue(expectedVersion == 50
+                ? Vanilla1206Mappings.isRuntimePresent(loader)
+                : !Vanilla1206Mappings.isRuntimePresent(loader));
     }
 
     private static void addEmptyClass(
@@ -156,6 +222,18 @@ public class LegacyRuntimeMappingsTest {
         ClassWriter writer = new ClassWriter(0);
         writer.visit(Opcodes.V1_8, Opcodes.ACC_PUBLIC, internalName,
                 null, "java/lang/Object", null);
+        writer.visitEnd();
+        return writer.toByteArray();
+    }
+
+    private static byte[] methodFixture(
+            String internalName, String methodName, String descriptor) {
+        ClassWriter writer = new ClassWriter(0);
+        writer.visit(Opcodes.V1_8, Opcodes.ACC_PUBLIC, internalName,
+                null, "java/lang/Object", null);
+        writer.visitMethod(Opcodes.ACC_PUBLIC | Opcodes.ACC_NATIVE,
+                methodName, descriptor,
+                null, null).visitEnd();
         writer.visitEnd();
         return writer.toByteArray();
     }

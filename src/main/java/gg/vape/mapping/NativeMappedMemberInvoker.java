@@ -267,7 +267,11 @@ public class NativeMappedMemberInvoker {
     }
 
     public static String getMethodName(int id) {
-        return Reflections.METHODS_BY_ID.get(id).getName();
+        Method method = Reflections.METHODS_BY_ID.get(id);
+        if (method == null) {
+            throw new IllegalStateException("Method mapping was not registered: id=" + id);
+        }
+        return method.getName();
     }
 
     @SuppressWarnings("unchecked")

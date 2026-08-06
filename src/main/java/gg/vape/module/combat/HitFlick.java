@@ -1,4 +1,4 @@
-package gg.vape.module.combat.silentaura;
+package gg.vape.module.combat;
 
 import gg.vape.Vape;
 import gg.vape.config.ClientSettings;
@@ -20,7 +20,9 @@ import gg.vape.mapping.MappedClasses;
 import gg.vape.module.Category;
 import gg.vape.module.Mod;
 import gg.vape.combat.AttackPacketTimingTracker;
-import gg.vape.module.combat.SilentAura;
+import gg.vape.module.combat.hitflick.HitFlickAdaptiveRotationController;
+import gg.vape.module.combat.silentaura.SilentAuraAdaptiveRotationEntry;
+import gg.vape.module.combat.silentaura.SilentAuraRotationMode;
 import gg.vape.module.control.PrimaryActionControlClaim;
 import gg.vape.module.control.SharedModuleControlClaims;
 import gg.vape.rotation.AdaptiveRotationController;
@@ -51,7 +53,7 @@ import java.util.LinkedList;
 import java.util.Queue;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class SilentAuraTargetingModule
+public class HitFlick
 extends Mod {
     private final BooleanValue randomizeOffset;
     private final NumberValue chance;
@@ -419,7 +421,7 @@ extends Mod {
             return;
         }
         if (this.rotationController == null) {
-            this.rotationController = new SilentAuraAdaptiveRotationController(this);
+            this.rotationController = new HitFlickAdaptiveRotationController(this);
             this.rotationController.setRelativeMode(false);
             this.rotationController.setRetainAfterCompletion(true);
             this.rotationController.setClampStepToRemaining(true);
@@ -483,7 +485,7 @@ extends Mod {
         }
     }
 
-    public SilentAuraTargetingModule() {
+    public HitFlick() {
         super("HitFlick", -3580417, Category.COMBAT, "Flicks off and on target to displace knockback angle");
         this.angle = NumberValue.create(this, "Angle", "#", "deg", 0.0, 90.0, 360.0, 1.0, "0 = none, 90 = right, 180 = pull toward, 270 = left");
         this.chance = NumberValue.create(this, "Chance", "#", "%", 0.0, 100.0, 100.0, 1.0, "Chance of starting a hit flick for a given attack");

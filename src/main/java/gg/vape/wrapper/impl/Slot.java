@@ -27,12 +27,10 @@ extends Wrapper {
     }
 
     public boolean hasStack() {
-        if (ForgeVersion.MC_26_1.d()) {
-            boolean hasStack = !this.getStack().isNull();
-            return hasStack;
+        if (ForgeVersion.MC_1_21_11.d()) {
+            return !this.getStack().isNull();
         }
-        boolean hasStack = Slot.vapeInstance.getMappingsMapperCompat().slot.getStack(this.getObject()) != null;
-        return hasStack;
+        return Slot.vapeInstance.getMappingsMapperCompat().slot.getStack(this.getObject()) != null;
     }
 }
 

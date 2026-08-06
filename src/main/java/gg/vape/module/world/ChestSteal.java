@@ -12,6 +12,7 @@ import gg.vape.module.world.cheststeal.ChestStealInventoryState;
 import gg.vape.module.world.cheststeal.ChestStealBestSlotTracker;
 import gg.vape.module.world.cheststeal.ChestStealSlotDistanceComparator;
 import gg.vape.utils.RandomUtil;
+import gg.vape.utils.ItemStackScoreUtil;
 import gg.vape.utils.RotationUtil;
 import gg.vape.utils.TimerUtil;
 import gg.vape.value.BooleanValue;
@@ -56,6 +57,10 @@ implements InventoryActionModule {
     private final ChestStealBestSlotTracker bestSlotTracker;
 
     public int getArmorSlot(ItemStack itemStack) {
+        if (ForgeVersion.MC_1_21_4.d()) {
+            int armorType = ItemStackScoreUtil.t(itemStack);
+            return armorType >= 0 && armorType <= 3 ? armorType + 5 : -1;
+        }
         int itemId = itemStack.getItem().P();
         for (int armorItemId : this.bootsItemIds) {
             if (itemId != armorItemId) continue;

@@ -306,7 +306,7 @@ extends Mapping {
                 this.e = this.Y(string38, bl38, clazz40, classArray34);
             }
         }
-        if (ForgeVersion.MC_26_1.d()) {
+        if (ForgeVersion.MC_1_21_11.d()) {
             Class[] classArray35 = new Class[]{};
             Class<Boolean> clazz41 = Boolean.TYPE;
             boolean bl39 = true;

@@ -6,6 +6,7 @@ import gg.vape.reflect.Fabric12111Mappings;
 import gg.vape.reflect.Fabric262Mappings;
 import gg.vape.reflect.Type;
 import gg.vape.reflect.Vanilla1122Mappings;
+import gg.vape.reflect.Vanilla1206Mappings;
 import gg.vape.reflect.Vanilla12111Mappings;
 import gg.vape.reflect.Vanilla1710Mappings;
 import gg.vape.reflect.Vanilla189Mappings;
@@ -560,12 +561,14 @@ public class NativeBridge {
         boolean vanilla189 = badlion189
                 || Vanilla189Mappings.isRuntimePresent(preferredLoaders);
         boolean vanilla1122 = Vanilla1122Mappings.isRuntimePresent(preferredLoaders);
+        boolean vanilla1206 = Vanilla1206Mappings.isRuntimePresent(preferredLoaders);
         boolean vanilla12111 = Vanilla12111Mappings.isRuntimePresent(preferredLoaders);
         boolean fabric12111 = Fabric12111Mappings.isRuntimePresent(preferredLoaders);
         boolean vanilla262 = Vanilla262Mappings.isRuntimePresent(preferredLoaders);
         boolean fabric262 = Fabric262Mappings.isRuntimePresent(preferredLoaders);
         int matchingVersions = (vanilla1710 ? 1 : 0)
                 + (vanilla189 ? 1 : 0) + (vanilla1122 ? 1 : 0)
+                + (vanilla1206 ? 1 : 0)
                 + (vanilla12111 || fabric12111 ? 1 : 0)
                 + (vanilla262 || fabric262 ? 1 : 0);
         if (matchingVersions == 1) {
@@ -578,6 +581,8 @@ public class NativeBridge {
                 detectedVersion = 15;
             } else if (vanilla1122) {
                 detectedVersion = 23;
+            } else if (vanilla1206) {
+                detectedVersion = 50;
             } else if (vanilla12111 || fabric12111) {
                 detectedVersion = 61;
             } else {
@@ -689,6 +694,10 @@ public class NativeBridge {
         }
         if (mappingVersion == 23) {
             return Vanilla1122Mappings.resolveClass(
+                    internalName, contextLoader, bridgeLoader);
+        }
+        if (mappingVersion == 50) {
+            return Vanilla1206Mappings.resolveClass(
                     internalName, contextLoader, bridgeLoader);
         }
         if (mappingVersion == 61) {

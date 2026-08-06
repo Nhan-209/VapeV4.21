@@ -7,13 +7,18 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class Reflections {
     public static final Map<Integer, Method> METHODS_BY_ID = new HashMap<Integer, Method>();
     public static final Map<Integer, Field> FIELDS_BY_ID = new HashMap<Integer, Field>();
     public static final Map<Integer, Constructor<?>> CONSTRUCTORS_BY_ID = new HashMap();
+    private static final Set<Integer> REPORTED_INVOCATION_FAILURES =
+            Collections.newSetFromMap(new ConcurrentHashMap<Integer, Boolean>());
 
     public static void getMethod(int id, Class<?> owner, String name, String descriptor, boolean remap, boolean isStatic) throws NoSuchMethodException {
         if (name.equals("<init>")) {
@@ -144,11 +149,17 @@ public class Reflections {
 
     public static <T> T invokeMethod(int id, Object instance, Class<T> resultType, Object ... arguments) {
         try {
-            return (T)METHODS_BY_ID.get(id).invoke(instance, arguments);
+            Method method = METHODS_BY_ID.get(id);
+            if (method == null) {
+                throw new IllegalStateException("Method mapping was not registered: id=" + id);
+            }
+            return (T)method.invoke(instance, arguments);
         }
         catch (Throwable failure) {
-            System.out.println("Failed invoke method: " + id + "," + resultType.getName() + "," + instance + "," + Arrays.toString(arguments));
-            failure.printStackTrace();
+            if (REPORTED_INVOCATION_FAILURES.add(id)) {
+                System.out.println("Failed invoke method: " + id + "," + resultType.getName() + "," + instance + "," + Arrays.toString(arguments));
+                failure.printStackTrace();
+            }
             return null;
         }
     }

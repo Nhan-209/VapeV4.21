@@ -1,4 +1,4 @@
-package gg.vape.module.combat.autoclicker;
+package gg.vape.module.utility;
 
 import gg.vape.Vape;
 import gg.vape.click.AutoClickerTimingState;
@@ -19,7 +19,7 @@ import gg.vape.wrapper.impl.ItemStack;
 import gg.vape.wrapper.impl.Minecraft;
 import gg.vape.wrapper.impl.Slot;
 
-public class AutoClickerInputModule
+public class InventoryFill
 extends Mod {
     private final AutoClickerTimingState timingState;
     private int lastClickedSlot = -1;
@@ -52,7 +52,7 @@ extends Mod {
     }
 
 
-    public AutoClickerInputModule() {
+    public InventoryFill() {
         super("InventoryFill", -12288, Category.INVENTORY, "Clicks items in inventory while holding shift");
         this.timingState = new AutoClickerTimingState(Vape.INSTANCE.getAccountTier());
         this.addValue(this.cpsValue);

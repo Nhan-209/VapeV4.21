@@ -44,6 +44,8 @@ public final class MappingRegistry {
                 return "mappings/forge1164";
             case 36:
                 return "mappings/forge1165";
+            case 50:
+                return "mappings/forge1206";
             case 61:
                 return "mappings/forge12111";
             default:
@@ -98,6 +100,9 @@ public final class MappingRegistry {
         if (VANILLA_MAPPING_VERSION == 23) {
             return Vanilla1122Mappings.lookupMethodSrgName(method);
         }
+        if (VANILLA_MAPPING_VERSION == 50) {
+            return Vanilla1206Mappings.lookupMethodSrgName(method);
+        }
         if (VANILLA_MAPPING_VERSION == 61) {
             if (FABRIC_12111_RUNTIME) {
                 return Fabric12111Mappings.lookupMethodSrgName(method);
@@ -116,6 +121,9 @@ public final class MappingRegistry {
         }
         if (VANILLA_MAPPING_VERSION == 23) {
             return Vanilla1122Mappings.lookupFieldSrgName(field);
+        }
+        if (VANILLA_MAPPING_VERSION == 50) {
+            return Vanilla1206Mappings.lookupFieldSrgName(field);
         }
         if (VANILLA_MAPPING_VERSION == 61) {
             if (FABRIC_12111_RUNTIME) {
