@@ -14,6 +14,7 @@ import gg.vape.module.Mod;
 import gg.vape.rotation.RotationManager;
 import gg.vape.utils.ItemStackScoreUtil;
 import gg.vape.utils.RotationUtil;
+import gg.vape.value.BooleanValue;
 import gg.vape.value.NumberValue;
 import gg.vape.wrapper.impl.Entity;
 import gg.vape.wrapper.impl.EntityOtherPlayerMP;
@@ -27,6 +28,7 @@ public class ShieldBreaker extends Mod {
     private static final long MODULE_ID = -7666507152973844354L;
 
     private final NumberValue swapDelay;
+    private final BooleanValue autoSwitchBack;
     private final NumberValue swapBackDelay;
     private SwapState state = SwapState.IDLE;
     private int originalSlot = -1;
@@ -38,12 +40,14 @@ public class ShieldBreaker extends Mod {
                 "Swaps to an axe when attacking a player with a raised shield");
         this.swapDelay = NumberValue.create(
                 this, "Swap delay", "#", "tick", 0.0, 5.0, 20.0, 1.0);
+        this.autoSwitchBack = BooleanValue.create(this, "Auto switch back", true, "Sweeping back to the original slot");
         this.swapBackDelay = NumberValue.create(
                 this, "Swap back delay", "#", "tick", 0.0, 5.0, 20.0, 1.0,
                 "Delay between attacking and sweeping back to the original slot");
         this.swapDelay.setMaximumFractionDigits(0);
         this.swapBackDelay.setMaximumFractionDigits(0);
-        this.addValue(this.swapDelay, this.swapBackDelay);
+        this.autoSwitchBack.addDependentValues(this.swapBackDelay);
+        this.addValue(this.swapDelay, this.autoSwitchBack, this.swapBackDelay);
     }
 
     @EventHandler(priority = EventPriority.HIGH, skipCanceled = true)
@@ -81,6 +85,12 @@ public class ShieldBreaker extends Mod {
         }
 
         if (this.state == SwapState.IDLE) {
+            return;
+        }
+
+        if (this.state == SwapState.WAITING_TO_SWAP_BACK
+                && !this.autoSwitchBack.getEffectiveValue()) {
+            this.resetState(player, false);
             return;
         }
 
@@ -162,8 +172,14 @@ public class ShieldBreaker extends Mod {
 
         AttackKeyController.releaseAttackKey();
         this.attackReleasePending = AttackKeyController.requestSyntheticAttack(this);
-        this.state = SwapState.WAITING_TO_SWAP_BACK;
-        this.ticksRemaining = this.getTickValue(this.swapBackDelay);
+        if (this.autoSwitchBack.getEffectiveValue()) {
+            this.state = SwapState.WAITING_TO_SWAP_BACK;
+            this.ticksRemaining = this.getTickValue(this.swapBackDelay);
+        } else {
+            this.originalSlot = -1;
+            this.ticksRemaining = 0;
+            this.state = SwapState.IDLE;
+        }
     }
 
     private int findAxeSlot(InventoryPlayer inventory) {
