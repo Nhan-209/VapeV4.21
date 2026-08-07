@@ -40,7 +40,7 @@ public class ShieldBreaker extends Mod {
                 "Swaps to an axe when attacking a player with a raised shield");
         this.swapDelay = NumberValue.create(
                 this, "Swap delay", "#", "tick", 0.0, 5.0, 20.0, 1.0);
-        this.autoSwitchBack = BooleanValue.create(this, "Auto switch back", true, "Sweeping back to the original slot");
+        this.autoSwitchBack = BooleanValue.create(this, "Auto swap back", true, "Sweeping back to the original slot");
         this.swapBackDelay = NumberValue.create(
                 this, "Swap back delay", "#", "tick", 0.0, 5.0, 20.0, 1.0,
                 "Delay between attacking and sweeping back to the original slot");

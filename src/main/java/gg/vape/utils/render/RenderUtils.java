@@ -42,9 +42,13 @@ public final class RenderUtils {
     static IntBuffer g;
 
     public static void C() {
-        double d = 2.0 * Vape.INSTANCE.getClientSettings().getGuiScaleFactor();
         int n = Minecraft.h() - MouseInput.getInvertedMouseY();
-        w = new MousePosition((int)((double)MouseInput.getMouseX() / d), (int)((double)n / d));
+        RenderUtils.C(MouseInput.getMouseX(), n);
+    }
+
+    public static void C(int mouseX, int mouseY) {
+        double d = 2.0 * Vape.INSTANCE.getClientSettings().getGuiScaleFactor();
+        w = new MousePosition((int)((double)mouseX / d), (int)((double)mouseY / d));
     }
 
     public static void X(Color color, Color color2, double d, double d2, double d3, double d4, double d5, double d6, double d7, double d8) {

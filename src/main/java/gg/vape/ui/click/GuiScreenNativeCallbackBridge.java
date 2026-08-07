@@ -19,8 +19,12 @@ public class GuiScreenNativeCallbackBridge {
     }
 
     public static void mouseClicked(Object screen, int mouseX, int mouseY, int button) {
-        ClientSettings clientSettings = Vape.INSTANCE.getModManager().getMod(ClientSettings.class);
-        clientSettings.handleMouseButton(button);
+        ClientSettings.UI_EXECUTOR.execute(() -> {
+            ClientSettings clientSettings = Vape.INSTANCE.getModManager().getMod(ClientSettings.class);
+            if (clientSettings != null && !clientSettings.inputEnabled) {
+                clientSettings.handleMouseButton(button, mouseX, mouseY);
+            }
+        });
     }
 
     public static void drawScreen(Object screen, int mouseX, int mouseY, float partialTicks) {

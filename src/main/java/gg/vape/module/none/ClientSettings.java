@@ -303,6 +303,20 @@ extends Mod {
 
     public void handleMouseButton(int button) {
         RenderUtils.C();
+        this.dispatchMouseButton(button);
+    }
+
+    public void handleMouseButton(int button, int mouseX, int mouseY) {
+        RenderUtils.C(mouseX, mouseY);
+        try {
+            this.dispatchMouseButton(button);
+        }
+        finally {
+            RenderUtils.C();
+        }
+    }
+
+    private void dispatchMouseButton(int button) {
         MousePosition mousePosition = RenderUtils.h();
         GuiMouseEvent guiMouseEvent = new GuiMouseEvent(mousePosition.O, mousePosition.H, MouseButton.A((int)button));
         if (guiMouseEvent.fire()) {
