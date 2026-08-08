@@ -13,6 +13,7 @@ import gg.vape.event.impl.EventModStateChange;
 import gg.vape.input.BindActivationMode;
 import gg.vape.notification.NotificationType;
 import gg.vape.notification.ReusableTextNotification;
+import gg.vape.module.render.hud.HudModule;
 import gg.vape.ui.click.frame.impl.main.ClickGuiModuleCardRenderState;
 import gg.vape.unmap.Bendable;
 import gg.vape.unmap.INamed;
@@ -289,7 +290,7 @@ EventListener {
             }
         }
         this.syncSubModuleStates(enabled, bypassVisibilityCheck);
-        if (stateChanged && this.category != Category.NONE) {
+        if (stateChanged && (this.category != Category.NONE || this instanceof HudModule)) {
             Vape.INSTANCE.saveAndStop();
         }
     }

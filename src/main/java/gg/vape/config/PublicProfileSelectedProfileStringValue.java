@@ -13,7 +13,8 @@ extends StringValue {
     private static final String MISSING_ONLINE_UUID_SUFFIX = " has no online uuid";
 
 
-    public String getActiveProfileId() {
+    @Override
+    public String getValue() {
         Profile activeProfile = Vape.INSTANCE.getProfilesManager().getActiveProfile();
         UUID onlineId = activeProfile.getOnlineId();
         if (onlineId == null) {
@@ -28,7 +29,8 @@ extends StringValue {
         this.settings = settings;
     }
 
-    public void setSelectedProfile(String profileIdentifier) {
+    @Override
+    public void setValue(String profileIdentifier) {
         super.setValue(profileIdentifier);
         boolean isUuid = StringUtils.n(profileIdentifier);
         if (isUuid) {

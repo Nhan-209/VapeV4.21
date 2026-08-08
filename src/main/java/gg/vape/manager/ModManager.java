@@ -467,7 +467,7 @@ implements EventListener {
     public JsonObject getEnabledHudModuleStates() {
         JsonObject enabledStates = new JsonObject();
         for (Mod mod : this.getAllModules()) {
-            if (!(mod instanceof HudModule) || !mod.isEnabled()) continue;
+            if (!(mod instanceof HudModule)) continue;
             enabledStates.addProperty(mod.getName(), Boolean.valueOf(mod.isEnabled()));
         }
         return enabledStates;
