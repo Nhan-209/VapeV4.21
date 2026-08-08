@@ -1,3 +1,5 @@
+[简体中文](README.md) | [English](README_EN.md)
+
 # Vape 4.21 Product Recovery
 
 Vape 4.21 Java 层与 Windows x64 原生桥接层的研究性恢复工程。
