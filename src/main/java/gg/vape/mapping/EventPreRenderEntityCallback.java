@@ -18,6 +18,9 @@ implements InsertedEventCallback {
     private final Object q;
 
     public static void call(Object object, Object object2, Object object3, Object object4, int n) {
+        if (!EventPreRenderLiving.getEventListeners().hasListeners()) {
+            return;
+        }
         boolean bl = new EventPreRenderEntityCallback(object, object3).fire();
         if (bl) {
             RenderStateBridge renderStateBridge = new RenderStateBridge(object2);
@@ -26,6 +29,9 @@ implements InsertedEventCallback {
     }
 
     public static void call(Object object, Object object2, float f, Object object3, Object object4, int n) {
+        if (!EventPreRenderLiving.getEventListeners().hasListeners()) {
+            return;
+        }
         Object object5 = new Render(object3).a(new Entity(object), f).getObject();
         EventPreRenderEntityCallback.call(object, object5, object2, object4, n);
     }
@@ -57,7 +63,9 @@ implements InsertedEventCallback {
     }
 
     public static void call(Object object) {
-        new EventPreRenderEntityCallback(object, null).fire();
+        if (EventPreRenderLiving.getEventListeners().hasListeners()) {
+            new EventPreRenderEntityCallback(object, null).fire();
+        }
     }
 }
 
