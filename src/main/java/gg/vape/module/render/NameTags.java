@@ -218,12 +218,13 @@ extends Mod {
 
     @EventHandler(skipCanceled=true)
     public void S(EventPreRenderLiving eventPreRenderLiving) {
-        if (eventPreRenderLiving.getWorld().isNull()) {
+        World world = eventPreRenderLiving.getWorld();
+        if (world.isNull()) {
             return;
         }
         EntityPlayerSP entityPlayerSP = eventPreRenderLiving.getThePlayer();
         Entity entity = eventPreRenderLiving.getEntity();
-        if (!this.shouldRender(entity, eventPreRenderLiving.getWorld(), entityPlayerSP)) {
+        if (!this.isCurrentWorldEntity(world, entity) || this.shouldRenderContext(new EntityLivingBase(entity), world, entityPlayerSP) == null) {
             return;
         }
         eventPreRenderLiving.setCancelled(true);
@@ -534,11 +535,10 @@ extends Mod {
         double d6 = entityPlayerSP.m$src$D$fwnne5() + (entityPlayerSP.h() - entityPlayerSP.m$src$D$fwnne5()) * (double)eventRender3D.getTicks() - d3;
         ArrayList<OnlineRadarPreviewState<Object, RenderEntityContext>> arrayList = new ArrayList<OnlineRadarPreviewState<Object, RenderEntityContext>>();
         for (Object e : worldClient.z()) {
-            Entity entity = new Entity(e);
-            if (!this.shouldRender(entity, worldClient, entityPlayerSP)) continue;
-            EntityLivingBase entityLivingBase = new EntityLivingBase(entity);
-            RenderEntityContext object = RenderEntityContextCache.getOrCreate(entityLivingBase, entityPlayerSP);
-            arrayList.add(OnlineRadarPreviewState.create(entityLivingBase, object));
+            EntityLivingBase entityLivingBase = new EntityLivingBase(new Entity(e));
+            RenderEntityContext renderEntityContext = this.shouldRenderContext(entityLivingBase, worldClient, entityPlayerSP);
+            if (renderEntityContext == null) continue;
+            arrayList.add(OnlineRadarPreviewState.create(entityLivingBase, renderEntityContext));
         }
         arrayList.sort(NameTags::lambda$onRenderWorldLast$0);
         GameSettings gameSettings = Minecraft.gameSettings();
@@ -691,66 +691,71 @@ extends Mod {
         this.nameCache.clear();
     }
 
-    private boolean shouldRender(Entity entity, World world, EntityPlayerSP entityPlayerSP) {
-        if (entity.isNull() || entityPlayerSP.isNull() || world.isNull()) {
+    private boolean isCurrentWorldEntity(World world, Entity entity) {
+        if (world.isNull() || entity.isNull()) {
             return false;
         }
-        if (MappedClasses.FT != null && entity.isInstance(MappedClasses.FT)) {
-            return false;
+        Entity entity2 = world.V(entity.S());
+        return entity2 != null && entity2.isNotNull() && entity2.getObject() == entity.getObject();
+    }
+
+    private RenderEntityContext shouldRenderContext(EntityLivingBase entityLivingBase, World world, EntityPlayerSP entityPlayerSP) {
+        if (entityLivingBase.isNull() || entityPlayerSP.isNull() || world.isNull()) {
+            return null;
         }
-        if (!entity.isInstance(MappedClasses.zm)) {
-            return false;
+        if (MappedClasses.FT != null && entityLivingBase.isInstance(MappedClasses.FT)) {
+            return null;
         }
-        if (entityPlayerSP.getObject().equals(entity.getObject())) {
-            return false;
+        if (!entityLivingBase.isInstance(MappedClasses.zm)) {
+            return null;
         }
-        if (!world.z().contains(entity.getObject())) {
-            return false;
+        if (entityPlayerSP.getObject().equals(entityLivingBase.getObject())) {
+            return null;
         }
-        EntityLivingBase entityLivingBase = new EntityLivingBase(entity);
         RenderEntityContext renderEntityContext = RenderEntityContextCache.getOrCreate(entityLivingBase, entityPlayerSP);
         if (renderEntityContext.isSyntheticEntity()) {
-            return false;
+            return null;
         }
         if (this.hideBots.getEffectiveValue().booleanValue() && renderEntityContext.isBot()) {
-            return false;
+            return null;
         }
         if (this.ignoreInvisibles.getEffectiveValue().booleanValue() && renderEntityContext.isInvisible()) {
-            return false;
+            return null;
         }
-        if (entity.isInstance(MappedClasses.Yl)) {
+        if (entityLivingBase.isInstance(MappedClasses.Yl)) {
             if (!this.renderPlayers.getEffectiveValue().booleanValue()) {
-                return false;
+                return null;
             }
             if ((Double)this.playersMaxDistance.getValue() != 0.0 && renderEntityContext.getDistance() > (Double)this.playersMaxDistance.getValue()) {
-                return false;
+                return null;
             }
         }
-        if (RotationUtil.m(entity)) {
+        if (RotationUtil.m(entityLivingBase)) {
             if (!this.renderAnimals.getEffectiveValue().booleanValue()) {
-                return false;
+                return null;
             }
             if ((Double)this.animalsMaxDistance.getValue() != 0.0 && renderEntityContext.getDistance() > (Double)this.animalsMaxDistance.getValue()) {
-                return false;
+                return null;
             }
         }
-        if (RotationUtil.W(entity)) {
+        if (RotationUtil.W(entityLivingBase)) {
             if (!this.renderMobs.getEffectiveValue().booleanValue()) {
-                return false;
+                return null;
             }
-            return (Double)this.mobsMaxDistance.getValue() == 0.0 || !(renderEntityContext.getDistance() > (Double)this.mobsMaxDistance.getValue());
+            return (Double)this.mobsMaxDistance.getValue() == 0.0 || !(renderEntityContext.getDistance() > (Double)this.mobsMaxDistance.getValue()) ? renderEntityContext : null;
         }
-        return true;
+        return renderEntityContext;
     }
 
     @EventHandler
     public void w(EventEntityRenderState eventEntityRenderState) {
-        if (eventEntityRenderState.getWorld().isNull()) {
+        World world = eventEntityRenderState.getWorld();
+        if (world.isNull()) {
             return;
         }
         EntityPlayerSP entityPlayerSP = eventEntityRenderState.getThePlayer();
         Entity entity = eventEntityRenderState.getEntity();
-        if (!this.shouldRender(entity, eventEntityRenderState.getWorld(), entityPlayerSP)) {
+        if (!this.isCurrentWorldEntity(world, entity) || this.shouldRenderContext(new EntityLivingBase(entity), world, entityPlayerSP) == null) {
             return;
         }
         eventEntityRenderState.getEntityRenderState().Z(new ITextComponent(null));
