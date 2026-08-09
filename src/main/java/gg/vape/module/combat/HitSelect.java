@@ -14,7 +14,6 @@ extends Mod {
     private final SubModuleValue<WTapRightClickUseCancelMode> rightClickUseCancel = new WTapRightClickUseCancelMode(this, "Right-click use cancel").getSelectionValue();
     private final NumberValue chance;
     private final SubModuleValue<WTapSprintResetMode> sprintReset = new WTapSprintResetMode(this, "Normal").getSelectionValue();
-    private static final long MODULE_ID = 0L;
     private final ModeValue mode = ModeValue.create((Object)this, "Mode", this.rightClickUseCancel, this.rightClickUseCancel, this.sprintReset);
 
     @Override
@@ -24,7 +23,7 @@ extends Mod {
 
 
     public HitSelect() {
-        super("HitSelect", 0, (int)MODULE_ID, Category.COMBAT, "");
+        super("HitSelect", 82881230, Category.COMBAT, "");
         this.chance = NumberValue.create(this, "Chance", "#", "%", 0.0, 90.0, 100.0);
         this.addValue(this.mode, this.chance);
         this.mode.setDescription("Mode");
@@ -47,4 +46,3 @@ extends Mod {
         return ((ModeSelection)this.mode.java_lang_Object_K()).getName();
     }
 }
-
