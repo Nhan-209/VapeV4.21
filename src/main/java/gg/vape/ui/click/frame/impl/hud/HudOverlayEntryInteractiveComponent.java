@@ -7,12 +7,13 @@ import gg.vape.ui.click.frame.Frame;
 import gg.vape.unmap.ColorUtil;
 import gg.vape.utils.render.GuiRenderPrimitives;
 import java.awt.Color;
-import java.util.Objects;
 import java.util.function.BooleanSupplier;
 import org.jetbrains.annotations.Nullable;
 
 public class HudOverlayEntryInteractiveComponent
 extends InteractiveComponent {
+    private static final Color INACTIVE_BACKGROUND = new Color(0, 0, 0, 63);
+    private static final Color HOVER_OVERLAY = new Color(255, 255, 255, 10);
     private String tooltip;
     @Nullable
     private Runnable action;
@@ -36,6 +37,12 @@ extends InteractiveComponent {
         this.frameClass = frameClass;
     }
 
+    private static boolean isFrameEnabled(@Nullable Frame frame) {
+        return frame != null
+                && frame.V$src$Z$1xhop3l()
+                && frame.y$src$Z$1f55jvh();
+    }
+
     private boolean isSelected() {
         if (this.selectedSupplier != null) {
             return this.selectedSupplier.getAsBoolean();
@@ -44,21 +51,34 @@ extends InteractiveComponent {
             return false;
         }
         Frame frame = ClientSettings.getFrame(this.frameClass);
-        return frame != null && frame.V$src$Z$1xhop3l();
+        return isFrameEnabled(frame);
     }
 
     @Override
     public void H() {
+        boolean selected = this.isSelected();
+        boolean hovered = this.w$src$Z$e457mb();
         double d = this.G$src$D$1b2f02a();
         double d2 = this.n();
         double d3 = this.A();
-        Color color = ClientSettings.INSTANCE.getAccentColor();
-        GuiRenderPrimitives.I(d, d2 - 1.0, d3, d3, ColorUtil.offsetRgb(color, 40.0), false, 4.0f, 1.0f, 8.0f, HudOverlayEntryInteractiveComponent.J.u);
-        GuiRenderPrimitives.I(d, d2 + 1.0, d3, d3, ColorUtil.offsetRgb(color, -15.0), false, 4.0f, 1.0f, 8.0f, HudOverlayEntryInteractiveComponent.J.u);
-        GuiRenderPrimitives.I(d, d2, d3, d3, color, false, 4.0f, 1.0f, 8.0f, HudOverlayEntryInteractiveComponent.J.u);
-        Color color2 = HudOverlayEntryInteractiveComponent.J.W;
-        color2 = J.B();
-        this.icon.setColor(color2);
+        Color background = selected
+                ? ClientSettings.INSTANCE.getAccentColor()
+                : INACTIVE_BACKGROUND;
+        if (selected) {
+            GuiRenderPrimitives.I(d, d2 - 1.0, d3, d3,
+                    ColorUtil.offsetRgb(background, 40.0), false, 4.0f, 1.0f,
+                    8.0f, HudOverlayEntryInteractiveComponent.J.u);
+            GuiRenderPrimitives.I(d, d2 + 1.0, d3, d3,
+                    ColorUtil.offsetRgb(background, -15.0), false, 4.0f, 1.0f,
+                    8.0f, HudOverlayEntryInteractiveComponent.J.u);
+        }
+        GuiRenderPrimitives.I(d, d2, d3, d3, background, false, 4.0f, 1.0f,
+                8.0f, HudOverlayEntryInteractiveComponent.J.u);
+        if (!selected && hovered) {
+            GuiRenderPrimitives.I(d, d2, d3, d3, HOVER_OVERLAY, false, 4.0f,
+                    1.0f, 8.0f, HudOverlayEntryInteractiveComponent.J.u);
+        }
+        this.icon.setColor(selected ? J.B() : (hovered ? J.f : J.W));
         this.icon.K(d + (d3 - 6.0) / 2.0);
         this.icon.S(d2 + (d3 - 6.0) / 2.0);
     }
@@ -79,23 +99,22 @@ extends InteractiveComponent {
     }
 
     private void handleClick() {
-        this.toggleFrameVisibility();
+        this.toggleFrameEnabled();
         if (this.action != null) {
             this.action.run();
         }
     }
 
-    private void toggleFrameVisibility() {
+    private void toggleFrameEnabled() {
         if (this.frameClass == null) {
             return;
         }
         Frame frame = ClientSettings.getFrame(this.frameClass);
-        ClientSettings.showFrame(this.frameClass);
-        Frame frame2 = ClientSettings.getFrame(this.frameClass);
-        if (frame2 != null) {
-            frame2.c(frame2.V$src$Z$1xhop3l());
-        }
-        if (frame != null && Objects.equals(frame, frame2)) {
+        if (frame != null) {
+            boolean enabled = !isFrameEnabled(frame);
+            frame.setVisible(enabled);
+            frame.c(enabled);
+            frame.U();
             frame.l$src$V$1mibm4x();
         }
     }

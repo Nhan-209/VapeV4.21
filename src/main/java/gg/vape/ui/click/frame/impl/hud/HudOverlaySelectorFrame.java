@@ -59,7 +59,9 @@ extends Frame {
             ((Mod)obj).toggle();
             Object t = ClientSettings.getFrame(clazz);
             if (t != null) {
-                ((Frame)t).setVisible(((Mod)obj).isEnabled());
+                boolean enabled = ((Mod)obj).isEnabled();
+                ((Frame)t).setVisible(enabled);
+                ((Frame)t).c(enabled);
             }
         }
     }
