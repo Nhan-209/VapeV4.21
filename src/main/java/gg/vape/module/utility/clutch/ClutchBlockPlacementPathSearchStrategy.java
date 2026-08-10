@@ -1,10 +1,6 @@
 package gg.vape.module.utility.clutch;
 
-import gg.vape.module.utility.Clutch;
-import gg.vape.module.utility.clutch.BlockPathSearchStrategy;
-import gg.vape.module.utility.clutch.BlockPlacementNode;
-import gg.vape.module.utility.clutch.ClutchPlacementPathUtils;
-import gg.vape.module.utility.clutch.PlacementTarget;
+import gg.vape.module.utility.BlockIn;
 import gg.vape.utils.BlockUtil;
 import gg.vape.utils.datas.BlockData;
 import gg.vape.wrapper.impl.Block;
@@ -16,7 +12,7 @@ import java.util.Vector;
 public class ClutchBlockPlacementPathSearchStrategy
 implements BlockPathSearchStrategy<PlacementTarget> {
     final World world;
-    final Clutch clutch;
+    final BlockIn blockIn;
     final EntityPlayerSP player;
     final HashSet<BlockData> allowedBlocks;
     final HashSet<BlockData> excludedBlocks;
@@ -28,8 +24,8 @@ implements BlockPathSearchStrategy<PlacementTarget> {
         return path.size();
     }
 
-    public ClutchBlockPlacementPathSearchStrategy(Clutch clutch, HashSet<BlockData> excludedBlocks, BlockPlacementNode node, World world, EntityPlayerSP player, HashSet<BlockData> allowedBlocks) {
-        this.clutch = clutch;
+    public ClutchBlockPlacementPathSearchStrategy(BlockIn blockIn, HashSet<BlockData> excludedBlocks, BlockPlacementNode node, World world, EntityPlayerSP player, HashSet<BlockData> allowedBlocks) {
+        this.blockIn = blockIn;
         this.excludedBlocks = excludedBlocks;
         this.node = node;
         this.world = world;

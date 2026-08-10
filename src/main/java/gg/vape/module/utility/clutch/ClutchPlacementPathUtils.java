@@ -1,9 +1,6 @@
 package gg.vape.module.utility.clutch;
 
-import gg.vape.module.blatant.BlockIn;
-import gg.vape.module.utility.clutch.BlockPathSearchStrategy;
-import gg.vape.module.utility.clutch.BlockPlacementNode;
-import gg.vape.module.utility.clutch.PlacementTarget;
+import gg.vape.module.blatant.Clutch;
 import gg.vape.unmap.ItemLimitData;
 import gg.vape.utils.BlockUtil;
 import gg.vape.utils.FastAtanMath;
@@ -383,7 +380,7 @@ public class ClutchPlacementPathUtils {
             }
             if (candidatePath.isEmpty()) continue;
             if (depth == 0) {
-                BlockIn.DEBUG_PLACEMENT_PATHS.add(new Vector(candidatePath));
+                Clutch.DEBUG_PLACEMENT_PATHS.add(new Vector(candidatePath));
             }
             int candidateScore = searchStrategy.scorePath(candidatePath, depth);
             if (bestPath != null && candidateScore >= bestScore) continue;

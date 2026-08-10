@@ -1,6 +1,5 @@
-package gg.vape.module.blatant.blockin;
+package gg.vape.module.blatant.clutch;
 
-import gg.vape.module.blatant.BlockIn;
 import gg.vape.rotation.FixedRotationController;
 import gg.vape.rotation.PlayerMouseRotationApplier;
 import gg.vape.rotation.RotationAngles;

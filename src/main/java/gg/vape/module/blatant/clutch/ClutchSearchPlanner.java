@@ -1,6 +1,6 @@
-package gg.vape.module.blatant.blockin;
+package gg.vape.module.blatant.clutch;
 
-import gg.vape.module.blatant.BlockIn;
+import gg.vape.module.blatant.Clutch;
 import gg.vape.module.utility.clutch.BlockPathSearchStrategy;
 import gg.vape.module.utility.clutch.PlacementTarget;
 import gg.vape.utils.datas.BlockData;
@@ -11,7 +11,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Vector;
 
-public class BlockInSearchPlanner {
+public class ClutchSearchPlanner {
     private static EnumFacing[] directions;
 
     private final BlockPathSearchStrategy<PlacementTarget> strategy;
@@ -19,7 +19,7 @@ public class BlockInSearchPlanner {
     private final Map<BlockData, Vector<PlacementTarget>> pathCache;
     private long elapsedNanos;
 
-    public BlockInSearchPlanner(BlockPathSearchStrategy<PlacementTarget> strategy) {
+    public ClutchSearchPlanner(BlockPathSearchStrategy<PlacementTarget> strategy) {
         this.strategy = strategy;
         this.pathCache = new HashMap<>();
         if (directions == null) {
@@ -96,7 +96,7 @@ public class BlockInSearchPlanner {
                 break;
             }
             if (depth == 0) {
-                BlockIn.DEBUG_PLACEMENT_PATHS.add(new Vector<>(candidatePath));
+                Clutch.DEBUG_PLACEMENT_PATHS.add(new Vector<>(candidatePath));
             }
             int score = this.strategy.scorePath(candidatePath, depth);
             if (bestPath == null || score < bestScore) {

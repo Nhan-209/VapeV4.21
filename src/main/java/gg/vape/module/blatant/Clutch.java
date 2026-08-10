@@ -17,15 +17,15 @@ import gg.vape.module.Mod;
 import gg.vape.module.ModuleDisplayInfo;
 import gg.vape.module.VisibleModuleList;
 import gg.vape.module.blatant.blockin.BlockInBooleanState;
-import gg.vape.module.blatant.blockin.BlockInPlacementSearchStrategy;
-import gg.vape.module.blatant.blockin.BlockInSearchPlanner;
+import gg.vape.module.blatant.clutch.ClutchPlacementSearchStrategy;
+import gg.vape.module.blatant.clutch.ClutchSearchPlanner;
 import gg.vape.module.blatant.blockin.BlockInTargetRotationState;
-import gg.vape.module.blatant.blockin.BlockInThresholdRotationController;
+import gg.vape.module.blatant.clutch.ClutchThresholdRotationController;
 import gg.vape.module.blatant.blockin.BlockPathPlanner;
 import gg.vape.module.blatant.blockin.BlockPlacementGraph;
 import gg.vape.module.blatant.blockin.BlockPlacementPathSegment;
 import gg.vape.module.blatant.blockin.BlockPlacementPathSegmentState;
-import gg.vape.module.blatant.blockin.EntityFixedRotationController;
+import gg.vape.module.blatant.clutch.EntityFixedRotationController;
 import gg.vape.module.control.SharedModuleControlClaims;
 import gg.vape.module.none.ClientSettings;
 import gg.vape.module.render.hud.FreeLookHudModule;
@@ -91,7 +91,7 @@ import java.util.Stack;
 import java.util.Vector;
 import org.jetbrains.annotations.Nullable;
 
-public class BlockIn
+public class Clutch
 extends Mod {
     private float placeYaw;
     private BlockPlacementGraph currentGraph;
@@ -355,7 +355,7 @@ extends Mod {
         return this.rotationClaim;
     }
 
-    public BlockIn() {
+    public Clutch() {
         super("Clutch", -65404, Category.UTILITY, "Saves yourself from falling");
         this.onLethalFall = BooleanValue.create(this, "On lethal fall", true, "Catches the player if they are about to die due to fall damage");
         this.onMoreThanXBlocks = BooleanValue.create(this, "On more than x blocks", false, "Catches the player if their landing block is more than x amount of blocks");
@@ -520,10 +520,10 @@ extends Mod {
         int horizontalDepth = Math.abs(startBlock.D() - targetBlock.D());
         int lateralDepth = Math.abs(startBlock.G() - targetBlock.G());
         int verticalDepth = Math.abs(startBlock.B() - targetBlock.B());
-        BlockInPlacementSearchStrategy strategy = new BlockInPlacementSearchStrategy(this, horizontalDepth, lateralDepth, verticalDepth, world, localPlayer, candidatePositions);
+        ClutchPlacementSearchStrategy strategy = new ClutchPlacementSearchStrategy(this, horizontalDepth, lateralDepth, verticalDepth, world, localPlayer, candidatePositions);
         Block block = world.getBlockByPos(targetBlock.D(), targetBlock.B(), targetBlock.G());
         if (BlockUtil.u(block)) {
-            Vector<PlacementTarget> path = new BlockInSearchPlanner(strategy).findPath(startBlock, targetBlock);
+            Vector<PlacementTarget> path = new ClutchSearchPlanner(strategy).findPath(startBlock, targetBlock);
             if (path != null && !path.isEmpty()) {
                 pathSegment.placementState = new BlockPlacementPathSegmentState(path.lastElement().facing, path);
             }
@@ -1023,7 +1023,7 @@ extends Mod {
             float wrappedYawDelta = MathUtil.wrapAngleTo180(localPlayer.J() - (float)this.savedYaw);
             float resetSpeed = Math.max(wrappedYawDelta / 90.0f * 5.0f, 1.0f);
             float yawDelta = localPlayer.J() - (float)this.savedYaw;
-            BlockInThresholdRotationController resetController = new BlockInThresholdRotationController(this, Minecraft.thePlayer(), yawDelta, localPlayer.V() - (float)this.savedPitch);
+            ClutchThresholdRotationController resetController = new ClutchThresholdRotationController(this, Minecraft.thePlayer(), yawDelta, localPlayer.V() - (float)this.savedPitch);
             resetController.setRandomizeMovement(true);
             resetController.setScaleAxesProportionally(true);
             resetController.setLinearAcceleration(true);
