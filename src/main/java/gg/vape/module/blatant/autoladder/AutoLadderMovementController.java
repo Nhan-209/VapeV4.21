@@ -1,8 +1,8 @@
 package gg.vape.module.blatant.autoladder;
 
-import gg.vape.module.blatant.blockin.BlockPathPlanner;
 import gg.vape.module.blatant.blockin.BlockPlacementGraph;
 import gg.vape.movement.MovementInputHelper;
+import gg.vape.utils.MathUtil;
 import gg.vape.utils.datas.BlockData;
 import gg.vape.wrapper.impl.AxisAlignedBB;
 import gg.vape.wrapper.impl.EntityPlayer;
@@ -18,18 +18,10 @@ public final class AutoLadderMovementController {
     private static final double LEGACY_LADDER_THICKNESS = 0.125;
     private static final double MODERN_LADDER_THICKNESS = 0.1875;
     private static final double CONTACT_PRESS_OVERLAP = 0.005;
-    private static final int CENTERING_LOOKAHEAD_TICKS = 2;
-    private static final CenterInput[] INPUTS = new CenterInput[]{
-            new CenterInput(false, false, false, false),
-            new CenterInput(true, false, false, false),
-            new CenterInput(false, true, false, false),
-            new CenterInput(false, false, true, false),
-            new CenterInput(false, false, false, true),
-            new CenterInput(true, false, true, false),
-            new CenterInput(true, false, false, true),
-            new CenterInput(false, true, true, false),
-            new CenterInput(false, true, false, true)
-    };
+    private static final double AIR_DECAY_PER_TICK = 0.91;
+    private static final double GROUND_DECAY_PER_TICK = 0.546;
+    private static final double CENTERING_DEADZONE = 0.03;
+    private static final double AXIS_PRESS_THRESHOLD = 0.5;
 
     private AutoLadderMovementController() {
     }
@@ -60,22 +52,8 @@ public final class AutoLadderMovementController {
                                               BlockData ladderBlock, EnumFacing facing) {
         double[] target = resolveCenteringTarget(sourcePlayer, centerX, centerZ,
                 ladderBlock, facing);
-        boolean reusableSimulation = ForgeVersion.MC_1_21_4.d() || ForgeVersion.MC_1_16_5.d();
-        BlockPathPlanner simulation = reusableSimulation
-                ? new BlockPathPlanner(sourcePlayer, localPlayer, world, graph) : null;
-        CenterInput bestInput = INPUTS[0];
-        double bestScore = Double.POSITIVE_INFINITY;
-        for (CenterInput input : INPUTS) {
-            double score = reusableSimulation
-                    ? simulateCenteringInput(simulation, graph, input, target[0], target[1])
-                    : simulateCenteringInput(sourcePlayer, localPlayer, world, graph,
-                            input, target[0], target[1]);
-            if (score < bestScore) {
-                bestScore = score;
-                bestInput = input;
-            }
-        }
-        return bestInput;
+        return chooseCenteringAnalytic(sourcePlayer, target[0], target[1],
+                ladderBlock, facing);
     }
 
     /**
@@ -126,60 +104,108 @@ public final class AutoLadderMovementController {
         return requiresLadderContact() ? -CONTACT_PRESS_OVERLAP : 0.002;
     }
 
-    private static double simulateCenteringInput(BlockPathPlanner simulation,
-                                                 BlockPlacementGraph graph,
-                                                 CenterInput input,
-                                                 double centerX, double centerZ) {
-        simulation.applySnapshot(graph);
-        simulation.setInput(input.forward, input.backward, input.left, input.right, false, false);
-        EntityPlayer simulatedPlayer = simulation.getSimulatedPlayer();
-        double bestDistanceSq = Double.POSITIVE_INFINITY;
-        for (int tick = 1; tick <= CENTERING_LOOKAHEAD_TICKS; ++tick) {
-            simulation.simulateTick(false);
-            double deltaX = centerX - simulatedPlayer.z();
-            double deltaZ = centerZ - simulatedPlayer.h();
-            bestDistanceSq = Math.min(bestDistanceSq,
-                    deltaX * deltaX + deltaZ * deltaZ);
+    /**
+     * Analytic steering law replacing the former exhaustive 9-input x 2-tick physics
+     * enumeration. The player's horizontal drift over the next two ticks is predicted
+     * from the current velocity (vanilla exponential friction), then each movement axis
+     * is pressed when its projection onto the drift-compensated target direction
+     * exceeds the threshold. Closed-loop per tick, so per-tick suboptimality is
+     * corrected on the following tick.
+     * <p>
+     * The idle deadzone is suppressed while the ladder contact zone is relevant: the
+     * contact-press target lies inside the ladder's thin collision volume, and only a
+     * held press keeps {@code isCollidedHorizontally} true so the vanilla ladder grab
+     * registers when the feet cross the ladder top. Releasing the input there would
+     * let the player descend onto the ladder's top edge and stand on it instead of
+     * grabbing the ladder.
+     */
+    private static CenterInput chooseCenteringAnalytic(EntityPlayer player,
+                                                       double centerX, double centerZ,
+                                                       BlockData ladderBlock,
+                                                       EnumFacing facing) {
+        double residualX = centerX - player.z();
+        double residualZ = centerZ - player.h();
+        double decay = player.b$src$Z$fqlxe4()
+                ? GROUND_DECAY_PER_TICK : AIR_DECAY_PER_TICK;
+        double driftFactor = decay * (1.0 + decay);
+        residualX -= player.t() * driftFactor;
+        residualZ -= player.T() * driftFactor;
+        double residualMagnitude = Math.sqrt(residualX * residualX + residualZ * residualZ);
+        boolean maintainPress = residualMagnitude < CENTERING_DEADZONE
+                && maintainsLadderPress(player, ladderBlock, facing, centerX, centerZ);
+        if (residualMagnitude < CENTERING_DEADZONE && !maintainPress) {
+            return new CenterInput(false, false, false, false);
         }
-        double deltaX = centerX - simulatedPlayer.z();
-        double deltaZ = centerZ - simulatedPlayer.h();
-        double finalDistanceSq = deltaX * deltaX + deltaZ * deltaZ;
-        double horizontalSpeedSq = simulatedPlayer.t() * simulatedPlayer.t()
-                + simulatedPlayer.T() * simulatedPlayer.T();
-        double velocityTowardCenter = simulatedPlayer.t() * deltaX
-                + simulatedPlayer.T() * deltaZ;
-        double overshootPenalty = Math.max(0.0, -velocityTowardCenter) * 4000.0;
-        return finalDistanceSq * 10000.0 + bestDistanceSq * 1000.0
-                + horizontalSpeedSq * 150.0 + overshootPenalty;
+        double unitX;
+        double unitZ;
+        if (residualMagnitude < 1.0E-9) {
+            if (ladderBlock == null || facing == null) {
+                return new CenterInput(false, false, false, false);
+            }
+            AxisAlignedBB ladderBounds = getExpectedLadderBounds(ladderBlock, facing);
+            unitX = (ladderBounds.getMinX() + ladderBounds.getMaxX()) / 2.0 - player.z();
+            unitZ = (ladderBounds.getMinZ() + ladderBounds.getMaxZ()) / 2.0 - player.h();
+            double magnitude = Math.sqrt(unitX * unitX + unitZ * unitZ);
+            if (magnitude < 1.0E-9) {
+                return new CenterInput(false, false, false, false);
+            }
+            unitX /= magnitude;
+            unitZ /= magnitude;
+        } else {
+            unitX = residualX / residualMagnitude;
+            unitZ = residualZ / residualMagnitude;
+        }
+        float yawRadians = player.J() * ((float)Math.PI / 180.0f);
+        float sinYaw = MathUtil.sin(yawRadians);
+        float cosYaw = MathUtil.cos(yawRadians);
+        double forwardProjection = unitX * (double)(-sinYaw) + unitZ * (double)cosYaw;
+        double rightProjection = unitX * (double)(-cosYaw) + unitZ * (double)(-sinYaw);
+        return new CenterInput(forwardProjection > AXIS_PRESS_THRESHOLD,
+                forwardProjection < -AXIS_PRESS_THRESHOLD,
+                rightProjection < -AXIS_PRESS_THRESHOLD,
+                rightProjection > AXIS_PRESS_THRESHOLD);
     }
 
-    private static double simulateCenteringInput(EntityPlayer sourcePlayer,
-                                                 EntityPlayerSP localPlayer,
-                                                 World world, BlockPlacementGraph graph,
-                                                 CenterInput input,
-                                                 double centerX, double centerZ) {
-        BlockPathPlanner simulation = new BlockPathPlanner(sourcePlayer, localPlayer, world, graph);
-        simulation.applySnapshot(graph);
-        simulation.setInput(input.forward, input.backward, input.left, input.right, false, false);
-        EntityPlayer simulatedPlayer = simulation.getSimulatedPlayer();
-        double bestDistanceSq = Double.POSITIVE_INFINITY;
-        for (int tick = 1; tick <= CENTERING_LOOKAHEAD_TICKS; ++tick) {
-            simulation.simulateTick(false);
-            double deltaX = centerX - simulatedPlayer.z();
-            double deltaZ = centerZ - simulatedPlayer.h();
-            bestDistanceSq = Math.min(bestDistanceSq,
-                    deltaX * deltaX + deltaZ * deltaZ);
+    /**
+     * True while the ladder contact press must be held: either the player's hitbox
+     * already overlaps the ladder's collision volume (releasing would strand the
+     * player on the ladder's top edge as they descend), or the steering target lies
+     * within hitbox-reach of the ladder face (the press is about to establish the
+     * contact that the ladder grab needs).
+     */
+    private static boolean maintainsLadderPress(EntityPlayer player, BlockData ladderBlock,
+                                                EnumFacing facing, double centerX, double centerZ) {
+        if (ladderBlock == null || facing == null) {
+            return false;
         }
-        double deltaX = centerX - simulatedPlayer.z();
-        double deltaZ = centerZ - simulatedPlayer.h();
-        double finalDistanceSq = deltaX * deltaX + deltaZ * deltaZ;
-        double horizontalSpeedSq = simulatedPlayer.t() * simulatedPlayer.t()
-                + simulatedPlayer.T() * simulatedPlayer.T();
-        double velocityTowardCenter = simulatedPlayer.t() * deltaX
-                + simulatedPlayer.T() * deltaZ;
-        double overshootPenalty = Math.max(0.0, -velocityTowardCenter) * 4000.0;
-        return finalDistanceSq * 10000.0 + bestDistanceSq * 1000.0
-                + horizontalSpeedSq * 150.0 + overshootPenalty;
+        AxisAlignedBB ladderBounds = getExpectedLadderBounds(ladderBlock, facing);
+        AxisAlignedBB playerBounds = player.u$src$Lgg_vape_wrapper_impl_AxisAlignedBB_$kogbsu();
+        if (playerBounds.getMaxX() > ladderBounds.getMinX()
+                && playerBounds.getMinX() < ladderBounds.getMaxX()
+                && playerBounds.getMaxZ() > ladderBounds.getMinZ()
+                && playerBounds.getMinZ() < ladderBounds.getMaxZ()) {
+            return true;
+        }
+        double directionX = facing.getDirectionVector().getX();
+        double directionZ = facing.getDirectionVector().getZ();
+        double thickness = getLadderThickness();
+        double contactReach = CENTERING_DEADZONE
+                + (playerBounds.getMaxX() - playerBounds.getMinX()) / 2.0;
+        double contactDepthReach = CENTERING_DEADZONE
+                + (playerBounds.getMaxZ() - playerBounds.getMinZ()) / 2.0;
+        if (directionX > 0) {
+            return centerX < ladderBlock.D() + thickness + contactReach;
+        }
+        if (directionX < 0) {
+            return centerX > ladderBlock.D() + 1.0 - thickness - contactReach;
+        }
+        if (directionZ > 0) {
+            return centerZ < ladderBlock.G() + thickness + contactDepthReach;
+        }
+        if (directionZ < 0) {
+            return centerZ > ladderBlock.G() + 1.0 - thickness - contactDepthReach;
+        }
+        return false;
     }
 
     static double getLadderThickness() {

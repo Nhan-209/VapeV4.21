@@ -85,7 +85,7 @@ public class AutoLadder extends Mod {
     private static final float UNSET_ANGLE = -999.0f;
     private static final int PLACEMENT_RETRY_INTERVAL = 2;
     private static final int SAFE_HOLD_TICKS = 2;
-    private static final float MAXIMUM_ROTATION_SPEED = 100.0f;
+    private static final float MAXIMUM_ROTATION_SPEED = 500.0f;
     private static final double DEFAULT_RESET_ANGLE_DELAY_MIN_TICKS = 3.0;
     private static final double DEFAULT_RESET_ANGLE_DELAY_MAX_TICKS = 6.0;
     private static final int LANDING_PREDICTION_INTERVAL_TICKS = 4;
@@ -892,7 +892,8 @@ public class AutoLadder extends Mod {
                 ? ((AdaptiveRotationController)controller).getRenderedPitch() : player.V();
         float yawDistance = Math.abs(MathUtil.wrapAngleTo180(targetRotation.getYaw() - currentYaw));
         float pitchDistance = Math.abs(targetRotation.getPitch() - currentPitch);
-        float requestedSpeed = (yawDistance + pitchDistance) / 1.8f / Math.max(ticksAvailable, 1);
+        float requestedSpeed = (yawDistance + pitchDistance) * 1.6f
+                / Math.max(ticksAvailable, 1);
         controller.setRestoreCapturedRotation(true);
         controller.setSpeed(Math.min(MAXIMUM_ROTATION_SPEED, requestedSpeed));
         controller.setTolerance(0.0f);

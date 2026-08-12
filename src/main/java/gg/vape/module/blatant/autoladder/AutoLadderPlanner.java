@@ -36,7 +36,7 @@ import org.jetbrains.annotations.Nullable;
  * to create them. The exact placement and climb checks remain runtime-authoritative.
  */
 public final class AutoLadderPlanner {
-    private static final int MAX_SIMULATION_TICKS = 20;
+    private static final int MAX_SIMULATION_TICKS = 30;
     private static final double LADDER_SIDE_ENTRY_DEPTH = 0.28;
     private static final double CATCH_CELL_INSET = 0.02;
     private static final double CATCH_CANDIDATE_RADIUS = 0.67;
@@ -200,6 +200,7 @@ public final class AutoLadderPlanner {
         List<TrajectoryPoint> trajectory = candidate.points;
         for (CatchSample catchSample : candidate.catchSamples) {
             TrajectoryPoint point = catchSample.point;
+            Map<EnumFacing, List<CellCandidate>> facets = new LinkedHashMap<>();
             this.enumerateCatchCells(point, catchSample.ladderY,
                     (ladderBlock, facing, catchX, catchZ, movementError) -> {
                     BlockData supportBlock = ladderBlock.R(facing.getOpposite());
@@ -225,34 +226,78 @@ public final class AutoLadderPlanner {
                         return;
                     }
                     ++this.directSupportCount;
-                    PlacementOpportunity opportunity = this.findPlacementOpportunity(
-                            ladderTarget, trajectory, 0,
-                            catchSample.latestPlacementTick, false, memo);
-                    if (opportunity == null) {
-                        return;
-                    }
-                    ++this.directOpportunityCount;
-                    ControlledCatch controlledCatch = this.simulateControlledCatch(
-                            trajectory, opportunity.tick, ladderBlock, supportBlock);
-                    if (controlledCatch == null) {
-                        ++this.directLadderTopRejectedCount;
-                        return;
-                    }
-                    int slack = controlledCatch.catchTick - opportunity.tick;
-                    double score = movementError * 1000.0
-                            + controlledCatch.remainingCenterError * 250.0
-                            + opportunity.rotationDistance * 2.0
-                            + controlledCatch.catchTick * 4.0 - slack * 35.0
-                            + this.trajectoryCost(candidate);
-                    AutoLadderPlan plan = new AutoLadderPlan(
-                            AutoLadderPlan.Mode.DIRECT, null, ladderTarget,
-                            catchX, catchZ, controlledCatch.catchTick,
-                            -1, opportunity.tick, score,
-                            candidate.adjustment);
-                    this.addPlan(plans, plan);
+                    facets.computeIfAbsent(facing, key -> new ArrayList<>())
+                            .add(new CellCandidate(ladderBlock, supportBlock, ladderTarget,
+                                    catchX, catchZ, movementError));
             });
+            for (Map.Entry<EnumFacing, List<CellCandidate>> entry : facets.entrySet()) {
+                this.findDirectPlansForFacet(candidate, trajectory, catchSample,
+                        entry.getKey(), entry.getValue(), memo, plans);
+            }
         }
         return new ArrayList<>(plans.values());
+    }
+
+    private void findDirectPlansForFacet(TrajectoryCandidate candidate,
+                                         List<TrajectoryPoint> trajectory,
+                                         CatchSample catchSample, EnumFacing facing,
+                                         List<CellCandidate> cells, OpportunityMemo memo,
+                                         Map<String, AutoLadderPlan> plans) {
+        boolean anyViable = false;
+        for (CellCandidate cell : cells) {
+            PlacementOpportunity opportunity = this.findPlacementOpportunity(
+                    cell.ladderTarget, trajectory, 0,
+                    catchSample.latestPlacementTick, false, memo);
+            if (opportunity == null) {
+                continue;
+            }
+            cell.ladderOpportunity = opportunity;
+            ++this.directOpportunityCount;
+            anyViable = true;
+        }
+        if (!anyViable) {
+            return;
+        }
+        cells.sort(Comparator.comparingDouble(cell -> cell.movementError));
+        List<CatchPathPoint> path = null;
+        for (CellCandidate cell : cells) {
+            if (cell.ladderOpportunity == null) {
+                continue;
+            }
+            int placementTick = cell.ladderOpportunity.tick;
+            path = this.simulateControlledCatchPath(
+                    trajectory, placementTick, cell, facing, placementTick, placementTick);
+            if (path != null) {
+                break;
+            }
+        }
+        if (path == null) {
+            return;
+        }
+        int supportExistsTick = path.get(0).tick;
+        for (CellCandidate cell : cells) {
+            if (cell.ladderOpportunity == null) {
+                continue;
+            }
+            ControlledCatch caught = this.evaluateCatchOnPath(
+                    path, cell, facing, supportExistsTick, cell.ladderOpportunity.tick);
+            if (caught == null) {
+                ++this.directLadderTopRejectedCount;
+                continue;
+            }
+            int slack = caught.catchTick - cell.ladderOpportunity.tick;
+            double score = cell.movementError * 1000.0
+                    + caught.remainingCenterError * 250.0
+                    + cell.ladderOpportunity.rotationDistance * 2.0
+                    + caught.catchTick * 4.0 - slack * 35.0
+                    + this.trajectoryCost(candidate);
+            AutoLadderPlan plan = new AutoLadderPlan(
+                    AutoLadderPlan.Mode.DIRECT, null, cell.ladderTarget,
+                    cell.catchX, cell.catchZ, caught.catchTick,
+                    -1, cell.ladderOpportunity.tick, score,
+                    candidate.adjustment);
+            this.addPlan(plans, plan);
+        }
     }
 
     private List<AutoLadderPlan> findSupportPlans(TrajectoryCandidate candidate,
@@ -261,6 +306,7 @@ public final class AutoLadderPlanner {
         List<TrajectoryPoint> trajectory = candidate.points;
         for (CatchSample catchSample : candidate.catchSamples) {
             TrajectoryPoint point = catchSample.point;
+            Map<EnumFacing, List<CellCandidate>> facets = new LinkedHashMap<>();
             this.enumerateCatchCells(point, catchSample.ladderY,
                     (ladderBlock, ladderFacing, catchX, catchZ, movementError) -> {
                     if (!BlockUtil.u(this.blockAt(ladderBlock))) {
@@ -273,67 +319,121 @@ public final class AutoLadderPlanner {
                     if (this.isUnsafeLandingSupport(candidate, supportBlock)) {
                         return;
                     }
-                    if (!ClutchPlacementPathUtils.isPlacementSpaceClear(this.world, this.player, supportBlock)) {
+                    if (!ClutchPlacementPathUtils.isPlacementSpaceClear(
+                            this.world, this.player, supportBlock)) {
                         return;
                     }
                     ++this.fallbackSpaceCount;
-                    PlacementTarget ladderTarget = new PlacementTarget(supportBlock, ladderFacing);
-                    for (EnumFacing blockFacing : ALL_FACINGS) {
-                        BlockData anchorBlock = supportBlock.R(blockFacing.getOpposite());
-                        if (!this.isStableSupport(anchorBlock)) {
-                            continue;
-                        }
-                        ++this.fallbackAnchorCount;
-                        PlacementTarget blockTarget = new PlacementTarget(anchorBlock, blockFacing);
-                        PlacementOpportunity blockOpportunity = this.findPlacementOpportunity(
-                                blockTarget, trajectory, 0,
-                                catchSample.latestPlacementTick, true, memo);
-                        if (blockOpportunity == null) {
-                            continue;
-                        }
-                        ++this.fallbackBlockOpportunityCount;
-                        int earliestLadderTick = blockOpportunity.tick + 1;
-                        if (earliestLadderTick > catchSample.latestPlacementTick) {
-                            ++this.fallbackTimingRejectedCount;
-                            continue;
-                        }
-                        PlacementOpportunity ladderOpportunity = this.findFutureFaceOpportunity(
-                                ladderTarget, trajectory,
-                                earliestLadderTick,
-                                catchSample.latestPlacementTick, memo);
-                        if (ladderOpportunity == null) {
-                            continue;
-                        }
-                        ++this.fallbackLadderOpportunityCount;
-                        if (this.intersectsBlockBeforeCatchControl(
-                                trajectory, supportBlock, blockOpportunity.tick,
-                                ladderOpportunity.tick)) {
-                            ++this.fallbackCollisionRejectedCount;
-                            continue;
-                        }
-                        ControlledCatch controlledCatch = this.simulateControlledCatch(
-                                trajectory, ladderOpportunity.tick,
-                                ladderBlock, supportBlock);
-                        if (controlledCatch == null) {
-                            ++this.fallbackMovementRejectedCount;
-                            continue;
-                        }
-                        int slack = controlledCatch.catchTick - ladderOpportunity.tick;
-                        double score = movementError * 1000.0
-                                + controlledCatch.remainingCenterError * 250.0
-                                + (blockOpportunity.rotationDistance + ladderOpportunity.rotationDistance) * 2.0
-                                + controlledCatch.catchTick * 5.0 - slack * 30.0
-                                + this.trajectoryCost(candidate);
-                        AutoLadderPlan plan = new AutoLadderPlan(
-                                AutoLadderPlan.Mode.BUILD_SUPPORT, blockTarget, ladderTarget,
-                                catchX, catchZ, controlledCatch.catchTick,
-                                blockOpportunity.tick,
-                                ladderOpportunity.tick, score, candidate.adjustment);
-                        this.addPlan(plans, plan);
-                    }
+                    PlacementTarget ladderTarget = new PlacementTarget(
+                            supportBlock, ladderFacing);
+                    facets.computeIfAbsent(ladderFacing, key -> new ArrayList<>())
+                            .add(new CellCandidate(ladderBlock, supportBlock, ladderTarget,
+                                    catchX, catchZ, movementError));
             });
+            for (Map.Entry<EnumFacing, List<CellCandidate>> entry : facets.entrySet()) {
+                this.findSupportPlansForFacet(candidate, trajectory, catchSample,
+                        entry.getKey(), entry.getValue(), memo, plans);
+            }
         }
         return new ArrayList<>(plans.values());
+    }
+
+    private void findSupportPlansForFacet(TrajectoryCandidate candidate,
+                                          List<TrajectoryPoint> trajectory,
+                                          CatchSample catchSample, EnumFacing ladderFacing,
+                                          List<CellCandidate> cells, OpportunityMemo memo,
+                                          Map<String, AutoLadderPlan> plans) {
+        boolean anyViable = false;
+        for (CellCandidate cell : cells) {
+            for (EnumFacing blockFacing : ALL_FACINGS) {
+                BlockData anchorBlock = cell.supportBlock.R(blockFacing.getOpposite());
+                if (!this.isStableSupport(anchorBlock)) {
+                    continue;
+                }
+                ++this.fallbackAnchorCount;
+                PlacementTarget blockTarget = new PlacementTarget(anchorBlock, blockFacing);
+                PlacementOpportunity blockOpportunity = this.findPlacementOpportunity(
+                        blockTarget, trajectory, 0,
+                        catchSample.latestPlacementTick, true, memo);
+                if (blockOpportunity == null) {
+                    continue;
+                }
+                ++this.fallbackBlockOpportunityCount;
+                int earliestLadderTick = blockOpportunity.tick + 1;
+                if (earliestLadderTick > catchSample.latestPlacementTick) {
+                    ++this.fallbackTimingRejectedCount;
+                    continue;
+                }
+                PlacementOpportunity ladderOpportunity = this.findFutureFaceOpportunity(
+                        cell.ladderTarget, trajectory, earliestLadderTick,
+                        catchSample.latestPlacementTick, memo);
+                if (ladderOpportunity == null) {
+                    continue;
+                }
+                ++this.fallbackLadderOpportunityCount;
+                if (this.intersectsBlockBeforeCatchControl(
+                        trajectory, cell.supportBlock, blockOpportunity.tick,
+                        ladderOpportunity.tick)) {
+                    ++this.fallbackCollisionRejectedCount;
+                    continue;
+                }
+                cell.anchors.add(new AnchorCandidate(
+                        blockTarget, blockOpportunity, ladderOpportunity));
+                anyViable = true;
+            }
+        }
+        if (!anyViable) {
+            return;
+        }
+        cells.sort(Comparator.comparingDouble(cell -> cell.movementError));
+        List<CatchPathPoint> path = null;
+        for (CellCandidate cell : cells) {
+            if (cell.anchors.isEmpty()) {
+                continue;
+            }
+            int supportExistsTick = Integer.MAX_VALUE;
+            int ladderExistsTick = Integer.MAX_VALUE;
+            for (AnchorCandidate anchor : cell.anchors) {
+                supportExistsTick = Math.min(supportExistsTick, anchor.blockOpportunity.tick);
+                ladderExistsTick = Math.min(ladderExistsTick, anchor.ladderOpportunity.tick);
+            }
+            path = this.simulateControlledCatchPath(
+                    trajectory, ladderExistsTick, cell, ladderFacing,
+                    supportExistsTick, ladderExistsTick);
+            if (path != null) {
+                break;
+            }
+        }
+        if (path == null) {
+            return;
+        }
+        for (CellCandidate cell : cells) {
+            if (cell.anchors.isEmpty()) {
+                continue;
+            }
+            for (AnchorCandidate anchor : cell.anchors) {
+                ControlledCatch caught = this.evaluateCatchOnPath(
+                        path, cell, ladderFacing, anchor.blockOpportunity.tick,
+                        anchor.ladderOpportunity.tick);
+                if (caught == null) {
+                    ++this.fallbackMovementRejectedCount;
+                    continue;
+                }
+                int slack = caught.catchTick - anchor.ladderOpportunity.tick;
+                double score = cell.movementError * 1000.0
+                        + caught.remainingCenterError * 250.0
+                        + (anchor.blockOpportunity.rotationDistance
+                        + anchor.ladderOpportunity.rotationDistance) * 2.0
+                        + caught.catchTick * 5.0 - slack * 30.0
+                        + this.trajectoryCost(candidate);
+                AutoLadderPlan plan = new AutoLadderPlan(
+                        AutoLadderPlan.Mode.BUILD_SUPPORT, anchor.blockTarget, cell.ladderTarget,
+                        cell.catchX, cell.catchZ, caught.catchTick,
+                        anchor.blockOpportunity.tick,
+                        anchor.ladderOpportunity.tick, score, candidate.adjustment);
+                this.addPlan(plans, plan);
+            }
+        }
     }
 
     private double trajectoryCost(TrajectoryCandidate candidate) {
@@ -396,11 +496,21 @@ public final class AutoLadderPlanner {
         this.recommendedFallAdjustment = evaluation.trajectory.adjustment;
     }
 
+    /**
+     * Runs one controlled-catch integration for the steering cell of a facet. The
+     * resulting path serves every cell of the same facet: per-cell feasibility is
+     * derived afterwards by {@link #evaluateCatchOnPath}, so the number of physics
+     * integrations per catch window drops from one per cell to one per facet.
+     * Checks against the steering cell's support block and ladder bounds are only
+     * applied once those blocks exist (they may be placed mid-fall).
+     */
     @Nullable
-    private ControlledCatch simulateControlledCatch(List<TrajectoryPoint> trajectory,
-                                                     int controlStartTick,
-                                                     BlockData ladderBlock,
-                                                     BlockData supportBlock) {
+    private List<CatchPathPoint> simulateControlledCatchPath(List<TrajectoryPoint> trajectory,
+                                                              int controlStartTick,
+                                                              CellCandidate cell,
+                                                              EnumFacing facing,
+                                                              int supportExistsTick,
+                                                              int ladderExistsTick) {
         TrajectoryPoint start = this.pointAtTick(trajectory, controlStartTick);
         if (start == null || start.snapshot == null) {
             return null;
@@ -409,58 +519,99 @@ public final class AutoLadderPlanner {
                 this.player, this.player, this.world, start.snapshot);
         simulation.applySnapshot(start.snapshot);
         EntityPlayer simulatedPlayer = simulation.getSimulatedPlayer();
-        TrajectoryPoint previous = TrajectoryPoint.capture(
-                controlStartTick, simulatedPlayer,
-                simulatedPlayer.b$src$Z$fqlxe4(), new BlockPlacementGraph(simulation));
-        if (this.isSafeCatchPosition(previous, ladderBlock, supportBlock)
-                && this.verticallyOverlapsLadder(previous, ladderBlock)) {
-            return new ControlledCatch(controlStartTick,
-                    this.centerError(previous, ladderBlock));
+        List<CatchPathPoint> path = new ArrayList<>();
+        CatchPathPoint previous = CatchPathPoint.capture(
+                controlStartTick, simulatedPlayer, simulatedPlayer.b$src$Z$fqlxe4());
+        path.add(previous);
+        if (controlStartTick >= ladderExistsTick
+                && this.isSafeCatchPosition(previous, cell.ladderBlock, cell.supportBlock)
+                && this.verticallyOverlapsLadder(previous, cell.ladderBlock)) {
+            return path;
         }
-
-        EnumFacing ladderFacing = this.facingFromSupport(ladderBlock, supportBlock);
-        AxisAlignedBB ladderBounds = AutoLadderMovementController
-                .getExpectedLadderBounds(ladderBlock, ladderFacing);
+        double catchCenterX = cell.ladderBlock.D() + 0.5;
+        double catchCenterZ = cell.ladderBlock.G() + 0.5;
+        double ladderTop = cell.ladderBlock.B() + 1.0;
+        AxisAlignedBB ladderBounds = AutoLadderMovementController.getExpectedLadderBounds(
+                cell.ladderBlock, facing);
         int lastTick = Math.min(MAX_SIMULATION_TICKS,
                 controlStartTick + MAX_SIMULATION_TICKS);
         for (int tick = controlStartTick + 1; tick <= lastTick; ++tick) {
-            BlockPlacementGraph snapshot = new BlockPlacementGraph(simulation);
             AutoLadderMovementController.CenterInput input =
                     AutoLadderMovementController.chooseCentering(
-                            simulatedPlayer, this.player, this.world, snapshot,
-                            ladderBlock.D() + 0.5, ladderBlock.G() + 0.5,
-                            ladderBlock, ladderFacing);
+                            simulatedPlayer, this.player, this.world, start.snapshot,
+                            catchCenterX, catchCenterZ, cell.ladderBlock, facing);
             simulation.setInput(input.isForward(), input.isBackward(),
                     input.isLeft(), input.isRight(), false, false);
             simulation.simulateTick(false);
-            TrajectoryPoint current = TrajectoryPoint.capture(
-                    tick, simulatedPlayer, simulatedPlayer.b$src$Z$fqlxe4(),
-                    new BlockPlacementGraph(simulation));
-
-            if (current.intersectsUnitBlock(supportBlock, this.supportClearanceMargin())
+            CatchPathPoint current = CatchPathPoint.capture(
+                    tick, simulatedPlayer, simulatedPlayer.b$src$Z$fqlxe4());
+            path.add(current);
+            if (previous.tick >= supportExistsTick
+                    && (current.intersectsUnitBlock(cell.supportBlock, this.supportClearanceMargin())
                     || previous.sweptIntersectsUnitBlock(
-                    current, supportBlock, this.supportClearanceMargin())) {
+                    current, cell.supportBlock, this.supportClearanceMargin()))) {
                 return null;
             }
-            double ladderTop = ladderBlock.B() + 1.0;
-            if (previous.y >= ladderTop && current.y < ladderTop) {
-                TrajectoryPoint topCrossing = TrajectoryPoint.interpolateAtY(
-                        previous, current, ladderTop);
-                if (topCrossing.horizontallyIntersects(
-                        ladderBounds, this.ladderTopClearanceMargin())) {
-                    return null;
-                }
+            if (previous.tick >= ladderExistsTick && previous.y >= ladderTop
+                    && current.y < ladderTop
+                    && previous.topCrossingIntersects(current, ladderBounds,
+                    this.ladderTopClearanceMargin(),
+                    (ladderTop - previous.y) / (current.y - previous.y))) {
+                return null;
             }
             if (current.onGround) {
                 return null;
             }
-            if (this.isSafeCatchPosition(current, ladderBlock, supportBlock)
-                    && this.verticallyOverlapsLadder(current, ladderBlock)) {
-                return new ControlledCatch(tick,
-                        this.centerError(current, ladderBlock));
+            if (current.tick >= ladderExistsTick
+                    && this.isSafeCatchPosition(current, cell.ladderBlock, cell.supportBlock)
+                    && this.verticallyOverlapsLadder(current, cell.ladderBlock)) {
+                return path;
             }
-            if (current.y < ladderBlock.B() - 0.05 || current.motionY >= 0.0) {
+            if (current.y < cell.ladderBlock.B() - 0.05 || current.motionY >= 0.0) {
                 return null;
+            }
+            previous = current;
+        }
+        return null;
+    }
+
+    /**
+     * Derives one cell's catch result from a shared facet path. Checks against the
+     * cell's own support block and ladder bounds are only applied from the ticks at
+     * which those blocks exist (support placement tick / ladder placement tick), so
+     * cells placed later than the path start are not rejected for collisions with
+     * blocks that do not exist yet.
+     */
+    @Nullable
+    private ControlledCatch evaluateCatchOnPath(List<CatchPathPoint> path, CellCandidate cell,
+                                                EnumFacing facing, int supportExistsTick,
+                                                int ladderExistsTick) {
+        double ladderTop = cell.ladderBlock.B() + 1.0;
+        AxisAlignedBB ladderBounds = AutoLadderMovementController.getExpectedLadderBounds(
+                cell.ladderBlock, facing);
+        CatchPathPoint previous = null;
+        for (CatchPathPoint current : path) {
+            if (previous != null) {
+                if (previous.tick >= supportExistsTick
+                        && (current.intersectsUnitBlock(
+                        cell.supportBlock, this.supportClearanceMargin())
+                        || previous.sweptIntersectsUnitBlock(
+                        current, cell.supportBlock, this.supportClearanceMargin()))) {
+                    return null;
+                }
+                if (previous.tick >= ladderExistsTick && previous.y >= ladderTop
+                        && current.y < ladderTop
+                        && previous.topCrossingIntersects(current, ladderBounds,
+                        this.ladderTopClearanceMargin(),
+                        (ladderTop - previous.y) / (current.y - previous.y))) {
+                    return null;
+                }
+            }
+            if (current.tick >= ladderExistsTick
+                    && this.isSafeCatchPosition(current, cell.ladderBlock, cell.supportBlock)
+                    && this.verticallyOverlapsLadder(current, cell.ladderBlock)) {
+                return new ControlledCatch(current.tick,
+                        this.centerError(current, cell.ladderBlock));
             }
             previous = current;
         }
@@ -477,17 +628,17 @@ public final class AutoLadderPlanner {
         return null;
     }
 
-    private boolean verticallyOverlapsLadder(TrajectoryPoint point,
+    private boolean verticallyOverlapsLadder(CatchPathPoint point,
                                              BlockData ladderBlock) {
         return point.maxY > ladderBlock.B() && point.minY < ladderBlock.B() + 1.0;
     }
 
-    private double centerError(TrajectoryPoint point, BlockData ladderBlock) {
+    private double centerError(CatchPathPoint point, BlockData ladderBlock) {
         return Math.hypot(point.x - (ladderBlock.D() + 0.5),
                 point.z - (ladderBlock.G() + 0.5));
     }
 
-    private boolean isSafeCatchPosition(TrajectoryPoint point,
+    private boolean isSafeCatchPosition(CatchPathPoint point,
                                         BlockData ladderBlock,
                                         BlockData supportBlock) {
         boolean centerInsideLadderCell = point.x >= ladderBlock.D() + CATCH_CELL_INSET
@@ -505,18 +656,6 @@ public final class AutoLadderPlanner {
 
     private double ladderTopClearanceMargin() {
         return AutoLadderMovementController.getLadderTopClearanceMargin();
-    }
-
-    private EnumFacing facingFromSupport(BlockData ladderBlock, BlockData supportBlock) {
-        int directionX = ladderBlock.D() - supportBlock.D();
-        int directionZ = ladderBlock.G() - supportBlock.G();
-        for (EnumFacing facing : HORIZONTAL_FACINGS) {
-            if (facing.getDirectionVector().getX() == directionX
-                    && facing.getDirectionVector().getZ() == directionZ) {
-                return facing;
-            }
-        }
-        return HORIZONTAL_FACINGS[0];
     }
 
     private List<CatchSample> findCatchSamples(List<TrajectoryPoint> trajectory) {
@@ -650,6 +789,9 @@ public final class AutoLadderPlanner {
                     eye, this.world, target.supportBlock, target.facing)) {
                 continue;
             }
+            if (!this.isFaceWithinReach(eye, target.supportBlock, target.facing)) {
+                continue;
+            }
             Vec3 hit = ClutchPlacementPathUtils.findBestPlacementHitPointWithinReach(
                     this.player, this.world, eye, target, point.yaw, point.pitch, this.reach);
             if (hit == null) {
@@ -674,6 +816,9 @@ public final class AutoLadderPlanner {
                     eye, this.world, target.supportBlock, target.facing)) {
                 continue;
             }
+            if (!this.isFaceWithinReach(eye, target.supportBlock, target.facing)) {
+                continue;
+            }
             Vec3 hit = ClutchPlacementPathUtils.findBestPlacementHitPointWithinReach(
                     this.player, this.world, eye, target, point.yaw, point.pitch, this.reach);
             if (hit == null) {
@@ -685,6 +830,52 @@ public final class AutoLadderPlanner {
             break;
         }
         return result;
+    }
+
+    /**
+     * O(1) geometric pre-filter used before the expensive hit-point search: the
+     * closest point on the target face rectangle must be within reach. This is a
+     * necessary condition for any reachable face point, so it rejects without ever
+     * mis-filtering; during a fast fall the eye is close to a given wall only for a
+     * few trajectory ticks, so most per-point scans are skipped entirely.
+     */
+    private boolean isFaceWithinReach(Vec3 eye, BlockData block, EnumFacing facing) {
+        if (facing == null) {
+            return true;
+        }
+        double directionX = facing.getDirectionVector().getX();
+        double directionY = facing.getDirectionVector().getY();
+        double directionZ = facing.getDirectionVector().getZ();
+        double eyeX = eye.getX();
+        double eyeY = eye.getY();
+        double eyeZ = eye.getZ();
+        double blockMinX = block.D();
+        double blockMinY = block.B();
+        double blockMinZ = block.G();
+        double dx;
+        double dy;
+        double dz;
+        if (directionX != 0.0) {
+            dx = eyeX - (directionX > 0.0 ? blockMinX + 1.0 : blockMinX);
+            dy = Math.max(blockMinY - eyeY,
+                    Math.max(0.0, eyeY - (blockMinY + 1.0)));
+            dz = Math.max(blockMinZ - eyeZ,
+                    Math.max(0.0, eyeZ - (blockMinZ + 1.0)));
+        } else if (directionZ != 0.0) {
+            dz = eyeZ - (directionZ > 0.0 ? blockMinZ + 1.0 : blockMinZ);
+            dx = Math.max(blockMinX - eyeX,
+                    Math.max(0.0, eyeX - (blockMinX + 1.0)));
+            dy = Math.max(blockMinY - eyeY,
+                    Math.max(0.0, eyeY - (blockMinY + 1.0)));
+        } else {
+            dy = eyeY - (directionY > 0.0 ? blockMinY + 1.0 : blockMinY);
+            dx = Math.max(blockMinX - eyeX,
+                    Math.max(0.0, eyeX - (blockMinX + 1.0)));
+            dz = Math.max(blockMinZ - eyeZ,
+                    Math.max(0.0, eyeZ - (blockMinZ + 1.0)));
+        }
+        double distanceLimit = this.reach + 1.0E-4;
+        return dx * dx + dy * dy + dz * dz <= distanceLimit * distanceLimit;
     }
 
     @Nullable
@@ -970,6 +1161,164 @@ public final class AutoLadderPlanner {
         }
     }
 
+    /** A candidate ladder cell of a catch window, shared by the direct and support search phases. */
+    private static final class CellCandidate {
+        private final BlockData ladderBlock;
+        private final BlockData supportBlock;
+        private final PlacementTarget ladderTarget;
+        private final double catchX;
+        private final double catchZ;
+        private final double movementError;
+        private PlacementOpportunity ladderOpportunity;
+        private final List<AnchorCandidate> anchors = new ArrayList<>();
+
+        private CellCandidate(BlockData ladderBlock, BlockData supportBlock,
+                              PlacementTarget ladderTarget, double catchX, double catchZ,
+                              double movementError) {
+            this.ladderBlock = ladderBlock;
+            this.supportBlock = supportBlock;
+            this.ladderTarget = ladderTarget;
+            this.catchX = catchX;
+            this.catchZ = catchZ;
+            this.movementError = movementError;
+        }
+    }
+
+    /** One support-block anchor option of a {@link CellCandidate} (BUILD_SUPPORT phase). */
+    private static final class AnchorCandidate {
+        private final PlacementTarget blockTarget;
+        private final PlacementOpportunity blockOpportunity;
+        private final PlacementOpportunity ladderOpportunity;
+
+        private AnchorCandidate(PlacementTarget blockTarget,
+                                PlacementOpportunity blockOpportunity,
+                                PlacementOpportunity ladderOpportunity) {
+            this.blockTarget = blockTarget;
+            this.blockOpportunity = blockOpportunity;
+            this.ladderOpportunity = ladderOpportunity;
+        }
+    }
+
+    /**
+     * Light per-tick record of a controlled-catch integration. Deliberately snapshot-
+     * free: one shared facet path is evaluated against many cells, so keeping a full
+     * {@link BlockPlacementGraph} per tick would allocate dozens of snapshots that
+     * only one cell would ever read.
+     */
+    private static final class CatchPathPoint {
+        private final int tick;
+        private final double x;
+        private final double y;
+        private final double z;
+        private final double motionY;
+        private final double minX;
+        private final double minY;
+        private final double minZ;
+        private final double maxX;
+        private final double maxY;
+        private final double maxZ;
+        private final boolean onGround;
+
+        private CatchPathPoint(int tick, double x, double y, double z, double motionY,
+                               AxisAlignedBB bounds, boolean onGround) {
+            this.tick = tick;
+            this.x = x;
+            this.y = y;
+            this.z = z;
+            this.motionY = motionY;
+            this.minX = bounds.getMinX();
+            this.minY = bounds.getMinY();
+            this.minZ = bounds.getMinZ();
+            this.maxX = bounds.getMaxX();
+            this.maxY = bounds.getMaxY();
+            this.maxZ = bounds.getMaxZ();
+            this.onGround = onGround;
+        }
+
+        private static CatchPathPoint capture(int tick, EntityPlayer player, boolean onGround) {
+            return new CatchPathPoint(tick, player.z(), player.N(), player.h(), player.q(),
+                    player.u$src$Lgg_vape_wrapper_impl_AxisAlignedBB_$kogbsu(), onGround);
+        }
+
+        private boolean intersectsUnitBlock(BlockData block, double horizontalMargin) {
+            return this.maxX + horizontalMargin > block.D()
+                    && this.minX - horizontalMargin < block.D() + 1.0
+                    && this.maxY > block.B() && this.minY < block.B() + 1.0
+                    && this.maxZ + horizontalMargin > block.G()
+                    && this.minZ - horizontalMargin < block.G() + 1.0;
+        }
+
+        private boolean horizontallyIntersectsUnitBlock(BlockData block,
+                                                         double horizontalMargin) {
+            return this.maxX + horizontalMargin > block.D()
+                    && this.minX - horizontalMargin < block.D() + 1.0
+                    && this.maxZ + horizontalMargin > block.G()
+                    && this.minZ - horizontalMargin < block.G() + 1.0;
+        }
+
+        private boolean sweptIntersectsUnitBlock(CatchPathPoint next,
+                                                 BlockData block, double horizontalMargin) {
+            double startX = (this.minX + this.maxX) / 2.0;
+            double startY = (this.minY + this.maxY) / 2.0;
+            double startZ = (this.minZ + this.maxZ) / 2.0;
+            double endX = (next.minX + next.maxX) / 2.0;
+            double endY = (next.minY + next.maxY) / 2.0;
+            double endZ = (next.minZ + next.maxZ) / 2.0;
+            double halfWidthX = (this.maxX - this.minX) / 2.0 + horizontalMargin;
+            double halfHeight = (this.maxY - this.minY) / 2.0;
+            double halfWidthZ = (this.maxZ - this.minZ) / 2.0 + horizontalMargin;
+            double xEntry = axisEntry(startX, endX,
+                    block.D() - halfWidthX, block.D() + 1.0 + halfWidthX);
+            double yEntry = axisEntry(startY, endY,
+                    block.B() - halfHeight, block.B() + 1.0 + halfHeight);
+            double zEntry = axisEntry(startZ, endZ,
+                    block.G() - halfWidthZ, block.G() + 1.0 + halfWidthZ);
+            double xExit = axisExit(startX, endX,
+                    block.D() - halfWidthX, block.D() + 1.0 + halfWidthX);
+            double yExit = axisExit(startY, endY,
+                    block.B() - halfHeight, block.B() + 1.0 + halfHeight);
+            double zExit = axisExit(startZ, endZ,
+                    block.G() - halfWidthZ, block.G() + 1.0 + halfWidthZ);
+            double entry = Math.max(0.0, Math.max(xEntry, Math.max(yEntry, zEntry)));
+            double exit = Math.min(1.0, Math.min(xExit, Math.min(yExit, zExit)));
+            return entry <= exit;
+        }
+
+        private boolean topCrossingIntersects(CatchPathPoint end, AxisAlignedBB bounds,
+                                              double margin, double progress) {
+            double minX = lerp(this.minX, end.minX, progress) - margin;
+            double maxX = lerp(this.maxX, end.maxX, progress) + margin;
+            double minZ = lerp(this.minZ, end.minZ, progress) - margin;
+            double maxZ = lerp(this.maxZ, end.maxZ, progress) + margin;
+            return maxX > bounds.getMinX() && minX < bounds.getMaxX()
+                    && maxZ > bounds.getMinZ() && minZ < bounds.getMaxZ();
+        }
+
+        private static double axisEntry(double start, double end,
+                                        double minimum, double maximum) {
+            double delta = end - start;
+            if (Math.abs(delta) < 1.0E-9) {
+                return start >= minimum && start <= maximum
+                        ? Double.NEGATIVE_INFINITY : Double.POSITIVE_INFINITY;
+            }
+            return Math.min((minimum - start) / delta, (maximum - start) / delta);
+        }
+
+        private static double axisExit(double start, double end,
+                                       double minimum, double maximum) {
+            double delta = end - start;
+            if (Math.abs(delta) < 1.0E-9) {
+                return start >= minimum && start <= maximum
+                        ? Double.POSITIVE_INFINITY : Double.NEGATIVE_INFINITY;
+            }
+            return Math.max((minimum - start) / delta, (maximum - start) / delta);
+        }
+
+        private static double lerp(double start, double end, double progress) {
+            return start + (end - start) * progress;
+        }
+    }
+
     /** Per-candidate cache of placement opportunity results, keyed by placement target. */
     private static final class OpportunityMemo {
         private final Map<OpportunityKey, HitPointMemo> solidHitPoints = new HashMap<>();
@@ -1119,14 +1468,6 @@ public final class AutoLadderPlanner {
                     && this.minX - horizontalMargin < block.D() + 1.0
                     && this.maxZ + horizontalMargin > block.G()
                     && this.minZ - horizontalMargin < block.G() + 1.0;
-        }
-
-        private boolean horizontallyIntersects(AxisAlignedBB bounds,
-                                                double horizontalMargin) {
-            return this.maxX + horizontalMargin > bounds.getMinX()
-                    && this.minX - horizontalMargin < bounds.getMaxX()
-                    && this.maxZ + horizontalMargin > bounds.getMinZ()
-                    && this.minZ - horizontalMargin < bounds.getMaxZ();
         }
 
         private boolean sweptIntersectsUnitBlock(TrajectoryPoint next,
