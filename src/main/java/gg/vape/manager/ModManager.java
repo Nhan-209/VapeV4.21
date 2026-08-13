@@ -223,7 +223,7 @@ implements EventListener {
         this.registerModules(Stream.of(new AutoFish(), new BedBreaker(), new AutoLadder(), new Clutch(), new FakeLag()), ModManager::addMinecraft1710Constraint);
         this.registerModules(Stream.of(new BedPlates()), ModManager::addBedPlatesVersionConstraints);
         this.registerModules(Stream.of(new AntiBot()));
-        this.registerModules(Stream.of(new Triggerbot(), new HitSwap(), new AutoAnchor(), new WindCharge(), new CrystalAura(), new AutoTotem(), new ShieldBreaker()), ModManager::addMinecraft1214Constraint);
+        this.registerModules(Stream.of(new Triggerbot(), new HitSwap(), new AutoMace(), new AutoAnchor(), new WindCharge(), new CrystalAura(), new AutoTotem(), new ShieldBreaker()), ModManager::addMinecraft1214Constraint);
         this.registerModules(Stream.of(new NoFall(), new NoSlowdown(), new Speed(), new BlockHit(), new Timer()), ModManager::addModernMinecraftConstraint);
         this.registerTextGuiSettings();
         this.registerHudModules();

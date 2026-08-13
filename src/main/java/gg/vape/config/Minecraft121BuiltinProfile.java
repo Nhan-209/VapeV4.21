@@ -2,6 +2,7 @@ package gg.vape.config;
 
 import gg.vape.module.blatant.AutoAnchor;
 import gg.vape.module.combat.AimAssist;
+import gg.vape.module.combat.AutoMace;
 import gg.vape.module.combat.Triggerbot;
 import gg.vape.module.combat.HitSwap;
 import gg.vape.module.combat.CrystalAura;
@@ -19,6 +20,7 @@ extends BuiltinProfile {
         this.selectModule(Triggerbot.class);
         this.selectModule(AimAssist.class);
         this.selectModule(HitSwap.class);
+        this.selectModule(AutoMace.class);
         this.selectModule(Sprint.class);
         this.selectModule(CrystalAura.class);
         this.selectModule(AutoTotem.class);
