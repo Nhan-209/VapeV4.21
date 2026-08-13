@@ -94,6 +94,7 @@ import gg.vape.module.utility.AutoHotbar;
 import gg.vape.module.utility.AutoFish;
 import gg.vape.module.utility.Panic;
 import gg.vape.module.utility.Parkour;
+import gg.vape.module.utility.PearlCatch;
 import gg.vape.module.utility.Refill;
 import gg.vape.module.utility.ThrowDebuff;
 import gg.vape.module.utility.Throwpot;
@@ -223,7 +224,7 @@ implements EventListener {
         this.registerModules(Stream.of(new AutoFish(), new BedBreaker(), new AutoLadder(), new Clutch(), new FakeLag()), ModManager::addMinecraft1710Constraint);
         this.registerModules(Stream.of(new BedPlates()), ModManager::addBedPlatesVersionConstraints);
         this.registerModules(Stream.of(new AntiBot()));
-        this.registerModules(Stream.of(new Triggerbot(), new HitSwap(), new AutoMace(), new AutoAnchor(), new WindCharge(), new CrystalAura(), new AutoTotem(), new ShieldBreaker()), ModManager::addMinecraft1214Constraint);
+        this.registerModules(Stream.of(new Triggerbot(), new HitSwap(), new AutoMace(), new AutoAnchor(), new WindCharge(), new CrystalAura(), new AutoTotem(), new ShieldBreaker(), new PearlCatch()), ModManager::addMinecraft1214Constraint);
         this.registerModules(Stream.of(new NoFall(), new NoSlowdown(), new Speed(), new BlockHit(), new Timer()), ModManager::addModernMinecraftConstraint);
         this.registerTextGuiSettings();
         this.registerHudModules();
