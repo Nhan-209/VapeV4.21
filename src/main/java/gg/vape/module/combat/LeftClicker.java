@@ -4,7 +4,9 @@ import gg.vape.Vape;
 import gg.vape.click.ClickButton;
 import gg.vape.click.ClickEngine;
 import gg.vape.event.EventHandler;
+import gg.vape.event.EventPriority;
 import gg.vape.event.impl.EventPreTick;
+import gg.vape.event.impl.EventSendClickBlockToController;
 import gg.vape.input.InputEventDispatcher;
 import gg.vape.mapping.MappedClasses;
 import gg.vape.module.control.SharedModuleControlClaims;
@@ -20,15 +22,16 @@ import gg.vape.value.LimitValue;
 import gg.vape.value.ModeValue;
 import gg.vape.value.RandomValue;
 import gg.vape.wrapper.impl.EntityPlayerSP;
+import gg.vape.wrapper.impl.ForgeVersion;
 import gg.vape.wrapper.impl.Minecraft;
 import gg.vape.wrapper.impl.Packet;
+import gg.vape.wrapper.impl.PlayerControllerMP;
 import gg.vape.wrapper.impl.RayTraceResult;
 import gg.vape.wrapper.impl.RayTraceResult_type;
 import java.util.Arrays;
 
 public class LeftClicker
 extends ClickerMod {
-    private boolean wasClicking = false;
     private final BooleanValue jitter;
     private final ModeOption normalMode;
     private final ModeOption extraPlusMode;
@@ -42,7 +45,8 @@ extends ClickerMod {
     private final BooleanValue limitItems;
     private final BooleanValue holdToClick = BooleanValue.create(this, "Hold to click", true);
     private final TimerUtil breakBlockTimer;
-    private boolean blocked = false;
+    private volatile boolean blocked = false;
+    private volatile boolean breakingBlock = false;
     private final RandomValue breakBlocksDelay;
     private final ModeValue randomization;
 
@@ -64,28 +68,25 @@ extends ClickerMod {
 
     private boolean computeBlocked() {
         if (!ClientSettings.INSTANCE.isInputEnabled()) {
+            this.breakingBlock = false;
             return true;
         }
         if (!InputEventDispatcher.getInstance().getFocusState().isFocused()) {
+            this.breakingBlock = false;
             return true;
         }
         if (SharedModuleControlClaims.mouseButtons.isLocked()) {
+            this.breakingBlock = false;
             return true;
         }
         EntityPlayerSP player = Minecraft.thePlayer();
         if (player.isNull()) {
+            this.breakingBlock = false;
             return true;
         }
-        if (!this.shouldAllowClick(player)) {
-            if (gg.vape.config.ClientSettings.isAttackButtonDown()) {
-                if (!Minecraft.gameSettings().F().isKeyDown()) {
-                    // empty if block
-                }
-                this.suppressNextRelease = true;
-            }
-            return true;
-        }
-        return false;
+        boolean shouldBreakBlock = !this.shouldAllowClick(player);
+        this.breakingBlock = shouldBreakBlock;
+        return shouldBreakBlock;
     }
 
     @Override
@@ -100,6 +101,7 @@ extends ClickerMod {
     public boolean shouldAllowClick(EntityPlayerSP player) {
         if (!gg.vape.config.ClientSettings.isAttackButtonDown()) {
             this.breakBlockTimer.reset();
+            return true;
         }
         if (this.breakBlocks.getEffectiveValue().booleanValue() && this.breakBlockTimer.hasTimeElapsed((long)this.breakBlocksDelay.getRandomValue())) {
             if (Minecraft.currentScreen().isInstance(MappedClasses.Ft)) {
@@ -108,7 +110,12 @@ extends ClickerMod {
             if (this.breakBlocksWhitelist.getEffectiveValue().booleanValue() && !this.blockBreakItems.matches(player.getHeldItemHand())) {
                 return true;
             }
-            RayTraceResult rayTraceResult = RotationManager.INSTANCE.getNormalReachRayTrace();
+            PlayerControllerMP playerController = Minecraft.playerController();
+            if (playerController.isNull()) {
+                return true;
+            }
+            RayTraceResult rayTraceResult = RotationManager.INSTANCE.rayTraceUsingManagedRotation(
+                    playerController.N(), 0.0f, false);
             if (rayTraceResult.isNotNull() && rayTraceResult.getTypeOfHit().equals(RayTraceResult_type.block())) {
                 return false;
             }
@@ -123,15 +130,26 @@ extends ClickerMod {
         return this.blocked;
     }
 
+    @Override
+    protected boolean shouldSuppressClickRelease() {
+        return this.breakingBlock;
+    }
+
+    @EventHandler(priority=EventPriority.HIGHEST)
+    public void keepLegacyBlockBreakingResponsive(EventSendClickBlockToController event) {
+        if (ForgeVersion.c() == ForgeVersion.MC_1_8_9.i() && this.breakingBlock
+                && gg.vape.config.ClientSettings.isAttackButtonDown()) {
+            // A transient miss between blocks sets this to 10, pausing mining for half a second.
+            Minecraft.r(0);
+        }
+    }
+
     @EventHandler
     public void updateBlockedState(EventPreTick eventPreTick) {
         this.blocked = this.computeBlocked();
         ClickEngine clickEngine = this.getClickEngine();
-        if (this.blocked && InputEventDispatcher.getInstance().getFocusState().isFocused() && ClientSettings.INSTANCE.inputEnabled && Minecraft.currentScreen().isNull() && clickEngine.isActivationHeld() && !Minecraft.gameSettings().F().isKeyDown() && !this.wasClicking) {
-            this.wasClicking = true;
+        if (this.breakingBlock && InputEventDispatcher.getInstance().getFocusState().isFocused() && ClientSettings.INSTANCE.inputEnabled && Minecraft.currentScreen().isNull() && clickEngine.isActivationHeld() && !Minecraft.gameSettings().F().isKeyDown()) {
             clickEngine.pressClickButton();
-        } else {
-            this.wasClicking = false;
         }
     }
 
