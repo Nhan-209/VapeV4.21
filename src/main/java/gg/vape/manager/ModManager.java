@@ -42,7 +42,6 @@ import gg.vape.module.render.Search;
 import gg.vape.module.none.TextGuiSettings;
 import gg.vape.module.world.XRay;
 import gg.vape.module.world.AntiAFK;
-import gg.vape.module.render.Animations;
 import gg.vape.module.render.AntiDebuff;
 import gg.vape.module.render.Arrows;
 import gg.vape.module.render.Chams;
@@ -197,14 +196,14 @@ implements EventListener {
         coreModules[48] = new Sprint();
         coreModules[49] = new Health();
         coreModules[50] = new HitSelect();
-        coreModules[51] = new Animations();
+        coreModules[51] = new BlockHit();
         SilentAura silentAura = new SilentAura();
         coreModules[52] = silentAura;
         coreModules[53] = new SilentAuraClicker(silentAura);
         coreModules[54] = new HitFlick();
         coreModules[55] = new BlockIn();
         coreModules[56] = new InventoryManager();
-        coreModules[57] = new BlockHit();
+        coreModules[57] = new NoItemRelease();
         coreModules[58] = new Timer();
         coreModules[59] = new InventoryFill();
         coreModules[60] = new BedPlates();
@@ -225,7 +224,7 @@ implements EventListener {
         this.registerModules(Stream.of(new BedPlates()), ModManager::addBedPlatesVersionConstraints);
         this.registerModules(Stream.of(new AntiBot()));
         this.registerModules(Stream.of(new Triggerbot(), new HitSwap(), new AutoMace(), new AutoAnchor(), new WindCharge(), new CrystalAura(), new AutoTotem(), new ShieldBreaker(), new PearlCatch()), ModManager::addMinecraft1214Constraint);
-        this.registerModules(Stream.of(new NoFall(), new NoSlowdown(), new Speed(), new BlockHit(), new Timer()), ModManager::addModernMinecraftConstraint);
+        this.registerModules(Stream.of(new NoFall(), new NoSlowdown(), new Speed(), new NoItemRelease(), new Timer()), ModManager::addModernMinecraftConstraint);
         this.registerTextGuiSettings();
         this.registerHudModules();
         if (preservedLegacyComponents == null) {
