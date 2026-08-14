@@ -12,6 +12,7 @@ import gg.vape.ui.click.animation.DoubleAnimation;
 import gg.vape.ui.click.component.ColorDividerComponent;
 import gg.vape.ui.click.frame.Frame;
 import gg.vape.ui.click.frame.impl.ClientSettingsSearchFrame;
+import gg.vape.ui.click.frame.impl.hud.InventoryOverlaySettingsFrame;
 import gg.vape.ui.click.frame.impl.profile.PublicProfilesFrameHeaderActionComponent;
 import gg.vape.ui.click.frame.impl.quickactions.QuickActionRowComponent;
 import gg.vape.ui.click.frame.impl.quickactions.QuickActionsHeaderCloseCallback;
@@ -30,6 +31,7 @@ extends Frame {
     private QuickActionRowComponent mX;
     private QuickActionRowComponent mO;
     private QuickActionRowComponent mW;
+    private QuickActionRowComponent inventoryOverlayRow;
 
     public QuickActionRowComponent m$src$Lgg_vape_ui_click_frame_impl_quickactions_QuickA$1kmfigl() {
         return this.mF;
@@ -43,6 +45,7 @@ extends Frame {
         this.mO = new QuickActionRowComponent("Target Info", "newtargetinfo", 0.9, 7);
         this.m0 = new QuickActionRowComponent("Party Overlay", "party@2x", 0.9, 7);
         this.mW = new QuickActionRowComponent("Radar", "newradar", 0.9, 7);
+        this.inventoryOverlayRow = new QuickActionRowComponent("Inventory", "inventory", 0.9, 7);
         this.I2 = false;
         this.D(false);
         this.setDisabledOverlayColor(QuickActionsFrame.J.i);
@@ -57,9 +60,11 @@ extends Frame {
         this.mO.setTargetFrameClass(TargetInfoSettingsFrame.class);
         this.m0.setTargetFrameClass(OnlineActivitySettingsFrame.class);
         this.mW.setTargetFrameClass(OnlineRadarSettingsFrame.class);
+        this.inventoryOverlayRow.setTargetFrameClass(InventoryOverlaySettingsFrame.class);
         this.Y(publicProfilesFrameHeaderActionComponent);
         this.h(new ColorDividerComponent(QuickActionsFrame.J.l), new Object[0]);
-        this.addChildren(this.mF, this.mP, this.mX, this.mO, this.m0, this.mW);
+        this.addChildren(this.mF, this.mP, this.mX, this.mO, this.m0, this.mW,
+                this.inventoryOverlayRow);
         this.setVisible(false);
         this.L(false, false);
     }
@@ -137,6 +142,10 @@ extends Frame {
         return this.mW;
     }
 
+    public QuickActionRowComponent getInventoryOverlayRow() {
+        return this.inventoryOverlayRow;
+    }
+
     public void w(int n) {
         this.mG = n;
     }
@@ -145,4 +154,3 @@ extends Frame {
         return this.mG;
     }
 }
-
