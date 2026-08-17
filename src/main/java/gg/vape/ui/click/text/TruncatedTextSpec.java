@@ -8,6 +8,7 @@ public class TruncatedTextSpec {
     private double maxWidth;
     private String text;
     private String truncationSuffix;
+    private boolean translationEnabled = true;
 
     public double getMaxWidth() {
         return this.maxWidth;
@@ -38,7 +39,7 @@ public class TruncatedTextSpec {
     }
 
     public String toString() {
-        return "CutoffLabelData{text='" + this.text + '\'' + ", endText='" + this.truncationSuffix + '\'' + ", maxWidth=" + this.maxWidth + ", scale=" + this.fontScale + ", bold=" + this.bold + '}';
+        return "CutoffLabelData{text='" + this.text + '\'' + ", endText='" + this.truncationSuffix + '\'' + ", maxWidth=" + this.maxWidth + ", scale=" + this.fontScale + ", bold=" + this.bold + ", translationEnabled=" + this.translationEnabled + '}';
     }
 
     public void setBold(boolean bold) {
@@ -50,7 +51,7 @@ public class TruncatedTextSpec {
     }
 
     public int hashCode() {
-        return Objects.hash(this.text, this.truncationSuffix, this.maxWidth, this.fontScale, this.bold);
+        return Objects.hash(this.text, this.truncationSuffix, this.maxWidth, this.fontScale, this.bold, this.translationEnabled);
     }
 
     public double getFontScale() {
@@ -63,5 +64,13 @@ public class TruncatedTextSpec {
 
     public String getText() {
         return this.text;
+    }
+
+    public boolean isTranslationEnabled() {
+        return this.translationEnabled;
+    }
+
+    public void setTranslationEnabled(boolean translationEnabled) {
+        this.translationEnabled = translationEnabled;
     }
 }

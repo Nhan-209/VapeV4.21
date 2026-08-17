@@ -262,6 +262,7 @@ implements EventListener {
             string = "\u00a77(Empty Name)";
         }
         TruncatedTextComponent truncatedTextComponent = new TruncatedTextComponent(string, "...", 80.0, 1.3, this.settingsFrame.getEditorForegroundColor(), false);
+        truncatedTextComponent.setTranslationEnabled(false);
         double d = this.entityPreview.V$src$Z$1xhop3l() ? this.entityPreview.n() + this.entityPreview.L() / 2.0 - truncatedTextComponent.getTextHeight() / 2.0 : this.entityHeaderPanel.n() + this.entityHeaderPanel.L() / 2.0 - truncatedTextComponent.getTextHeight() / 2.0;
         truncatedTextComponent.renderAt(this.nameSpacer.G$src$D$1b2f02a() + (double)(this.entityPreview.V$src$Z$1xhop3l() ? 5 : 2), d);
     }

@@ -105,17 +105,7 @@ extends GuiComponent {
         if (this.centered) {
             textX += this.A() / 2.0;
         }
-        if (this.drawShadow) {
-            if (this.centered) {
-                fontRenderer.f(displayedText, textX, textY, this.textColor);
-            } else {
-                fontRenderer.v(displayedText, textX, textY, this.textColor);
-            }
-        } else if (this.centered) {
-            fontRenderer.W(displayedText, textX, textY, this.textColor);
-        } else {
-            fontRenderer.d(displayedText, textX, textY, this.textColor);
-        }
+        fontRenderer.drawString(displayedText, textX, textY, this.textColor, this.drawShadow, this.centered, this.textSpec.isTranslationEnabled());
         boolean textWasTruncated = truncationIndex < this.textSpec.getText().length() - 1;
         if (this.truncationTooltipEnabled && textWasTruncated) {
             String tooltipText = this.textSpec.getText() + (!this.additionalTooltipText.isEmpty() ? "\n" + this.additionalTooltipText : "");
@@ -149,6 +139,14 @@ extends GuiComponent {
         return this.truncationTooltipEnabled;
     }
 
+    public boolean isTranslationEnabled() {
+        return this.textSpec.isTranslationEnabled();
+    }
+
+    public void setTranslationEnabled(boolean translationEnabled) {
+        this.textSpec.setTranslationEnabled(translationEnabled);
+    }
+
 
     public void setMaxWidth(double maxWidth) {
         this.textSpec.setMaxWidth(maxWidth);
@@ -174,15 +172,15 @@ extends GuiComponent {
         int truncationIndex = SuffixTextTruncationIndexCache.INSTANCE.getTruncationIndex(this.textSpec);
         SmoothFontRenderer fontRenderer = this.textSpec.isBold() ? this.getAlternateFontRenderer(this.textSpec.getFontScale()) : this.getFontRenderer(this.textSpec.getFontScale());
         if (truncationIndex == this.textSpec.getText().length() - 1) {
-            return fontRenderer.N(this.getText());
+            return fontRenderer.getStringWidth(this.getText(), this.textSpec.isTranslationEnabled());
         }
         if (truncationIndex == -1) {
-            return fontRenderer.N(this.getTruncationSuffix());
+            return fontRenderer.getStringWidth(this.getTruncationSuffix(), this.textSpec.isTranslationEnabled());
         }
         if (truncationIndex == -2) {
             return 0.0;
         }
-        return fontRenderer.N(this.getText().substring(0, truncationIndex) + this.getTruncationSuffix());
+        return fontRenderer.getStringWidth(this.getText().substring(0, truncationIndex) + this.getTruncationSuffix(), this.textSpec.isTranslationEnabled());
     }
 
     public void setTruncationSuffix(String truncationSuffix) {
@@ -219,4 +217,3 @@ extends GuiComponent {
         return this.getRenderedWidth();
     }
 }
-

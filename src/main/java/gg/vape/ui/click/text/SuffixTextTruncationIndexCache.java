@@ -19,13 +19,13 @@ public class SuffixTextTruncationIndexCache {
         }
         SmoothFontRenderer fontRenderer = textSpec.isBold() ? Vape.INSTANCE.getFontManager().W(textSpec.getFontScale(), false) : Vape.INSTANCE.getFontManager().Y(textSpec.getFontScale());
         int truncationIndex = -1;
-        if (fontRenderer.N(textSpec.getText()) <= textSpec.getMaxWidth()) {
+        if (fontRenderer.getStringWidth(textSpec.getText(), textSpec.isTranslationEnabled()) <= textSpec.getMaxWidth()) {
             truncationIndex = textSpec.getText().length() - 1;
         } else {
             int candidateIndex = (int)Math.ceil(textSpec.getText().length() / 2) - 1;
             boolean exceededMaxWidth = false;
             while (candidateIndex >= 0 && candidateIndex < textSpec.getText().length()) {
-                double candidateWidth = fontRenderer.N(textSpec.getText().substring(0, candidateIndex) + textSpec.getTruncationSuffix());
+                double candidateWidth = fontRenderer.getStringWidth(textSpec.getText().substring(0, candidateIndex) + textSpec.getTruncationSuffix(), textSpec.isTranslationEnabled());
                 if (candidateWidth > textSpec.getMaxWidth()) {
                     exceededMaxWidth = true;
                     --candidateIndex;
@@ -36,7 +36,7 @@ public class SuffixTextTruncationIndexCache {
             }
             truncationIndex = candidateIndex;
         }
-        if (truncationIndex == -1 && fontRenderer.N(textSpec.getTruncationSuffix()) > textSpec.getMaxWidth()) {
+        if (truncationIndex == -1 && fontRenderer.getStringWidth(textSpec.getTruncationSuffix(), textSpec.isTranslationEnabled()) > textSpec.getMaxWidth()) {
             --truncationIndex;
         }
         this.indicesBySpecHash.put(textSpec.hashCode(), truncationIndex);
@@ -53,4 +53,3 @@ public class SuffixTextTruncationIndexCache {
         INSTANCE = new SuffixTextTruncationIndexCache();
     }
 }
-

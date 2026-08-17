@@ -139,6 +139,38 @@ public abstract class SmoothFontRenderer {
         return this.Y(string, false);
     }
 
+    public double getStringWidth(String string, boolean translate) {
+        boolean previous = this.j;
+        this.j = translate;
+        try {
+            return this.N(string);
+        }
+        finally {
+            this.j = previous;
+        }
+    }
+
+    public void drawString(String string, double x, double y, Color color, boolean shadow, boolean centered, boolean translate) {
+        boolean previous = this.j;
+        this.j = translate;
+        try {
+            if (shadow) {
+                if (centered) {
+                    this.f(string, x, y, color);
+                } else {
+                    this.v(string, x, y, color);
+                }
+            } else if (centered) {
+                this.W(string, x, y, color);
+            } else {
+                this.d(string, x, y, color);
+            }
+        }
+        finally {
+            this.j = previous;
+        }
+    }
+
     public void F(String string, double d, double d2, int n) {
         this.O(string, d, d2, n, false);
     }
@@ -225,4 +257,3 @@ public abstract class SmoothFontRenderer {
 
     public abstract double Y(String var1, boolean var2);
 }
-
