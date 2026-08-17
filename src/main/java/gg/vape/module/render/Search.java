@@ -1,5 +1,6 @@
 package gg.vape.module.render;
 
+import gg.vape.Vape;
 import gg.vape.event.EventHandler;
 import gg.vape.event.impl.EventRender3D;
 import gg.vape.event.impl.EventRenderTracers3D;
@@ -205,7 +206,9 @@ extends Mod {
         if (ForgeVersion.MC_1_16_5.d()) {
             cameraYOffset = Minecraft.m$src$Lgg_vape_wrapper_impl_EntityRenderer_$13begmf().l().o().getY() - renderY;
         }
-        if (GuiRenderPrimitives.d()) {
+        boolean useInstancedRenderer = GuiRenderPrimitives.d()
+                && !(ForgeVersion.MC_1_21_11.L() && Vape.INSTANCE.isFabricMinecraftPresent());
+        if (useInstancedRenderer) {
             RenderBatchState renderBatchState = RenderBatchState.getInstance();
             renderBatchState.beginBatch();
             double adjustedRenderY = renderY + cameraYOffset;
@@ -296,4 +299,3 @@ extends Mod {
         }
     }
 }
-
