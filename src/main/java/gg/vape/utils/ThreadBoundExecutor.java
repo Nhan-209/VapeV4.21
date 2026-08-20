@@ -1,5 +1,6 @@
 package gg.vape.utils;
 
+import gg.vape.Vape;
 import gg.vape.ui.click.component.GuiComponent;
 import java.util.ArrayDeque;
 import java.util.Queue;
@@ -34,7 +35,9 @@ implements Executor {
             try {
                 this.currentTask.run();
             }
-            catch (Throwable ignored) {}
+            catch (Throwable throwable) {
+                Vape.logThrowable(throwable);
+            }
         }
     }
 
