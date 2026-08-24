@@ -21,6 +21,7 @@ import gg.vape.value.NumberValue;
 import gg.vape.wrapper.impl.Entity;
 import gg.vape.wrapper.impl.EntityOtherPlayerMP;
 import gg.vape.wrapper.impl.EntityPlayerSP;
+import gg.vape.wrapper.impl.EnumHand;
 import gg.vape.wrapper.impl.InventoryPlayer;
 import gg.vape.wrapper.impl.ItemStack;
 import gg.vape.wrapper.impl.Minecraft;
@@ -177,8 +178,12 @@ public class ShieldBreaker extends Mod {
             return false;
         }
         Entity target = rayTrace.getEntity();
-        return target != null && target.isNotNull() && target.isInstance(MappedClasses.lG)
-                && RotationUtil.n(new EntityOtherPlayerMP(target.getObject()));
+        if (target == null || target.isNull() || !target.isInstance(MappedClasses.lG)) {
+            return false;
+        }
+        EntityOtherPlayerMP targetPlayer = new EntityOtherPlayerMP(target.getObject());
+        EnumHand shieldHand = RotationUtil.q(targetPlayer);
+        return shieldHand != null && RotationUtil.f(targetPlayer, shieldHand) >= 5.0f;
     }
 
     public boolean hasAxeInHotbar() {
