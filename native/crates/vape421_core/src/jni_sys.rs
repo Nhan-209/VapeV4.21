@@ -1234,71 +1234,71 @@ impl jvmtiCapabilities {
 
     #[inline]
     pub fn can_redefine_classes(&self) -> bool {
-        (self.bitfield0 & (1 << 2)) != 0
+        (self.bitfield0 & (1 << 9)) != 0
     }
 
     #[inline]
     pub fn set_can_redefine_classes(&mut self, val: bool) {
         if val {
-            self.bitfield0 |= 1 << 2;
+            self.bitfield0 |= 1 << 9;
         } else {
-            self.bitfield0 &= !(1 << 2);
+            self.bitfield0 &= !(1 << 9);
         }
     }
 
     #[inline]
     pub fn can_redefine_any_class(&self) -> bool {
-        (self.bitfield0 & (1 << 3)) != 0
+        (self.bitfield0 & (1 << 21)) != 0
     }
 
     #[inline]
     pub fn set_can_redefine_any_class(&mut self, val: bool) {
         if val {
-            self.bitfield0 |= 1 << 3;
+            self.bitfield0 |= 1 << 21;
         } else {
-            self.bitfield0 &= !(1 << 3);
+            self.bitfield0 &= !(1 << 21);
         }
     }
 
     #[inline]
     pub fn can_retransform_classes(&self) -> bool {
-        (self.bitfield0 & (1 << 16)) != 0
+        (self.bitfield1 & (1 << 5)) != 0
     }
 
     #[inline]
     pub fn set_can_retransform_classes(&mut self, val: bool) {
         if val {
-            self.bitfield0 |= 1 << 16;
+            self.bitfield1 |= 1 << 5;
         } else {
-            self.bitfield0 &= !(1 << 16);
+            self.bitfield1 &= !(1 << 5);
         }
     }
 
     #[inline]
     pub fn can_retransform_any_class(&self) -> bool {
-        (self.bitfield0 & (1 << 17)) != 0
+        (self.bitfield1 & (1 << 6)) != 0
     }
 
     #[inline]
     pub fn set_can_retransform_any_class(&mut self, val: bool) {
         if val {
-            self.bitfield0 |= 1 << 17;
+            self.bitfield1 |= 1 << 6;
         } else {
-            self.bitfield0 &= !(1 << 17);
+            self.bitfield1 &= !(1 << 6);
         }
     }
 
     #[inline]
     pub fn can_get_source_file_name(&self) -> bool {
-        (self.bitfield0 & (1 << 7)) != 0
+        (self.bitfield0 & (1 << 11)) != 0
     }
 
     #[inline]
     pub fn set_can_get_source_file_name(&mut self, val: bool) {
         if val {
-            self.bitfield0 |= 1 << 7;
+            self.bitfield0 |= 1 << 11;
         } else {
-            self.bitfield0 &= !(1 << 7);
+            self.bitfield0 &= !(1 << 11);
         }
     }
 }
@@ -1350,8 +1350,9 @@ pub type jvmtiEnv = *const jvmtiInterface_1_;
 
 #[repr(C)]
 pub struct jvmtiInterface_1_ {
+    // Slot 1: reserved
     pub reserved1: *mut c_void,
-
+    // Slot 2: SetEventNotificationMode
     pub SetEventNotificationMode: unsafe extern "system" fn(
         env: *mut jvmtiEnv,
         mode: jvmtiEventMode,
@@ -1359,103 +1360,365 @@ pub struct jvmtiInterface_1_ {
         event_thread: jthread,
         ...
     ) -> jvmtiError,
-
-    pub reserved3: *mut c_void,
+    // Slot 3: GetAllModules
+    pub GetAllModules: *mut c_void,
+    // Slot 4: GetAllThreads
     pub GetAllThreads: unsafe extern "system" fn(
         env: *mut jvmtiEnv,
         threads_count_ptr: *mut jint,
         threads_ptr: *mut *mut jthread,
     ) -> jvmtiError,
+    // Slot 5: SuspendThread
     pub SuspendThread: *mut c_void,
+    // Slot 6: ResumeThread
     pub ResumeThread: *mut c_void,
+    // Slot 7: StopThread
     pub StopThread: *mut c_void,
+    // Slot 8: InterruptThread
     pub InterruptThread: *mut c_void,
+    // Slot 9: GetThreadInfo
     pub GetThreadInfo: unsafe extern "system" fn(
         env: *mut jvmtiEnv,
         thread: jthread,
         info_ptr: *mut jvmtiThreadInfo,
     ) -> jvmtiError,
-
-    pub reserved9: [*mut c_void; 22],
-
-    pub GetLoadedClasses: unsafe extern "system" fn(
+    // Slot 10: GetOwnedMonitorInfo
+    pub GetOwnedMonitorInfo: *mut c_void,
+    // Slot 11: GetCurrentContendedMonitor
+    pub GetCurrentContendedMonitor: *mut c_void,
+    // Slot 12: RunAgentThread
+    pub RunAgentThread: *mut c_void,
+    // Slot 13: GetTopThreadGroups
+    pub GetTopThreadGroups: *mut c_void,
+    // Slot 14: GetThreadGroupInfo
+    pub GetThreadGroupInfo: *mut c_void,
+    // Slot 15: GetThreadGroupChildren
+    pub GetThreadGroupChildren: *mut c_void,
+    // Slot 16: GetFrameCount
+    pub GetFrameCount: *mut c_void,
+    // Slot 17: GetThreadState
+    pub GetThreadState: *mut c_void,
+    // Slot 18: GetCurrentThread
+    pub GetCurrentThread: *mut c_void,
+    // Slot 19: GetFrameLocation
+    pub GetFrameLocation: *mut c_void,
+    // Slot 20: NotifyFramePop
+    pub NotifyFramePop: *mut c_void,
+    // Slot 21: GetLocalObject
+    pub GetLocalObject: *mut c_void,
+    // Slot 22: GetLocalInt
+    pub GetLocalInt: *mut c_void,
+    // Slot 23: GetLocalLong
+    pub GetLocalLong: *mut c_void,
+    // Slot 24: GetLocalFloat
+    pub GetLocalFloat: *mut c_void,
+    // Slot 25: GetLocalDouble
+    pub GetLocalDouble: *mut c_void,
+    // Slot 26: SetLocalObject
+    pub SetLocalObject: *mut c_void,
+    // Slot 27: SetLocalInt
+    pub SetLocalInt: *mut c_void,
+    // Slot 28: SetLocalLong
+    pub SetLocalLong: *mut c_void,
+    // Slot 29: SetLocalFloat
+    pub SetLocalFloat: *mut c_void,
+    // Slot 30: SetLocalDouble
+    pub SetLocalDouble: *mut c_void,
+    // Slot 31: CreateRawMonitor
+    pub CreateRawMonitor: *mut c_void,
+    // Slot 32: DestroyRawMonitor
+    pub DestroyRawMonitor: *mut c_void,
+    // Slot 33: RawMonitorEnter
+    pub RawMonitorEnter: *mut c_void,
+    // Slot 34: RawMonitorExit
+    pub RawMonitorExit: *mut c_void,
+    // Slot 35: RawMonitorWait
+    pub RawMonitorWait: *mut c_void,
+    // Slot 36: RawMonitorNotify
+    pub RawMonitorNotify: *mut c_void,
+    // Slot 37: RawMonitorNotifyAll
+    pub RawMonitorNotifyAll: *mut c_void,
+    // Slot 38: SetBreakpoint
+    pub SetBreakpoint: *mut c_void,
+    // Slot 39: ClearBreakpoint
+    pub ClearBreakpoint: *mut c_void,
+    // Slot 40: GetNamedModule
+    pub GetNamedModule: *mut c_void,
+    // Slot 41: SetFieldAccessWatch
+    pub SetFieldAccessWatch: *mut c_void,
+    // Slot 42: ClearFieldAccessWatch
+    pub ClearFieldAccessWatch: *mut c_void,
+    // Slot 43: SetFieldModificationWatch
+    pub SetFieldModificationWatch: *mut c_void,
+    // Slot 44: ClearFieldModificationWatch
+    pub ClearFieldModificationWatch: *mut c_void,
+    // Slot 45: IsModifiableClass
+    pub IsModifiableClass: *mut c_void,
+    // Slot 46: Allocate
+    pub Allocate: unsafe extern "system" fn(
         env: *mut jvmtiEnv,
-        class_count_ptr: *mut jint,
-        classes_ptr: *mut *mut jclass,
+        size: jlong,
+        mem_ptr: *mut *mut u8,
     ) -> jvmtiError,
-    pub GetClassLoaderClasses: *mut c_void,
+    // Slot 47: Deallocate
+    pub Deallocate: unsafe extern "system" fn(
+        env: *mut jvmtiEnv,
+        mem: *mut u8,
+    ) -> jvmtiError,
+    // Slot 48: GetClassSignature
     pub GetClassSignature: unsafe extern "system" fn(
         env: *mut jvmtiEnv,
         klass: jclass,
         signature_ptr: *mut *mut i8,
         generic_ptr: *mut *mut i8,
     ) -> jvmtiError,
+    // Slot 49: GetClassStatus
     pub GetClassStatus: unsafe extern "system" fn(
         env: *mut jvmtiEnv,
         klass: jclass,
         status_ptr: *mut jint,
     ) -> jvmtiError,
-
-    pub reserved35: [*mut c_void; 10],
-
+    // Slot 50: GetSourceFileName
+    pub GetSourceFileName: *mut c_void,
+    // Slot 51: GetClassModifiers
+    pub GetClassModifiers: *mut c_void,
+    // Slot 52: GetClassMethods
+    pub GetClassMethods: *mut c_void,
+    // Slot 53: GetClassFields
+    pub GetClassFields: *mut c_void,
+    // Slot 54: GetImplementedInterfaces
+    pub GetImplementedInterfaces: *mut c_void,
+    // Slot 55: IsInterface
+    pub IsInterface: *mut c_void,
+    // Slot 56: IsArrayClass
+    pub IsArrayClass: *mut c_void,
+    // Slot 57: GetClassLoader
+    pub GetClassLoader: *mut c_void,
+    // Slot 58: GetObjectHashCode
+    pub GetObjectHashCode: *mut c_void,
+    // Slot 59: GetObjectMonitorUsage
+    pub GetObjectMonitorUsage: *mut c_void,
+    // Slot 60: GetFieldName
+    pub GetFieldName: *mut c_void,
+    // Slot 61: GetFieldDeclaringClass
+    pub GetFieldDeclaringClass: *mut c_void,
+    // Slot 62: GetFieldModifiers
+    pub GetFieldModifiers: *mut c_void,
+    // Slot 63: IsFieldSynthetic
+    pub IsFieldSynthetic: *mut c_void,
+    // Slot 64: GetMethodName
+    pub GetMethodName: *mut c_void,
+    // Slot 65: GetMethodDeclaringClass
+    pub GetMethodDeclaringClass: *mut c_void,
+    // Slot 66: GetMethodModifiers
+    pub GetMethodModifiers: *mut c_void,
+    // Slot 67: ClearAllFramePops
+    pub ClearAllFramePops: *mut c_void,
+    // Slot 68: GetMaxLocals
+    pub GetMaxLocals: *mut c_void,
+    // Slot 69: GetArgumentsSize
+    pub GetArgumentsSize: *mut c_void,
+    // Slot 70: GetLineNumberTable
+    pub GetLineNumberTable: *mut c_void,
+    // Slot 71: GetMethodLocation
+    pub GetMethodLocation: *mut c_void,
+    // Slot 72: GetLocalVariableTable
+    pub GetLocalVariableTable: *mut c_void,
+    // Slot 73: SetNativeMethodPrefix
+    pub SetNativeMethodPrefix: *mut c_void,
+    // Slot 74: SetNativeMethodPrefixes
+    pub SetNativeMethodPrefixes: *mut c_void,
+    // Slot 75: GetBytecodes
+    pub GetBytecodes: *mut c_void,
+    // Slot 76: IsMethodNative
+    pub IsMethodNative: *mut c_void,
+    // Slot 77: IsMethodSynthetic
+    pub IsMethodSynthetic: *mut c_void,
+    // Slot 78: GetLoadedClasses
+    pub GetLoadedClasses: unsafe extern "system" fn(
+        env: *mut jvmtiEnv,
+        class_count_ptr: *mut jint,
+        classes_ptr: *mut *mut jclass,
+    ) -> jvmtiError,
+    // Slot 79: GetClassLoaderClasses
+    pub GetClassLoaderClasses: *mut c_void,
+    // Slot 80: PopFrame
+    pub PopFrame: *mut c_void,
+    // Slot 81: ForceEarlyReturnObject
+    pub ForceEarlyReturnObject: *mut c_void,
+    // Slot 82: ForceEarlyReturnInt
+    pub ForceEarlyReturnInt: *mut c_void,
+    // Slot 83: ForceEarlyReturnLong
+    pub ForceEarlyReturnLong: *mut c_void,
+    // Slot 84: ForceEarlyReturnFloat
+    pub ForceEarlyReturnFloat: *mut c_void,
+    // Slot 85: ForceEarlyReturnDouble
+    pub ForceEarlyReturnDouble: *mut c_void,
+    // Slot 86: ForceEarlyReturnVoid
+    pub ForceEarlyReturnVoid: *mut c_void,
+    // Slot 87: RedefineClasses
     pub RedefineClasses: unsafe extern "system" fn(
         env: *mut jvmtiEnv,
         class_count: jint,
         class_definitions: *const jvmtiClassDefinition,
     ) -> jvmtiError,
-
-    pub reserved46: [*mut c_void; 41],
-
-    pub Allocate: unsafe extern "system" fn(
-        env: *mut jvmtiEnv,
-        size: jlong,
-        mem_ptr: *mut *mut u8,
-    ) -> jvmtiError,
-    pub Deallocate:
-        unsafe extern "system" fn(env: *mut jvmtiEnv, mem: *mut u8) -> jvmtiError,
-
-    pub reserved89: [*mut c_void; 2],
-
-    pub GetPotentialCapabilities: unsafe extern "system" fn(
-        env: *mut jvmtiEnv,
-        capabilities_ptr: *mut jvmtiCapabilities,
-    ) -> jvmtiError,
-    pub AddCapabilities: unsafe extern "system" fn(
-        env: *mut jvmtiEnv,
-        capabilities_ptr: *const jvmtiCapabilities,
-    ) -> jvmtiError,
-    pub RelinquishCapabilities: *mut c_void,
+    // Slot 88: GetVersionNumber
+    pub GetVersionNumber: *mut c_void,
+    // Slot 89: GetCapabilities
     pub GetCapabilities: *mut c_void,
-
-    pub reserved95: [*mut c_void; 7],
-
+    // Slot 90: GetSourceDebugExtension
+    pub GetSourceDebugExtension: *mut c_void,
+    // Slot 91: IsMethodObsolete
+    pub IsMethodObsolete: *mut c_void,
+    // Slot 92: SuspendThreadList
+    pub SuspendThreadList: *mut c_void,
+    // Slot 93: ResumeThreadList
+    pub ResumeThreadList: *mut c_void,
+    // Slot 94: AddModuleReads
+    pub AddModuleReads: *mut c_void,
+    // Slot 95: AddModuleExports
+    pub AddModuleExports: *mut c_void,
+    // Slot 96: AddModuleOpens
+    pub AddModuleOpens: *mut c_void,
+    // Slot 97: AddModuleUses
+    pub AddModuleUses: *mut c_void,
+    // Slot 98: AddModuleProvides
+    pub AddModuleProvides: *mut c_void,
+    // Slot 99: IsModifiableModule
+    pub IsModifiableModule: *mut c_void,
+    // Slot 100: GetAllStackTraces
+    pub GetAllStackTraces: *mut c_void,
+    // Slot 101: GetThreadListStackTraces
+    pub GetThreadListStackTraces: *mut c_void,
+    // Slot 102: GetThreadLocalStorage
+    pub GetThreadLocalStorage: *mut c_void,
+    // Slot 103: SetThreadLocalStorage
+    pub SetThreadLocalStorage: *mut c_void,
+    // Slot 104: GetStackTrace
+    pub GetStackTrace: *mut c_void,
+    // Slot 105: reserved
+    pub reserved105: *mut c_void,
+    // Slot 106: GetTag
+    pub GetTag: *mut c_void,
+    // Slot 107: SetTag
+    pub SetTag: *mut c_void,
+    // Slot 108: ForceGarbageCollection
+    pub ForceGarbageCollection: *mut c_void,
+    // Slot 109: IterateOverObjectsReachableFromObject
+    pub IterateOverObjectsReachableFromObject: *mut c_void,
+    // Slot 110: IterateOverReachableObjects
+    pub IterateOverReachableObjects: *mut c_void,
+    // Slot 111: IterateOverHeap
+    pub IterateOverHeap: *mut c_void,
+    // Slot 112: IterateOverInstancesOfClass
+    pub IterateOverInstancesOfClass: *mut c_void,
+    // Slot 113: reserved
+    pub reserved113: *mut c_void,
+    // Slot 114: GetObjectsWithTags
+    pub GetObjectsWithTags: *mut c_void,
+    // Slot 115: FollowReferences
+    pub FollowReferences: *mut c_void,
+    // Slot 116: GetObjectMonitors
+    pub GetObjectMonitors: *mut c_void,
+    // Slot 117: reserved
+    pub reserved117: *mut c_void,
+    // Slot 118: GetRawMonitorUse
+    pub GetRawMonitorUse: *mut c_void,
+    // Slot 119: GetRawMonitors
+    pub GetRawMonitors: *mut c_void,
+    // Slot 120: SetJNIFunctionTable
+    pub SetJNIFunctionTable: *mut c_void,
+    // Slot 121: GetJNIFunctionTable
+    pub GetJNIFunctionTable: *mut c_void,
+    // Slot 122: SetEventCallbacks
     pub SetEventCallbacks: unsafe extern "system" fn(
         env: *mut jvmtiEnv,
         callbacks: *const jvmtiEventCallbacks,
         size_of_callbacks: jint,
     ) -> jvmtiError,
-
-    pub reserved103: [*mut c_void; 6],
-
+    // Slot 123: GenerateEvents
+    pub GenerateEvents: *mut c_void,
+    // Slot 124: GetExtensionFunctions
+    pub GetExtensionFunctions: *mut c_void,
+    // Slot 125: GetExtensionEvents
+    pub GetExtensionEvents: *mut c_void,
+    // Slot 126: SetExtensionEventCallback
+    pub SetExtensionEventCallback: *mut c_void,
+    // Slot 127: DisposeEnvironment
+    pub DisposeEnvironment: *mut c_void,
+    // Slot 128: GetErrorName
     pub GetErrorName: unsafe extern "system" fn(
         env: *mut jvmtiEnv,
         error: jvmtiError,
         name_ptr: *mut *mut i8,
     ) -> jvmtiError,
-
-    pub reserved110: [*mut c_void; 4],
-
+    // Slot 129: GetJLocationFormat
+    pub GetJLocationFormat: *mut c_void,
+    // Slot 130: GetSystemProperties
+    pub GetSystemProperties: *mut c_void,
+    // Slot 131: GetSystemProperty
+    pub GetSystemProperty: *mut c_void,
+    // Slot 132: SetSystemProperty
+    pub SetSystemProperty: *mut c_void,
+    // Slot 133: GetPhase
+    pub GetPhase: *mut c_void,
+    // Slot 134: GetCurrentThreadCpuTimerInfo
+    pub GetCurrentThreadCpuTimerInfo: *mut c_void,
+    // Slot 135: GetCurrentThreadCpuTime
+    pub GetCurrentThreadCpuTime: *mut c_void,
+    // Slot 136: GetThreadCpuTimerInfo
+    pub GetThreadCpuTimerInfo: *mut c_void,
+    // Slot 137: GetThreadCpuTime
+    pub GetThreadCpuTime: *mut c_void,
+    // Slot 138: GetTimerInfo
+    pub GetTimerInfo: *mut c_void,
+    // Slot 139: GetTime
+    pub GetTime: *mut c_void,
+    // Slot 140: GetPotentialCapabilities
+    pub GetPotentialCapabilities: unsafe extern "system" fn(
+        env: *mut jvmtiEnv,
+        capabilities_ptr: *mut jvmtiCapabilities,
+    ) -> jvmtiError,
+    // Slot 141: EstimateCostOfCapabilities
+    pub EstimateCostOfCapabilities: *mut c_void,
+    // Slot 142: AddCapabilities
+    pub AddCapabilities: unsafe extern "system" fn(
+        env: *mut jvmtiEnv,
+        capabilities_ptr: *const jvmtiCapabilities,
+    ) -> jvmtiError,
+    // Slot 143: RelinquishCapabilities
+    pub RelinquishCapabilities: *mut c_void,
+    // Slot 144: GetAvailableProcessors
+    pub GetAvailableProcessors: *mut c_void,
+    // Slot 145: GetClassVersionNumbers
+    pub GetClassVersionNumbers: *mut c_void,
+    // Slot 146: GetConstantPool
+    pub GetConstantPool: *mut c_void,
+    // Slot 147: GetEnvironmentLocalStorage
+    pub GetEnvironmentLocalStorage: *mut c_void,
+    // Slot 148: SetEnvironmentLocalStorage
+    pub SetEnvironmentLocalStorage: *mut c_void,
+    // Slot 149: AddToBootstrapClassLoaderSearch
+    pub AddToBootstrapClassLoaderSearch: *mut c_void,
+    // Slot 150: SetVerboseFlag
+    pub SetVerboseFlag: *mut c_void,
+    // Slot 151: AddToSystemClassLoaderSearch
     pub AddToSystemClassLoaderSearch: unsafe extern "system" fn(
         env: *mut jvmtiEnv,
         segment: *const i8,
     ) -> jvmtiError,
-    pub AddToBootstrapClassLoaderSearch: *mut c_void,
-
-    pub reserved116: [*mut c_void; 3],
-
+    // Slot 152: RetransformClasses
     pub RetransformClasses: unsafe extern "system" fn(
         env: *mut jvmtiEnv,
         class_count: jint,
         classes: *const jclass,
     ) -> jvmtiError,
+    // Slot 153: GetOwnedMonitorStackDepthInfo
+    pub GetOwnedMonitorStackDepthInfo: *mut c_void,
+    // Slot 154: GetObjectSize
+    pub GetObjectSize: *mut c_void,
+    // Slot 155: GetLocalInstance
+    pub GetLocalInstance: *mut c_void,
+    // Slot 156: SetHeapSamplingInterval
+    pub SetHeapSamplingInterval: *mut c_void,
 }
