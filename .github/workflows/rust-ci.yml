@@ -67,6 +67,7 @@ jobs:
           Copy-Item -Path native/target/release/Vape421Native.dll -Destination build/rust-injection/ -Force
           Copy-Item -Path native/target/release/Vape421Injector.exe -Destination build/rust-injection/ -Force
           Copy-Item -Path native/target/release/Vape421LunarDump.dll -Destination build/rust-injection/ -Force
+          Copy-Item -Path build/libs/*-injection.jar -Destination build/rust-injection/ -Force
           Copy-Item -Path native/README.md -Destination build/rust-injection/ -Force
 
       - name: Upload Rust Injection Bundle Artifact

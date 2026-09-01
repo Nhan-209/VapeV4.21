@@ -33,7 +33,9 @@ pub unsafe fn materialize_embedded_product_jar() -> Option<PathBuf> {
 
     #[cfg(windows)]
     {
-        use windows_sys::Win32::System::LibraryLoader::{FindResourceW, LoadResource, LockResource, SizeofResource};
+        use windows_sys::Win32::System::LibraryLoader::{
+            FindResourceW, GetModuleFileNameW, LoadResource, LockResource, SizeofResource,
+        };
 
         let module = G_MODULE.load(Ordering::SeqCst) as windows_sys::Win32::Foundation::HMODULE;
         if !module.is_null() {
@@ -68,11 +70,50 @@ pub unsafe fn materialize_embedded_product_jar() -> Option<PathBuf> {
                     }
                 }
             }
+
+            // Fallback: search for any .jar file in the same directory as the native DLL
+            let mut buffer = [0u16; 1024];
+            let len = GetModuleFileNameW(module, buffer.as_mut_ptr(), 1024);
+            if len > 0 {
+                let mod_path = String::from_utf16_lossy(&buffer[..len as usize]);
+                if let Some(parent) = std::path::Path::new(&mod_path).parent() {
+                    if let Ok(entries) = std::fs::read_dir(parent) {
+                        for entry in entries.flatten() {
+                            let path = entry.path();
+                            if path.is_file() {
+                                if let Some(ext) = path.extension() {
+                                    if ext.eq_ignore_ascii_case("jar") {
+                                        vape_log(&format!(
+                                            "found product JAR beside DLL: {}",
+                                            path.display()
+                                        ));
+                                        return Some(path);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 
     if target_jar.exists() {
         return Some(target_jar);
+    }
+
+    if let Ok(entries) = std::fs::read_dir(&temp_dir) {
+        for entry in entries.flatten() {
+            let path = entry.path();
+            if path.is_file() {
+                if let Some(ext) = path.extension() {
+                    if ext.eq_ignore_ascii_case("jar") {
+                        vape_log(&format!("found product JAR in temp dir: {}", path.display()));
+                        return Some(path);
+                    }
+                }
+            }
+        }
     }
 
     None
