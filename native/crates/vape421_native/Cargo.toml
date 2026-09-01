@@ -1,0 +1,15 @@
+[package]
+name = "vape421_native"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[lib]
+name = "Vape421Native"
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+vape421_core = { path = "../vape421_core" }
+
+[target.'cfg(windows)'.dependencies]
+windows-sys = { workspace = true }

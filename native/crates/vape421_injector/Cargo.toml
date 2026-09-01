@@ -1,0 +1,15 @@
+[package]
+name = "vape421_injector"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[[bin]]
+name = "Vape421Injector"
+path = "src/main.rs"
+
+[dependencies]
+vape421_core = { path = "../vape421_core" }
+
+[target.'cfg(windows)'.dependencies]
+windows-sys = { workspace = true }

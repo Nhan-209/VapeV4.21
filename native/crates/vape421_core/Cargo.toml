@@ -1,0 +1,10 @@
+[package]
+name = "vape421_core"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+
+[target.'cfg(windows)'.dependencies]
+windows-sys = { workspace = true }
