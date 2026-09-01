@@ -166,15 +166,15 @@ pub fn vape_loader_bootstrap_initialize() -> bool {
                         access_token = "0".to_string();
                     }
                 } else {
-                    let ptr = MapViewOfFile(
+                    let view = MapViewOfFile(
                         mapping,
                         FILE_MAP_READ | FILE_MAP_WRITE,
                         0,
                         0,
                         std::mem::size_of::<Vape421BootstrapV2>(),
                     );
-                    if !ptr.is_null() {
-                        let block = &mut *(ptr as *mut Vape421BootstrapV2);
+                    if !view.Value.is_null() {
+                        let block = &mut *(view.Value as *mut Vape421BootstrapV2);
                         let is_valid = block.magic == VAPE421_BOOTSTRAP_MAGIC
                             && block.version == VAPE421_BOOTSTRAP_VERSION
                             && block.structure_size as usize == std::mem::size_of::<Vape421BootstrapV2>()
@@ -218,7 +218,7 @@ pub fn vape_loader_bootstrap_initialize() -> bool {
                         }
 
                         signal_ack(pid);
-                        UnmapViewOfFile(ptr);
+                        UnmapViewOfFile(view);
                     } else {
                         signal_ack(pid);
                     }

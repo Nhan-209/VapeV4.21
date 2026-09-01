@@ -105,7 +105,7 @@ fn run_socket_handoff_test(invalid: bool) -> Result<(), String> {
             );
 
             let ack = CreateEventW(std::ptr::null(), 1, 0, ack_name.as_ptr());
-            let ptr = MapViewOfFile(
+            let view = MapViewOfFile(
                 mapping,
                 FILE_MAP_ALL_ACCESS,
                 0,
@@ -113,11 +113,11 @@ fn run_socket_handoff_test(invalid: bool) -> Result<(), String> {
                 std::mem::size_of::<Vape421BootstrapV2>(),
             );
 
-            if mapping.is_null() || ack.is_null() || ptr.is_null() {
+            if mapping.is_null() || ack.is_null() || view.Value.is_null() {
                 return Err("failed to create bootstrap test objects".into());
             }
 
-            let block = &mut *(ptr as *mut Vape421BootstrapV2);
+            let block = &mut *(view.Value as *mut Vape421BootstrapV2);
             *block = Vape421BootstrapV2::default();
             block.magic = if invalid { 0 } else { VAPE421_BOOTSTRAP_MAGIC };
             block.version = VAPE421_BOOTSTRAP_VERSION;
@@ -139,7 +139,7 @@ fn run_socket_handoff_test(invalid: bool) -> Result<(), String> {
                 let init_ok = vape_loader_bootstrap_initialize();
                 let wait = WaitForSingleObject(ack, 1000);
                 if init_ok || wait != WAIT_OBJECT_0 || block.status != VAPE421_BOOTSTRAP_STATUS_FAILED {
-                    UnmapViewOfFile(ptr);
+                    UnmapViewOfFile(view);
                     CloseHandle(ack);
                     CloseHandle(mapping);
                     return Err("invalid bootstrap was not rejected".into());
@@ -152,7 +152,7 @@ fn run_socket_handoff_test(invalid: bool) -> Result<(), String> {
                     || block.status != VAPE421_BOOTSTRAP_STATUS_CONSUMED
                     || vape_loader_access_token() != "persistent-test-token"
                 {
-                    UnmapViewOfFile(ptr);
+                    UnmapViewOfFile(view);
                     CloseHandle(ack);
                     CloseHandle(mapping);
                     return Err("socket token bootstrap failed".into());
@@ -163,7 +163,7 @@ fn run_socket_handoff_test(invalid: bool) -> Result<(), String> {
 
                 thread::sleep(Duration::from_millis(200));
                 if !succeeded.load(Ordering::SeqCst) {
-                    UnmapViewOfFile(ptr);
+                    UnmapViewOfFile(view);
                     CloseHandle(ack);
                     CloseHandle(mapping);
                     return Err("progress protocol sequence failed".into());
@@ -171,7 +171,7 @@ fn run_socket_handoff_test(invalid: bool) -> Result<(), String> {
             }
 
             vape_loader_bootstrap_clear();
-            UnmapViewOfFile(ptr);
+            UnmapViewOfFile(view);
             CloseHandle(ack);
             CloseHandle(mapping);
         }
