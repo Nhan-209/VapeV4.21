@@ -131,6 +131,7 @@ unsafe fn require_x64_target(process: windows_sys::Win32::Foundation::HANDLE) ->
     };
     use windows_sys::Win32::System::Threading::IsWow64Process;
 
+    #[allow(non_snake_case)]
     type IsWow64Process2Fn = unsafe extern "system" fn(
         hProcess: windows_sys::Win32::Foundation::HANDLE,
         pProcessMachine: *mut u16,

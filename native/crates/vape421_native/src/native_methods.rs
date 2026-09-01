@@ -1,5 +1,6 @@
 //! Implementations of all 9 authoritative JNI native methods, gat, cpy, and compatibility stubs.
 
+use core::ffi::c_void;
 use std::ffi::{CStr, CString};
 use std::ptr;
 use std::sync::atomic::Ordering;
@@ -29,43 +30,53 @@ pub unsafe extern "system" fn native_scb(
     target: jclass,
     class_bytes: jbyteArray,
 ) -> jint {
-    let jvmti = G_JVMTI.load(Ordering::SeqCst);
-    if jvmti.is_null() || target.is_null() || class_bytes.is_null() {
-        return JVMTI_ERROR_INVALID_ENVIRONMENT;
+    if class_bytes.is_null() {
+        return 0;
     }
 
-    let length = ((*(*env)).GetArrayLength)(env, class_bytes);
+    let is_badlion = RETAIN_CLASS_TRANSFORMS.load(Ordering::SeqCst);
     let mut is_copy: jboolean = 0;
-    let bytes_ptr = ((*(*env)).GetByteArrayElements)(env, class_bytes, &mut is_copy);
-    if bytes_ptr.is_null() {
-        return JVMTI_ERROR_OUT_OF_MEMORY;
+    let len = ((*(*env)).GetArrayLength)(env, class_bytes);
+    let elements = ((*(*env)).GetByteArrayElements)(env, class_bytes, &mut is_copy);
+
+    if elements.is_null() || len <= 0 {
+        return 0;
     }
 
-    let raw_bytes = std::slice::from_raw_parts(bytes_ptr as *const u8, length as usize);
-    let retain_transforms = RETAIN_CLASS_TRANSFORMS.load(Ordering::SeqCst);
+    let byte_slice = std::slice::from_raw_parts(elements as *const u8, len as usize);
+    let mut updated_bytes = byte_slice.to_vec();
 
-    if retain_transforms {
-        set_redefinition_active(target, raw_bytes);
+    if is_badlion {
+        update_persisted_class(target, &updated_bytes);
     }
 
-    let definition = jvmtiClassDefinition {
-        klass: target,
-        class_byte_count: length,
-        class_bytes: bytes_ptr as *const u8,
+    let is_redefining = set_redefinition_active();
+    let result = if is_redefining {
+        let jvmti = G_JVMTI.load(Ordering::SeqCst);
+        let mut def: jvmtiClassDefinition = jvmtiClassDefinition {
+            klass: target,
+            class_byte_count: updated_bytes.len() as jint,
+            class_bytes: updated_bytes.as_mut_ptr(),
+        };
+
+        let err = ((*(*jvmti)).RedefineClasses)(jvmti, 1, &mut def);
+        if err != JVMTI_ERROR_NONE {
+            log_jvmti_failure("RedefineClasses (native_scb)", err, target);
+        }
+        err
+    } else {
+        capture_for_retransform(target, &updated_bytes);
+        let jvmti = G_JVMTI.load(Ordering::SeqCst);
+        let err = ((*(*jvmti)).RetransformClasses)(jvmti, 1, &target);
+        if err != JVMTI_ERROR_NONE {
+            log_jvmti_failure("RetransformClasses (native_scb)", err, target);
+        }
+        err
     };
 
-    let error = ((*(*jvmti)).RedefineClasses)(jvmti, 1, &definition);
-
-    if retain_transforms {
-        clear_redefinition_active();
-        if error == JVMTI_ERROR_NONE {
-            update_persisted_class(env, target, raw_bytes);
-        }
-    }
-
-    ((*(*env)).ReleaseByteArrayElements)(env, class_bytes, bytes_ptr, JNI_ABORT);
-    log_jvmti_failure("scb RedefineClasses", error, target);
-    error
+    clear_redefinition_active();
+    ((*(*env)).ReleaseByteArrayElements)(env, class_bytes, elements, JNI_ABORT);
+    result
 }
 
 pub unsafe extern "system" fn native_smd(
@@ -118,7 +129,7 @@ pub unsafe extern "system" fn native_smd(
             0
         };
 
-        let lparam = ((pt.y as u32) << 16) | (pt.x as u32 & 0xFFFF);
+        let lparam = ((pt.y as u32) << 16) | ((pt.x as u32) & 0xFFFF);
         PostMessageW(window, msg_u32, wparam, lparam as isize);
     }
 }
@@ -126,17 +137,21 @@ pub unsafe extern "system" fn native_smd(
 pub unsafe extern "system" fn native_gks(
     _env: *mut JNIEnv,
     _bridge: jclass,
-    virtual_key: jint,
-) -> jshort {
+    key: jint,
+) -> jint {
     #[cfg(windows)]
     {
         use windows_sys::Win32::UI::Input::KeyboardAndMouse::GetAsyncKeyState;
-        let state = GetAsyncKeyState(virtual_key) as u16;
-        ((state >> 7) & 0x100) as jshort
+        let state = GetAsyncKeyState(key);
+        if (state as u16 & 0x8000) != 0 {
+            1
+        } else {
+            0
+        }
     }
     #[cfg(not(windows))]
     {
-        let _ = virtual_key;
+        let _ = key;
         0
     }
 }
@@ -149,9 +164,9 @@ pub unsafe extern "system" fn native_gkn(
     #[cfg(windows)]
     {
         use windows_sys::Win32::UI::Input::KeyboardAndMouse::GetKeyNameTextA;
-        let mut buffer = [0i8; 1024];
+        let mut buffer = [0u8; 1024];
         GetKeyNameTextA(key_data as i32, buffer.as_mut_ptr(), 1024);
-        ((*(*env)).NewStringUTF)(env, buffer.as_ptr())
+        ((*(*env)).NewStringUTF)(env, buffer.as_ptr() as *const i8)
     }
     #[cfg(not(windows))]
     {
