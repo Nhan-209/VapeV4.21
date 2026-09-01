@@ -175,21 +175,32 @@ pub fn vape_loader_bootstrap_initialize() -> bool {
                     );
                     if !view.Value.is_null() {
                         let block = &mut *(view.Value as *mut Vape421BootstrapV2);
-                        let is_valid = block.magic == VAPE421_BOOTSTRAP_MAGIC
-                            && block.version == VAPE421_BOOTSTRAP_VERSION
-                            && block.structure_size as usize == std::mem::size_of::<Vape421BootstrapV2>()
-                            && block.target_pid == pid
-                            && block.mode == VAPE421_BOOTSTRAP_MODE_ONLINE
-                            && block.status == VAPE421_BOOTSTRAP_STATUS_CREATED
-                            && block.controller_port != 0
-                            && block.service_zeus_port != 0;
+                        let magic = block.magic;
+                        let version = block.version;
+                        let structure_size = block.structure_size as usize;
+                        let target_pid = block.target_pid;
+                        let mode = block.mode;
+                        let status = block.status;
+                        let controller_port = block.controller_port;
+                        let zeus_port = block.service_zeus_port;
+                        let service_http_base = block.service_http_base;
+                        let service_zeus_host = block.service_zeus_host;
+
+                        let is_valid = magic == VAPE421_BOOTSTRAP_MAGIC
+                            && version == VAPE421_BOOTSTRAP_VERSION
+                            && structure_size == std::mem::size_of::<Vape421BootstrapV2>()
+                            && target_pid == pid
+                            && mode == VAPE421_BOOTSTRAP_MODE_ONLINE
+                            && status == VAPE421_BOOTSTRAP_STATUS_CREATED
+                            && controller_port != 0
+                            && zeus_port != 0;
 
                         if is_valid {
-                            let http_base = extract_null_terminated_str(&block.service_http_base);
-                            let zeus_host = extract_null_terminated_str(&block.service_zeus_host);
+                            let http_base = extract_null_terminated_str(&service_http_base);
+                            let zeus_host = extract_null_terminated_str(&service_zeus_host);
 
                             if let (Some(http_base), Some(zeus_host)) = (http_base, zeus_host) {
-                                let zeus_address = format!("{}:{}", zeus_host, block.service_zeus_port);
+                                let zeus_address = format!("{}:{}", zeus_host, zeus_port);
                                 let c_http = std::ffi::CString::new(http_base).unwrap_or_default();
                                 let c_zeus = std::ffi::CString::new(zeus_address).unwrap_or_default();
                                 let c_var_http = std::ffi::CString::new("VAPE_ONLINE_BASE_URL").unwrap();
@@ -198,7 +209,7 @@ pub fn vape_loader_bootstrap_initialize() -> bool {
                                 SetEnvironmentVariableA(c_var_http.as_ptr() as _, c_http.as_ptr() as _);
                                 SetEnvironmentVariableA(c_var_zeus.as_ptr() as _, c_zeus.as_ptr() as _);
 
-                                if let Some(mut stream) = connect_controller(block.controller_port) {
+                                if let Some(mut stream) = connect_controller(controller_port) {
                                     if let Some(token) = request_access_token(&mut stream) {
                                         access_token = token;
                                         final_state = TOKEN_STATE_ONLINE;

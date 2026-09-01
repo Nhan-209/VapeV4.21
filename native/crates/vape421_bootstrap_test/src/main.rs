@@ -117,28 +117,31 @@ fn run_socket_handoff_test(invalid: bool) -> Result<(), String> {
                 return Err("failed to create bootstrap test objects".into());
             }
 
-            let block = &mut *(view.Value as *mut Vape421BootstrapV2);
-            *block = Vape421BootstrapV2::default();
-            block.magic = if invalid { 0 } else { VAPE421_BOOTSTRAP_MAGIC };
-            block.version = VAPE421_BOOTSTRAP_VERSION;
-            block.structure_size = std::mem::size_of::<Vape421BootstrapV2>() as u16;
-            block.target_pid = pid;
-            block.mode = VAPE421_BOOTSTRAP_MODE_ONLINE;
-            block.controller_port = port;
+            let mut temp_block = Vape421BootstrapV2::default();
+            temp_block.magic = if invalid { 0 } else { VAPE421_BOOTSTRAP_MAGIC };
+            temp_block.version = VAPE421_BOOTSTRAP_VERSION;
+            temp_block.structure_size = std::mem::size_of::<Vape421BootstrapV2>() as u16;
+            temp_block.target_pid = pid;
+            temp_block.mode = VAPE421_BOOTSTRAP_MODE_ONLINE;
+            temp_block.controller_port = port;
 
             let http_base = b"http://127.0.0.1:8080\0";
             let zeus_host = b"127.0.0.1\0";
-            block.service_http_base[..http_base.len()].copy_from_slice(http_base);
-            block.service_zeus_host[..zeus_host.len()].copy_from_slice(zeus_host);
-            block.service_zeus_port = 8091;
-            block.status = VAPE421_BOOTSTRAP_STATUS_CREATED;
+            temp_block.service_http_base[..http_base.len()].copy_from_slice(http_base);
+            temp_block.service_zeus_host[..zeus_host.len()].copy_from_slice(zeus_host);
+            temp_block.service_zeus_port = 8091;
+            temp_block.status = VAPE421_BOOTSTRAP_STATUS_CREATED;
+
+            let block = &mut *(view.Value as *mut Vape421BootstrapV2);
+            *block = temp_block;
 
             vape_loader_bootstrap_clear();
 
             if invalid {
                 let init_ok = vape_loader_bootstrap_initialize();
                 let wait = WaitForSingleObject(ack, 1000);
-                if init_ok || wait != WAIT_OBJECT_0 || block.status != VAPE421_BOOTSTRAP_STATUS_FAILED {
+                let final_status = block.status;
+                if init_ok || wait != WAIT_OBJECT_0 || final_status != VAPE421_BOOTSTRAP_STATUS_FAILED {
                     UnmapViewOfFile(view);
                     CloseHandle(ack);
                     CloseHandle(mapping);
@@ -147,9 +150,10 @@ fn run_socket_handoff_test(invalid: bool) -> Result<(), String> {
             } else {
                 let init_ok = vape_loader_bootstrap_initialize();
                 let wait = WaitForSingleObject(ack, 1000);
+                let final_status = block.status;
                 if !init_ok
                     || wait != WAIT_OBJECT_0
-                    || block.status != VAPE421_BOOTSTRAP_STATUS_CONSUMED
+                    || final_status != VAPE421_BOOTSTRAP_STATUS_CONSUMED
                     || vape_loader_access_token() != "persistent-test-token"
                 {
                     UnmapViewOfFile(view);

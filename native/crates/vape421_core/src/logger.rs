@@ -24,8 +24,8 @@ pub fn set_log_file_path(path: PathBuf) {
 pub fn current_timestamp() -> String {
     #[cfg(windows)]
     {
+        use windows_sys::Win32::Foundation::SYSTEMTIME;
         use windows_sys::Win32::System::SystemInformation::GetLocalTime;
-        use windows_sys::Win32::System::SystemInformation::SYSTEMTIME;
         let mut st = SYSTEMTIME {
             wYear: 0,
             wMonth: 0,
