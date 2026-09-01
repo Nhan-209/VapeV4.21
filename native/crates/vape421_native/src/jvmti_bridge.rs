@@ -23,6 +23,9 @@ struct CaptureState {
     name_matched: bool,
 }
 
+unsafe impl Send for CaptureState {}
+unsafe impl Sync for CaptureState {}
+
 static CAPTURE_STATE: Mutex<CaptureState> = Mutex::new(CaptureState {
     target: ptr::null_mut(),
     bytes: Vec::new(),
@@ -34,12 +37,18 @@ struct PersistedClass {
     bytes: Vec<u8>,
 }
 
+unsafe impl Send for PersistedClass {}
+unsafe impl Sync for PersistedClass {}
+
 static PERSISTED_CLASSES: Mutex<Vec<PersistedClass>> = Mutex::new(Vec::new());
 
 struct RedefinitionState {
     target: jclass,
     bytes: Vec<u8>,
 }
+
+unsafe impl Send for RedefinitionState {}
+unsafe impl Sync for RedefinitionState {}
 
 static REDEFINITION_STATE: Mutex<RedefinitionState> = Mutex::new(RedefinitionState {
     target: ptr::null_mut(),

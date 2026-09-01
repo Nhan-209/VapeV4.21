@@ -59,7 +59,7 @@ fn render_selector(
 }
 
 fn select_process(dll_path: &Path) -> Option<u32> {
-    let mut candidates = Vec::new();
+    let mut candidates: Vec<ProcessCandidate> = Vec::new();
     let mut selected = 0;
     let mut next_refresh = Instant::now();
 

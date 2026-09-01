@@ -76,15 +76,19 @@ pub unsafe extern "system" fn native_smd(
 ) {
     #[cfg(windows)]
     {
-        use windows_sys::Win32::Foundation::POINT;
-        use windows_sys::Win32::UI::Input::KeyboardAndMouse::GetCursorPos;
+        use windows_sys::Win32::Foundation::{BOOL, HWND, POINT};
         use windows_sys::Win32::UI::WindowsAndMessaging::{
-            GetClassNameW, GetForegroundWindow, IsWindow, PostMessageW, ScreenToClient,
+            GetClassNameW, GetForegroundWindow, IsWindow, PostMessageW,
             WM_LBUTTONDOWN, WM_MBUTTONDOWN, WM_RBUTTONDOWN,
         };
 
+        extern "system" {
+            fn GetCursorPos(lpPoint: *mut POINT) -> BOOL;
+            fn ScreenToClient(hWnd: HWND, lpPoint: *mut POINT) -> BOOL;
+        }
+
         let mut pt = POINT { x: 0, y: 0 };
-        let mut window = G_LWJGL3_WINDOW.load(Ordering::SeqCst) as windows_sys::Win32::Foundation::HWND;
+        let mut window = G_LWJGL3_WINDOW.load(Ordering::SeqCst) as HWND;
         if window.is_null() || IsWindow(window) == 0 {
             window = GetForegroundWindow();
         }
@@ -185,14 +189,19 @@ pub unsafe extern "system" fn native_cpy(
 
     #[cfg(windows)]
     {
-        use windows_sys::Win32::Foundation::GetLastError;
+        use windows_sys::Win32::Foundation::{GetLastError, HGLOBAL};
         use windows_sys::Win32::System::DataExchange::{
             CloseClipboard, EmptyClipboard, OpenClipboard, SetClipboardData,
         };
         use windows_sys::Win32::System::Memory::{
-            GlobalAlloc, GlobalFree, GlobalLock, GlobalUnlock, GMEM_MOVEABLE,
+            GlobalAlloc, GlobalLock, GlobalUnlock, GMEM_MOVEABLE,
         };
-        use windows_sys::Win32::System::SystemServices::CF_TEXT;
+
+        const CF_TEXT: u32 = 1;
+
+        extern "system" {
+            fn GlobalFree(hMem: HGLOBAL) -> HGLOBAL;
+        }
 
         let mut is_copy: jboolean = 0;
         let chars = ((*(*env)).GetStringUTFChars)(env, text, &mut is_copy);
@@ -223,7 +232,7 @@ pub unsafe extern "system" fn native_cpy(
 
         if OpenClipboard(ptr::null_mut()) != 0 {
             if EmptyClipboard() != 0 {
-                if SetClipboardData(CF_TEXT as u32, memory as _).is_null() {
+                if SetClipboardData(CF_TEXT, memory as _).is_null() {
                     vape_log(&format!("cpy SetClipboardData failed: {}", GetLastError()));
                     GlobalFree(memory);
                 }

@@ -259,7 +259,7 @@ pub unsafe fn run_bootstrap_worker() -> u32 {
     sleep(Duration::from_millis(150));
 
     let mut vm: *mut JavaVM = ptr::null_mut();
-    let mut env: *mut JNIEnv = ptr::null_mut();
+    let env: *mut JNIEnv;
 
     #[cfg(windows)]
     {

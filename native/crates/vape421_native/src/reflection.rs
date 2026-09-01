@@ -100,7 +100,7 @@ pub unsafe fn unbox_value(
         return false;
     }
 
-    let (class_name, method_name, sig) = match kind {
+    let (_class_name, method_name, sig) = match kind {
         PrimitiveKind::Boolean => ("java/lang/Boolean", "booleanValue", "()Z"),
         PrimitiveKind::Byte => ("java/lang/Byte", "byteValue", "()B"),
         PrimitiveKind::Char => ("java/lang/Character", "charValue", "()C"),
@@ -115,7 +115,6 @@ pub unsafe fn unbox_value(
         }
     };
 
-    let c_class = CString::new(class_name).unwrap();
     let c_method = CString::new(method_name).unwrap();
     let c_sig = CString::new(sig).unwrap();
 
@@ -157,68 +156,34 @@ pub unsafe fn unbox_value(
         _ => return false,
     }
 
-    ((*(*env)).ExceptionCheck)(env) == JNI_FALSE
+    true
 }
 
-pub unsafe fn box_value(env: *mut JNIEnv, kind: PrimitiveKind, val: jvalue) -> jobject {
-    let (class_name, sig) = match kind {
-        PrimitiveKind::Boolean => ("java/lang/Boolean", "(Z)Ljava/lang/Boolean;"),
-        PrimitiveKind::Byte => ("java/lang/Byte", "(B)Ljava/lang/Byte;"),
-        PrimitiveKind::Char => ("java/lang/Character", "(C)Ljava/lang/Character;"),
-        PrimitiveKind::Short => ("java/lang/Short", "(S)Ljava/lang/Short;"),
-        PrimitiveKind::Int => ("java/lang/Integer", "(I)Ljava/lang/Integer;"),
-        PrimitiveKind::Long => ("java/lang/Long", "(J)Ljava/lang/Long;"),
-        PrimitiveKind::Float => ("java/lang/Float", "(F)Ljava/lang/Float;"),
-        PrimitiveKind::Double => ("java/lang/Double", "(D)Ljava/lang/Double;"),
-        _ => return ptr::null_mut(),
-    };
+pub unsafe fn box_primitive_value(env: *mut JNIEnv, kind: PrimitiveKind, val: jvalue) -> jobject {
+    if kind == PrimitiveKind::Void || kind == PrimitiveKind::Reference {
+        return ptr::null_mut();
+    }
 
-    let c_class = CString::new(class_name).unwrap();
-    let c_sig = CString::new(sig).unwrap();
-    let c_method = CString::new("valueOf").unwrap();
-
-    let wrapper_class = ((*(*env)).FindClass)(env, c_class.as_ptr());
+    let class_name = kind.wrapper_class_name();
+    let c_name = CString::new(class_name).unwrap();
+    let wrapper_class = ((*(*env)).FindClass)(env, c_name.as_ptr());
     if wrapper_class.is_null() {
         return ptr::null_mut();
     }
 
+    let sig = kind.value_of_signature();
+    let c_sig = CString::new(sig).unwrap();
     let value_of = ((*(*env)).GetStaticMethodID)(
         env,
         wrapper_class,
-        c_method.as_ptr(),
+        CString::new("valueOf").unwrap().as_ptr(),
         c_sig.as_ptr(),
     );
     if value_of.is_null() {
         return ptr::null_mut();
     }
 
-    match kind {
-        PrimitiveKind::Boolean => {
-            ((*(*env)).CallStaticObjectMethod)(env, wrapper_class, value_of, val.z)
-        }
-        PrimitiveKind::Byte => {
-            ((*(*env)).CallStaticObjectMethod)(env, wrapper_class, value_of, val.b)
-        }
-        PrimitiveKind::Char => {
-            ((*(*env)).CallStaticObjectMethod)(env, wrapper_class, value_of, val.c)
-        }
-        PrimitiveKind::Short => {
-            ((*(*env)).CallStaticObjectMethod)(env, wrapper_class, value_of, val.s)
-        }
-        PrimitiveKind::Int => {
-            ((*(*env)).CallStaticObjectMethod)(env, wrapper_class, value_of, val.i)
-        }
-        PrimitiveKind::Long => {
-            ((*(*env)).CallStaticObjectMethod)(env, wrapper_class, value_of, val.j)
-        }
-        PrimitiveKind::Float => {
-            ((*(*env)).CallStaticObjectMethod)(env, wrapper_class, value_of, val.f)
-        }
-        PrimitiveKind::Double => {
-            ((*(*env)).CallStaticObjectMethod)(env, wrapper_class, value_of, val.d)
-        }
-        _ => ptr::null_mut(),
-    }
+    ((*(*env)).CallStaticObjectMethodA)(env, wrapper_class, value_of, &val as *const jvalue)
 }
 
 pub unsafe fn invoke_reflected_method(

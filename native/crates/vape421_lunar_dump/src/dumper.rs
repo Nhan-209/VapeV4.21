@@ -25,6 +25,9 @@ struct ActiveTarget {
     log_path: PathBuf,
 }
 
+unsafe impl Send for ActiveTarget {}
+unsafe impl Sync for ActiveTarget {}
+
 static ACTIVE_TARGET: Mutex<Option<ActiveTarget>> = Mutex::new(None);
 
 pub fn dump_filter(signature: &str) -> bool {
