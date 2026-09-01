@@ -18,6 +18,36 @@ pub enum PrimitiveKind {
     Void,
 }
 
+impl PrimitiveKind {
+    pub fn wrapper_class_name(self) -> &'static str {
+        match self {
+            PrimitiveKind::Boolean => "java/lang/Boolean",
+            PrimitiveKind::Byte => "java/lang/Byte",
+            PrimitiveKind::Char => "java/lang/Character",
+            PrimitiveKind::Short => "java/lang/Short",
+            PrimitiveKind::Int => "java/lang/Integer",
+            PrimitiveKind::Long => "java/lang/Long",
+            PrimitiveKind::Float => "java/lang/Float",
+            PrimitiveKind::Double => "java/lang/Double",
+            _ => "",
+        }
+    }
+
+    pub fn value_of_signature(self) -> &'static str {
+        match self {
+            PrimitiveKind::Boolean => "(Z)Ljava/lang/Boolean;",
+            PrimitiveKind::Byte => "(B)Ljava/lang/Byte;",
+            PrimitiveKind::Char => "(C)Ljava/lang/Character;",
+            PrimitiveKind::Short => "(S)Ljava/lang/Short;",
+            PrimitiveKind::Int => "(I)Ljava/lang/Integer;",
+            PrimitiveKind::Long => "(J)Ljava/lang/Long;",
+            PrimitiveKind::Float => "(F)Ljava/lang/Float;",
+            PrimitiveKind::Double => "(D)Ljava/lang/Double;",
+            _ => "",
+        }
+    }
+}
+
 pub unsafe fn throw_new(env: *mut JNIEnv, class_name: &str, message: &str) {
     if env.is_null() {
         return;
@@ -392,5 +422,5 @@ pub unsafe fn invoke_reflected_method(
         return result_obj;
     }
 
-    box_value(env, return_kind, returned)
+    box_primitive_value(env, return_kind, returned)
 }
